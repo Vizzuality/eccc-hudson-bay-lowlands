@@ -140,3 +140,7 @@ vite.config.ts.timestamp-*
 
 .terraform/
 terraform.tfstate
+
+# claude
+CLAUDE.md
+.claude/
