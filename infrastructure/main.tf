@@ -6,16 +6,17 @@ terraform {
     }
   }
 
-  # backend "s3" {
-  #   bucket         = "eccc-terraform-state"
-  #   key            = "state"
-  #   region         = "eu-north-1"
-  #   profile        = "aws-eccc"
-  #   dynamodb_table = "eccc-terraform-state-dynamodb"
-  # }
+  backend "s3" {
+    bucket         = "eccc-hudson-bay-lowlands-terraform-state"
+    key            = "state"
+    region         = "eu-north-1"
+    profile        = "aws-eccc"
+    dynamodb_table = "eccc-hudson-bay-lowlands-terraform-state-lock"
+  }
 
   required_version = "1.14.3"
 }
+
 
 resource "aws_s3_bucket" "state" {
   bucket = "${var.project_name}-terraform-state"
