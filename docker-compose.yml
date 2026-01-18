@@ -1,0 +1,39 @@
+services:
+  eccc-db:
+    image: postgres:16
+    container_name: eccc-db
+    environment:
+      POSTGRES_USER: eccc
+      POSTGRES_PASSWORD: eccc
+      POSTGRES_DB: eccc_db
+    volumes:
+      - eccc-db-data:/var/lib/postgresql/data
+      - ./docker/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eccc -d eccc_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  eccc-api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: eccc-api
+    depends_on:
+      eccc-db:
+        condition: service_healthy
+    environment:
+      DATABASE_HOST: eccc-db
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: eccc
+      DATABASE_PASSWORD: eccc
+      DATABASE_NAME: eccc_db
+    ports:
+      - "8000:8000"
+
+volumes:
+  eccc-db-data:

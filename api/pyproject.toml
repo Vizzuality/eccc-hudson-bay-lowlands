@@ -1,11 +1,12 @@
 [project]
 name = "eccc-hudson-bay-lowlands-api"
 version = "0.1.0"
-description = "ECCC Hudson Bay Lowlands COG tile server API"
+description = "ECCC Hudson Bay Lowlands backend API"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi[standard]",
     "titiler-core==1.1.0",
+    "pydantic-settings>=2.0.0",
 ]
 
 [tool.uv]

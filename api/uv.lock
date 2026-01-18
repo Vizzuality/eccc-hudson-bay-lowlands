@@ -157,6 +157,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
+    { name = "pydantic-settings" },
     { name = "titiler-core" },
 ]
 
@@ -170,6 +171,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", extras = ["standard"] },
+    { name = "pydantic-settings", specifier = ">=2.0.0" },
     { name = "titiler-core", specifier = "==1.1.0" },
 ]
 
