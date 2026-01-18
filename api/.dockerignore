@@ -1,0 +1,36 @@
+# Virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Testing and linting cache
+.pytest_cache/
+.ruff_cache/
+
+# Git
+.git/
+.gitignore
+
+# Tests (not needed in production image)
+tests/
+
+# Documentation
+*.md
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment files (secrets should not be in image)
+.env
+.env.local
+.env.*.local
+
+# macOS
+.DS_Store

@@ -1,6 +1,6 @@
 # ECCC Hudson Bay Lowlands API
 
-COG (Cloud Optimized GeoTIFF) tile server for Hudson Bay Lowlands imagery, built with FastAPI and TiTiler.
+Backend API for the Hudson Bay Lowlands geospatial application, built with FastAPI. Includes COG tile serving via TiTiler.
 
 ## Features
 
