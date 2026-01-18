@@ -17,45 +17,32 @@ terraform {
   required_version = "1.14.3"
 }
 
-
-resource "aws_s3_bucket" "state" {
-  bucket = "${var.project_name}-terraform-state"
+module "state" {
+  source       = "./modules/state"
+  project_name = var.project_name
 }
 
-resource "aws_s3_bucket_ownership_controls" "state" {
-  bucket = aws_s3_bucket.state.id
-
-  rule {
-    object_ownership = "BucketOwnerEnforced"
-  }
+moved {
+  from = aws_s3_bucket.state
+  to   = module.state.aws_s3_bucket.state
 }
 
-resource "aws_s3_bucket_versioning" "state" {
-  bucket = aws_s3_bucket.state.id
-  versioning_configuration {
-    status = "Enabled"
-  }
+moved {
+  from = aws_s3_bucket_ownership_controls.state
+  to   = module.state.aws_s3_bucket_ownership_controls.state
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "state" {
-  bucket = aws_s3_bucket.state.id
-
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
-    }
-  }
+moved {
+  from = aws_s3_bucket_versioning.state
+  to   = module.state.aws_s3_bucket_versioning.state
 }
 
-resource "aws_dynamodb_table" "lock" {
-  name           = "${var.project_name}-terraform-state-lock"
-  read_capacity  = 1
-  write_capacity = 1
-  hash_key       = "LockID"
+moved {
+  from = aws_s3_bucket_server_side_encryption_configuration.state
+  to   = module.state.aws_s3_bucket_server_side_encryption_configuration.state
+}
 
-  attribute {
-    name = "LockID"
-    type = "S"
-  }
-
+moved {
+  from = aws_dynamodb_table.lock
+  to   = module.state.aws_dynamodb_table.lock
 }
