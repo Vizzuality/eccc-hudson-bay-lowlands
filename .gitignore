@@ -141,6 +141,19 @@ vite.config.ts.timestamp-*
 .terraform/
 terraform.tfstate
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+*.egg
+dist/
+build/
+
 # claude
 CLAUDE.md
 .claude/
