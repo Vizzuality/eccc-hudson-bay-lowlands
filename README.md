@@ -132,7 +132,7 @@ For detailed API documentation, see [api/README.md](api/README.md).
 
 ## Infrastructure
 
-Terraform configuration for AWS resources. See [CLAUDE.md](CLAUDE.md) for detailed commands.
+Terraform configuration for AWS resources. See [INFRASTRUCTURE README.md](infrastructure/README.md) for detailed commands.
 
 ```bash
 cd infrastructure
