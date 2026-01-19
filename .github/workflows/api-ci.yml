@@ -40,8 +40,27 @@ jobs:
     defaults:
       run:
         working-directory: api
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: eccc
+          POSTGRES_PASSWORD: eccc
+          POSTGRES_DB: eccc_db_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     env:
       TESTING: 'true'
+      DATABASE_HOST: localhost
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: eccc
+      DATABASE_PASSWORD: eccc
+      DATABASE_NAME: eccc_db_test
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
