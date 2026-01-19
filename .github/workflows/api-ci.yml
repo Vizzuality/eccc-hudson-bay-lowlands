@@ -56,11 +56,11 @@ jobs:
           - 5432:5432
     env:
       TESTING: 'true'
-      DATABASE_HOST: localhost
-      DATABASE_PORT: 5432
-      DATABASE_USERNAME: eccc
-      DATABASE_PASSWORD: eccc
-      DATABASE_NAME: eccc_db_test
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USERNAME: eccc
+      DB_PASSWORD: eccc
+      DB_NAME: eccc_db_test
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

@@ -27,13 +27,31 @@ services:
       eccc-db:
         condition: service_healthy
     environment:
-      DATABASE_HOST: eccc-db
-      DATABASE_PORT: 5432
-      DATABASE_USERNAME: eccc
-      DATABASE_PASSWORD: eccc
-      DATABASE_NAME: eccc_db
+      DB_HOST: eccc-db
+      DB_PORT: 5432
+      DB_USERNAME: eccc
+      DB_PASSWORD: eccc
+      DB_NAME: eccc_db
     ports:
       - "8000:8000"
+
+  eccc-client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      # Build-time args: NEXT_PUBLIC_* vars are embedded in client bundle during build
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+        NEXT_PUBLIC_MAPBOX_API_TOKEN: ${NEXT_PUBLIC_MAPBOX_API_TOKEN:-}
+    container_name: eccc-client
+    depends_on:
+      - eccc-api
+    # Runtime environment variables (server-side only, not embedded in client bundle)
+    environment:
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-dev-secret-change-in-production}
+    ports:
+      - "3000:3000"
 
 volumes:
   eccc-db-data:

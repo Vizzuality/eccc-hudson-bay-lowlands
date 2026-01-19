@@ -49,11 +49,11 @@ This project provides:
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `DATABASE_HOST` | PostgreSQL host | `localhost` |
-| `DATABASE_PORT` | PostgreSQL port | `5432` |
-| `DATABASE_USERNAME` | PostgreSQL username | `eccc` |
-| `DATABASE_PASSWORD` | PostgreSQL password | `eccc` |
-| `DATABASE_NAME` | PostgreSQL database name | `eccc_db` |
+| `DB_HOST` | PostgreSQL host | `localhost` |
+| `DB_PORT` | PostgreSQL port | `5432` |
+| `DB_USERNAME` | PostgreSQL username | `eccc` |
+| `DB_PASSWORD` | PostgreSQL password | `eccc` |
+| `DB_NAME` | PostgreSQL database name | `eccc_db` |
 | `TESTING` | Enable test mode (uses `eccc_db_test`) | `false` |
 
 See `.env.example` for a complete list of configurable options.
