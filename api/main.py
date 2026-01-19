@@ -1,12 +1,26 @@
 """FastAPI application with enhanced OpenAPI configuration and CORS support."""
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from config import get_settings
-from routers import cog, health
+from db.base import Base
+from db.database import engine
+from models import Raster  # noqa: F401  # Import models to register with Base metadata
+from routers import cog, health, rasters
 
 settings = get_settings()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan handler for startup and shutdown events."""
+    # Create all database tables on startup
+    Base.metadata.create_all(bind=engine)
+    yield
+
 
 # OpenAPI tags metadata for documentation organization
 tags_metadata = [
@@ -17,6 +31,10 @@ tags_metadata = [
     {
         "name": "COG",
         "description": "Cloud Optimized GeoTIFF (COG) tile serving endpoints powered by TiTiler.",
+    },
+    {
+        "name": "Rasters",
+        "description": "CRUD endpoints for managing raster metadata.",
     },
 ]
 
@@ -34,6 +52,7 @@ app = FastAPI(
         "url": settings.license_url,
     },
     openapi_tags=tags_metadata,
+    lifespan=lifespan,
 )
 
 # Configure CORS middleware
@@ -48,6 +67,7 @@ app.add_middleware(
 # Include routers
 app.include_router(health.router)
 app.include_router(cog.router, prefix="/cog", tags=["COG"])
+app.include_router(rasters.router, prefix="/rasters", tags=["Rasters"])
 
 
 @app.get(
@@ -65,4 +85,5 @@ def root():
         "redoc": "/redoc",
         "health": "/health",
         "cog": "/cog",
+        "rasters": "/rasters",
     }
