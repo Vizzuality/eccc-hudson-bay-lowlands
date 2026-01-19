@@ -2,6 +2,7 @@
 
 from functools import lru_cache
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -31,11 +32,14 @@ class Settings(BaseSettings):
     cors_allow_headers: list[str] = ["*"]
 
     # Database configuration
-    database_host: str = "localhost"
-    database_port: int = 5432
-    database_username: str = "eccc"
-    database_password: str = "eccc"
-    database_name: str = "eccc_db"
+    db_host: str = Field(default="localhost", validation_alias="DB_HOST")
+    db_port: int = Field(default=5432, validation_alias="DB_PORT")
+    db_username: str = Field(default="eccc", validation_alias="DB_USERNAME")
+    db_password: str = Field(default="eccc", validation_alias="DB_PASSWORD")
+    db_name: str = Field(default="eccc_db", validation_alias="DB_NAME")
+
+    # S3 configuration
+    s3_bucket_name: str = Field(default="", validation_alias="S3_BUCKET_NAME")
 
     # Testing mode
     testing: bool = False
@@ -46,11 +50,8 @@ class Settings(BaseSettings):
 
         When testing=True, automatically uses eccc_db_test database.
         """
-        db_name = "eccc_db_test" if self.testing else self.database_name
-        return (
-            f"postgresql://{self.database_username}:{self.database_password}"
-            f"@{self.database_host}:{self.database_port}/{db_name}"
-        )
+        db_name = "eccc_db_test" if self.testing else self.db_name
+        return f"postgresql://{self.db_username}:{self.db_password}@{self.db_host}:{self.db_port}/{db_name}"
 
 
 @lru_cache

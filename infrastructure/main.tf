@@ -64,11 +64,9 @@ module "dev" {
   cname_prefix                                  = "${var.project_name}-dev-environment"
 
   rds_instance_class = "db.t3.micro"
-
-  # TODO: Enable when GitHub integration module is implemented
-  # repo_name = "eccc-hudson-bay-lowlands"
-  # github_owner        = var.github_owner
-  # github_token        = var.github_token
+  repo_name          = var.repo_name
+  github_owner       = var.github_owner
+  github_token       = var.github_token
 
   # TODO: Enable when basic auth is implemented in the application
   # basic_auth_enabled  = var.basic_auth_enabled
@@ -80,6 +78,27 @@ module "dev" {
   #   JWT_EXPIRES_IN = "1d"
   # }
 }
+
+
+
+module "github" {
+  source       = "./modules/github"
+  repo_name    = var.repo_name
+  github_owner = var.github_owner
+  github_token = var.github_token
+  global_secret_map = {
+    PROJECT_NAME                    = var.project_name
+    PIPELINE_USER_ACCESS_KEY_ID     = module.iam.pipeline_user_access_key_id
+    PIPELINE_USER_SECRET_ACCESS_KEY = module.iam.pipeline_user_access_key_secret
+    CLIENT_REPOSITORY_NAME          = module.client_ecr.repository_name
+    API_REPOSITORY_NAME             = module.api_ecr.repository_name
+    AWS_REGION                      = var.aws_region
+  }
+  global_variable_map = {
+    NEXT_PUBLIC_MAPBOX_API_TOKEN = "null"
+  }
+}
+
 
 
 

@@ -140,6 +140,7 @@ vite.config.ts.timestamp-*
 
 .terraform/
 terraform.tfstate
+local.tfvars
 
 # Python
 __pycache__/

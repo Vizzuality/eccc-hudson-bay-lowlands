@@ -91,3 +91,31 @@ variable "rds_backup_retention_period" {
   default     = 7
   description = "Time in days to keep db backups"
 }
+
+# REPO
+variable "github_owner" {
+  type        = string
+  description = "Owner of the Github repository where the code is hosted"
+}
+
+variable "github_token" {
+  type        = string
+  description = "Github token to access the repository"
+}
+
+variable "repo_name" {
+  type        = string
+  description = "Name of the Github repository where the code is hosted"
+}
+
+variable "github_additional_environment_secrets" {
+  type        = map(string)
+  description = "Github additional environment-specific secrets"
+  default     = {}
+}
+
+variable "github_additional_environment_variables" {
+  type        = map(string)
+  description = "Github additional environment-specific variables"
+  default     = {}
+}
