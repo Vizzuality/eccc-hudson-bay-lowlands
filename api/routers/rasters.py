@@ -14,7 +14,7 @@ router = APIRouter(tags=["Rasters"])
 
 
 @router.get(
-    "/",
+    "",
     summary="List Rasters",
     description="Returns a paginated list of rasters.",
     response_model=PaginatedRasterResponse,
@@ -46,7 +46,7 @@ def list_rasters(
 
 
 @router.post(
-    "/",
+    "",
     summary="Create Raster",
     description="Creates a new raster entry.",
     response_model=RasterResponse,
