@@ -53,6 +53,7 @@ app = FastAPI(
     },
     openapi_tags=tags_metadata,
     lifespan=lifespan,
+    root_path=settings.root_path,
 )
 
 # Configure CORS middleware

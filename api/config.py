@@ -41,6 +41,9 @@ class Settings(BaseSettings):
     # S3 configuration
     s3_bucket_name: str = Field(default="", validation_alias="S3_BUCKET_NAME")
 
+    # Root path for reverse proxy (set to "/api" when behind nginx proxy)
+    root_path: str = Field(default="", validation_alias="ROOT_PATH")
+
     # Testing mode
     testing: bool = False
 
