@@ -152,7 +152,7 @@ locals {
     {
       namespace = "aws:elasticbeanstalk:environment:process:default"
       name      = "HealthCheckPath"
-      value     = "/"
+      value     = "/health"
     }
   ]
 }
