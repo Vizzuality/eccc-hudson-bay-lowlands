@@ -9,6 +9,7 @@ dependencies = [
     "pydantic-settings>=2.0.0",
     "sqlalchemy>=2.0",
     "psycopg[binary]>=3.0",
+    "shapely>=2.0",
 ]
 
 [tool.uv]

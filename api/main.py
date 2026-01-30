@@ -9,7 +9,7 @@ from config import get_settings
 from db.base import Base
 from db.database import engine
 from models import Raster  # noqa: F401  # Import models to register with Base metadata
-from routers import cog, health, rasters
+from routers import cog, geometry, health, rasters
 
 settings = get_settings()
 
@@ -35,6 +35,10 @@ tags_metadata = [
     {
         "name": "Rasters",
         "description": "CRUD endpoints for managing raster metadata.",
+    },
+    {
+        "name": "Geometry",
+        "description": "Geometry validation endpoints.",
     },
 ]
 
@@ -69,6 +73,7 @@ app.add_middleware(
 app.include_router(health.router)
 app.include_router(cog.router, prefix="/cog", tags=["COG"])
 app.include_router(rasters.router, prefix="/rasters", tags=["Rasters"])
+app.include_router(geometry.router, prefix="/geometry", tags=["Geometry"])
 
 
 @app.get(
@@ -87,4 +92,5 @@ def root():
         "health": "/health",
         "cog": "/cog",
         "rasters": "/rasters",
+        "geometry": "/geometry",
     }

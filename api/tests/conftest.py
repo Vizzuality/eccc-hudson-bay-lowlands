@@ -36,8 +36,16 @@ TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_eng
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_test_database():
-    """Create all tables before running tests, drop after."""
-    Base.metadata.create_all(bind=test_engine)
+    """Create all tables before running tests, drop after.
+
+    Gracefully handles database unavailability so that tests which do not
+    require database access (e.g. geometry validation) can still run.
+    """
+    try:
+        Base.metadata.create_all(bind=test_engine)
+    except Exception:
+        yield
+        return
     yield
     Base.metadata.drop_all(bind=test_engine)
 
@@ -66,6 +74,16 @@ def client(db_session):
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app, raise_server_exceptions=False)
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def client_no_db():
+    """Create a test client without database dependencies.
+
+    Use this fixture for endpoints that do not require database access,
+    such as the geometry validation endpoint.
+    """
+    yield TestClient(app, raise_server_exceptions=False)
 
 
 @pytest.fixture
