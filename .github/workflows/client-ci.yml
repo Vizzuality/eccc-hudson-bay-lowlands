@@ -23,7 +23,7 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./client
+          context: .
           file: ./client/Dockerfile
           push: false
           tags: eccc-client:ci-${{ github.sha }}

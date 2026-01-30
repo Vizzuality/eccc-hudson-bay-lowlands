@@ -22,11 +22,15 @@ RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
-# Copy package files
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# Copy workspace configuration from root
+COPY pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# Install dependencies
-RUN pnpm install --frozen-lockfile
+# Copy all package.json files needed for the workspace
+COPY client/package.json ./client/package.json
+COPY e2e/package.json ./e2e/package.json
+
+# Install dependencies for the client workspace
+RUN pnpm install --frozen-lockfile --filter client...
 
 # =============================================================================
 # Stage 3: Build the application
@@ -35,11 +39,19 @@ FROM base AS builder
 
 WORKDIR /app
 
-# Copy dependencies from deps stage
-COPY --from=deps /app/node_modules ./node_modules
+# Copy workspace configuration
+COPY --from=deps /app/pnpm-lock.yaml /app/pnpm-workspace.yaml ./
 
-# Copy source code
-COPY . .
+# Copy dependencies from deps stage (both root and client node_modules)
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/client/node_modules ./client/node_modules
+
+# Copy root tsconfig.json (extended by client/tsconfig.json)
+COPY tsconfig.json ./
+
+# Copy client package.json and source code
+COPY client/package.json ./client/package.json
+COPY client ./client
 
 # Build-time environment variables (NEXT_PUBLIC_* are embedded in the client bundle)
 ARG NEXT_PUBLIC_API_URL
@@ -52,6 +64,7 @@ ENV NEXT_PUBLIC_MAPBOX_API_TOKEN=${NEXT_PUBLIC_MAPBOX_API_TOKEN}
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build the application with standalone output
+WORKDIR /app/client
 RUN pnpm build
 
 # =============================================================================
@@ -72,9 +85,9 @@ RUN adduser --system --uid 1001 nextjs
 # Copy necessary files from builder
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder /app/client/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/client/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/client/.next/static ./.next/static
 
 # Switch to non-root user
 USER nextjs

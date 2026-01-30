@@ -72,7 +72,7 @@ jobs:
           build-args: |
             NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
             NEXT_PUBLIC_MAPBOX_API_TOKEN=${{ vars.NEXT_PUBLIC_MAPBOX_API_TOKEN }}
-          context: ./client
+          context: .
           cache-from: type=gha
           cache-to: type=gha,mode=max
           file: ./client/Dockerfile
