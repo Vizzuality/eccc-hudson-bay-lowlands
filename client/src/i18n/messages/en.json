@@ -1,11 +1,11 @@
 {
-  "map": {
-    "title": "Hudson Bay Lowlands Atlas"
-  },
-  "metadata": {
-    "home": {
-      "title": "Hudson Bay Lowlands Atlas",
-      "description": "Explore and combine geographical data overlays. Analyze your area of interest and get custom insights."
-    }
-  }
+	"map": {
+		"title": "Discover the Hudson & James bay region"
+	},
+	"metadata": {
+		"home": {
+			"title": "Discover the Hudson & James bay region",
+			"description": "Explore and combine geographical data overlays. Analyze your area of interest and get custom insights."
+		}
+	}
 }

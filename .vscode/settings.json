@@ -1,5 +1,14 @@
 {
 	"biome.enabled": true,
+	  "biome.lsp.bin": {
+    "win32-x64": "./node_modules/.pnpm/@biomejs+biome@2.2.0/node_modules/@biomejs/cli-win32-x64/biome.exe",
+    "linux-x64": "./node_modules/.pnpm/@biomejs+biome@2.2.0/node_modules/@biomejs/cli-linux-x64/biome",
+    "linux-arm64": "./node_modules/.pnpm/@biomejs+biome@2.2.0/node_modules/@biomejs/cli-linux-arm64/biome",
+    "linux-x64-musl": "./node_modules/.pnpm/@biomejs+biome@2.2.0/node_modules/@biomejs/cli-linux-x64-musl/biome",
+    "linux-arm64-musl": "./node_modules/.pnpm/@biomejs+biome@2.2.0/node_modules/@biomejs/cli-linux-arm64-musl/biome",
+    "darwin-x64": "./node_modules/.pnpm/@biomejs+biome@2.2.0/node_modules/@biomejs/cli-darwin-x64/biome",
+    "darwin-arm64": "./node_modules/.pnpm/@biomejs+biome@2.2.0/node_modules/@biomejs/cli-darwin-arm64/biome"
+  },
 	"editor.formatOnSave": true,
 	"prettier.enable": false,
 	"eslint.enable": false,

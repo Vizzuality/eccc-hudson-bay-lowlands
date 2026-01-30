@@ -1,0 +1,26 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "tsc && tsc-alias",
+    "test:ci": "pnpm pretest && playwright test -c ./dist",
+    "test": "pnpm pretest && playwright test -c ./dist",
+    "test:watch": "pnpm pretest && concurrently \"tsc -w\" \"tsc-alias -w\" \"playwright test --ui -c ./dist\"",
+    "lint": "biome check",
+    "format": "biome format --write"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@biomejs/biome": "catalog:",
+    "@playwright/test": "1.58.0",
+    "@types/node": "catalog:",
+    "concurrently": "9.2.1",
+    "tsc-alias": "1.8.16",
+    "typescript": "catalog:"
+  },
+  "packageManager": "pnpm@10.28.2"
+}
