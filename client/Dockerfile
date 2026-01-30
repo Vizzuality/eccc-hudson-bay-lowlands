@@ -25,11 +25,12 @@ WORKDIR /app
 # Copy workspace configuration from root
 COPY pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# Copy client package.json
-COPY client/package.json ./client/
+# Copy all package.json files needed for the workspace
+COPY client/package.json ./client/package.json
+COPY e2e/package.json ./e2e/package.json
 
 # Install dependencies for the client workspace
-RUN pnpm install --frozen-lockfile --filter client
+RUN pnpm install --frozen-lockfile --filter client...
 
 # =============================================================================
 # Stage 3: Build the application
@@ -38,13 +39,18 @@ FROM base AS builder
 
 WORKDIR /app
 
-# Copy dependencies from deps stage
-COPY --from=deps /app/node_modules ./node_modules
-
 # Copy workspace configuration
 COPY --from=deps /app/pnpm-lock.yaml /app/pnpm-workspace.yaml ./
 
-# Copy client source code
+# Copy dependencies from deps stage (both root and client node_modules)
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/client/node_modules ./client/node_modules
+
+# Copy root tsconfig.json (extended by client/tsconfig.json)
+COPY tsconfig.json ./
+
+# Copy client package.json and source code
+COPY client/package.json ./client/package.json
 COPY client ./client
 
 # Build-time environment variables (NEXT_PUBLIC_* are embedded in the client bundle)
