@@ -22,14 +22,10 @@ RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
-# Copy workspace configuration from root
 COPY pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# Copy all package.json files needed for the workspace
 COPY client/package.json ./client/package.json
-COPY e2e/package.json ./e2e/package.json
 
-# Install dependencies for the client workspace
 RUN pnpm install --frozen-lockfile --filter client...
 
 # =============================================================================
