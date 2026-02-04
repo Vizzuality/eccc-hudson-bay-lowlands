@@ -1,4 +1,7 @@
+import path from "node:path";
 import { defineConfig, devices } from "@playwright/test";
+
+const projectRoot = path.resolve(process.cwd(), "..");
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -34,6 +37,14 @@ export default defineConfig({
 
 	webServer: [
 		{
+			command: "uv run uvicorn main:app --host 0.0.0.0 --port 8000",
+			url: "http://localhost:8000",
+			reuseExistingServer: !process.env.CI,
+			timeout: 120000,
+			cwd: path.join(projectRoot, "api"),
+			stderr: "pipe",
+		},
+		{
 			command: "pnpm start:e2e",
 			url: "http://localhost:3000",
 			reuseExistingServer: !process.env.CI,
@@ -41,8 +52,8 @@ export default defineConfig({
 				NEXT_PUBLIC_API_URL: "http://localhost:8000",
 			},
 			timeout: 120000,
-			cwd: "../../client",
-			stderr: "ignore",
+			cwd: path.join(projectRoot, "client"),
+			stderr: "pipe",
 		},
 	],
 });
