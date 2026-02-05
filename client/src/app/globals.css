@@ -116,7 +116,8 @@
 }
 
 @theme {
-  --font-sofia-sans: "Sofia Sans", "Sofia Sans Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-sofia-sans:
+    "Sofia Sans", "Sofia Sans Fallback", ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -125,5 +126,11 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .mapboxgl-canvas {
+    border-top-left-radius: var(--radius-3xl);
   }
 }
