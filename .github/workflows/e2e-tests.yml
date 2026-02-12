@@ -83,9 +83,9 @@ jobs:
         working-directory: .
         run: pnpm install
 
-      - name: Install Chromium browser
+      - name: Install browsers
         working-directory: e2e
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps
 
       - name: Run e2e tests
         working-directory: e2e
