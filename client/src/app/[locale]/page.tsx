@@ -20,7 +20,7 @@ export async function generateMetadata({
 export default function Home() {
   const t = useTranslations("map");
   return (
-    <main className="h-screen">
+    <main className="h-screen flex flex-col">
       <TopBar />
       <section className="grid grid-cols-3 h-full">
         <aside className="col-span-1 px-6">

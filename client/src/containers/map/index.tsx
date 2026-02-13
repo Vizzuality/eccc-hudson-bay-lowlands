@@ -3,6 +3,9 @@
 import { useState } from "react";
 import type { MapProps } from "react-map-gl/mapbox";
 import MapBoxMap from "react-map-gl/mapbox";
+import { Controls } from "@/containers/map/controls";
+import SettingsControl from "@/containers/map/controls/settings";
+import ZoomControl from "@/containers/map/controls/zoom";
 import { env } from "@/env";
 import { cn } from "@/lib/utils";
 
@@ -35,6 +38,12 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
         {...props}
       >
         {loaded && children}
+        <Controls>
+          <ZoomControl />
+          <SettingsControl>
+            <div>Settings</div>
+          </SettingsControl>
+        </Controls>
       </MapBoxMap>
     </div>
   );
