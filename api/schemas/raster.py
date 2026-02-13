@@ -15,7 +15,7 @@ class RasterBase(BaseModel):
 class RasterCreate(RasterBase):
     """Schema for creating a new raster."""
 
-    pass
+    location_id: int | None = None
 
 
 class RasterResponse(RasterBase):
@@ -24,6 +24,7 @@ class RasterResponse(RasterBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    location_id: int | None = None
 
 
 class PaginatedRasterResponse(BaseModel):

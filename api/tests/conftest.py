@@ -14,6 +14,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pytest
 from fastapi.testclient import TestClient
+from geoalchemy2.shape import from_shape
+from shapely.geometry import shape as shapely_shape
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -21,7 +23,7 @@ from config import get_settings
 from db.base import Base
 from db.database import get_db
 from main import app
-from models import Raster
+from models import Location, Raster
 
 settings = get_settings()
 
@@ -112,3 +114,78 @@ def sample_rasters(db_session: Session) -> Generator[list[Raster], None, None]:
         db_session.refresh(raster)
 
     yield rasters
+
+
+@pytest.fixture
+def sample_geometry() -> dict:
+    """Small GeoJSON Polygon in EPSG:4326 (~70 sq km, under 1000 limit)."""
+    return {
+        "type": "Polygon",
+        "coordinates": [
+            [
+                [-85.0, 53.0],
+                [-84.9, 53.0],
+                [-84.9, 53.1],
+                [-85.0, 53.1],
+                [-85.0, 53.0],
+            ]
+        ],
+    }
+
+
+@pytest.fixture
+def sample_location(db_session: Session, sample_geometry: dict) -> Generator[Location, None, None]:
+    """Create a single location in the database.
+
+    Creates a test location with a small polygon geometry for single-record tests.
+    The location is automatically cleaned up after the test via transaction rollback.
+    """
+    geom = shapely_shape(sample_geometry)
+    wkb = from_shape(geom, srid=4326)
+
+    location = Location(
+        name="Test Location",
+        geometry=wkb,
+        bounding_box=list(geom.bounds),
+        area_sq_km=70.0,
+    )
+    db_session.add(location)
+    db_session.commit()
+    db_session.refresh(location)
+    yield location
+
+
+@pytest.fixture
+def sample_location_with_rasters(db_session: Session, sample_geometry: dict) -> Generator[Location, None, None]:
+    """Create a location with associated rasters in the database.
+
+    Creates a location and 3 rasters linked to it for relationship testing.
+    All records are automatically cleaned up after the test via transaction rollback.
+    """
+    geom = shapely_shape(sample_geometry)
+    wkb = from_shape(geom, srid=4326)
+
+    location = Location(
+        name="Location With Rasters",
+        geometry=wkb,
+        bounding_box=list(geom.bounds),
+        area_sq_km=70.0,
+    )
+    db_session.add(location)
+    db_session.commit()
+    db_session.refresh(location)
+
+    for i in range(1, 4):
+        raster = Raster(
+            name=f"Location Raster {i}",
+            crs="EPSG:4326",
+            path=f"/data/location_raster_{i}.tif",
+            location_id=location.id,
+        )
+        db_session.add(raster)
+
+    db_session.commit()
+
+    # Refresh to load relationships
+    db_session.refresh(location)
+    yield location
