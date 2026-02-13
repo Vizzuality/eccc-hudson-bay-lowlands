@@ -237,6 +237,7 @@ wheels = [
 standard = [
     { name = "fastapi-cloud-cli" },
     { name = "uvicorn" },
+    { name = "uvicorn", extra = "standard" },
 ]
 
 [[distribution]]

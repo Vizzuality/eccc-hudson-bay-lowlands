@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM base AS builder
 
 # Install uv using official installer
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.10.2 /uv /usr/local/bin/uv
 
 # Set working directory
 WORKDIR /app
@@ -32,7 +32,7 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 
 # Install dependencies with frozen lockfile
-RUN uv sync --frozen --no-dev
+RUN uv sync --frozen --no-dev --no-install-project
 
 # =============================================================================
 # Stage 3: Runtime - minimal production image
