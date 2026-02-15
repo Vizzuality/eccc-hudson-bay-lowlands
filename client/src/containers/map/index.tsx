@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { MapProps } from "react-map-gl/mapbox";
 import MapBoxMap from "react-map-gl/mapbox";
+import AnalyzeButton from "@/containers/map/analyze-button";
 import { Controls } from "@/containers/map/controls";
 import SettingsControl from "@/containers/map/controls/settings";
 import ZoomControl from "@/containers/map/controls/zoom";
@@ -16,37 +17,38 @@ const defaultLongitude = (defaultBbox[0] + defaultBbox[2]) / 2;
 const defaultLatitude = (defaultBbox[1] + defaultBbox[3]) / 2;
 
 type MapContainerProps = {
-  className?: HTMLDivElement["className"];
+	className?: HTMLDivElement["className"];
 } & MapProps;
 
 const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
-  const [loaded, setLoaded] = useState<boolean>(false);
+	const [loaded, setLoaded] = useState<boolean>(false);
 
-  return (
-    <div className={cn("relative h-full w-full", className)}>
-      <MapBoxMap
-        mapboxAccessToken={env.NEXT_PUBLIC_MAPBOX_API_TOKEN}
-        style={{ width: "100%", height: "100%", borderRadius: "inherit" }}
-        mapStyle="mapbox://styles/ecc-design/cmk2eevpe00k801s91cva9417"
-        projection="mercator"
-        initialViewState={{
-          longitude: defaultLongitude,
-          latitude: defaultLatitude,
-          zoom: defaultZoom,
-        }}
-        onLoad={() => setLoaded(true)}
-        {...props}
-      >
-        {loaded && children}
-        <Controls>
-          <ZoomControl />
-          <SettingsControl>
-            <div>Settings</div>
-          </SettingsControl>
-        </Controls>
-      </MapBoxMap>
-    </div>
-  );
+	return (
+		<div className={cn("relative h-full w-full", className)}>
+			<MapBoxMap
+				mapboxAccessToken={env.NEXT_PUBLIC_MAPBOX_API_TOKEN}
+				style={{ width: "100%", height: "100%", borderRadius: "inherit" }}
+				mapStyle="mapbox://styles/ecc-design/cmk2eevpe00k801s91cva9417"
+				projection="mercator"
+				initialViewState={{
+					longitude: defaultLongitude,
+					latitude: defaultLatitude,
+					zoom: defaultZoom,
+				}}
+				onLoad={() => setLoaded(true)}
+				{...props}
+			>
+				<AnalyzeButton />
+				{loaded && children}
+				<Controls>
+					<ZoomControl />
+					<SettingsControl>
+						<div>Settings</div>
+					</SettingsControl>
+				</Controls>
+			</MapBoxMap>
+		</div>
+	);
 };
 
 export default MapContainer;
