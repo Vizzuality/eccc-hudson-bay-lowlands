@@ -49,7 +49,10 @@ export default defineConfig({
 			url: "http://localhost:3000",
 			reuseExistingServer: !process.env.CI,
 			env: {
-				NEXT_PUBLIC_API_URL: "http://localhost:8000",
+				NEXT_PUBLIC_API_URL:
+					process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000",
+				NEXT_PUBLIC_MAPBOX_API_TOKEN:
+					process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN ?? "",
 			},
 			timeout: 120000,
 			cwd: path.join(projectRoot, "client"),
