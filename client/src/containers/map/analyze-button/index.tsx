@@ -5,27 +5,26 @@ import MainButton from "@/containers/map/analyze-button/main-button";
 import UploadBar from "@/containers/map/analyze-button/upload-bar";
 
 const AnalyzeButton = () => {
-	const { mapStatus, setMapStatus } = useMapStatus();
-	const popoverOpen = mapStatus === MapStatus.upload;
+  const { mapStatus, setMapStatus } = useMapStatus();
+  const popoverOpen = mapStatus === MapStatus.upload;
 
-	return (
-		<div className="absolute top-4 left-4">
-			<Popover
-				open={popoverOpen}
-				onOpenChange={(open) => {
-					console.log(open);
-					if (mapStatus === MapStatus.analysis) return;
-					setMapStatus(open ? MapStatus.upload : MapStatus.default);
-				}}
-			>
-				<Tooltip>
-					<MainButton />
+  return (
+    <div className="absolute top-4 left-4">
+      <Popover
+        open={popoverOpen}
+        onOpenChange={(open) => {
+          if (mapStatus === MapStatus.analysis) return;
+          setMapStatus(open ? MapStatus.upload : MapStatus.default);
+        }}
+      >
+        <Tooltip>
+          <MainButton />
 
-					<UploadBar />
-				</Tooltip>
-			</Popover>
-		</div>
-	);
+          <UploadBar />
+        </Tooltip>
+      </Popover>
+    </div>
+  );
 };
 
 export default AnalyzeButton;
