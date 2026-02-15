@@ -1,14 +1,35 @@
-import { parseAsStringEnum, useQueryState } from "nuqs";
+import { parseAsBoolean, parseAsStringEnum, useQueryState } from "nuqs";
 
-enum MapStatus {
-  default = "default",
-  upload = "upload",
-  analysis = "analysis",
+export enum MapStatus {
+	default = "default",
+	upload = "upload",
+	analysis = "analysis",
 }
 
 export function useMapStatus() {
-  return useQueryState(
-    "mapStatus",
-    parseAsStringEnum(Object.values(MapStatus)).withDefault(MapStatus.default),
-  );
+	const [mapStatus, setMapStatus] = useQueryState(
+		"mapStatus",
+		parseAsStringEnum(Object.values(MapStatus)).withDefault(MapStatus.default),
+	);
+
+	return { mapStatus, setMapStatus };
+}
+
+// TODO: Probably should be a shape object
+export function useMapShape() {
+	const [mapShape, setMapShape] = useQueryState(
+		"mapShape",
+		parseAsBoolean.withDefault(false),
+	);
+
+	return { mapShape, setMapShape };
+}
+
+export function useMapAnalysis() {
+	const [datasets, setDatasets] = useQueryState(
+		"datasets",
+		parseAsBoolean.withDefault(false),
+	);
+
+	return { datasets, setDatasets };
 }
