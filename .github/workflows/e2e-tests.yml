@@ -39,6 +39,7 @@ jobs:
       DB_USERNAME: eccc
       DB_PASSWORD: eccc
       DB_NAME: eccc_db_test
+      NEXT_PUBLIC_MAPBOX_API_TOKEN: ${{ vars.NEXT_PUBLIC_MAPBOX_API_TOKEN }}
 
     steps:
       - name: Checkout code
