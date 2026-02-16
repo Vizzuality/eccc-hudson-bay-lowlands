@@ -15,6 +15,7 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_API_URL: type("string"),
     NEXT_PUBLIC_MAPBOX_API_TOKEN: type("string"),
+    NEXT_PUBLIC_E2E: type("string | undefined"),
   },
   /*
    * Due to how Next.js bundles environment variables on Edge and Client,
@@ -25,6 +26,7 @@ export const env = createEnv({
   runtimeEnv: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_MAPBOX_API_TOKEN: process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN,
+    NEXT_PUBLIC_E2E: process.env.NEXT_PUBLIC_E2E,
   },
   /*
    * Skip validation during build time to avoid errors when environment variables

@@ -45,10 +45,11 @@ export default defineConfig({
 			stderr: "pipe",
 		},
 		{
-			command: "pnpm start:e2e",
+			command: "pnpm build:e2e && pnpm start:e2e",
 			url: "http://localhost:3000",
 			reuseExistingServer: !process.env.CI,
 			env: {
+				NEXT_PUBLIC_E2E: "1",
 				NEXT_PUBLIC_API_URL:
 					process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000",
 				NEXT_PUBLIC_MAPBOX_API_TOKEN:
