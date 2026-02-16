@@ -9,7 +9,7 @@ const AnalyzeButton = () => {
   const popoverOpen = mapStatus === MapStatus.upload;
 
   return (
-    <div className="absolute top-4 left-4">
+    <div className="absolute top-6 left-6">
       <Popover
         open={popoverOpen}
         onOpenChange={(open) => {
