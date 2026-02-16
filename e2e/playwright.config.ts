@@ -45,7 +45,7 @@ export default defineConfig({
 			stderr: "pipe",
 		},
 		{
-			command: "pnpm build:e2e && pnpm start:e2e",
+			command: "pnpm start:e2e",
 			url: "http://localhost:3000",
 			reuseExistingServer: !process.env.CI,
 			env: {
