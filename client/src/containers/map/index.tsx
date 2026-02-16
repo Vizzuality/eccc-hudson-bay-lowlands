@@ -36,6 +36,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
           zoom: defaultZoom,
         }}
         onLoad={() => setLoaded(true)}
+        testMode={!!process.env.NEXT_PUBLIC_E2E}
         {...props}
       >
         <AnalyzeButton />

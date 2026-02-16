@@ -1,14 +1,10 @@
 import { expect, test } from "@playwright/test";
 
-test("Page has correct title", async ({ page }) => {
-	await page.goto("http://localhost:3000");
-
-	await expect(page).toHaveTitle(/Discover the Hudson & James bay region/);
-});
-
 test.describe("Analyze", () => {
 	test("User can analyze data by uploading a file", async ({ page }) => {
 		await page.goto("http://localhost:3000");
+
+		await expect(page).toHaveTitle(/Discover the Hudson & James bay region/);
 
 		await page.getByRole("button", { name: "Analyze area" }).click();
 
