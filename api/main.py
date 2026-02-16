@@ -8,8 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from config import get_settings
 from db.base import Base
 from db.database import engine
-from models import Raster  # noqa: F401  # Import models to register with Base metadata
-from routers import cog, health, rasters
+from models import Dataset, Layer  # noqa: F401  # Import models to register with Base metadata
+from routers import cog, health, layers
 
 settings = get_settings()
 
@@ -33,8 +33,8 @@ tags_metadata = [
         "description": "Cloud Optimized GeoTIFF (COG) tile serving endpoints powered by TiTiler.",
     },
     {
-        "name": "Rasters",
-        "description": "CRUD endpoints for managing raster metadata.",
+        "name": "Layers",
+        "description": "CRUD endpoints for managing geospatial layer metadata.",
     },
 ]
 
@@ -68,7 +68,7 @@ app.add_middleware(
 # Include routers
 app.include_router(health.router)
 app.include_router(cog.router, prefix="/cog", tags=["COG"])
-app.include_router(rasters.router, prefix="/rasters", tags=["Rasters"])
+app.include_router(layers.router, prefix="/layers", tags=["Layers"])
 
 
 @app.get(
@@ -86,5 +86,5 @@ def root():
         "redoc": "/redoc",
         "health": "/health",
         "cog": "/cog",
-        "rasters": "/rasters",
+        "layers": "/layers",
     }

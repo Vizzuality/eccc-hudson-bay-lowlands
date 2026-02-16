@@ -16,39 +16,98 @@ Schema reference and patterns for the ECCC Hudson Bay Lowlands PostgreSQL databa
 
 ## Tables
 
-### `locations`
+### `layers`
 
-Stores named geographic areas with PostGIS-backed geometry.
-
-| Column | Type | Nullable | Description |
-|--------|------|----------|-------------|
-| `id` | `INTEGER` (PK, auto-increment) | No | Primary key |
-| `name` | `VARCHAR` (indexed) | No | Location name |
-| `geometry` | `Geometry(srid=4326)` | No | PostGIS geometry column (WGS84). Accepts Polygon/MultiPolygon. |
-| `bounding_box` | `JSON` | Yes | Auto-computed bounding box (`{minx, miny, maxx, maxy}`) |
-| `area_sq_km` | `FLOAT` | Yes | Auto-computed area in square kilometers (via EPSG:6933) |
-| `created_at` | `DATETIME` | No | Creation timestamp |
-
-**ORM model**: `api/models/location.py`
-**Pydantic schema**: `api/schemas/location.py`
-
-**Relationships**: One-to-many with `rasters` via `location_id` FK. Cascade delete enabled.
-
-### `rasters`
-
-Stores metadata about Cloud Optimized GeoTIFF (COG) raster datasets.
+Stores metadata about geospatial layers (raster, vector, tile, etc.) with internationalized metadata.
 
 | Column | Type | Nullable | Description |
 |--------|------|----------|-------------|
 | `id` | `INTEGER` (PK, auto-increment) | No | Primary key |
-| `name` | `VARCHAR` | No | Raster name (indexed: `ix_rasters_name`) |
-| `crs` | `VARCHAR` | No | Coordinate reference system (e.g., `EPSG:4326`) |
-| `path` | `VARCHAR` | No | Path or URL to the COG file |
-| `description` | `VARCHAR` | Yes | Optional description |
-| `location_id` | `INTEGER` (FK, indexed) | Yes | Foreign key to `locations.id` |
+| `type` | `VARCHAR` | No | Layer type (e.g., `"raster"`, `"vector"`, `"tile"`, `"wms"`) |
+| `path` | `VARCHAR` | No | Path or URL to the geospatial data (e.g., S3 path to COG) |
+| `units` | `VARCHAR` | Yes | Data units (e.g., `"celsius"`, `"percent"`, `"meters"`) |
+| `legend` | `JSON` | Yes | Legend configuration (arbitrary structure for client rendering) |
+| `metadata` | `JSON` | No | i18n metadata with structure `{en: {title, description}, fr: {title, description}}` |
+| `dataset_id` | `INTEGER` (FK, indexed) | Yes | Foreign key to `datasets.id` |
 
-**ORM model**: `api/models/raster.py`
-**Pydantic schema**: `api/schemas/raster.py`
+**ORM model**: `api/models/layer.py`
+**Pydantic schema**: `api/schemas/layer.py`
+**i18n types**: `api/schemas/i18n.py` (LayerLocale, LayerMetadata)
+
+**Relationships**: Many-to-one with `datasets` via `dataset_id` FK (nullable). Layer optionally belongs to a Dataset.
+
+### `datasets`
+
+Groups related layers with shared i18n metadata and governance.
+
+| Column | Type | Nullable | Description |
+|--------|------|----------|-------------|
+| `id` | `INTEGER` (PK, auto-increment) | No | Primary key |
+| `metadata` | `JSON` | No | i18n metadata with structure `{en: {title, description, citations, source}, fr: {title, description, citations, source}}` |
+
+**ORM model**: `api/models/dataset.py`
+**Pydantic schema**: `api/schemas/dataset.py`
+**i18n types**: `api/schemas/i18n.py` (DatasetLocale, DatasetMetadata)
+
+**Relationships**: One-to-many with `layers` via `dataset_id` FK. Cascade delete enabled (deleting a Dataset deletes all child Layers).
+
+### Removed Tables
+
+**`locations`** (removed 2026-02-17)
+- Stored named geographic areas; not used in current data model
+- Functionality replaced by Dataset grouping mechanism
+
+**`rasters`** (renamed to `layers` 2026-02-17)
+- Replaced by Layer model with enhanced schema
+- All columns retained; `name` and `description` now in JSONB `metadata` field
+
+## Internationalization (i18n) Strategy
+
+### JSONB Metadata Columns
+
+Layer and Dataset metadata is stored as JSONB with top-level language keys:
+
+```json
+{
+  "en": {
+    "title": "Hudson Bay Temperature",
+    "description": "Average daily temperature observations..."
+  },
+  "fr": {
+    "title": "Température de la baie d'Hudson",
+    "description": "Observations de température quotidienne moyenne..."
+  }
+}
+```
+
+**Why JSONB instead of a separate translations table?**
+- Single metadata object per entity (no JOIN required for translations)
+- Flexible (easy to add more languages without schema changes)
+- Type-safe (Pydantic validation at request/response boundary)
+- Efficient (no foreign key lookups)
+
+### Pydantic Validation
+
+i18n types defined in `api/schemas/i18n.py`:
+
+```python
+class LayerLocale(BaseModel):
+    title: str
+    description: str
+
+class LayerMetadata(BaseModel):
+    en: LayerLocale
+    fr: LayerLocale
+```
+
+Validation enforces presence of both `en` and `fr` keys on create/update. Legacy data in the database may not match the schema exactly (no validation on read).
+
+### Future Migrations
+
+If translations grow in complexity (versioning, review workflows, many languages), migrate to a separate `layer_translations` table with:
+- `id`, `layer_id` (FK), `language`, `title`, `description`, `metadata` (JSONB)
+
+For now, JSONB is simpler and sufficient for the 2-language requirement.
 
 ## Spatial Data Patterns
 
@@ -154,16 +213,28 @@ Tests use SQLAlchemy transaction rollback for isolation. Each test runs within a
 All models use SQLAlchemy 2.0+ syntax with type annotations:
 
 ```python
-from sqlalchemy import Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import Integer, String, JSON, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from db.base import Base
 
-class Raster(Base):
-    __tablename__ = "rasters"
+class Layer(Base):
+    __tablename__ = "layers"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(String, nullable=False)
+    type: Mapped[str] = mapped_column(String, nullable=False)
+    path: Mapped[str] = mapped_column(String, nullable=False)
+    metadata_: Mapped[dict] = mapped_column("metadata", JSON, nullable=False)
+    dataset_id: Mapped[int | None] = mapped_column(ForeignKey("datasets.id"), nullable=True)
+
+    dataset: Mapped["Dataset | None"] = relationship(back_populates="layers")
 ```
+
+**Key patterns**:
+- `Mapped` type hints for all columns (SQLAlchemy 2.0+ modern syntax)
+- `metadata_` Python attribute mapped to `"metadata"` DB column (avoids SQLAlchemy `Base.metadata` collision)
+- Use `relationship()` with `back_populates` for bidirectional consistency
+- Foreign key constraints enable referential integrity
+- Type hints reflect database constraints (`str | None` for nullable)
 
 ### Query patterns
 

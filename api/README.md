@@ -1,6 +1,6 @@
 # ECCC Hudson Bay Lowlands API
 
-FastAPI backend for the Hudson Bay Lowlands geospatial application. Provides COG tile serving via TiTiler, raster and location management with PostGIS geometry storage, geometry validation, and a health check endpoint with database connectivity verification.
+FastAPI backend for the Hudson Bay Lowlands geospatial application. Provides COG tile serving via TiTiler, layer and dataset management with multilingual JSONB metadata, and a health check endpoint with database connectivity verification.
 
 ## Requirements
 
@@ -58,26 +58,19 @@ uv run fastapi run main.py
 | `GET /cog/tiles/{tileMatrixSetId}/{z}/{x}/{y}?url={cog_url}` | Map tiles |
 | `GET /cog/{tileMatrixSetId}/tilejson.json?url={cog_url}` | TileJSON format |
 
-### Raster Management
+### Layer Management
 
 | Endpoint | Description |
 |----------|-------------|
-| `GET /rasters?page=1&size=10&location_id=1` | Paginated list of rasters (optional location filter) |
-| `POST /rasters` | Create a new raster entry with optional `location_id` (returns 201) |
+| `GET /layers?offset=0&limit=10` | Paginated list of layers |
+| `GET /layers/{id}` | Retrieve a specific layer |
+| `POST /layers` | Create a new layer with i18n metadata (en/fr) |
 
-### Location Management
-
-| Endpoint | Description |
-|----------|-------------|
-| `GET /locations?page=1&size=10` | Paginated list of locations |
-| `GET /locations/{id}` | Retrieve location by ID with nested rasters |
-| `POST /locations` | Create location with GeoJSON geometry (Polygon/MultiPolygon), CRS, area validation |
-
-### Geometry Validation
+### Dataset Management
 
 | Endpoint | Description |
 |----------|-------------|
-| `POST /geometry` | Validate GeoJSON geometry (coordinate bounds, area limit, type check) |
+| (Coming soon) | Create, list, and manage datasets that group related layers |
 
 For full request/response schemas, see the interactive docs at `/docs`.
 
@@ -110,29 +103,24 @@ api/
 |   |-- base.py             # SQLAlchemy declarative base
 |   +-- database.py         # Engine, SessionLocal, get_db() dependency
 |-- models/
-|   |-- __init__.py         # Model exports (Location, Raster)
-|   |-- location.py         # Location ORM model (PostGIS geometry)
-|   +-- raster.py           # Raster ORM model (with location FK)
+|   |-- __init__.py         # Model exports (Layer, Dataset)
+|   |-- layer.py            # Layer ORM model (with i18n metadata)
+|   +-- dataset.py          # Dataset ORM model (groups layers)
 |-- schemas/
-|   |-- __init__.py
-|   |-- location.py         # Location request/response schemas
-|   |-- geometry.py         # Geometry validation response schema
-|   +-- raster.py           # Raster request/response schemas
+|   |-- __init__.py         # Schema exports
+|   |-- i18n.py             # Shared i18n Pydantic types (LayerLocale, DatasetLocale, etc.)
+|   |-- layer.py            # Layer request/response schemas
+|   +-- dataset.py          # Dataset request/response schemas
 |-- routers/
 |   |-- health.py           # Health check endpoint
-|   |-- cog.py              # TiTiler COG router
-|   |-- rasters.py          # Raster CRUD endpoints
-|   |-- locations.py        # Location CRUD endpoints
-|   +-- geometry.py         # Geometry validation endpoint
-|-- services/
-|   +-- geometry.py         # CRS transforms, area computation, bbox
+|   |-- cog.py              # TiTiler COG tile serving
+|   +-- layers.py           # Layer CRUD endpoints
 |-- tests/
 |   |-- conftest.py         # Test fixtures and configuration
 |   |-- test_health.py      # Health endpoint tests (4 tests)
 |   |-- test_cog.py         # COG endpoint tests (3 tests)
-|   |-- test_rasters.py     # Raster CRUD tests (24 tests)
-|   |-- test_locations.py   # Location CRUD tests (30 tests)
-|   +-- test_geometry.py    # Geometry validation tests (5 tests)
+|   |-- test_layers.py      # Layer CRUD tests (25 tests)
+|   +-- test_datasets.py    # Dataset tests (8 tests)
 |-- Dockerfile              # Multi-stage Python build
 +-- pyproject.toml          # Dependencies and tool configuration
 ```

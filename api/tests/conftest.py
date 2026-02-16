@@ -21,7 +21,7 @@ from config import get_settings
 from db.base import Base
 from db.database import get_db
 from main import app
-from models import Raster
+from models import Dataset, Layer
 
 settings = get_settings()
 
@@ -68,47 +68,98 @@ def client(db_session):
     app.dependency_overrides.clear()
 
 
-@pytest.fixture
-def sample_raster(db_session: Session) -> Generator[Raster, None, None]:
-    """Create a single raster in the database.
+def _layer_metadata(title_en: str = "Test Layer", title_fr: str = "Couche de test") -> dict:
+    """Build a valid i18n metadata dict for a layer."""
+    return {
+        "en": {"title": title_en, "description": f"Description for {title_en}"},
+        "fr": {"title": title_fr, "description": f"Description pour {title_fr}"},
+    }
 
-    Creates a test raster with standard attributes for single-record tests.
-    The raster is automatically cleaned up after the test via transaction rollback.
+
+def _dataset_metadata(title_en: str = "Test Dataset", title_fr: str = "Jeu de test") -> dict:
+    """Build a valid i18n metadata dict for a dataset."""
+    return {
+        "en": {"title": title_en, "description": f"Description for {title_en}"},
+        "fr": {"title": title_fr, "description": f"Description pour {title_fr}"},
+    }
+
+
+@pytest.fixture
+def sample_layer(db_session: Session) -> Generator[Layer, None, None]:
+    """Create a single layer in the database.
+
+    Creates a test layer with standard attributes for single-record tests.
+    The layer is automatically cleaned up after the test via transaction rollback.
     """
-    raster = Raster(
-        name="Test Raster",
-        crs="EPSG:4326",
-        path="/data/test_raster.tif",
-        description="A test raster for integration testing",
+    layer = Layer(
+        type="raster",
+        path="/data/test_layer.tif",
+        units="celsius",
+        metadata_=_layer_metadata(),
     )
-    db_session.add(raster)
+    db_session.add(layer)
     db_session.commit()
-    db_session.refresh(raster)
-    yield raster
+    db_session.refresh(layer)
+    yield layer
 
 
 @pytest.fixture
-def sample_rasters(db_session: Session) -> Generator[list[Raster], None, None]:
-    """Create multiple rasters in the database for pagination testing.
+def sample_layers(db_session: Session) -> Generator[list[Layer], None, None]:
+    """Create multiple layers in the database for pagination testing.
 
-    Creates 15 rasters with varying attributes to test pagination scenarios.
-    The rasters are automatically cleaned up after the test via transaction rollback.
+    Creates 15 layers with varying attributes to test pagination scenarios.
+    The layers are automatically cleaned up after the test via transaction rollback.
     """
-    rasters = []
+    layers = []
     for i in range(1, 16):
-        raster = Raster(
-            name=f"Raster {i:02d}",
-            crs="EPSG:4326" if i % 2 == 0 else "EPSG:32618",
-            path=f"/data/raster_{i:02d}.tif",
-            description=f"Test raster number {i}" if i % 3 != 0 else None,
+        layer = Layer(
+            type="raster" if i % 2 == 0 else "vector",
+            path=f"/data/layer_{i:02d}.tif",
+            units="celsius" if i % 3 != 0 else None,
+            metadata_=_layer_metadata(title_en=f"Layer {i:02d}", title_fr=f"Couche {i:02d}"),
         )
-        rasters.append(raster)
+        layers.append(layer)
 
-    db_session.add_all(rasters)
+    db_session.add_all(layers)
     db_session.commit()
 
-    # Refresh all rasters to get their IDs
-    for raster in rasters:
-        db_session.refresh(raster)
+    for layer in layers:
+        db_session.refresh(layer)
 
-    yield rasters
+    yield layers
+
+
+@pytest.fixture
+def sample_dataset(db_session: Session) -> Generator[Dataset, None, None]:
+    """Create a single dataset in the database."""
+    dataset = Dataset(metadata_=_dataset_metadata())
+    db_session.add(dataset)
+    db_session.commit()
+    db_session.refresh(dataset)
+    yield dataset
+
+
+@pytest.fixture
+def sample_dataset_with_layers(db_session: Session) -> Generator[Dataset, None, None]:
+    """Create a dataset with associated layers."""
+    dataset = Dataset(metadata_=_dataset_metadata(title_en="Climate Data", title_fr="Donnees climatiques"))
+    db_session.add(dataset)
+    db_session.commit()
+    db_session.refresh(dataset)
+
+    layers = []
+    for i in range(1, 4):
+        layer = Layer(
+            type="raster",
+            path=f"/data/climate_{i}.tif",
+            units="celsius",
+            metadata_=_layer_metadata(title_en=f"Climate Layer {i}", title_fr=f"Couche climatique {i}"),
+            dataset_id=dataset.id,
+        )
+        layers.append(layer)
+
+    db_session.add_all(layers)
+    db_session.commit()
+    db_session.refresh(dataset)
+
+    yield dataset
