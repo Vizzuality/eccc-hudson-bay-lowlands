@@ -24,15 +24,17 @@ const CloseDialog: FC<{
       <DialogContent showCloseButton={false}>
         <DialogHeader>
           <DialogTitle>Leave current analysis?</DialogTitle>
-          <DialogDescription className="space-y-4">
-            <p>
-              Going back will clear your current analysis and return you to the
-              default view.
-            </p>
-            <p>
-              If you want to come back to this analysis later, you can save it
-              by copying the URL before leaving.
-            </p>
+          <DialogDescription className="space-y-4" asChild>
+            <div>
+              <p>
+                Going back will clear your current analysis and return you to
+                the default view.
+              </p>
+              <p>
+                If you want to come back to this analysis later, you can save it
+                by copying the URL before leaving.
+              </p>
+            </div>
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

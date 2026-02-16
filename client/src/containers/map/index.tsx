@@ -5,13 +5,14 @@ import type { MapProps } from "react-map-gl/mapbox";
 import MapBoxMap from "react-map-gl/mapbox";
 import AnalyzeButton from "@/containers/map/analyze-button";
 import { Controls } from "@/containers/map/controls";
+import SearchControl from "@/containers/map/controls/search";
 import SettingsControl from "@/containers/map/controls/settings";
 import ZoomControl from "@/containers/map/controls/zoom";
 import { env } from "@/env";
 import { cn } from "@/lib/utils";
 
-const defaultBbox = [-10, 35, 30, 70];
-const defaultZoom = 3;
+const defaultBbox = [-112, 50, -56, 64];
+const defaultZoom = 5;
 // Calculate center from bbox: [minLng, minLat, maxLng, maxLat]
 const defaultLongitude = (defaultBbox[0] + defaultBbox[2]) / 2;
 const defaultLatitude = (defaultBbox[1] + defaultBbox[3]) / 2;
@@ -42,6 +43,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
         <AnalyzeButton />
         {loaded && children}
         <Controls>
+          <SearchControl />
           <ZoomControl />
           <SettingsControl>
             <div>Settings</div>
