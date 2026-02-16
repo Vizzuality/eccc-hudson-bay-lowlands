@@ -6,7 +6,7 @@ import { routing } from "@/i18n/routing";
 import "@/app/globals.css";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ClientProviders } from "@/app/[locale]/providers";
-import "mapbox-gl/dist/mapbox-gl.css";
+// import "mapbox-gl/dist/mapbox-gl.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 const sofiaSans = Sofia_Sans({

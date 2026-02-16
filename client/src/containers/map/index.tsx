@@ -8,6 +8,7 @@ import { Controls } from "@/containers/map/controls";
 import SearchControl from "@/containers/map/controls/search";
 import SettingsControl from "@/containers/map/controls/settings";
 import ZoomControl from "@/containers/map/controls/zoom";
+import MapLegend from "@/containers/map/legend";
 import { env } from "@/env";
 import { cn } from "@/lib/utils";
 
@@ -49,6 +50,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
             <div>Settings</div>
           </SettingsControl>
         </Controls>
+        <MapLegend />
       </MapBoxMap>
     </div>
   );
