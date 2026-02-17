@@ -1,20 +1,13 @@
 """Layer SQLAlchemy model."""
 
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
-
-from sqlalchemy import JSON, ForeignKey, Integer, String
+from sqlalchemy import JSON, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from db.base import Base
 
-if TYPE_CHECKING:
-    from models.dataset import Dataset
-
 
 class Layer(Base):
-    """Layer model for storing geospatial layer metadata with i18n support."""
+    """Layer model for storing geospatial layer metadata."""
 
     __tablename__ = "layers"
 
@@ -24,6 +17,10 @@ class Layer(Base):
     units: Mapped[str | None] = mapped_column(String, nullable=True)
     legend: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     metadata_: Mapped[dict] = mapped_column("metadata", JSON, nullable=False)
-    dataset_id: Mapped[int | None] = mapped_column(ForeignKey("datasets.id"), nullable=True, index=True)
+    dataset_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("datasets.id"), nullable=True)
 
-    dataset: Mapped[Dataset | None] = relationship(back_populates="layers")
+    dataset: Mapped["Dataset"] = relationship(  # noqa: F821
+        "Dataset", back_populates="layers"
+    )
+
+    __table_args__ = (Index("ix_layers_dataset_id", "dataset_id"),)

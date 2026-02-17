@@ -16,98 +16,40 @@ Schema reference and patterns for the ECCC Hudson Bay Lowlands PostgreSQL databa
 
 ## Tables
 
-### `layers`
-
-Stores metadata about geospatial layers (raster, vector, tile, etc.) with internationalized metadata.
-
-| Column | Type | Nullable | Description |
-|--------|------|----------|-------------|
-| `id` | `INTEGER` (PK, auto-increment) | No | Primary key |
-| `type` | `VARCHAR` | No | Layer type (e.g., `"raster"`, `"vector"`, `"tile"`, `"wms"`) |
-| `path` | `VARCHAR` | No | Path or URL to the geospatial data (e.g., S3 path to COG) |
-| `units` | `VARCHAR` | Yes | Data units (e.g., `"celsius"`, `"percent"`, `"meters"`) |
-| `legend` | `JSON` | Yes | Legend configuration (arbitrary structure for client rendering) |
-| `metadata` | `JSON` | No | i18n metadata with structure `{en: {title, description}, fr: {title, description}}` |
-| `dataset_id` | `INTEGER` (FK, indexed) | Yes | Foreign key to `datasets.id` |
-
-**ORM model**: `api/models/layer.py`
-**Pydantic schema**: `api/schemas/layer.py`
-**i18n types**: `api/schemas/i18n.py` (LayerLocale, LayerMetadata)
-
-**Relationships**: Many-to-one with `datasets` via `dataset_id` FK (nullable). Layer optionally belongs to a Dataset.
-
 ### `datasets`
 
-Groups related layers with shared i18n metadata and governance.
+Groups related layers with shared i18n metadata. Supports cascade deletion.
 
 | Column | Type | Nullable | Description |
 |--------|------|----------|-------------|
 | `id` | `INTEGER` (PK, auto-increment) | No | Primary key |
-| `metadata` | `JSON` | No | i18n metadata with structure `{en: {title, description, citations, source}, fr: {title, description, citations, source}}` |
+| `metadata` | `JSON` | No | i18n metadata: `{en: {title, description, citations, source}, fr: {...}}` |
 
 **ORM model**: `api/models/dataset.py`
 **Pydantic schema**: `api/schemas/dataset.py`
-**i18n types**: `api/schemas/i18n.py` (DatasetLocale, DatasetMetadata)
 
-**Relationships**: One-to-many with `layers` via `dataset_id` FK. Cascade delete enabled (deleting a Dataset deletes all child Layers).
+**Relationships**: One-to-many with `layers` via `dataset_id` FK. Cascade delete enabled.
 
-### Removed Tables
+### `layers`
 
-**`locations`** (removed 2026-02-17)
-- Stored named geographic areas; not used in current data model
-- Functionality replaced by Dataset grouping mechanism
+Stores metadata about Cloud Optimized GeoTIFF (COG) and other geospatial layers with i18n support.
 
-**`rasters`** (renamed to `layers` 2026-02-17)
-- Replaced by Layer model with enhanced schema
-- All columns retained; `name` and `description` now in JSONB `metadata` field
+| Column | Type | Nullable | Description |
+|--------|------|----------|-------------|
+| `id` | `INTEGER` (PK, auto-increment) | No | Primary key |
+| `type` | `VARCHAR` | No | Layer type (e.g., `"raster"`, `"vector"`, `"tile"`) |
+| `path` | `VARCHAR` | No | Path or URL to the geospatial data (COG, vector file, WMS, etc.) |
+| `units` | `VARCHAR` | Yes | Data units (e.g., `"celsius"`, `"percent"`) |
+| `legend` | `JSON` | Yes | Legend configuration (arbitrary structure for UI rendering) |
+| `metadata` | `JSON` | No | i18n metadata: `{en: {title, description}, fr: {...}}` |
+| `dataset_id` | `INTEGER` (FK, indexed) | Yes | Foreign key to `datasets.id`; nullable to allow orphaned layers |
 
-## Internationalization (i18n) Strategy
+**ORM model**: `api/models/layer.py`
+**Pydantic schema**: `api/schemas/layer.py`
 
-### JSONB Metadata Columns
+**Relationships**: Many-to-one with `datasets` via `dataset_id` FK (optional).
 
-Layer and Dataset metadata is stored as JSONB with top-level language keys:
-
-```json
-{
-  "en": {
-    "title": "Hudson Bay Temperature",
-    "description": "Average daily temperature observations..."
-  },
-  "fr": {
-    "title": "Température de la baie d'Hudson",
-    "description": "Observations de température quotidienne moyenne..."
-  }
-}
-```
-
-**Why JSONB instead of a separate translations table?**
-- Single metadata object per entity (no JOIN required for translations)
-- Flexible (easy to add more languages without schema changes)
-- Type-safe (Pydantic validation at request/response boundary)
-- Efficient (no foreign key lookups)
-
-### Pydantic Validation
-
-i18n types defined in `api/schemas/i18n.py`:
-
-```python
-class LayerLocale(BaseModel):
-    title: str
-    description: str
-
-class LayerMetadata(BaseModel):
-    en: LayerLocale
-    fr: LayerLocale
-```
-
-Validation enforces presence of both `en` and `fr` keys on create/update. Legacy data in the database may not match the schema exactly (no validation on read).
-
-### Future Migrations
-
-If translations grow in complexity (versioning, review workflows, many languages), migrate to a separate `layer_translations` table with:
-- `id`, `layer_id` (FK), `language`, `title`, `description`, `metadata` (JSONB)
-
-For now, JSONB is simpler and sufficient for the 2-language requirement.
+**i18n Note**: The `metadata` column stores JSONB with language keys at the top level. Python ORM attribute is `metadata_` to avoid collision with SQLAlchemy's reserved `Base.metadata`.
 
 ## Spatial Data Patterns
 
@@ -217,40 +159,63 @@ from sqlalchemy import Integer, String, JSON, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from db.base import Base
 
+class Dataset(Base):
+    __tablename__ = "datasets"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    metadata_: Mapped[dict] = mapped_column("metadata", JSON, nullable=False)
+    layers: Mapped[list["Layer"]] = relationship(back_populates="dataset", cascade="all, delete-orphan")
+
 class Layer(Base):
     __tablename__ = "layers"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     type: Mapped[str] = mapped_column(String, nullable=False)
     path: Mapped[str] = mapped_column(String, nullable=False)
+    units: Mapped[str | None] = mapped_column(String, nullable=True)
+    legend: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     metadata_: Mapped[dict] = mapped_column("metadata", JSON, nullable=False)
-    dataset_id: Mapped[int | None] = mapped_column(ForeignKey("datasets.id"), nullable=True)
-
+    dataset_id: Mapped[int | None] = mapped_column(ForeignKey("datasets.id"), nullable=True, index=True)
     dataset: Mapped["Dataset | None"] = relationship(back_populates="layers")
 ```
 
-**Key patterns**:
-- `Mapped` type hints for all columns (SQLAlchemy 2.0+ modern syntax)
-- `metadata_` Python attribute mapped to `"metadata"` DB column (avoids SQLAlchemy `Base.metadata` collision)
-- Use `relationship()` with `back_populates` for bidirectional consistency
-- Foreign key constraints enable referential integrity
-- Type hints reflect database constraints (`str | None` for nullable)
+**Key design notes**:
+- `metadata_` Python attribute maps to `"metadata"` DB column (avoids SQLAlchemy `Base.metadata` collision)
+- Bidirectional relationships use `back_populates` for consistency
+- Cascade delete on Dataset ensures orphaned Layers are removed
+- `dataset_id` is indexed for fast FK lookups
 
 ### Query patterns
 
 The API uses the SQLAlchemy 2.0 `select()` API:
 
 ```python
-from sqlalchemy import select, func
-from models.raster import Raster
+from sqlalchemy import select, func, or_
+from models.layer import Layer
+from models.dataset import Dataset
 
-# Count
-total = db.scalar(select(func.count()).select_from(Raster))
+# Count total
+total = db.scalar(select(func.count()).select_from(Layer))
 
-# Paginated list
-stmt = select(Raster).offset(offset).limit(size)
-rasters = db.scalars(stmt).all()
+# Paginated list with optional search (case-insensitive title search in en+fr metadata)
+stmt = select(Layer).offset(offset).limit(limit)
+if search:
+    search_pattern = f"%{search}%"
+    stmt = stmt.where(
+        or_(
+            Layer.metadata_["en"]["title"].astext.ilike(search_pattern),
+            Layer.metadata_["fr"]["title"].astext.ilike(search_pattern),
+        )
+    )
+layers = db.scalars(stmt).all()
+
+# Get with nested relationship (selectinload for eager loading)
+from sqlalchemy.orm import selectinload
+stmt = select(Dataset).options(selectinload(Dataset.layers)).where(Dataset.id == dataset_id)
+dataset = db.scalar(stmt)
 ```
+
+**Search pattern note**: JSONB searches use `.astext` to convert JSON values to text, then `.ilike()` for case-insensitive pattern matching. This works for both en and fr title fields.
 
 ### Session management
 

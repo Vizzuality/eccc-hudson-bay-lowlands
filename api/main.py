@@ -9,7 +9,7 @@ from config import get_settings
 from db.base import Base
 from db.database import engine
 from models import Dataset, Layer  # noqa: F401  # Import models to register with Base metadata
-from routers import cog, health, layers
+from routers import cog, datasets, health, layers
 
 settings = get_settings()
 
@@ -34,7 +34,11 @@ tags_metadata = [
     },
     {
         "name": "Layers",
-        "description": "CRUD endpoints for managing geospatial layer metadata.",
+        "description": "Read-only endpoints for geospatial layer metadata.",
+    },
+    {
+        "name": "Datasets",
+        "description": "Read-only endpoints for dataset metadata and related layers.",
     },
 ]
 
@@ -69,6 +73,7 @@ app.add_middleware(
 app.include_router(health.router)
 app.include_router(cog.router, prefix="/cog", tags=["COG"])
 app.include_router(layers.router, prefix="/layers", tags=["Layers"])
+app.include_router(datasets.router, prefix="/datasets", tags=["Datasets"])
 
 
 @app.get(
@@ -87,4 +92,5 @@ def root():
         "health": "/health",
         "cog": "/cog",
         "layers": "/layers",
+        "datasets": "/datasets",
     }

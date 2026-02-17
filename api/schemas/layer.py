@@ -1,35 +1,12 @@
 """Pydantic schemas for Layer model."""
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 from schemas.i18n import LayerMetadata
 
 
-class LayerBase(BaseModel):
-    """Base schema with common layer fields."""
-
-    type: str
-    path: str
-    units: str | None = None
-    legend: dict | None = None
-    metadata: LayerMetadata
-    dataset_id: int | None = None
-
-
-class LayerCreate(LayerBase):
-    """Schema for creating a new layer."""
-
-    pass
-
-
-class LayerResponse(BaseModel):
-    """Schema for layer response with id.
-
-    Uses a custom validator to map the ORM `metadata_` attribute
-    to the `metadata` field in the response.
-    """
-
-    model_config = ConfigDict(from_attributes=True)
+class LayerSchema(BaseModel):
+    """Response schema for a layer."""
 
     id: int
     type: str
@@ -40,8 +17,8 @@ class LayerResponse(BaseModel):
     dataset_id: int | None = None
 
     @classmethod
-    def from_orm_layer(cls, layer) -> "LayerResponse":
-        """Create a LayerResponse from an ORM Layer instance."""
+    def from_orm_layer(cls, layer) -> "LayerSchema":
+        """Convert an ORM Layer to a LayerSchema."""
         return cls(
             id=layer.id,
             type=layer.type,
@@ -56,8 +33,5 @@ class LayerResponse(BaseModel):
 class PaginatedLayerResponse(BaseModel):
     """Schema for paginated layer list response."""
 
-    items: list[LayerResponse]
+    data: list[LayerSchema]
     total: int
-    page: int
-    size: int
-    pages: int

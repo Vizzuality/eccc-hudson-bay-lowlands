@@ -1,14 +1,12 @@
-"""Layers CRUD endpoint router."""
+"""Layers endpoint router."""
 
-import math
-
-from fastapi import APIRouter, Depends, Query
-from sqlalchemy import func, select
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
 from db.database import get_db
 from models.layer import Layer
-from schemas.layer import LayerCreate, LayerResponse, PaginatedLayerResponse
+from schemas.layer import LayerSchema, PaginatedLayerResponse
 
 router = APIRouter(tags=["Layers"])
 
@@ -16,53 +14,49 @@ router = APIRouter(tags=["Layers"])
 @router.get(
     "",
     summary="List Layers",
-    description="Returns a paginated list of layers.",
+    description="Returns a paginated list of layers with optional title search.",
     response_model=PaginatedLayerResponse,
 )
 def list_layers(
-    page: int = Query(default=1, ge=1, description="Page number"),
-    size: int = Query(default=10, ge=1, le=100, description="Items per page"),
+    offset: int = Query(default=0, ge=0, description="Number of items to skip"),
+    limit: int = Query(default=10, ge=1, le=100, description="Number of items to return"),
+    search: str | None = Query(default=None, description="Case-insensitive partial title search (en and fr)"),
     db: Session = Depends(get_db),
 ) -> PaginatedLayerResponse:
-    """List layers with pagination."""
-    total = db.scalar(select(func.count()).select_from(Layer))
+    """List layers with pagination and optional title search."""
+    stmt = select(Layer)
+    count_stmt = select(func.count()).select_from(Layer)
 
-    pages = math.ceil(total / size) if total > 0 else 0
-    offset = (page - 1) * size
+    if search:
+        search_filter = or_(
+            Layer.metadata_["en"]["title"].as_string().ilike(f"%{search}%"),
+            Layer.metadata_["fr"]["title"].as_string().ilike(f"%{search}%"),
+        )
+        stmt = stmt.where(search_filter)
+        count_stmt = count_stmt.where(search_filter)
 
-    stmt = select(Layer).offset(offset).limit(size)
-    layers = db.scalars(stmt).all()
+    total = db.scalar(count_stmt)
+    layers = db.scalars(stmt.offset(offset).limit(limit)).all()
 
     return PaginatedLayerResponse(
-        items=[LayerResponse.from_orm_layer(layer) for layer in layers],
+        data=[LayerSchema.from_orm_layer(layer) for layer in layers],
         total=total,
-        page=page,
-        size=size,
-        pages=pages,
     )
 
 
-@router.post(
-    "",
-    summary="Create Layer",
-    description="Creates a new layer entry.",
-    response_model=LayerResponse,
-    status_code=201,
+@router.get(
+    "/{layer_id}",
+    summary="Get Layer",
+    description="Returns a single layer by ID.",
+    response_model=LayerSchema,
+    responses={404: {"description": "Layer not found"}},
 )
-def create_layer(
-    layer: LayerCreate,
+def get_layer(
+    layer_id: int,
     db: Session = Depends(get_db),
-) -> LayerResponse:
-    """Create a new layer."""
-    db_layer = Layer(
-        type=layer.type,
-        path=layer.path,
-        units=layer.units,
-        legend=layer.legend,
-        metadata_=layer.metadata.model_dump(),
-        dataset_id=layer.dataset_id,
-    )
-    db.add(db_layer)
-    db.commit()
-    db.refresh(db_layer)
-    return LayerResponse.from_orm_layer(db_layer)
+) -> LayerSchema:
+    """Get a single layer by ID."""
+    layer = db.get(Layer, layer_id)
+    if layer is None:
+        raise HTTPException(status_code=404, detail="Layer not found")
+    return LayerSchema.from_orm_layer(layer)
