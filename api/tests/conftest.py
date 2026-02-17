@@ -3,7 +3,6 @@
 import os
 import sys
 from pathlib import Path
-from typing import Generator
 
 # Set TESTING environment variable BEFORE importing app/settings
 # This ensures the Settings class reads testing=True from environment
@@ -15,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import sessionmaker
 
 from config import get_settings
 from db.base import Base
@@ -68,98 +67,142 @@ def client(db_session):
     app.dependency_overrides.clear()
 
 
-def _layer_metadata(title_en: str = "Test Layer", title_fr: str = "Couche de test") -> dict:
-    """Build a valid i18n metadata dict for a layer."""
-    return {
-        "en": {"title": title_en, "description": f"Description for {title_en}"},
-        "fr": {"title": title_fr, "description": f"Description pour {title_fr}"},
-    }
+# =============================================================================
+# Layer Fixtures
+# =============================================================================
 
 
-def _dataset_metadata(title_en: str = "Test Dataset", title_fr: str = "Jeu de test") -> dict:
-    """Build a valid i18n metadata dict for a dataset."""
+@pytest.fixture
+def sample_layer_metadata():
+    """Standard bilingual metadata for test layers."""
     return {
-        "en": {"title": title_en, "description": f"Description for {title_en}"},
-        "fr": {"title": title_fr, "description": f"Description pour {title_fr}"},
+        "en": {"title": "Test Layer", "description": "A test layer"},
+        "fr": {"title": "Couche de test", "description": "Une couche de test"},
     }
 
 
 @pytest.fixture
-def sample_layer(db_session: Session) -> Generator[Layer, None, None]:
-    """Create a single layer in the database.
-
-    Creates a test layer with standard attributes for single-record tests.
-    The layer is automatically cleaned up after the test via transaction rollback.
-    """
-    layer = Layer(
-        type="raster",
-        path="/data/test_layer.tif",
-        units="celsius",
-        metadata_=_layer_metadata(),
-    )
-    db_session.add(layer)
+def layer(db_session, sample_layer_metadata):
+    """Create a single layer (no dataset)."""
+    db_layer = Layer(type="raster", path="/data/test.tif", metadata_=sample_layer_metadata)
+    db_session.add(db_layer)
     db_session.commit()
-    db_session.refresh(layer)
-    yield layer
+    db_session.refresh(db_layer)
+    yield db_layer
 
 
 @pytest.fixture
-def sample_layers(db_session: Session) -> Generator[list[Layer], None, None]:
-    """Create multiple layers in the database for pagination testing.
-
-    Creates 15 layers with varying attributes to test pagination scenarios.
-    The layers are automatically cleaned up after the test via transaction rollback.
-    """
+def multiple_layers(db_session):
+    """Create 15 layers for pagination testing."""
     layers = []
     for i in range(1, 16):
-        layer = Layer(
+        db_layer = Layer(
             type="raster" if i % 2 == 0 else "vector",
             path=f"/data/layer_{i:02d}.tif",
-            units="celsius" if i % 3 != 0 else None,
-            metadata_=_layer_metadata(title_en=f"Layer {i:02d}", title_fr=f"Couche {i:02d}"),
+            metadata_={
+                "en": {"title": f"Layer {i:02d}", "description": f"Layer number {i}"},
+                "fr": {"title": f"Couche {i:02d}", "description": f"Couche numero {i}"},
+            },
         )
-        layers.append(layer)
-
+        layers.append(db_layer)
     db_session.add_all(layers)
     db_session.commit()
-
-    for layer in layers:
-        db_session.refresh(layer)
-
+    for db_layer in layers:
+        db_session.refresh(db_layer)
     yield layers
 
 
 @pytest.fixture
-def sample_dataset(db_session: Session) -> Generator[Dataset, None, None]:
-    """Create a single dataset in the database."""
-    dataset = Dataset(metadata_=_dataset_metadata())
-    db_session.add(dataset)
+def searchable_layers(db_session):
+    """Create layers with distinct titles for search testing."""
+    layers_data = [
+        {"en": {"title": "Hudson Bay Temperature"}, "fr": {"title": "Temperature de la baie d'Hudson"}},
+        {"en": {"title": "Arctic Ice Coverage"}, "fr": {"title": "Couverture de glace arctique"}},
+        {"en": {"title": "Permafrost Depth"}, "fr": {"title": "Profondeur du pergelisol"}},
+    ]
+    layers = []
+    for i, md in enumerate(layers_data):
+        db_layer = Layer(type="raster", path=f"/data/search_{i}.tif", metadata_=md)
+        layers.append(db_layer)
+    db_session.add_all(layers)
     db_session.commit()
-    db_session.refresh(dataset)
-    yield dataset
+    for db_layer in layers:
+        db_session.refresh(db_layer)
+    yield layers
+
+
+# =============================================================================
+# Dataset Fixtures
+# =============================================================================
 
 
 @pytest.fixture
-def sample_dataset_with_layers(db_session: Session) -> Generator[Dataset, None, None]:
-    """Create a dataset with associated layers."""
-    dataset = Dataset(metadata_=_dataset_metadata(title_en="Climate Data", title_fr="Donnees climatiques"))
-    db_session.add(dataset)
-    db_session.commit()
-    db_session.refresh(dataset)
+def sample_dataset_metadata():
+    """Standard bilingual metadata for test datasets."""
+    return {
+        "en": {"title": "Test Dataset", "description": "A test dataset"},
+        "fr": {"title": "Jeu de donnees de test", "description": "Un jeu de donnees de test"},
+    }
 
-    layers = []
-    for i in range(1, 4):
-        layer = Layer(
-            type="raster",
-            path=f"/data/climate_{i}.tif",
-            units="celsius",
-            metadata_=_layer_metadata(title_en=f"Climate Layer {i}", title_fr=f"Couche climatique {i}"),
-            dataset_id=dataset.id,
+
+@pytest.fixture
+def dataset(db_session, sample_dataset_metadata):
+    """Create a single dataset."""
+    db_dataset = Dataset(metadata_=sample_dataset_metadata)
+    db_session.add(db_dataset)
+    db_session.commit()
+    db_session.refresh(db_dataset)
+    yield db_dataset
+
+
+@pytest.fixture
+def layer_with_dataset(db_session, dataset, sample_layer_metadata):
+    """Create a layer that belongs to a dataset."""
+    db_layer = Layer(
+        type="raster",
+        path="/data/test.tif",
+        metadata_=sample_layer_metadata,
+        dataset_id=dataset.id,
+    )
+    db_session.add(db_layer)
+    db_session.commit()
+    db_session.refresh(db_layer)
+    yield db_layer
+
+
+@pytest.fixture
+def multiple_datasets(db_session):
+    """Create multiple datasets for pagination testing."""
+    datasets = []
+    for i in range(1, 6):
+        db_dataset = Dataset(
+            metadata_={
+                "en": {"title": f"Dataset {i:02d}", "description": f"Dataset number {i}"},
+                "fr": {"title": f"Jeu de donnees {i:02d}", "description": f"Jeu numero {i}"},
+            }
         )
-        layers.append(layer)
-
-    db_session.add_all(layers)
+        datasets.append(db_dataset)
+    db_session.add_all(datasets)
     db_session.commit()
-    db_session.refresh(dataset)
+    for db_dataset in datasets:
+        db_session.refresh(db_dataset)
+    yield datasets
 
-    yield dataset
+
+@pytest.fixture
+def searchable_datasets(db_session):
+    """Create datasets with distinct titles for search testing."""
+    datasets_data = [
+        {"en": {"title": "Climate Observations"}, "fr": {"title": "Observations climatiques"}},
+        {"en": {"title": "Wildlife Tracking"}, "fr": {"title": "Suivi de la faune"}},
+        {"en": {"title": "Permafrost Monitoring"}, "fr": {"title": "Surveillance du pergelisol"}},
+    ]
+    datasets = []
+    for md in datasets_data:
+        db_dataset = Dataset(metadata_=md)
+        datasets.append(db_dataset)
+    db_session.add_all(datasets)
+    db_session.commit()
+    for db_dataset in datasets:
+        db_session.refresh(db_dataset)
+    yield datasets

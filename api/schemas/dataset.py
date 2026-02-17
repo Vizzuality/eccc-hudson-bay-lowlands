@@ -1,50 +1,52 @@
 """Pydantic schemas for Dataset model."""
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 from schemas.i18n import DatasetMetadata
-from schemas.layer import LayerResponse
+from schemas.layer import LayerSchema
 
 
-class DatasetCreate(BaseModel):
-    """Schema for creating a new dataset."""
-
-    metadata: DatasetMetadata
-
-
-class DatasetResponse(BaseModel):
-    """Schema for dataset response with id and layer count."""
-
-    model_config = ConfigDict(from_attributes=True)
+class DatasetSchema(BaseModel):
+    """Response schema for a dataset (without layers)."""
 
     id: int
     metadata: DatasetMetadata
-    layer_count: int = 0
 
     @classmethod
-    def from_orm_dataset(cls, dataset) -> "DatasetResponse":
-        """Create a DatasetResponse from an ORM Dataset instance."""
+    def from_orm_dataset(cls, dataset) -> "DatasetSchema":
+        """Convert an ORM Dataset to a DatasetSchema."""
         return cls(
             id=dataset.id,
             metadata=dataset.metadata_,
-            layer_count=len(dataset.layers) if dataset.layers else 0,
         )
 
 
-class DatasetWithLayersResponse(BaseModel):
-    """Schema for dataset response including its layers."""
-
-    model_config = ConfigDict(from_attributes=True)
+class DatasetWithLayersSchema(BaseModel):
+    """Response schema for a dataset with its layers."""
 
     id: int
     metadata: DatasetMetadata
-    layers: list[LayerResponse]
+    layers: list[LayerSchema]
 
     @classmethod
-    def from_orm_dataset(cls, dataset) -> "DatasetWithLayersResponse":
-        """Create a DatasetWithLayersResponse from an ORM Dataset instance."""
+    def from_orm_dataset(cls, dataset) -> "DatasetWithLayersSchema":
+        """Convert an ORM Dataset (with layers loaded) to schema."""
         return cls(
             id=dataset.id,
             metadata=dataset.metadata_,
-            layers=[LayerResponse.from_orm_layer(layer) for layer in dataset.layers],
+            layers=[LayerSchema.from_orm_layer(layer) for layer in dataset.layers],
         )
+
+
+class PaginatedDatasetResponse(BaseModel):
+    """Schema for paginated dataset list response (without layers)."""
+
+    data: list[DatasetSchema]
+    total: int
+
+
+class PaginatedDatasetWithLayersResponse(BaseModel):
+    """Schema for paginated dataset list response (with layers)."""
+
+    data: list[DatasetWithLayersSchema]
+    total: int

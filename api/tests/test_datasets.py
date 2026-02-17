@@ -1,158 +1,157 @@
-"""Tests for Dataset model and relationships."""
-
-from sqlalchemy.orm import Session
-
-from models import Dataset, Layer
-
-# =============================================================================
-# Dataset Model Tests (Direct DB, no endpoint)
-# =============================================================================
-
-
-def test_create_dataset_in_db(db_session: Session):
-    """Test that a Dataset can be created directly in the database."""
-    metadata = {
-        "en": {"title": "Climate Data", "description": "Hudson Bay climate dataset"},
-        "fr": {"title": "Donnees climatiques", "description": "Jeu de donnees climatiques"},
-    }
-    dataset = Dataset(metadata_=metadata)
-    db_session.add(dataset)
-    db_session.commit()
-    db_session.refresh(dataset)
-
-    assert dataset.id is not None
-    assert dataset.metadata_ == metadata
-
-
-def test_dataset_metadata_structure(db_session: Session):
-    """Test that dataset metadata preserves full i18n structure including optional fields."""
-    metadata = {
-        "en": {
-            "title": "Climate Data",
-            "description": "Hudson Bay climate dataset",
-            "citations": "Smith et al. 2024",
-            "source": "https://example.com/data",
-        },
-        "fr": {
-            "title": "Donnees climatiques",
-            "description": "Jeu de donnees climatiques",
-            "citations": "Smith et al. 2024",
-            "source": "https://example.com/data",
-        },
-    }
-    dataset = Dataset(metadata_=metadata)
-    db_session.add(dataset)
-    db_session.commit()
-    db_session.refresh(dataset)
-
-    assert dataset.metadata_["en"]["citations"] == "Smith et al. 2024"
-    assert dataset.metadata_["fr"]["source"] == "https://example.com/data"
-
-
-def test_dataset_fixture(sample_dataset: Dataset):
-    """Test that the sample_dataset fixture creates a valid dataset."""
-    assert sample_dataset.id is not None
-    assert "en" in sample_dataset.metadata_
-    assert "fr" in sample_dataset.metadata_
-    assert sample_dataset.metadata_["en"]["title"] == "Test Dataset"
+"""Tests for datasets endpoints."""
 
 
 # =============================================================================
-# Dataset-Layer Relationship Tests
+# List Datasets - Basic Tests
 # =============================================================================
 
 
-def test_dataset_layer_relationship(sample_dataset_with_layers: Dataset):
-    """Test that a dataset has its associated layers."""
-    assert len(sample_dataset_with_layers.layers) == 3
-    for layer in sample_dataset_with_layers.layers:
-        assert layer.dataset_id == sample_dataset_with_layers.id
-        assert layer.type == "raster"
+def test_list_datasets_returns_200(client):
+    """Test that list datasets endpoint returns 200 status code."""
+    response = client.get("/datasets/")
+    assert response.status_code == 200
 
 
-def test_add_layer_to_dataset(db_session: Session, sample_dataset: Dataset):
-    """Test adding a layer to an existing dataset."""
-    layer = Layer(
-        type="vector",
-        path="/data/boundaries.geojson",
-        metadata_={
-            "en": {"title": "Boundaries", "description": "Region boundaries"},
-            "fr": {"title": "Limites", "description": "Limites de la region"},
-        },
-        dataset_id=sample_dataset.id,
-    )
-    db_session.add(layer)
-    db_session.commit()
-    db_session.refresh(sample_dataset)
-
-    assert len(sample_dataset.layers) == 1
-    assert sample_dataset.layers[0].path == "/data/boundaries.geojson"
+def test_list_datasets_returns_empty_list(client):
+    """Test that list datasets returns empty list when no datasets exist."""
+    response = client.get("/datasets/")
+    data = response.json()
+    assert data["data"] == []
+    assert data["total"] == 0
 
 
-def test_layer_back_populates_dataset(db_session: Session, sample_dataset_with_layers: Dataset):
-    """Test that a layer's dataset relationship back-populates correctly."""
-    layer = sample_dataset_with_layers.layers[0]
-    assert layer.dataset is not None
-    assert layer.dataset.id == sample_dataset_with_layers.id
+def test_list_datasets_returns_dataset(client, dataset):
+    """Test that list endpoint returns seeded dataset from fixture."""
+    response = client.get("/datasets/")
+    data = response.json()
+    assert data["total"] == 1
+    assert len(data["data"]) == 1
 
 
-def test_layer_without_dataset(db_session: Session):
-    """Test that a layer can exist without a dataset."""
-    layer = Layer(
-        type="raster",
-        path="/data/standalone.tif",
-        metadata_={
-            "en": {"title": "Standalone", "description": "A standalone layer"},
-            "fr": {"title": "Autonome", "description": "Une couche autonome"},
-        },
-    )
-    db_session.add(layer)
-    db_session.commit()
-    db_session.refresh(layer)
+def test_list_datasets_response_structure(client, dataset):
+    """Test that response structure matches PaginatedDatasetResponse schema."""
+    response = client.get("/datasets/")
+    data = response.json()
 
-    assert layer.dataset_id is None
-    assert layer.dataset is None
+    assert "data" in data
+    assert "total" in data
+    assert isinstance(data["data"], list)
+    assert isinstance(data["total"], int)
+
+
+def test_list_datasets_metadata_bilingual(client, dataset):
+    """Test that metadata contains both en and fr locales."""
+    response = client.get("/datasets/")
+    data = response.json()
+    metadata = data["data"][0]["metadata"]
+
+    assert "en" in metadata
+    assert "fr" in metadata
+    assert metadata["en"]["title"] == "Test Dataset"
+    assert metadata["fr"]["title"] == "Jeu de donnees de test"
 
 
 # =============================================================================
-# Cascade Delete Tests
+# List Datasets - Pagination Tests
 # =============================================================================
 
 
-def test_cascade_delete_dataset_removes_layers(db_session: Session):
-    """Test that deleting a dataset cascades to delete its layers."""
-    dataset = Dataset(
-        metadata_={
-            "en": {"title": "Temp", "description": "Temporary dataset"},
-            "fr": {"title": "Temp", "description": "Jeu de donnees temporaire"},
-        }
-    )
-    db_session.add(dataset)
-    db_session.commit()
-    db_session.refresh(dataset)
-    dataset_id = dataset.id
+def test_list_datasets_pagination(client, multiple_datasets):
+    """Test that offset/limit pagination works correctly."""
+    response = client.get("/datasets/?offset=2&limit=2")
+    data = response.json()
+    assert len(data["data"]) == 2
+    assert data["total"] == 5
 
-    for i in range(3):
-        layer = Layer(
-            type="raster",
-            path=f"/data/temp_{i}.tif",
-            metadata_={
-                "en": {"title": f"Temp {i}", "description": f"Temporary layer {i}"},
-                "fr": {"title": f"Temp {i}", "description": f"Couche temporaire {i}"},
-            },
-            dataset_id=dataset_id,
-        )
-        db_session.add(layer)
-    db_session.commit()
 
-    # Verify layers exist
-    layers = db_session.query(Layer).filter(Layer.dataset_id == dataset_id).all()
-    assert len(layers) == 3
+# =============================================================================
+# List Datasets - Search Tests
+# =============================================================================
 
-    # Delete the dataset
-    db_session.delete(dataset)
-    db_session.commit()
 
-    # Verify layers are also deleted
-    remaining = db_session.query(Layer).filter(Layer.dataset_id == dataset_id).all()
-    assert len(remaining) == 0
+def test_list_datasets_search_by_english_title(client, searchable_datasets):
+    """Test that search matches English title."""
+    response = client.get("/datasets/?search=Climate")
+    data = response.json()
+    assert data["total"] == 1
+    assert data["data"][0]["metadata"]["en"]["title"] == "Climate Observations"
+
+
+def test_list_datasets_search_by_french_title(client, searchable_datasets):
+    """Test that search matches French title."""
+    response = client.get("/datasets/?search=faune")
+    data = response.json()
+    assert data["total"] == 1
+    assert data["data"][0]["metadata"]["fr"]["title"] == "Suivi de la faune"
+
+
+def test_list_datasets_search_case_insensitive(client, searchable_datasets):
+    """Test that search is case-insensitive."""
+    response = client.get("/datasets/?search=climate")
+    data = response.json()
+    assert data["total"] == 1
+
+
+# =============================================================================
+# List Datasets - include_layers Tests
+# =============================================================================
+
+
+def test_list_datasets_include_layers_false(client, dataset):
+    """Test that default response has no layers key."""
+    response = client.get("/datasets/")
+    data = response.json()
+    item = data["data"][0]
+    assert "layers" not in item
+
+
+def test_list_datasets_include_layers_true(client, dataset):
+    """Test that include_layers=true response includes layers array."""
+    response = client.get("/datasets/?include_layers=true")
+    data = response.json()
+    item = data["data"][0]
+    assert "layers" in item
+    assert isinstance(item["layers"], list)
+
+
+def test_list_datasets_include_layers_with_data(client, layer_with_dataset):
+    """Test that layers array contains correct layer data."""
+    # layer_with_dataset fixture creates both a dataset and a layer belonging to it
+    response = client.get("/datasets/?include_layers=true")
+    data = response.json()
+    item = data["data"][0]
+
+    assert len(item["layers"]) == 1
+    layer = item["layers"][0]
+    assert layer["id"] == layer_with_dataset.id
+    assert layer["type"] == layer_with_dataset.type
+    assert layer["path"] == layer_with_dataset.path
+
+
+# =============================================================================
+# Get Dataset by ID
+# =============================================================================
+
+
+def test_get_dataset_returns_200(client, dataset):
+    """Test that get dataset endpoint returns 200."""
+    response = client.get(f"/datasets/{dataset.id}")
+    assert response.status_code == 200
+
+
+def test_get_dataset_returns_404(client):
+    """Test that nonexistent dataset returns 404."""
+    response = client.get("/datasets/99999")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Dataset not found"
+
+
+def test_get_dataset_include_layers(client, layer_with_dataset):
+    """Test that get dataset with include_layers returns layers."""
+    dataset_id = layer_with_dataset.dataset_id
+    response = client.get(f"/datasets/{dataset_id}?include_layers=true")
+    data = response.json()
+
+    assert "layers" in data
+    assert len(data["layers"]) == 1
+    assert data["layers"][0]["id"] == layer_with_dataset.id

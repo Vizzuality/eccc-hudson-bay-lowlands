@@ -1,18 +1,23 @@
 """Schemas package for Pydantic models."""
 
-from schemas.dataset import DatasetCreate, DatasetResponse, DatasetWithLayersResponse
+from schemas.dataset import (
+    DatasetSchema,
+    DatasetWithLayersSchema,
+    PaginatedDatasetResponse,
+    PaginatedDatasetWithLayersResponse,
+)
 from schemas.i18n import DatasetLocale, DatasetMetadata, LayerLocale, LayerMetadata
-from schemas.layer import LayerCreate, LayerResponse, PaginatedLayerResponse
+from schemas.layer import LayerSchema, PaginatedLayerResponse
 
 __all__ = [
-    "DatasetCreate",
     "DatasetLocale",
     "DatasetMetadata",
-    "DatasetResponse",
-    "DatasetWithLayersResponse",
-    "LayerCreate",
+    "DatasetSchema",
+    "DatasetWithLayersSchema",
     "LayerLocale",
     "LayerMetadata",
-    "LayerResponse",
+    "LayerSchema",
+    "PaginatedDatasetResponse",
+    "PaginatedDatasetWithLayersResponse",
     "PaginatedLayerResponse",
 ]

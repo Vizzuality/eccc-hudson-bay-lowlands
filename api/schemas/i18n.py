@@ -1,33 +1,33 @@
-"""Shared i18n Pydantic schemas for multilingual metadata."""
+"""Shared i18n Pydantic types."""
 
 from pydantic import BaseModel
 
 
 class LayerLocale(BaseModel):
-    """Localized layer metadata for a single language."""
+    """Single-language metadata for a layer."""
 
     title: str
-    description: str
-
-
-class DatasetLocale(BaseModel):
-    """Localized dataset metadata for a single language."""
-
-    title: str
-    description: str
-    citations: str | None = None
-    source: str | None = None
+    description: str | None = None
 
 
 class LayerMetadata(BaseModel):
-    """i18n metadata container for layers (en/fr)."""
+    """Bilingual metadata container for a layer."""
 
     en: LayerLocale
     fr: LayerLocale
 
 
+class DatasetLocale(BaseModel):
+    """Single-language metadata for a dataset."""
+
+    title: str
+    description: str | None = None
+    citations: str | None = None
+    source: str | None = None
+
+
 class DatasetMetadata(BaseModel):
-    """i18n metadata container for datasets (en/fr)."""
+    """Bilingual metadata container for a dataset."""
 
     en: DatasetLocale
     fr: DatasetLocale
