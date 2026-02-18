@@ -3,10 +3,13 @@
 import { useState } from "react";
 import type { MapProps } from "react-map-gl/mapbox";
 import MapBoxMap from "react-map-gl/mapbox";
+import { useMapBasemap } from "@/app/[locale]/url-store";
 import AnalyzeButton from "@/containers/map/analyze-button";
+import { BASEMAPS, type BasemapId } from "@/containers/map/constants";
 import { Controls } from "@/containers/map/controls";
 import SearchControl from "@/containers/map/controls/search";
 import SettingsControl from "@/containers/map/controls/settings";
+import { BasemapControl } from "@/containers/map/controls/settings/basemap";
 import ZoomControl from "@/containers/map/controls/zoom";
 import MapLegend from "@/containers/map/legend";
 import { env } from "@/env";
@@ -24,13 +27,14 @@ type MapContainerProps = {
 
 const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
   const [loaded, setLoaded] = useState<boolean>(false);
-
+  const { basemap } = useMapBasemap();
+  const mapStyle = BASEMAPS[basemap as BasemapId].mapStyle;
   return (
     <div className={cn("relative h-full w-full", className)}>
       <MapBoxMap
         mapboxAccessToken={env.NEXT_PUBLIC_MAPBOX_API_TOKEN}
         style={{ width: "100%", height: "100%", borderRadius: "inherit" }}
-        mapStyle="mapbox://styles/ecc-design/cmk2eevpe00k801s91cva9417"
+        mapStyle={mapStyle}
         projection="mercator"
         initialViewState={{
           longitude: defaultLongitude,
@@ -47,7 +51,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
           <SearchControl />
           <ZoomControl />
           <SettingsControl>
-            <div>Settings</div>
+            <BasemapControl />
           </SettingsControl>
         </Controls>
         <MapLegend />
