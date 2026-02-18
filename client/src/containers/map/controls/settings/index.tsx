@@ -66,7 +66,7 @@ export const SettingsControl: FC<PropsWithChildren<SettingsControlProps>> = ({
           <PopoverContent
             side="left"
             align="start"
-            className="w-auto overflow-hidden p-0"
+            className="w-auto overflow-hidden p-6"
           >
             {children}
           </PopoverContent>

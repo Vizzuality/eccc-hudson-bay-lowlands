@@ -1,4 +1,5 @@
 import { parseAsBoolean, parseAsStringEnum, useQueryState } from "nuqs";
+import { BASEMAPS, BasemapId } from "@/containers/map/constants";
 
 export enum MapStatus {
   default = "default",
@@ -32,4 +33,13 @@ export function useMapAnalysis() {
   );
 
   return { datasets, setDatasets };
+}
+
+export function useMapBasemap() {
+  const [basemap, setBasemap] = useQueryState(
+    "basemap",
+    parseAsStringEnum(Object.keys(BASEMAPS)).withDefault(BasemapId.DEFAULT),
+  );
+
+  return { basemap, setBasemap };
 }
