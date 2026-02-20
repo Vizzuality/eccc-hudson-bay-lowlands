@@ -1,0 +1,53 @@
+name: Client Tests
+
+on:
+  push:
+    paths:
+      - 'client/**'
+      - '.github/workflows/client-tests.yml'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+
+  workflow_dispatch:
+
+jobs:
+  lint-and-unit-tests:
+    name: Lint and Unit Tests
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5.0.0
+
+      - name: Node setup
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.30.1
+
+      - name: Cache dependencies
+        uses: actions/cache@v4.2.3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+
+      - name: Install dependencies
+        working-directory: .
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint client
+        working-directory: client
+        run: pnpm lint
+
+      - name: Run client unit tests
+        working-directory: client
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+          NEXT_PUBLIC_MAPBOX_API_TOKEN: test-token
+        run: pnpm test
