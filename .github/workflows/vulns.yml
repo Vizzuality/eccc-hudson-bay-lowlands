@@ -1,4 +1,4 @@
-name: Vulnerability action
+name: Dependabot Alerts → Copilot Agent
 on:
   schedule:
     - cron: '*/20 * * * *'
@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       issues: write
-      security-events: read
+      vulnerability_alerts: read
 
     steps:
       - name: Fetch and process new alerts
