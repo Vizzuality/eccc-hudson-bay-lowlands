@@ -9,12 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       issues: write
-      vulnerability_alerts: read
 
     steps:
       - name: Fetch and process new alerts
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.PAT_SECURITY_EVENTS }}
           script: |
             const alerts = await github.rest.dependabot.listAlertsForRepo({
               owner: context.repo.owner,
