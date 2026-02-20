@@ -19,9 +19,15 @@ export async function generateMetadata({
 
 export default function Home() {
   return (
-    <main className="h-screen flex flex-col">
+    <main
+      className="h-screen flex flex-col"
+      style={{
+        background:
+          "radial-gradient(113.99% 208.31% at 0% 0%, var(--slate-200, #E2E8F0) 0%, var(--base-white, #FFF) 50.96%, var(--emerald-50, #ECFDF5) 100%), #FFF",
+      }}
+    >
       <TopBar />
-      <section className="flex h-full">
+      <section className="flex h-full overflow-hidden">
         <MapSidebar />
         <MapContainer className="flex-1 rounded-tl-3xl"></MapContainer>
       </section>

@@ -44,18 +44,18 @@ const MapSidebar = () => {
   return (
     <aside
       className={cn(
-        "flex shrink-0 overflow-hidden transition-opacity duration-300 ease-in-out",
+        "flex h-full shrink-0 overflow-hidden transition-opacity duration-300 ease-in-out",
         isHidden && "opacity-0",
       )}
       ref={sidebarRef}
     >
       <div
         className={cn(
-          "shrink-0 overflow-hidden transition-[width,opacity,padding] duration-300 ease-in-out",
-          isHidden ? "w-0" : "w-80",
+          "h-full shrink-0 overflow-hidden transition-[width,opacity,padding] duration-300 ease-in-out",
+          isHidden ? "w-0" : "w-[476px]",
         )}
       >
-        <div className="px-6">
+        <div className="h-full">
           {mapStatus === MapStatus.analysis ? <Analysis /> : <Main />}
         </div>
       </div>

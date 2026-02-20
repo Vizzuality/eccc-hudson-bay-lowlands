@@ -1,4 +1,4 @@
-import { Sofia_Sans, Tinos } from "next/font/google";
+import { Nunito, Tinos } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
@@ -6,11 +6,10 @@ import { routing } from "@/i18n/routing";
 import "@/app/globals.css";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ClientProviders } from "@/app/[locale]/providers";
-// import "mapbox-gl/dist/mapbox-gl.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-const sofiaSans = Sofia_Sans({
-  variable: "--font-sofia-sans",
+const nunito = Nunito({
+  variable: "--font-nunito",
   subsets: ["latin"],
 });
 
@@ -41,7 +40,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
-      <body className={`${sofiaSans.variable} ${tinos.variable} antialiased`}>
+      <body className={`${nunito.variable} ${tinos.variable} antialiased`}>
         <NextIntlClientProvider>
           <NuqsAdapter>
             <TooltipProvider>
