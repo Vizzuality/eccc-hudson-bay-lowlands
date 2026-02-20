@@ -1,4 +1,4 @@
-name: Dependabot Alerts → Copilot Agent
+name: Vulns
 on:
   schedule:
     - cron: '*/20 * * * *'
