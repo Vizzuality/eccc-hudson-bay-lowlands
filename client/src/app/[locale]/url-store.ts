@@ -1,4 +1,10 @@
-import { parseAsBoolean, parseAsStringEnum, useQueryState } from "nuqs";
+import {
+  parseAsArrayOf,
+  parseAsBoolean,
+  parseAsString,
+  parseAsStringEnum,
+  useQueryState,
+} from "nuqs";
 import { BASEMAPS, BasemapId } from "@/containers/map/constants";
 
 export enum MapStatus {
@@ -14,6 +20,31 @@ export function useMapStatus() {
   );
 
   return { mapStatus, setMapStatus };
+}
+
+export enum DataSet {
+  all = "all",
+  indigenousValue = "indigenousValue",
+  environment = "environment",
+  humanResources = "humanResources",
+}
+
+export function useDataSet() {
+  const [dataSet, setDataSet] = useQueryState(
+    "dataSet",
+    parseAsStringEnum(Object.keys(DataSet)).withDefault(DataSet.all),
+  );
+
+  return { dataSet, setDataSet };
+}
+
+export function useLayers() {
+  const [layers, setLayers] = useQueryState(
+    "layers",
+    parseAsArrayOf(parseAsString).withDefault([]),
+  );
+
+  return { layers, setLayers };
 }
 
 // TODO: Probably should be a shape object
