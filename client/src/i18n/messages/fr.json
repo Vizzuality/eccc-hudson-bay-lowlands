@@ -1,7 +1,7 @@
 {
   "language": {
-    "en": "English",
-    "fr": "French"
+    "en": "Anglais",
+    "fr": "Français"
   },
   "top-bar": {
     "title": "lowlands spatial data",
@@ -13,17 +13,6 @@
   "map": {
     "title": "Discover the Hudson & James bay region",
     "description": "Explore and combine geographical data overlays. Analyze your area of interest and get custom insights."
-  },
-  "data-layers": {
-    "search": {
-      "placeholder": "Search..."
-    },
-    "list": {
-      "title": "All data ({count})"
-    },
-    "item": {
-      "learn-more": "Learn more"
-    }
   },
   "metadata": {
     "home": {

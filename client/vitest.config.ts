@@ -23,6 +23,7 @@ export default defineConfig(({ mode }) => ({
         "src/**/*.stories.tsx",
         "src/**/*.test.ts",
         "src/**/*.test.tsx",
+        "**/tests/helpers/**",
       ],
     },
   },
