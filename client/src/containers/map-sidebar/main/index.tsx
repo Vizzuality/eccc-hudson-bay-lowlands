@@ -27,10 +27,7 @@ const Main = () => {
       <div className="space-y-4 px-6">
         <header className="min-w-0">
           <h1 className="text-4xl mb-5">{t("title")}</h1>
-          <p className="text-muted-foreground">
-            Explore and combine geographical data overlays. Analyze your area of
-            interest and get custom insights
-          </p>
+          <p className="text-muted-foreground">{t("description")}</p>
         </header>
         <DataLayersSearch />
         <DatasetSelector />

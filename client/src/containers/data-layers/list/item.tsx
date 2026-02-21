@@ -1,11 +1,12 @@
 import { PlusIcon, XIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import type { DataLayer } from "@/types";
 
-interface DataLayersListItemProps extends DataLayer {
+export interface DataLayersListItemProps extends DataLayer {
   isSelected: boolean;
   onChange: (id: string, isSelected: boolean) => void;
   onLearnMore: () => void;
@@ -19,6 +20,7 @@ const DataLayersListItem: FC<DataLayersListItemProps> = ({
   onChange,
   onLearnMore,
 }) => {
+  const t = useTranslations("data-layers");
   return (
     <article className="relative group block **:transition-all **:duration-200 **:ease-out">
       <label
@@ -51,7 +53,7 @@ const DataLayersListItem: FC<DataLayersListItemProps> = ({
           {description}
         </p>
         <Button type="button" variant="link" onClick={onLearnMore}>
-          Learn more
+          {t("item.learn-more")}
         </Button>
       </div>
       <div className="px-5">

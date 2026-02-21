@@ -1,12 +1,16 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { NextIntlClientProvider } from "next-intl";
 import { describe, expect, it, vi } from "vitest";
-import DataLayersListItem from "@/containers/data-layers/list/item";
+import DataLayersListItem, {
+  type DataLayersListItemProps,
+} from "@/containers/data-layers/list/item";
+import messages from "@/i18n/messages/en.json";
 
 const mockId = "layer-1";
 const mockName = "First Nation Locations";
 const mockDescription = "The location identifies where the First Nations live.";
-const defaultProps = {
+const defaultProps: DataLayersListItemProps = {
   id: mockId,
   title: mockName,
   description: mockDescription,
@@ -16,20 +20,29 @@ const defaultProps = {
 };
 
 describe("@containers/data-layers/list/item", () => {
+  const renderDataLayersListItem = (
+    props: Partial<DataLayersListItemProps> = {},
+  ) =>
+    render(
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <DataLayersListItem {...defaultProps} {...props} />
+      </NextIntlClientProvider>,
+    );
+
   it("renders the title and description", () => {
-    render(<DataLayersListItem {...defaultProps} />);
+    renderDataLayersListItem();
     expect(screen.getByRole("heading", { name: mockName })).toBeInTheDocument();
     expect(screen.getByText(mockDescription)).toBeInTheDocument();
   });
 
   it("renders an unchecked checkbox when not selected", () => {
-    render(<DataLayersListItem {...defaultProps} />);
+    renderDataLayersListItem();
     const checkbox = screen.getByRole("checkbox", { name: mockName });
     expect(checkbox).not.toBeChecked();
   });
 
   it("renders a checked checkbox when selected", () => {
-    render(<DataLayersListItem {...defaultProps} isSelected />);
+    renderDataLayersListItem({ isSelected: true });
     const checkbox = screen.getByRole("checkbox", { name: mockName });
     expect(checkbox).toBeChecked();
   });
@@ -37,7 +50,7 @@ describe("@containers/data-layers/list/item", () => {
   it("calls onChange with (id, true) when clicking an unselected item", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(<DataLayersListItem {...defaultProps} onChange={onChange} />);
+    renderDataLayersListItem({ onChange });
 
     await user.click(screen.getByRole("checkbox", { name: mockName }));
 
@@ -48,9 +61,7 @@ describe("@containers/data-layers/list/item", () => {
   it("calls onChange with (id, false) when clicking a selected item", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(
-      <DataLayersListItem {...defaultProps} isSelected onChange={onChange} />,
-    );
+    renderDataLayersListItem({ onChange, isSelected: true });
 
     await user.click(screen.getByRole("checkbox", { name: mockName }));
 
@@ -61,7 +72,7 @@ describe("@containers/data-layers/list/item", () => {
   it("calls onLearnMore when the 'Learn more' button is clicked", async () => {
     const user = userEvent.setup();
     const onLearnMore = vi.fn();
-    render(<DataLayersListItem {...defaultProps} onLearnMore={onLearnMore} />);
+    renderDataLayersListItem({ onLearnMore });
 
     await user.click(screen.getByRole("button", { name: /learn more/i }));
 
@@ -69,7 +80,7 @@ describe("@containers/data-layers/list/item", () => {
   });
 
   it("associates the label with the checkbox via htmlFor/id", () => {
-    render(<DataLayersListItem {...defaultProps} />);
+    renderDataLayersListItem();
     const checkbox = screen.getByRole("checkbox", { name: mockName });
     expect(checkbox).toHaveAttribute("id", mockId);
   });

@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { type FC, useState } from "react";
 import DataLayersListItem from "@/containers/data-layers/list/item";
 import DataLayersListItemDialog from "@/containers/data-layers/list/item-dialog";
@@ -15,9 +16,15 @@ const DataLayersList: FC<DataLayersListProps> = ({
   onItemChange,
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const t = useTranslations("data-layers");
   return (
     <section aria-label="Data layers list">
-      <p>All data ({items.length})</p>
+      <p className="flex items-center gap-8 text-xs text-[rgba(26,37,61,0.66)] font-medium">
+        <span className="shrink-0">
+          {t("list.title", { count: items.length })}
+        </span>
+        <span className="h-px flex-1 bg-[linear-gradient(90deg,rgba(26,37,61,0.10)_0%,rgba(69,99,163,0.10)_100%)]" />
+      </p>
       {items.map((item) => (
         <DataLayersListItem
           key={item.id}
