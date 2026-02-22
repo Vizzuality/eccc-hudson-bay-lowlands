@@ -45,6 +45,10 @@ jobs:
         working-directory: client
         run: pnpm lint
 
+      - name: Run client tests coverage
+        working-directory: client
+        run: pnpm test:coverage
+
       - name: Run client unit tests
         working-directory: client
         env:
