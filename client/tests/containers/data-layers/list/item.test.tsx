@@ -6,14 +6,13 @@ import DataLayersListItem, {
   type DataLayersListItemProps,
 } from "@/containers/data-layers/list/item";
 import messages from "@/i18n/messages/en.json";
+import { DATA_LAYERS } from "@/tests/helpers/mocks";
 
-const mockId = "layer-1";
-const mockName = "First Nation Locations";
-const mockDescription = "The location identifies where the First Nations live.";
+const mockItem = DATA_LAYERS[0];
 const defaultProps: DataLayersListItemProps = {
-  id: mockId,
-  title: mockName,
-  description: mockDescription,
+  id: mockItem.id,
+  title: mockItem.title,
+  description: mockItem.description,
   isSelected: false,
   onChange: vi.fn(),
   onLearnMore: vi.fn(),
@@ -31,19 +30,21 @@ describe("@containers/data-layers/list/item", () => {
 
   it("renders the title and description", () => {
     renderDataLayersListItem();
-    expect(screen.getByRole("heading", { name: mockName })).toBeInTheDocument();
-    expect(screen.getByText(mockDescription)).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: mockItem.title }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(mockItem.description)).toBeInTheDocument();
   });
 
   it("renders an unchecked checkbox when not selected", () => {
     renderDataLayersListItem();
-    const checkbox = screen.getByRole("checkbox", { name: mockName });
+    const checkbox = screen.getByRole("checkbox", { name: mockItem.title });
     expect(checkbox).not.toBeChecked();
   });
 
   it("renders a checked checkbox when selected", () => {
     renderDataLayersListItem({ isSelected: true });
-    const checkbox = screen.getByRole("checkbox", { name: mockName });
+    const checkbox = screen.getByRole("checkbox", { name: mockItem.title });
     expect(checkbox).toBeChecked();
   });
 
@@ -52,10 +53,10 @@ describe("@containers/data-layers/list/item", () => {
     const onChange = vi.fn();
     renderDataLayersListItem({ onChange });
 
-    await user.click(screen.getByRole("checkbox", { name: mockName }));
+    await user.click(screen.getByRole("checkbox", { name: mockItem.title }));
 
     expect(onChange).toHaveBeenCalledOnce();
-    expect(onChange).toHaveBeenCalledWith(mockId, true);
+    expect(onChange).toHaveBeenCalledWith(mockItem.id, true);
   });
 
   it("calls onChange with (id, false) when clicking a selected item", async () => {
@@ -63,10 +64,10 @@ describe("@containers/data-layers/list/item", () => {
     const onChange = vi.fn();
     renderDataLayersListItem({ onChange, isSelected: true });
 
-    await user.click(screen.getByRole("checkbox", { name: mockName }));
+    await user.click(screen.getByRole("checkbox", { name: mockItem.title }));
 
     expect(onChange).toHaveBeenCalledOnce();
-    expect(onChange).toHaveBeenCalledWith(mockId, false);
+    expect(onChange).toHaveBeenCalledWith(mockItem.id, false);
   });
 
   it("calls onLearnMore when the 'Learn more' button is clicked", async () => {
@@ -81,7 +82,7 @@ describe("@containers/data-layers/list/item", () => {
 
   it("associates the label with the checkbox via htmlFor/id", () => {
     renderDataLayersListItem();
-    const checkbox = screen.getByRole("checkbox", { name: mockName });
-    expect(checkbox).toHaveAttribute("id", mockId);
+    const checkbox = screen.getByRole("checkbox", { name: mockItem.title });
+    expect(checkbox).toHaveAttribute("id", mockItem.id);
   });
 });
