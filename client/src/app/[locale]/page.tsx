@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 import MapContainer from "@/containers/map";
 import MapSidebar from "@/containers/map-sidebar";
 import TopBar from "@/containers/top-bar";
@@ -26,10 +27,18 @@ export default function Home() {
           "radial-gradient(113.99% 208.31% at 0% 0%, var(--slate-200, #E2E8F0) 0%, var(--base-white, #FFF) 50.96%, var(--emerald-50, #ECFDF5) 100%), #FFF",
       }}
     >
-      <TopBar />
+      <Suspense>
+        <TopBar />
+      </Suspense>
+
       <section className="flex h-full overflow-hidden">
-        <MapSidebar />
-        <MapContainer className="flex-1 rounded-tl-3xl"></MapContainer>
+        <Suspense>
+          <MapSidebar />
+        </Suspense>
+
+        <Suspense>
+          <MapContainer className="flex-1 rounded-tl-3xl" />
+        </Suspense>
       </section>
     </main>
   );
