@@ -48,6 +48,9 @@ jobs:
       - name: Run client tests coverage
         working-directory: client
         run: pnpm test:coverage
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+          NEXT_PUBLIC_MAPBOX_API_TOKEN: test-token
 
       - name: Run client unit tests
         working-directory: client
