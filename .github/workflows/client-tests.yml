@@ -15,6 +15,8 @@ jobs:
   lint-and-unit-tests:
     name: Lint and Unit Tests
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
@@ -52,9 +54,21 @@ jobs:
           NEXT_PUBLIC_API_URL: http://localhost:8000
           NEXT_PUBLIC_MAPBOX_API_TOKEN: test-token
 
-      - name: Run client unit tests
+      - name: Generate coverage badge
+        if: github.ref == 'refs/heads/main'
         working-directory: client
-        env:
-          NEXT_PUBLIC_API_URL: http://localhost:8000
-          NEXT_PUBLIC_MAPBOX_API_TOKEN: test-token
-        run: pnpm test
+        run: |
+          COVERAGE=$(node -e "const c=JSON.parse(require('fs').readFileSync('./coverage/coverage-summary.json','utf8'));console.log(c.total.branches.pct)")
+          COLOR=$(node -e "const p=$COVERAGE;console.log(p>90?'brightgreen':p>80?'green':p>70?'yellow':'red')")
+
+          mkdir -p /tmp/badges
+          echo "{\"schemaVersion\":1,\"label\":\"client coverage\",\"message\":\"${COVERAGE}%\",\"color\":\"${COLOR}\"}" > /tmp/badges/client-coverage.json
+
+          cd /tmp/badges
+          git init -b badges
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add client-coverage.json
+          git commit -m "Update client coverage badge — ${COVERAGE}%"
+          git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          git push -f origin badges

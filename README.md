@@ -1,5 +1,7 @@
 # ECCC Hudson Bay Lowlands
 
+![Client Coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/vizzuality/eccc-hudson-bay-lowlands/badges/client-coverage.json)
+
 Full-stack geospatial project combining Terraform infrastructure and a FastAPI backend for Hudson Bay Lowlands imagery.
 
 ## Project Overview
