@@ -13,6 +13,7 @@ export default defineConfig(({ mode }) => ({
     setupFiles: ["./vitest.setup.ts"],
     env: loadEnv(mode, process.cwd(), ""),
     coverage: {
+      reporter: ["text", "json-summary"],
       include: ["src/**/*.ts", "src/**/*.tsx"],
       exclude: [
         // Next.js framework files
