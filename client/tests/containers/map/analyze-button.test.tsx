@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi, type Mock } from "vitest";
+import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { MapStatus, useMapStatus } from "@/app/[locale]/url-store";
 
 vi.mock("@/app/[locale]/url-store", () => ({
