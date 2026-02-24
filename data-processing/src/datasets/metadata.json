@@ -1,0 +1,758 @@
+{
+  "categories": [
+    {
+      "id": null,
+      "metadata": {
+        "title": {
+          "en": "Environment",
+          "fr": "Environnement"
+        }
+      },
+      "datasets": [
+        {
+          "id": null,
+          "metadata": {
+            "title": {
+              "en": "Peat & Carbon",
+              "fr": "Tourbe et Carbone"
+            },
+            "description": {
+              "en": "This dataset contains ground-measured peat depth and maps with the spatial distribution of peat depth and carbon stock in the Hudson Bay Lowlands, Ontario, Canada.",
+              "fr": "Ce jeu de données contient la profondeur de tourbe mesurée sur le terrain et des cartes avec la distribution spatiale de la profondeur de tourbe et du stock de carbone dans les basses terres de la baie d'Hudson, Ontario, Canada."
+            },
+            "source": {
+              "en": "https://borealisdata.ca/dataset.xhtml?persistentId=doi:10.5683/SP3/TIRAXJ",
+              "fr": "https://borealisdata.ca/dataset.xhtml?persistentId=doi:10.5683/SP3/TIRAXJ"
+            },
+            "citation": {
+              "en": "Li, Y., Han, D., Rogers, C., Finkelstein, S., Hararuk, O., Waddington, J., Barreto, C., McLaughlin, J., Snider, J., Gonsamo, A., 2024. Peat depth and carbon storage of the Hudson Bay Lowlands, Canada. Borealis. https://doi.org/10.5683/SP3/TIRAXJ",
+              "fr": "Li, Y., Han, D., Rogers, C., Finkelstein, S., Hararuk, O., Waddington, J., Barreto, C., McLaughlin, J., Snider, J., Gonsamo, A., 2024. Peat depth and carbon storage of the Hudson Bay Lowlands, Canada. Borealis. https://doi.org/10.5683/SP3/TIRAXJ"
+            }
+          },
+          "layers": [
+            {
+              "id": null,
+              "format": "raster",
+              "path": "/data/processed/carbon_peatland/peat_cog.tif",
+              "type": "continuous",
+              "unit": "cm",
+              "metadata": {
+                "title": {
+                  "en": "Peat Depth",
+                  "fr": "Profondeur de la Tourbe"
+                },
+                "description": {
+                  "en": "Estimated peat depth at 30 m resolution in cm.",
+                  "fr": "Profondeur de la tourbe estimée à une résolution de 30 m en cm."
+                }
+              }
+            },
+            {
+              "id": null,
+              "format": "raster",
+              "path": "/data/processed/carbon_peatland/carbon_cog.tif",
+              "type": "continuous",
+              "unit": "kg/m²",
+              "metadata": {
+                "title": {
+                  "en": "Carbon Storage",
+                  "fr": "Stockage de Carbone"
+                },
+                "description": {
+                  "en": "Estimated soil carbon stored in peatlands at 30 m resolution in kg/m².",
+                  "fr": "Stock de carbone du sol estimé dans les tourbières à une résolution de 30 m en kg/m²."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": null,
+          "metadata": {
+            "title": {
+              "en": "Dynamic Surface Water",
+              "fr": "Eau de Surface Dynamique"
+            },
+            "description": {
+              "en": "Provides national-scale information on surface water dynamics from 1984–2023 at 30 m resolution, derived from Landsat imagery.",
+              "fr": "Fournit des informations à l'échelle nationale sur la dynamique des eaux de surface de 1984 à 2023 à une résolution de 30 m, dérivées des images Landsat."
+            },
+            "source": {
+              "en": "https://open.canada.ca/data/en/dataset/62de5952-a5eb-4859-b086-22a8ba8024b8",
+              "fr": "https://ouvert.canada.ca/data/fr/dataset/62de5952-a5eb-4859-b086-22a8ba8024b8"
+            },
+            "citation": {
+              "en": "Environment and Climate Change Canada. Associated publication: https://www.sciencedirect.com/science/article/pii/S0034425722002358",
+              "fr": "Environnement et Changement climatique Canada. Publication associée : https://www.sciencedirect.com/science/article/pii/S0034425722002358"
+            }
+          },
+          "layers": [
+            {
+              "id": null,
+              "format": "raster",
+              "path": "/data/processed/dynamic_surface_water/inundation_trends_cog.tif",
+              "type": "categorical",
+              "unit": "category",
+              "categories": [
+                { "value": 1, "label": { "en": "Permanent water", "fr": "Eau permanente" } },
+                { "value": 2, "label": { "en": "Permanent land", "fr": "Terre permanente" } },
+                { "value": 3, "label": { "en": "Stable", "fr": "Stable" } },
+                { "value": 4, "label": { "en": "Wetter", "fr": "Plus humide" } },
+                { "value": 5, "label": { "en": "Drier", "fr": "Plus sec" } }
+  ],
+              "metadata": {
+                "title": {
+                  "en": "Inundation Trends",
+                  "fr": "Tendances des Inondations"
+                },
+                "description": {
+                  "en": "Trends showing areas becoming wetter or drier over time.",
+                  "fr": "Tendances montrant les zones devenant plus humides ou plus sèches au fil du temps."
+                }
+              }
+            },
+            {
+              "id": null,
+              "format": "raster",
+              "path": "/data/processed/dynamic_surface_water/inundation_frequency_cog.tif",
+              "type": "continuous",
+              "unit": "%",
+              "metadata": {
+                "title": {
+                  "en": "Inundation Frequency",
+                  "fr": "Fréquence des Inondations"
+                },
+                "description": {
+                  "en": "Frequency of water occurrence from 1984–2023.",
+                  "fr": "Fréquence d'occurrence de l'eau de 1984 à 2023."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": null,
+          "metadata": {
+            "title": {
+              "en": "Flood Susceptibility Index",
+              "fr": "Indice de vulnérabilité aux inondations"
+            },
+              "description": {
+                "en": "This flood susceptibility index is based on historical flood patterns and machine learning models. Values range from 0 (low susceptibility) to 100 (high susceptibility).",
+                "fr": "Cet indice de susceptibilité aux inondations est basé sur les modèles historiques et l'apprentissage automatique. Les valeurs vont de 0 (faible) à 100 (élevée)."
+              },
+              "source": {
+                "en": "https://app.geo.ca/en-ca/map-browser/record/df106e11-4cee-425d-bd38-7e51ac674128",
+                "fr": "https://app.geo.ca/fr-ca/map-browser/record/df106e11-4cee-425d-bd38-7e51ac674128"
+              },
+              "citation": {
+                "en": "Natural Resources Canada, Canada Centre for Mapping and Earth Observation. (2022). Flood Susceptibility Index (FSI) [GIS dataset]. GEO.ca.",
+                "fr": "Centre canadien de cartographie et d'observation de la terre, Ressources naturelles Canada. (2022). Indice de susceptibilité aux inondations (FSI) [jeu de données SIG]. GEO.ca."
+              }
+          },
+          "layers": [
+            {
+              "id": null,
+              "format": "raster",
+              "path": "/data/processed/flood_susceptibility_cog.tif",
+              "type": "continuous",
+              "unit": "%",
+              "metadata": {
+                "title": {
+                  "en": "Flood Susceptibility Index",
+                  "fr": "Indice de vulnérabilité aux inondations"
+                },
+                "description": {
+                  "en": "Flood susceptibility score from low to high risk.",
+                  "fr": "Score de susceptibilité aux inondations allant de faible à élevé."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": null,
+          "metadata": {
+            "title": {
+              "en": "Annual 30 m snow dynamics (2018-2019 to 2023-2024)",
+              "fr": "Dynamique annuelle de la neige à 30 m (2018-2019 à 2023-2024)"
+            },
+              "description": {
+                "en": "Provides annual snow cover dynamics across Canada at 30 m resolution for winters 2018–2019 to 2023–2024, derived from Landsat and Sentinel-2 imagery.",
+                "fr": "Fournit la dynamique annuelle de la couverture neigeuse au Canada à une résolution de 30 m pour les hivers 2018–2019 à 2023–2024, dérivée des images Landsat et Sentinel-2."
+              },
+              "source": {
+                "en": "https://app.geo.ca/en-ca/map-browser/record/1ed7fdec-9a50-4fe9-aa16-78f9ee3f05bc",
+                "fr": "https://app.geo.ca/fr-ca/map-browser/record/1ed7fdec-9a50-4fe9-aa16-78f9ee3f05bc"
+              },
+              "citation": {
+                "en": "Government of Canada; Natural Resources Canada; CCMEO/GEMS/CCRS. (2025). Annual 30 m snow dynamics (2018–2024) – Canada.",
+                "fr": "Gouvernement du Canada; Ressources naturelles Canada; CCCOT/SGST/CCT. (2025-10-01). Dynamique annuelle de la neige à 30 m (2018-2019 à 2023-2024) – Canada."
+              }
+          },
+          "layers": [
+            {
+              "id": null,
+              "format": "raster",
+              "path": "/data/processed/snow_dynamics/endL_winter_1819_cog.tif",
+              "type": "continuous",
+              "unit": "date",
+              "metadata": {
+                "title": {
+                  "en": "End of Snow Period for Winter 2018-2019", 
+                  "fr": "Fin de la Période de Neige pour l'Hiver 2018-2019"
+                },
+                "description": {
+                  "en": "Last day of seasonal snow cover during the winter 2018-2019.", 
+                  "fr": "Dernier jour de couverture neigeuse saisonnière durant l'hiver 2018-2019."
+                }
+              }
+            },
+            {
+              "id": null,
+              "format": "raster",
+              "path": "/data/processed/snow_dynamics/endL_winter_1920_cog.tif",
+              "type": "continuous",
+              "unit": "date",
+              "metadata": {
+                "title": {
+                  "en": "End of Snow Period for Winter 2019-2020", 
+                  "fr": "Fin de la Période de Neige pour l'Hiver 2019-2020"
+                },
+                "description": {
+                  "en": "Last day of seasonal snow cover during the winter 2019-2020.", 
+                  "fr": "Dernier jour de couverture neigeuse saisonnière durant l'hiver 2019-2020."
+                }
+              }
+            },
+            {
+              "id": null,
+              "format": "raster",
+              "path": "/data/processed/snow_dynamics/endL_winter_2021_cog.tif",
+              "type": "continuous",
+              "unit": "date",
+              "metadata": {
+                "title": {
+                  "en": "End of Snow Period for Winter 2020-2021", 
+                  "fr": "Fin de la Période de Neige pour l'Hiver 2020-2021"
+                },
+                "description": {
+                  "en": "Last day of seasonal snow cover during the winter 2020-2021.", 
+                  "fr": "Dernier jour de couverture neigeuse saisonnière durant l'hiver 2020-2021."
+                }
+              }
+            },
+            {
+              "id": null,
+              "format": "raster",
+              "path": "/data/processed/snow_dynamics/endL_winter_2122_cog.tif",
+              "type": "continuous", 
+              "unit": "date",
+              "metadata": {
+                "title": {
+                  "en": "End of Snow Period for Winter 2021-2022", 
+                  "fr": "Fin de la Période de Neige pour l'Hiver 2021-2022"
+                },
+                "description": {
+                  "en": "Last day of seasonal snow cover during the winter 2021-2022.", 
+                  "fr": "Dernier jour de couverture neigeuse saisonnière durant l'hiver 2021-2022."
+                }
+              }
+            },
+            {
+              "id": null,
+              "format": "raster",
+              "path": "/data/processed/snow_dynamics/endL_winter_2223_cog.tif",
+              "type": "continuous",
+              "unit": "date",
+              "metadata": {
+                "title": {
+                  "en": "End of Snow Period for Winter 2022-2023", 
+                  "fr": "Fin de la Période de Neige pour l'Hiver 2022-2023"
+                },
+                "description": {
+                  "en": "Last day of seasonal snow cover during the winter 2022-2023.", 
+                  "fr": "Dernier jour de couverture neigeuse saisonnière durant l'hiver 2022-2023."
+                }
+              }
+            },
+            {
+              "id": null,
+              "format": "raster",
+              "path": "/data/processed/snow_dynamics/endL_winter_2324_cog.tif",
+              "type": "continuous",
+              "unit": "date",
+              "metadata": {
+                "title": {
+                  "en": "End of Snow Period for Winter 2023-2024", 
+                  "fr": "Fin de la Période de Neige pour l'Hiver 2023-2024"
+                },
+                "description": {
+                  "en": "Last day of seasonal snow cover during the winter 2023-2024.", 
+                  "fr": "Dernier jour de couverture neigeuse saisonnière durant l'hiver 2023-2024."
+                }
+              }
+            },
+            { "id": null,
+              "format": "raster",
+              "path": "/data/processed/snow_dynamics/lengthT_winter_1819_cog.tif",
+              "type": "continuous",
+              "unit": "days",
+              "metadata": {
+                "title": {
+                  "en": "Total Snow Length for Winter 2018-2019", 
+                  "fr": "Durée Totale de la Neige pour l'Hiver 2018-2019"
+                },
+                "description": {
+                  "en": "Total number of days with snow cover during the winter 2018-2019.", 
+                  "fr": "Nombre total de jours de couverture neigeuse durant l'hiver 2018-2019."
+                }
+              }
+            },
+            { "id": null,
+              "format": "raster",
+              "path": "/data/processed/snow_dynamics/lengthT_winter_1920_cog.tif",
+              "type": "continuous",
+              "unit": "days",
+              "metadata": {
+                "title": {
+                  "en": "Total Snow Length for Winter 2019-2020", 
+                  "fr": "Durée Totale de la Neige pour l'Hiver 2019-2020"
+                },
+                "description": {
+                  "en": "Total number of days with snow cover during the winter 2019-2020.", 
+                  "fr": "Nombre total de jours de couverture neigeuse durant l'hiver 2019-2020."
+                }
+              }
+            },
+             { "id": null,
+              "format": "raster",
+              "path": "/data/processed/snow_dynamics/lengthT_winter_2021_cog.tif",
+              "type": "continuous",
+              "unit": "days",
+              "metadata": {
+                "title": {
+                  "en": "Total Snow Length for Winter 2020-2021", 
+                  "fr": "Durée Totale de la Neige pour l'Hiver 2020-2021"
+                },
+                "description": {
+                  "en": "Total number of days with snow cover during the winter 2020-2021.", 
+                  "fr": "Nombre total de jours de couverture neigeuse durant l'hiver 2020-2021."
+                }
+              }
+            },
+             { "id": null,
+              "format": "raster",
+              "path": "/data/processed/snow_dynamics/lengthT_winter_2122_cog.tif",
+              "type": "continuous",
+              "unit": "days",
+              "metadata": {
+                "title": {
+                  "en": "Total Snow Length for Winter 2021-2022", 
+                  "fr": "Durée Totale de la Neige pour l'Hiver 2021-2022"
+                },
+                "description": {
+                  "en": "Total number of days with snow cover during the winter 2021-2022.", 
+                  "fr": "Nombre total de jours de couverture neigeuse durant l'hiver 2021-2022."
+                }
+              }
+            },
+             { "id": null,
+              "format": "raster",
+              "path": "/data/processed/snow_dynamics/lengthT_winter_2223_cog.tif",
+              "type": "continuous",
+              "unit": "days",
+              "metadata": {
+                "title": {
+                  "en": "Total Snow Length for Winter 2022-2023", 
+                  "fr": "Durée Totale de la Neige pour l'Hiver 2022-2023"
+                },
+                "description": {
+                  "en": "Total number of days with snow cover during the winter 2022-2023.", 
+                  "fr": "Nombre total de jours de couverture neigeuse durant l'hiver 2022-2023."
+                }
+              }
+            },
+             { "id": null,
+              "format": "raster",
+              "path": "/data/processed/snow_dynamics/lengthT_winter_2324_cog.tif",
+              "type": "continuous",
+              "unit": "days",
+              "metadata": {
+                "title": {
+                  "en": "Total Snow Length for Winter 2023-2024", 
+                  "fr": "Durée Totale de la Neige pour l'Hiver 2023-2024"
+                },
+                "description": {
+                  "en": "Total number of days with snow cover during the winter 2023-2024.", 
+                  "fr": "Nombre total de jours de couverture neigeuse durant l'hiver 2023-2024."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": null,
+          "metadata": {
+            "title": {
+              "en": "Treed Area (1984-2022)",
+              "fr": "Zone Arborée au Canada (1984-2022)"
+            },
+              "description": {
+                "en": "Provides treed area dynamics across Canada's forest ecosystems from 1984–2022 at 30 m resolution, derived from Landsat imagery. This dataset identifies areas that remained treed, transitioned to treed (newly treed), or transitioned to other cover that is not treed vegetation (was-treed).",
+                "fr": "Fournit la dynamique des zones arborées des écosystèmes canadiens de 1984 à 2022 à une résolution de 30 m, dérivée des images Landsat. Ce jeu de données identifie les zones restées arborées, devenues arborées (nouvellement arborées) ou converties en une autre couverture non arborée (anciennement arborées)."
+              },
+              "source": {
+                "en": "https://opendata.nfis.org/mapserver/nfis-change_eng.html",
+                "fr": "https://opendata.nfis.org/mapserver/nfis-change_fra.html"
+              },
+              "citation": {
+                "en": "Hermosilla, T., Wulder, M.A., White, J.C., Bater, C.W., Baral, S.K., Leach, J.A., 2025. Expansion of treed area over Canada’s forested ecosystems: spatial and temporal trends. Forestry: An International Journal of Forest Research 98(5) 786-799. https://doi.org/10.1093/forestry/cpaf015.",
+                "fr": "Hermosilla, T., Wulder, M.A., White, J.C., Bater, C.W., Baral, S.K., Leach, J.A., 2025. Expansion of treed area over Canada’s forested ecosystems: spatial and temporal trends. Forestry: An International Journal of Forest Research 98(5) 786-799. https://doi.org/10.1093/forestry/cpaf015."
+              }
+            },
+          "layers": [
+            {
+              "id": null,
+              "format": "raster",
+              "path": "/data/processed/treed_area_1984-2022_cog.tif",
+              "type": "categorical",
+              "unit": "category",
+              "categories": [
+                {"value": 0, "label": { "en": "Non-Treed", "fr": "Non Arboré" } },
+                { "value": 1, "label": { "en": "Always Treed", "fr": "Toujours Arboré" } },
+                { "value": 2, "label": { "en": "Newly Treed (Tree Gain)", "fr": "Nouvellement Arboré (Gain de Bois)" } },
+                { "value": 3, "label": { "en": "Was-Treed (Tree Loss)", "fr": "Anciennement Arboré (Perte de Bois)" } }
+              ],
+              "metadata": {
+                "title": {
+                  "en": "Treed Area (1984–2022)", 
+                  "fr": "Zone Arborée (1984–2022)"
+                },
+                "description": {
+                  "en": "Classification of treed area over the period in always treed, newly treed (tree gain), and was-treed (tree loss) areas.", 
+                  "fr": "Classification des zones arborées sur la période en zones toujours arborées, nouvellement arborées (gain) et anciennement arborées (perte)."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": null,
+          "metadata": {
+            "title": {
+              "en": "Ecosystem Classification",
+              "fr": "Classification des Écosystèmes"
+            },
+              "description": {
+                "en": "Provides a 12-class ecosystem classification map of the Hudson Bay Lowlands derived from Landsat imagery and expert-based decision tree methods.",
+                "fr": "Fournit une carte de classification des écosystèmes à 12 classes des basses terres de la baie d'Hudson dérivée des images Landsat et de méthodes expertes."
+              },
+              "source": {
+                "en": "",
+                "fr": ""
+              },
+              "citation": {
+                "en": "Olthof, I., Biccum, T., Dingle‑Robertson, L., Duffe, J.; Environment and Climate Change Canada (ECCC), Geomatics Research Section. (2025‑11‑25). Hudson Bay Lowland Ecosystem Classification (HBL‑EC).",
+                "fr": "Olthof, I., Biccum, T., Dingle‑Robertson, L., Duffe, J.; Environnement et Changement climatique Canada (ECCC), Section de recherche en géomatique. (2025‑11‑25). Classification des écosystèmes des basses terres de la baie d'Hudson (HBL‑EC)."
+              }
+          },
+          "layers": [
+            {
+              "id": null,
+              "format": "raster",
+              "path": "/data/processed/ecosystem_classification_cog.tif",
+              "type": "categorical",
+              "unit": "category",
+              "categories": [
+                { "value": 1, "label": { "en": "Temperate/Boreal Forest", "fr": "Forêt Tempérée/Boréale" } },
+                { "value": 2, "label": { "en": "Treed Wetland", "fr": "Zone Humide Arborée" } },
+                { "value": 3, "label": { "en": "Shrubland‑grassland", "fr": "Landes‑prairies" } },
+                { "value": 4, "label": { "en": "Shrubland‑grassland (Fire Disturbance)", "fr": "Landes‑prairies (Perturbation par le feu)" } },
+                { "value": 5, "label": { "en": "Graminoid Fen", "fr": "Tourbière à graminoïdes" } },
+                { "value": 6, "label": { "en": "Shrub Fen", "fr": "Tourbière arbustive" } },
+                { "value": 7, "label": { "en": "Emergent/Open Wetland", "fr": "Zone humide émergente/ouverte" } },
+                { "value": 8, "label": { "en": "Bog", "fr": "Tourbière" } },
+                { "value": 9, "label": { "en": "Mudflats", "fr": "Vasières" } },
+                { "value": 10, "label": { "en": "Coastal Marsh", "fr": "Marais côtier" } },
+                { "value": 11, "label": { "en": "Supralittoral Marine", "fr": "Supralittoral marin" } },
+                { "value": 12, "label": { "en": "Water", "fr": "Eau" } }
+              ],
+              "metadata": {
+                "title": {
+                  "en": "Ecosystem Classification", 
+                  "fr": "Classification des Écosystèmes"
+                },
+                "description": {
+                  "en": "Classification of ecosystem types across the region.", 
+                  "fr": "Classification des types d'écosystèmes dans la région."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": null,
+          "metadata": {
+            "title": {
+              "en": "Ecological Framework",
+              "fr": "Cadre Écologique"
+            },
+              "description": {
+                "en": "Defines the ecological framework of the region, including ecozones, ecoprovinces, ecoregions, and ecodistricts.",
+                "fr": "Définit le cadre écologique de la région, y compris les écozones, les écoprovinces, les écorégions et les écodistricts."
+              },
+              "source": {
+                "en": "https://sis.agr.gc.ca/cansis/nsdb/ecostrat/gis_data.html",
+                "fr": "https://sis.agr.gc.ca/siscan/nsdb/ecostrat/gis_data.html"
+              },
+              "citation": {
+                "en": "Government of Canada. (2017). National Ecological Framework for Canada [GIS dataset]",
+                "fr": "Gouvernement du Canada. (2017). Cadre écologique national du Canada [jeu de données SIG]."
+              }
+          },
+          "layers": [
+            {
+              "id": null,
+              "format": "vector",
+              "path": "ecc-design.5qnlusni",
+              "type": "",
+              "unit": "",
+              "metadata": {
+                "title": {
+                  "en": "Ecozones", 
+                  "fr": "Écozones"
+                },
+                "description": {
+                  "en": "Major ecological regions defined by climate, vegetation, and landforms.", 
+                  "fr": "Principales régions écologiques définies par le climat, la végétation et les formes de relief."
+                }
+              }
+            },
+            {
+              "id": null,
+              "format": "vector",
+              "path": "ecc-design.0bfi191s",
+              "type": "",
+              "unit": "",
+              "metadata": {
+                "title": {
+                  "en": "Ecoprovinces", 
+                  "fr": "Écoprovinces"
+                },
+                "description": {
+                  "en": "Regional subdivisions of ecozones based on climate, geology, and vegetation patterns.", 
+                  "fr": "Subdivisions régionales des écozones basées sur le climat, la géologie et les modèles de végétation."
+                }
+              }
+            },
+            {
+              "id": null,
+              "format": "vector",
+              "path": "ecc-design.82zlzjnj",
+              "type": "",
+              "unit": "",
+              "metadata": {
+                "title": {
+                  "en": "Ecoregions", 
+                  "fr": "Écorégions"
+                },
+                "description": {
+                  "en": "Areas within ecoprovinces with similar ecosystems and natural features.", 
+                  "fr": "Zones au sein des écoprovinces avec des écosystèmes et des caractéristiques naturelles similaires."
+                }
+              }
+            },
+            {
+              "id": null,
+              "format": "vector",
+              "path": "ecc-design.7h4njtot",
+              "type": "",
+              "unit": "",
+              "metadata": {
+                "title": {
+                  "en": "Ecodistricts", 
+                  "fr": "Écodistricts"
+                },
+                "description": {
+                  "en": "Smaller units within ecoregions with distinct ecological characteristics.", 
+                  "fr": "Unités plus petites au sein des écorégions avec des caractéristiques écologiques distinctes."
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": null,
+      "metadata": {
+        "title": {
+          "en": "Indigenous Value",
+          "fr": "Valeur Autochtone"
+        }
+      },
+      "datasets": [
+        {
+          "id": null,
+          "metadata": {
+            "title": {
+              "en": "Indigenous Territories",
+              "fr": "Territoires Autochtones"
+            },
+              "description": {
+                "en": "Native Land maps Indigenous territories, treaties, and languages. The map is a living document informed by contributions of Indigenous communities.",
+                "fr": "Native Land cartographie les territoires, traités et langues autochtones. La carte est un document vivant informé par les communautés autochtones."
+              },
+              "source": {
+                "en": "https://native-land.ca/",
+                "fr": "https://native-land.ca/"
+              },
+              "citation": {
+                "en": "Native Land Digital. https://native-land.ca/",
+                "fr": "Native Land Digital. https://native-land.ca/"
+              }
+          },
+          "layers": [
+            {
+              "id": null,
+              "format": "vector",
+              "path": "nativeland.4pgB_next_nld_terr_prod_layer",
+              "type": "",
+              "unit": "",
+              "metadata": {
+                "title": {
+                  "en": "Indigenous Territories", 
+                  "fr": "Territoires Autochtones"
+                },
+                "description": {
+                  "en": "Indigenous territories.", 
+                  "fr": "Territoires autochtones."
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": null,
+      "metadata": {
+        "title": {
+          "en": "Human Pressures",
+          "fr": "Pressions Humaines"
+        }
+      },
+      "datasets": [
+        {
+          "id": null,
+          "metadata": {
+            "title": {
+              "en": "Mining Claims",
+              "fr": "Concessions Minières"
+            },
+              "description": {
+                "en": "This dataset provides a comprehensive overview of active mining claims, land tenures, and early exploration projects in Ontario, Canada.",
+                "fr": "Ce jeu de données fournit un aperçu complet des concessions minières actives, des tenures foncières et des projets d'exploration précoce en Ontario, Canada."
+              },
+              "source": {
+                "en": "https://www.geologyontario.mndm.gov.on.ca/ogsearth.html",
+                "fr": "https://www.geologyontario.mndm.gov.on.ca/ogsearth_f.html"
+              },
+              "citation": {
+                "en": "Ministry of Energy and Mines. (2026). Mining Claims – Operational GIS data for Ontario; Ontario Geological Survey, Mining Lands Administration System (MLAS).",
+                "fr": "Ministère de l'Énergie et des Mines. (2026). Concessions minières – Données SIG opérationnelles pour l'Ontario; Commission géologique de l'Ontario, Système d'administration des terres minières (MLAS)."
+              }
+          },
+          "layers": [
+            { 
+              "id": null,
+              "format": "vector",
+              "path": "ecc-design.52kxijg9",
+              "type": "",
+              "unit": "",
+              "metadata": { 
+                "title": {
+                  "en": "Mining Land Tenure", 
+                  "fr": "Tenure Minière"
+                },
+                "description": {
+                  "en": "Lands occupied by mining land tenures.", 
+                  "fr": "Terrains occupés par des tenures minières."
+                } 
+                } 
+            },
+            { 
+              "id": null,
+              "format": "vector",
+              "path": "ecc-design.1w9uoecm",
+              "type": "",
+              "unit": "",
+              "metadata": { 
+                "title": {
+                  "en": "Non-Mining Land Tenure", 
+                  "fr": "Tenure Non Minière"
+                },
+                "description": {
+                  "en": "Lands occupied by land tenures unrelated to mining.", 
+                  "fr": "Terrains occupés par des tenures non liées à l'exploitation minière."
+                } 
+                } 
+            },
+            { 
+              "id": null,
+              "format": "vector",
+              "path": "ecc-design.0eeafkm9",
+              "type": "",
+              "unit": "",
+              "metadata": { 
+                "title": {
+                  "en": "Operational Cell Claims", 
+                  "fr": "Concessions Cellules Opérationnelles"
+                },
+                "description": {
+                  "en": "Lands registered as mining claims.", 
+                  "fr": "Terrains enregistrés comme concessions minières."
+                } 
+                } 
+            },
+            { 
+              "id": null, 
+              "format": "vector",
+              "path": "ecc-design.3qoami28", 
+              "type": "polygon",
+              "unit": "",
+              "metadata": { 
+                "title": {
+                  "en": "Operational Alienations", 
+                  "fr": "Aliénations Opérationnelles"
+                },
+                "description": {
+                  "en": "Lands withdrawn or with restrictions related to mining claims.", 
+                  "fr": "Terrains retirés ou avec des restrictions liées aux concessions minières."
+                } 
+              } 
+            },
+            { 
+              "id": null, 
+              "format": "vector",
+              "path": "ecc-design.5bf0y7wr", 
+              "type": "",
+              "unit": "",
+              "metadata": { 
+                "title": {
+                  "en": "Plans & Permits", 
+                  "fr": "Plans & Permis"
+                },
+                "description": {
+                  "en": "Lands occupied by early exploration projects.", 
+                  "fr": "Terrains occupés par des projets d'exploration précoce."
+                } 
+              } 
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

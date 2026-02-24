@@ -1,0 +1,44 @@
+{
+  "dynamic_surface_water": {
+    "type": "raster",
+    "format": "GeoTIFF",
+    "layers": [
+      {
+        "url": "https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/water/dynamic-surface-water/dynamic-surface-water-compilation/dsw-1984-2023-trends.tif",
+        "filename": "dsw-1984-2023-trends.tif"
+      },
+      {
+        "url": "https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/water/dynamic-surface-water/dynamic-surface-water-compilation/dsw-1984-2023-frequency.tif",
+        "filename": "dsw-1984-2023-frequency.tif"
+      }
+    ]
+  },
+  "tree_cover": {
+    "type": "raster",
+    "format": "GeoTIFF",
+    "layers": [
+      {
+        "url": "https://opendata.nfis.org/downloads/forest_change/CA_treed_area_1984-2022.zip",
+        "filename": "CAN_treed_area_1984-2022.zip",
+        "extract": true
+      }
+    ]
+  },
+  "flood_index": {
+    "type": "raster",
+    "format": "GeoTIFF",
+    "layers": [
+      {
+        "url": "https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/water/flood-susceptibility/FS-national-2015-index.tif",
+        "filename": "FSI.tif"
+      }
+    ]
+  },
+  "snow_dynamics": {
+    "type": "raster",
+    "format": "GeoTIFF",
+    "base_url": "https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/land/snow-dynamics-yearly/HLS_Fmask_v1_1_snow_{type}_winterYear{wy}_Canada.tif",
+    "types": ["endL", "lengthT"],
+    "winter_years": ["1819", "1920", "2021", "2122", "2223", "2324"]
+  }
+}

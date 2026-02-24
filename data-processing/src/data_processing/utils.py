@@ -129,30 +129,31 @@ def batch_clip_rasters(
     raster_dir: Path,
     vector_path: Path,
     output_dir: Path,
-    patterns: list[str] | str = ["CAN_*"]
+    patterns: list[str] | str = ["CAN_*"],
+    folder_name: str | None = None  # optional custom folder name
 ) -> None:
     """
     Batch clip multiple rasters to a vector boundary.
-    Handles both direct files and files within matching folders.
+    Optionally store outputs in a custom folder name under output_dir.
 
     Args:
         raster_dir (Path): Directory containing input rasters or folders
         vector_path (Path): Path to vector boundary file
         output_dir (Path): Directory for clipped outputs
         patterns (list[str] | str): Glob pattern(s) to match files or folders
+        folder_name (str | None): Optional folder name under output_dir to store all clipped rasters
     """
-    # Convert single pattern to list for consistent handling
     if isinstance(patterns, str):
         patterns = [patterns]
 
     raster_files = []
 
     for pattern in patterns:
-        # First, look for direct files matching the pattern
+        # Direct files
         direct_files = list(raster_dir.glob(f"{pattern}.tif"))
         raster_files.extend(direct_files)
 
-        # Then, look for folders matching the pattern and find TIFs inside them
+        # Folders matching pattern
         matching_folders = [d for d in raster_dir.glob(pattern) if d.is_dir()]
         for folder in matching_folders:
             folder_tiffs = list(folder.glob("*.tif"))
@@ -160,22 +161,26 @@ def batch_clip_rasters(
 
     if not raster_files:
         print(f"No raster files found matching patterns {patterns} in {raster_dir}")
-        print(f"   Checked for direct files: {[f'{p}.tif' for p in patterns]}")
-        print(f"   Checked for folders: {patterns}")
         return
 
     print(f"Found {len(raster_files)} raster files to clip:")
     success_count = 0
 
     for raster_file in raster_files:
-        # Show the folder context for better understanding
-        relative_path = raster_file.relative_to(raster_dir)
-        print(f"{relative_path}")
-
         try:
-            # Create output filename (add HBL_ prefix)
-            output_name = "HBL_" + raster_file.name
-            output_path = output_dir / output_name
+            # Decide where to store clipped output
+            if folder_name:
+                output_subdir = output_dir / folder_name
+            elif raster_file.parent != raster_dir:
+                relative_folder = raster_file.parent.relative_to(raster_dir)
+                output_subdir = output_dir / relative_folder
+            else:
+                output_subdir = output_dir
+
+            output_subdir.mkdir(parents=True, exist_ok=True)
+
+            # Output filename now keeps original name, no prefix
+            output_path = output_subdir / raster_file.name
 
             clip_raster_to_vector(raster_file, vector_path, output_path)
             success_count += 1
@@ -184,7 +189,6 @@ def batch_clip_rasters(
             print(f"✘ Failed to clip {raster_file.name}: {e}")
 
     print(f"\nSuccessfully clipped {success_count}/{len(raster_files)} rasters")
-
 
 def raster_to_footprint(raster_path, output_vector):
     """
