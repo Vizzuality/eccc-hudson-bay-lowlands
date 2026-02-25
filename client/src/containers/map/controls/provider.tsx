@@ -4,10 +4,7 @@ import { createContext, type ReactNode, useContext, useState } from "react";
 const PopoverContext = createContext<{
   open: boolean;
   setOpen: (open: boolean) => void;
-}>({
-  open: false,
-  setOpen: () => {},
-});
+} | null>(null);
 
 // Provider component
 export const PopoverProvider = ({ children }: { children: ReactNode }) => {
