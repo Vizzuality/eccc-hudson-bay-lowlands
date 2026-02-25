@@ -22,6 +22,12 @@ const TestConsumer = () => {
 };
 
 describe("@containers/map/controls/provider", () => {
+  it("throws when usePopover is used outside PopoverProvider", () => {
+    expect(() => render(<TestConsumer />)).toThrow(
+      "usePopover must be used within a PopoverProvider",
+    );
+  });
+
   it("provides a default closed state", () => {
     render(
       <PopoverProvider>

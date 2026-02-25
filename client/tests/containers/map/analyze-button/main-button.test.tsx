@@ -120,6 +120,20 @@ describe("@containers/map/analyze-button/main-button", () => {
     expect(mockSetDatasets).toHaveBeenCalledWith(false);
   });
 
+  it("renders fallback icon and no text for an unrecognized mapStatus", async () => {
+    setupHooks("unknown" as MapStatus);
+    const user = userEvent.setup();
+    render(<MainButton />);
+
+    const button = screen.getByRole("button");
+    expect(button).toBeInTheDocument();
+    expect(button).not.toHaveTextContent(/analyze area|cancel|datasets/i);
+
+    await user.click(button);
+    expect(mockSetMapStatus).not.toHaveBeenCalled();
+    expect(mockSetDatasets).not.toHaveBeenCalled();
+  });
+
   it("shows tooltip when mapStatus is default", () => {
     setupHooks(MapStatus.default);
     render(<MainButton />);
