@@ -20,7 +20,7 @@ export const Controls: FC<ControlsProps> = ({
   <PopoverProvider>
     <div
       className={cn({
-        "bg-foreground/10 flex flex-col items-center justify-center space-y-2 rounded-4xl p-0.5 backdrop-blur-lg": true,
+        "flex flex-col items-center justify-center space-y-3": true,
         [className]: !!className,
       })}
     >

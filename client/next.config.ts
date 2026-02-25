@@ -5,6 +5,14 @@ const nextConfig: NextConfig = {
   // Enable standalone output for Docker deployments
   // This creates a self-contained build in .next/standalone
   output: "standalone",
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "api.mapbox.com",
+      },
+    ],
+  },
 };
 
 const withNextIntl = createNextIntlPlugin();

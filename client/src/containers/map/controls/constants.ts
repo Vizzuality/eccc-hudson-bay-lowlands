@@ -1,11 +1,11 @@
 export const CONTROL_BUTTON_STYLES = {
   default:
-    "relative flex h-9 w-9 rounded-full items-center justify-center bg-background p-2 text-foreground transition-colors shadow-sm cursor-pointer border-0",
+    "relative flex size-12 rounded-full items-center justify-center bg-white/40 backdrop-blur-lg text-foreground border transition-colors cursor-pointer",
   hover: "",
   active: "",
   disabled: "cursor-default opacity-50 pointer-events-none",
   open: "outline outline-2 outline-primary",
-  icon: "h-4 w-4",
+  icon: "size-4",
 };
 
 export const GLOBAL_SAHEL_BBOX = [
