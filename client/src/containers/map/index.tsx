@@ -7,7 +7,6 @@ import { useMapBasemap } from "@/app/[locale]/url-store";
 import AnalyzeButton from "@/containers/map/analyze-button";
 import { BASEMAPS, type BasemapId } from "@/containers/map/constants";
 import { Controls } from "@/containers/map/controls";
-import SearchControl from "@/containers/map/controls/search";
 import SettingsControl from "@/containers/map/controls/settings";
 import { BasemapControl } from "@/containers/map/controls/settings/basemap";
 import ZoomControl from "@/containers/map/controls/zoom";
@@ -50,7 +49,6 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
         <AnalyzeButton />
         {loaded && children}
         <Controls>
-          <SearchControl />
           <ZoomControl />
           <SettingsControl>
             <BasemapControl />
