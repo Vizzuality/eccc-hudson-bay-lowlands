@@ -1,9 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { useMapBasemap } from "@/app/[locale]/url-store";
 import { BASEMAPS } from "@/containers/map/constants";
 import { BasemapControl } from "@/containers/map/controls/settings/basemap";
+import messages from "@/i18n/messages/en.json";
 
 vi.mock("@/app/[locale]/url-store", () => ({
   useMapBasemap: vi.fn(),
@@ -25,6 +27,14 @@ function setupHooks(basemap = "default") {
   });
 }
 
+const renderBasemapControl = () => {
+  return render(
+    <NextIntlClientProvider locale="en" messages={messages}>
+      <BasemapControl />
+    </NextIntlClientProvider>,
+  );
+};
+
 describe("@containers/map/controls/settings/basemap", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -32,7 +42,7 @@ describe("@containers/map/controls/settings/basemap", () => {
 
   it("renders a button for each basemap option", () => {
     setupHooks();
-    render(<BasemapControl />);
+    renderBasemapControl();
 
     for (const b of Object.values(BASEMAPS)) {
       expect(screen.getByRole("button", { name: b.name })).toBeInTheDocument();
@@ -41,7 +51,7 @@ describe("@containers/map/controls/settings/basemap", () => {
 
   it("highlights the active basemap", () => {
     setupHooks("default");
-    render(<BasemapControl />);
+    renderBasemapControl();
 
     const defaultBtn = screen.getByRole("button", { name: "Default" });
     expect(defaultBtn.className).toContain("bg-blue-500/25");
@@ -53,7 +63,7 @@ describe("@containers/map/controls/settings/basemap", () => {
   it("calls setBasemap when a different basemap is clicked", async () => {
     setupHooks("default");
     const user = userEvent.setup();
-    render(<BasemapControl />);
+    renderBasemapControl();
 
     await user.click(screen.getByRole("button", { name: "Satellite" }));
 
@@ -62,7 +72,7 @@ describe("@containers/map/controls/settings/basemap", () => {
 
   it("highlights satellite when it is the active basemap", () => {
     setupHooks("satellite");
-    render(<BasemapControl />);
+    renderBasemapControl();
 
     const satelliteBtn = screen.getByRole("button", { name: "Satellite" });
     expect(satelliteBtn.className).toContain("bg-blue-500/25");
