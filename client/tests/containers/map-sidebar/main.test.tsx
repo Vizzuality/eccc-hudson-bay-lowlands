@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
@@ -54,12 +55,27 @@ function setupHooks(layers: string[] = []) {
   });
 }
 
-const renderMain = () =>
-  render(
-    <NextIntlClientProvider locale="en" messages={messages}>
-      <Main />
-    </NextIntlClientProvider>,
+const createQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        staleTime: 0,
+      },
+    },
+  });
+
+const renderMain = () => {
+  const queryClient = createQueryClient();
+
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <Main />
+      </NextIntlClientProvider>
+    </QueryClientProvider>,
   );
+};
 
 describe("@containers/map-sidebar/main", () => {
   beforeEach(() => {
