@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useLayers } from "@/app/[locale]/url-store";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -5,7 +6,10 @@ import DataLayersBottomBar from "@/containers/data-layers/bottom-bar";
 import CategorySelector from "@/containers/data-layers/category-selector";
 import DataLayersList from "@/containers/data-layers/list";
 import DataLayersSearch from "@/containers/data-layers/search";
-import type { DataLayer } from "@/types";
+import { useApiTranslation } from "@/i18n/api-translation";
+import API from "@/lib/api";
+import { queryKeys } from "@/lib/query-keys";
+import type { CategoryResponse, DataLayer } from "@/types";
 
 const mockItems: DataLayer[] = Array.from({ length: 20 }, (_, index) => ({
   id: index.toString(),
@@ -14,6 +18,16 @@ const mockItems: DataLayer[] = Array.from({ length: 20 }, (_, index) => ({
 }));
 
 const Main = () => {
+  const { getTranslation } = useApiTranslation();
+  const { data: categories } = useQuery({
+    queryKey: queryKeys.categories.all.queryKey,
+    queryFn: () => API<CategoryResponse>({ url: "/categories" }),
+    select: (data) =>
+      data.data.map((category) => ({
+        id: category.id,
+        name: getTranslation(category.metadata.title),
+      })),
+  });
   const t = useTranslations("map");
   const { layers, setLayers } = useLayers();
   const handleItemChange = (id: string, isSelected: boolean) => {
@@ -30,7 +44,7 @@ const Main = () => {
           <p className="text-muted-foreground">{t("description")}</p>
         </header>
         <DataLayersSearch />
-        <CategorySelector />
+        <CategorySelector items={categories ?? []} />
         <DataLayersList
           items={mockItems}
           layers={layers}
