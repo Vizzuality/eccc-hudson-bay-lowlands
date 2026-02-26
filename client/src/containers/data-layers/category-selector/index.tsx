@@ -1,18 +1,21 @@
+import type { FC } from "react";
 import { useCategory } from "@/app/[locale]/url-store";
-import { CATEGORIES } from "@/containers/data-layers/constants";
 import { cn } from "@/lib/utils";
 
-const CategorySelector = () => {
+interface CategorySelectorProps {
+  items: { id: number; name: string }[];
+}
+const CategorySelector: FC<CategorySelectorProps> = ({ items }) => {
   const { category, setCategory } = useCategory();
   return (
     <fieldset className="grid grid-cols-2 gap-2" aria-label="Category filter">
       <legend className="sr-only">Select a category</legend>
-      {CATEGORIES.map((c) => {
+      {[{ id: 0, name: "All" }, ...items].map((c) => {
         const isActive = category === c.id;
         return (
           <label
             key={c.id}
-            htmlFor={c.id}
+            htmlFor={c.id.toString()}
             className={cn({
               "bg-white/80 rounded-4xl p-6 cursor-pointer flex flex-col gap-2 shadow-lg transition-all": true,
               "border border-transparent select-none": true,
@@ -27,7 +30,7 @@ const CategorySelector = () => {
               type="radio"
               name="category"
               value={c.id}
-              id={c.id}
+              id={c.id.toString()}
               checked={isActive}
               onChange={() => setCategory(c.id)}
               className="sr-only"

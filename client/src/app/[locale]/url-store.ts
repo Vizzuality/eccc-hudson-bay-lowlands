@@ -1,6 +1,7 @@
 import {
   parseAsArrayOf,
   parseAsBoolean,
+  parseAsInteger,
   parseAsString,
   parseAsStringEnum,
   useQueryState,
@@ -22,18 +23,8 @@ export function useMapStatus() {
   return { mapStatus, setMapStatus };
 }
 
-export enum Category {
-  all = "all",
-  indigenousValue = "indigenousValue",
-  environment = "environment",
-  humanResources = "humanResources",
-}
-
 export function useCategory() {
-  const [category, setCategory] = useQueryState(
-    "category",
-    parseAsStringEnum(Object.keys(Category)).withDefault(Category.all),
-  );
+  const [category, setCategory] = useQueryState("category", parseAsInteger);
 
   return { category, setCategory };
 }

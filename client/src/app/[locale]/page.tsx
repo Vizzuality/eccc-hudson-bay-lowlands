@@ -1,8 +1,12 @@
+import { QueryClient } from "@tanstack/react-query";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import MapContainer from "@/containers/map";
 import MapSidebar from "@/containers/map-sidebar";
 import TopBar from "@/containers/top-bar";
+import { API } from "@/lib/api";
+import { queryKeys } from "@/lib/query-keys";
+import type { CategoryResponse } from "@/types";
 
 export async function generateMetadata({
   params,
@@ -18,7 +22,13 @@ export async function generateMetadata({
   };
 }
 
-export default function Home() {
+export default async function Home() {
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: queryKeys.categories.all.queryKey,
+    queryFn: () => API<CategoryResponse>({ url: "/categories" }),
+  });
+
   return (
     <main
       className="h-screen flex flex-col"

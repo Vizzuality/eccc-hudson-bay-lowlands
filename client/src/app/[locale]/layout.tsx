@@ -5,7 +5,7 @@ import { setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import "@/app/globals.css";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { ClientProviders } from "@/app/[locale]/providers";
+import ClientProviders from "@/app/[locale]/providers";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 const nunito = Nunito({
