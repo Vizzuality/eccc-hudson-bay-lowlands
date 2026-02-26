@@ -36,6 +36,7 @@ Copy `.env.example` to `.env` at the project root. These variables configure all
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `S3_BUCKET_NAME` | No | `""` | S3 bucket for application file storage |
+| `SEED_SECRET` | **Yes** | *(none)* | Secret token for authorizing database seed requests via `POST /seed`. The API will crash on startup if this is not set. |
 | `ROOT_PATH` | No | `""` | FastAPI root path for reverse proxy. Set to `/api` in production. |
 
 ### Client (build-time)
@@ -76,6 +77,7 @@ Configured in GitHub repository settings under Settings > Secrets and variables 
 | `DB_USERNAME` | Production database username | Deploy |
 | `DB_PASSWORD` | Production database password | Deploy |
 | `S3_BUCKET_NAME` | Production S3 bucket name | Deploy |
+| `SEED_SECRET` | Secret token for authorizing `POST /seed` requests | Deploy |
 | `NEXTAUTH_SECRET` | Production NextAuth.js secret | Deploy |
 
 ### Variables (non-sensitive)
@@ -102,6 +104,7 @@ These are set in the deploy bundle `.env` and consumed by `docker-compose.prod.y
 | `DB_USERNAME` | api | Database username |
 | `DB_PASSWORD` | api | Database password |
 | `S3_BUCKET_NAME` | api | S3 bucket name |
+| `SEED_SECRET` | api | Secret token for authorizing `POST /seed` requests |
 | `ROOT_PATH` | api | Always `/api` in production (set in compose file) |
 | `NEXTAUTH_URL` | client | Production URL for NextAuth.js |
 | `NEXTAUTH_SECRET` | client | NextAuth.js signing secret |

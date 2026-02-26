@@ -38,6 +38,9 @@ class Settings(BaseSettings):
     db_password: str = Field(default="eccc", validation_alias="DB_PASSWORD")
     db_name: str = Field(default="eccc_db", validation_alias="DB_NAME")
 
+    # Seed secret for authenticating POST /seed requests
+    seed_secret: str = Field(validation_alias="SEED_SECRET")
+
     # S3 configuration
     s3_bucket_name: str = Field(default="", validation_alias="S3_BUCKET_NAME")
 

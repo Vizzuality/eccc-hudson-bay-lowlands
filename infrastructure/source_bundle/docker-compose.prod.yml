@@ -20,6 +20,7 @@ services:
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
       - S3_BUCKET_NAME=${S3_BUCKET_NAME}
+      - SEED_SECRET=${SEED_SECRET}
       - ROOT_PATH=/api
 
   nginx:

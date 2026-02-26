@@ -61,6 +61,7 @@ jobs:
       DB_USERNAME: eccc
       DB_PASSWORD: eccc
       DB_NAME: eccc_db_test
+      SEED_SECRET: ci-test-seed-secret
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
