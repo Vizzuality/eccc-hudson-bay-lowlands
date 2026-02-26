@@ -32,6 +32,7 @@ services:
       DB_USERNAME: eccc
       DB_PASSWORD: eccc
       DB_NAME: eccc_db
+      SEED_SECRET: ${SEED_SECRET:-dev-seed-secret}
     ports:
       - "8000:8000"
 

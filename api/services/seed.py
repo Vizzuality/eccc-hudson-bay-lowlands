@@ -95,21 +95,31 @@ def upsert_layer(session: Session, layer_data: dict, dataset_id: int) -> tuple[L
     return new_layer, True
 
 
-def seed_database(session: Session, metadata_path: Path | str | None = None) -> dict:
-    """Seed the database from metadata.json.
+def seed_database(
+    session: Session,
+    metadata_path: Path | str | None = None,
+    payload: dict | None = None,
+) -> dict:
+    """Seed the database from metadata.json or a provided payload dict.
+
+    Provide either metadata_path (file) or payload (dict). If both are given,
+    payload takes precedence. If neither is given, the default file path is used.
 
     Does NOT commit — the caller is responsible for committing or rolling back.
 
     Returns:
         Summary dict with counts of created/updated records.
     """
-    if metadata_path is None:
-        metadata_path = DEFAULT_METADATA_PATH
-    metadata_path = Path(metadata_path)
-
-    logger.info("Loading metadata from: %s", metadata_path)
-    with open(metadata_path) as f:
-        data = json.load(f)
+    if payload is not None:
+        data = payload
+        logger.info("Seeding from provided payload")
+    else:
+        if metadata_path is None:
+            metadata_path = DEFAULT_METADATA_PATH
+        metadata_path = Path(metadata_path)
+        logger.info("Loading metadata from: %s", metadata_path)
+        with open(metadata_path) as f:
+            data = json.load(f)
 
     counts = {
         "categories": {"created": 0, "updated": 0},

@@ -267,7 +267,27 @@ def test_layer_metadata_stored(db_session):
 # =============================================================================
 
 
-def test_seed_endpoint_wired(client):
-    """POST /seed endpoint is registered and responds."""
-    response = client.post("/seed")
-    assert response.status_code in (200, 404, 500)
+def test_seed_endpoint_with_payload(client):
+    """POST /seed with valid secret and payload returns success."""
+    import os
+
+    seed_secret = os.environ["SEED_SECRET"]
+    response = client.post("/seed", json=MINIMAL_METADATA, headers={"X-Seed-Secret": seed_secret})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "success"
+    assert data["counts"]["categories"]["created"] == 1
+    assert data["counts"]["datasets"]["created"] == 1
+    assert data["counts"]["layers"]["created"] == 3
+
+
+def test_seed_endpoint_missing_secret(client):
+    """POST /seed without secret header returns 422."""
+    response = client.post("/seed", json=MINIMAL_METADATA)
+    assert response.status_code == 422
+
+
+def test_seed_endpoint_invalid_secret(client):
+    """POST /seed with wrong secret returns 403."""
+    response = client.post("/seed", json=MINIMAL_METADATA, headers={"X-Seed-Secret": "wrong"})
+    assert response.status_code == 403

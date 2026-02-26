@@ -3,6 +3,7 @@
 import os
 
 os.environ["TESTING"] = "true"
+os.environ.setdefault("SEED_SECRET", "test-seed-secret")
 
 import sys
 from pathlib import Path

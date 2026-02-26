@@ -97,6 +97,41 @@ pnpm dev
 
 The client starts at http://localhost:3000.
 
+### Seeding the database
+
+The database is seeded via a `POST /seed` endpoint that accepts a JSON payload with the full metadata structure (categories, datasets, layers). The request must include an `X-Seed-Secret` header matching the `SEED_SECRET` environment variable.
+
+**Local development (Docker)**:
+
+```bash
+curl -X POST http://localhost:8000/seed \
+  -H "Content-Type: application/json" \
+  -H "X-Seed-Secret: dev-seed-secret" \
+  -d @data-processing/metadata.json
+```
+
+**Local development (without Docker)**:
+
+You can also use the standalone CLI script:
+
+```bash
+cd api
+SEED_SECRET=dev-seed-secret uv run python seed.py
+```
+
+This reads `data-processing/metadata.json` and sends it to the running API.
+
+**Production**:
+
+```bash
+curl -X POST https://your-domain.com/api/seed \
+  -H "Content-Type: application/json" \
+  -H "X-Seed-Secret: $SEED_SECRET" \
+  -d @data-processing/metadata.json
+```
+
+The seed is idempotent: running it multiple times updates existing records rather than creating duplicates.
+
 ### Running API tests
 
 ```bash
