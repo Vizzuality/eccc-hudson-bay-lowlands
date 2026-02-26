@@ -81,9 +81,9 @@ RUN adduser --system --uid 1001 nextjs
 # Copy necessary files from builder
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder /app/client/public ./public
+COPY --from=builder /app/client/public ./client/public
 COPY --from=builder --chown=nextjs:nodejs /app/client/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/client/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/client/.next/static ./client/.next/static
 
 # Switch to non-root user
 USER nextjs
@@ -96,4 +96,4 @@ ENV HOSTNAME="0.0.0.0"
 ENV PORT=3000
 
 # Start the application
-CMD ["node", "server.js"]
+CMD ["node", "client/server.js"]
