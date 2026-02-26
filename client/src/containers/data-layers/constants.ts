@@ -1,13 +1,13 @@
-import { DataSet } from "@/app/[locale]/url-store";
+import { Category } from "@/app/[locale]/url-store";
 
-const datasetLabels = {
-  [DataSet.all]: "All",
-  [DataSet.indigenousValue]: "Indigenous Value",
-  [DataSet.environment]: "Environment",
-  [DataSet.humanResources]: "Human Resources",
+const categoryLabels = {
+  [Category.all]: "All",
+  [Category.indigenousValue]: "Indigenous Value",
+  [Category.environment]: "Environment",
+  [Category.humanResources]: "Human Resources",
 };
 
-export const DATASETS = Object.values(DataSet).map((dataset) => ({
-  id: dataset,
-  name: datasetLabels[dataset],
+export const CATEGORIES = Object.values(Category).map((category) => ({
+  id: category,
+  name: categoryLabels[category],
 }));

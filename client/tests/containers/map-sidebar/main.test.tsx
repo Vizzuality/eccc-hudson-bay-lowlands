@@ -23,8 +23,8 @@ vi.mock("@/containers/data-layers/search", () => ({
   default: () => <div data-testid="search" />,
 }));
 
-vi.mock("@/containers/data-layers/dataset-selector", () => ({
-  default: () => <div data-testid="dataset-selector" />,
+vi.mock("@/containers/data-layers/category-selector", () => ({
+  default: () => <div data-testid="category-selector" />,
 }));
 
 vi.mock("@/containers/data-layers/list", () => ({

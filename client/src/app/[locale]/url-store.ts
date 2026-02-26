@@ -22,20 +22,20 @@ export function useMapStatus() {
   return { mapStatus, setMapStatus };
 }
 
-export enum DataSet {
+export enum Category {
   all = "all",
   indigenousValue = "indigenousValue",
   environment = "environment",
   humanResources = "humanResources",
 }
 
-export function useDataSet() {
-  const [dataSet, setDataSet] = useQueryState(
-    "dataSet",
-    parseAsStringEnum(Object.keys(DataSet)).withDefault(DataSet.all),
+export function useCategory() {
+  const [category, setCategory] = useQueryState(
+    "category",
+    parseAsStringEnum(Object.keys(Category)).withDefault(Category.all),
   );
 
-  return { dataSet, setDataSet };
+  return { category, setCategory };
 }
 
 export function useLayers() {

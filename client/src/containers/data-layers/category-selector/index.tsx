@@ -1,18 +1,18 @@
-import { useDataSet } from "@/app/[locale]/url-store";
-import { DATASETS } from "@/containers/data-layers/constants";
+import { useCategory } from "@/app/[locale]/url-store";
+import { CATEGORIES } from "@/containers/data-layers/constants";
 import { cn } from "@/lib/utils";
 
-const DatasetSelector = () => {
-  const { dataSet, setDataSet } = useDataSet();
+const CategorySelector = () => {
+  const { category, setCategory } = useCategory();
   return (
-    <fieldset className="grid grid-cols-2 gap-2" aria-label="Dataset filter">
-      <legend className="sr-only">Select a dataset</legend>
-      {DATASETS.map((dataset) => {
-        const isActive = dataSet === dataset.id;
+    <fieldset className="grid grid-cols-2 gap-2" aria-label="Category filter">
+      <legend className="sr-only">Select a category</legend>
+      {CATEGORIES.map((c) => {
+        const isActive = category === c.id;
         return (
           <label
-            key={dataset.id}
-            htmlFor={dataset.id}
+            key={c.id}
+            htmlFor={c.id}
             className={cn({
               "bg-white/80 rounded-4xl p-6 cursor-pointer flex flex-col gap-2 shadow-lg transition-all": true,
               "border border-transparent select-none": true,
@@ -25,11 +25,11 @@ const DatasetSelector = () => {
           >
             <input
               type="radio"
-              name="dataset"
-              value={dataset.id}
-              id={dataset.id}
+              name="category"
+              value={c.id}
+              id={c.id}
               checked={isActive}
-              onChange={() => setDataSet(dataset.id)}
+              onChange={() => setCategory(c.id)}
               className="sr-only"
             />
             <span
@@ -38,7 +38,7 @@ const DatasetSelector = () => {
                 "text-primary-foreground": isActive,
               })}
             >
-              {dataset.name}
+              {c.name}
             </span>
             <span className="relative text-xs text-muted-foreground font-semibold">
               5 data layers
@@ -50,4 +50,4 @@ const DatasetSelector = () => {
   );
 };
 
-export default DatasetSelector;
+export default CategorySelector;
