@@ -16,6 +16,8 @@ dev-dependencies = [
     "pytest",
     "httpx",
     "ruff",
+    "moto[s3]",
+    "boto3",
 ]
 
 [tool.ruff]
