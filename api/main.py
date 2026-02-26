@@ -9,7 +9,7 @@ from config import get_settings
 from db.base import Base
 from db.database import engine
 from models import Category, Dataset, Layer  # noqa: F401  # Import models to register with Base metadata
-from routers import categories, cog, datasets, health, layers
+from routers import categories, cog, datasets, health, layers, seed
 
 settings = get_settings()
 
@@ -43,6 +43,10 @@ tags_metadata = [
     {
         "name": "Datasets",
         "description": "Read-only endpoints for dataset metadata and related layers.",
+    },
+    {
+        "name": "Seed",
+        "description": "Database seeding endpoint for populating data from metadata.json.",
     },
 ]
 
@@ -79,6 +83,7 @@ app.include_router(cog.router, prefix="/cog", tags=["COG"])
 app.include_router(layers.router, prefix="/layers", tags=["Layers"])
 app.include_router(categories.router, prefix="/categories", tags=["Categories"])
 app.include_router(datasets.router, prefix="/datasets", tags=["Datasets"])
+app.include_router(seed.router, prefix="/seed", tags=["Seed"])
 
 
 @app.get(
@@ -99,4 +104,5 @@ def root():
         "layers": "/layers",
         "categories": "/categories",
         "datasets": "/datasets",
+        "seed": "/seed",
     }
