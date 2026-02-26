@@ -1,5 +1,6 @@
 """FastAPI application with enhanced OpenAPI configuration and CORS support."""
 
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -17,6 +18,24 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan handler for startup and shutdown events."""
+    # Configure GDAL for optimized S3 COG access
+    gdal_env = {
+        "GDAL_DISABLE_READDIR_ON_OPEN": "EMPTY_DIR",
+        "GDAL_HTTP_MERGE_CONSECUTIVE_RANGES": "YES",
+        "GDAL_HTTP_MULTIPLEX": "YES",
+        "GDAL_HTTP_VERSION": "2",
+        "GDAL_CACHEMAX": "200",
+        "GDAL_BAND_BLOCK_CACHE": "HASHSET",
+        "CPL_VSIL_CURL_CACHE_SIZE": "200000000",
+        "CPL_VSIL_CURL_ALLOWED_EXTENSIONS": ".tif,.TIF,.tiff",
+        "VSI_CACHE": "TRUE",
+        "VSI_CACHE_SIZE": "5000000",
+        "AWS_REGION": settings.aws_region,
+    }
+    for key, value in gdal_env.items():
+        os.environ.setdefault(key, value)
+
+    # Create all database tables on startup
     # Drop and recreate all tables to keep schema in sync with ORM models.
     # TODO: Replace with Alembic migrations once the data model is stable.
     Base.metadata.drop_all(bind=engine)
