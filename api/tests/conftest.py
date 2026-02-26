@@ -11,8 +11,11 @@ from pathlib import Path
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+import numpy as np
 import pytest
+import rasterio
 from fastapi.testclient import TestClient
+from rasterio.transform import from_bounds
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -313,3 +316,39 @@ def searchable_datasets(db_session, sample_category_metadata):
     for d in datasets:
         db_session.refresh(d)
     yield datasets
+
+
+# =============================================================================
+# COG (Cloud Optimized GeoTIFF) Fixtures
+# =============================================================================
+
+
+@pytest.fixture
+def minimal_cog(tmp_path):
+    """Create a minimal Cloud Optimized GeoTIFF for integration testing.
+
+    Generates a 256x256 uint8 raster covering a portion of the Hudson Bay
+    region (lon -90 to -80, lat 50 to 60) in EPSG:4326.
+    """
+    filepath = tmp_path / "test_cog.tif"
+    data = np.random.randint(0, 255, (1, 256, 256), dtype=np.uint8)
+    transform = from_bounds(-90, 50, -80, 60, 256, 256)
+
+    profile = {
+        "driver": "GTiff",
+        "dtype": "uint8",
+        "width": 256,
+        "height": 256,
+        "count": 1,
+        "crs": "EPSG:4326",
+        "transform": transform,
+        "tiled": True,
+        "blockxsize": 256,
+        "blockysize": 256,
+        "compress": "deflate",
+    }
+
+    with rasterio.open(filepath, "w", **profile) as dst:
+        dst.write(data)
+
+    return str(filepath)
