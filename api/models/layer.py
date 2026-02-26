@@ -7,15 +7,16 @@ from db.base import Base
 
 
 class Layer(Base):
-    """Layer model for storing geospatial layer metadata."""
+    """Layer model for geospatial layer metadata."""
 
     __tablename__ = "layers"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    type: Mapped[str] = mapped_column(String, nullable=False)
+    format_: Mapped[str] = mapped_column("format", String, nullable=False)
+    type_: Mapped[str | None] = mapped_column("type", String, nullable=True)
     path: Mapped[str] = mapped_column(String, nullable=False)
-    units: Mapped[str | None] = mapped_column(String, nullable=True)
-    legend: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    unit: Mapped[str | None] = mapped_column(String, nullable=True)
+    categories: Mapped[list | None] = mapped_column(JSON, nullable=True)
     metadata_: Mapped[dict] = mapped_column("metadata", JSON, nullable=False)
     dataset_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("datasets.id"), nullable=True)
 

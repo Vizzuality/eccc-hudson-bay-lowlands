@@ -1,18 +1,19 @@
-"""Pydantic schemas for Layer model."""
+"""Pydantic schemas for Layer responses."""
 
 from pydantic import BaseModel
 
-from schemas.i18n import LayerMetadata
+from schemas.i18n import LayerCategory, LayerMetadata
 
 
 class LayerSchema(BaseModel):
     """Response schema for a layer."""
 
     id: int
-    type: str
+    format: str
+    type: str | None = None
     path: str
-    units: str | None = None
-    legend: dict | None = None
+    unit: str | None = None
+    categories: list[LayerCategory] | None = None
     metadata: LayerMetadata
     dataset_id: int | None = None
 
@@ -21,17 +22,18 @@ class LayerSchema(BaseModel):
         """Convert an ORM Layer to a LayerSchema."""
         return cls(
             id=layer.id,
-            type=layer.type,
+            format=layer.format_,
+            type=layer.type_,
             path=layer.path,
-            units=layer.units,
-            legend=layer.legend,
+            unit=layer.unit,
+            categories=layer.categories,
             metadata=layer.metadata_,
             dataset_id=layer.dataset_id,
         )
 
 
 class PaginatedLayerResponse(BaseModel):
-    """Schema for paginated layer list response."""
+    """Paginated layer list response."""
 
     data: list[LayerSchema]
     total: int

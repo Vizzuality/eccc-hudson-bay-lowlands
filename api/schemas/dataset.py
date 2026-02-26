@@ -1,4 +1,4 @@
-"""Pydantic schemas for Dataset model."""
+"""Pydantic schemas for Dataset responses."""
 
 from pydantic import BaseModel
 
@@ -11,6 +11,7 @@ class DatasetSchema(BaseModel):
 
     id: int
     metadata: DatasetMetadata
+    category_id: int
 
     @classmethod
     def from_orm_dataset(cls, dataset) -> "DatasetSchema":
@@ -18,14 +19,16 @@ class DatasetSchema(BaseModel):
         return cls(
             id=dataset.id,
             metadata=dataset.metadata_,
+            category_id=dataset.category_id,
         )
 
 
 class DatasetWithLayersSchema(BaseModel):
-    """Response schema for a dataset with its layers."""
+    """Response schema for a dataset with nested layers."""
 
     id: int
     metadata: DatasetMetadata
+    category_id: int
     layers: list[LayerSchema]
 
     @classmethod
@@ -34,19 +37,20 @@ class DatasetWithLayersSchema(BaseModel):
         return cls(
             id=dataset.id,
             metadata=dataset.metadata_,
+            category_id=dataset.category_id,
             layers=[LayerSchema.from_orm_layer(layer) for layer in dataset.layers],
         )
 
 
 class PaginatedDatasetResponse(BaseModel):
-    """Schema for paginated dataset list response (without layers)."""
+    """Paginated dataset list response."""
 
     data: list[DatasetSchema]
     total: int
 
 
 class PaginatedDatasetWithLayersResponse(BaseModel):
-    """Schema for paginated dataset list response (with layers)."""
+    """Paginated dataset list response with layers."""
 
     data: list[DatasetWithLayersSchema]
     total: int
