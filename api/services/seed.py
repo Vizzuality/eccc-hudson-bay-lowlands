@@ -62,7 +62,7 @@ def upsert_dataset(session: Session, dataset_data: dict, category_id: int) -> tu
 
 def upsert_layer(session: Session, layer_data: dict, dataset_id: int) -> tuple[Layer, bool]:
     """Find or create a layer by path. Returns (layer, is_new)."""
-    path = layer_data["path"]
+    path = layer_data["path"].lstrip("/")
     stmt = select(Layer).where(Layer.path == path)
     existing = session.execute(stmt).scalar_one_or_none()
 

@@ -151,7 +151,7 @@ def test_nonempty_type_preserved(db_session):
     seed_database(db_session, metadata_path)
     db_session.commit()
 
-    raster_layer = db_session.execute(select(Layer).where(Layer.path == "/data/test/layer_a.tif")).scalar_one()
+    raster_layer = db_session.execute(select(Layer).where(Layer.path == "data/test/layer_a.tif")).scalar_one()
     assert raster_layer.type_ == "continuous"
     assert raster_layer.unit == "cm"
 
@@ -166,7 +166,7 @@ def test_categories_array_stored(db_session):
     seed_database(db_session, metadata_path)
     db_session.commit()
 
-    cat_layer = db_session.execute(select(Layer).where(Layer.path == "/data/test/layer_c.tif")).scalar_one()
+    cat_layer = db_session.execute(select(Layer).where(Layer.path == "data/test/layer_c.tif")).scalar_one()
     assert cat_layer.categories is not None
     assert len(cat_layer.categories) == 2
     assert cat_layer.categories[0]["value"] == 1
@@ -178,7 +178,7 @@ def test_non_categorical_has_null_categories(db_session):
     seed_database(db_session, metadata_path)
     db_session.commit()
 
-    raster_layer = db_session.execute(select(Layer).where(Layer.path == "/data/test/layer_a.tif")).scalar_one()
+    raster_layer = db_session.execute(select(Layer).where(Layer.path == "data/test/layer_a.tif")).scalar_one()
     assert raster_layer.categories is None
 
 
@@ -257,7 +257,7 @@ def test_layer_metadata_stored(db_session):
     seed_database(db_session, metadata_path)
     db_session.commit()
 
-    layer = db_session.execute(select(Layer).where(Layer.path == "/data/test/layer_a.tif")).scalar_one()
+    layer = db_session.execute(select(Layer).where(Layer.path == "data/test/layer_a.tif")).scalar_one()
     assert layer.metadata_["title"]["en"] == "Layer A"
     assert layer.format_ == "raster"
 
