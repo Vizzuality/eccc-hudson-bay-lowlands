@@ -35,7 +35,11 @@ Copy `.env.example` to `.env` at the project root. These variables configure all
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `S3_BUCKET_NAME` | No | `""` | S3 bucket for application file storage |
+| `S3_BUCKET_NAME` | No | `""` | S3 bucket name for storing Cloud Optimized GeoTIFF (COG) files. Used by TiTiler to resolve layer paths (e.g., layer path `temperature/2024.tif` becomes `s3://bucket-name/temperature/2024.tif`). |
+| `AWS_REGION` | No | `""` | AWS region where S3 bucket resides (e.g., `eu-north-1`). Required for GDAL and boto3 to access S3. |
+| `AWS_ACCESS_KEY_ID` | No | `""` | AWS IAM access key ID for S3 authentication. Not needed if using IAM role-based access (recommended for production). |
+| `AWS_SECRET_ACCESS_KEY` | No | `""` | AWS IAM secret access key for S3 authentication. Not needed if using IAM role-based access. |
+| `AWS_SESSION_TOKEN` | No | `""` | Optional AWS session token for temporary STS credentials. Used with `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. |
 | `SEED_SECRET` | **Yes** | *(none)* | Secret token for authorizing database seed requests via `POST /seed`. The API will crash on startup if this is not set. |
 | `ROOT_PATH` | No | `""` | FastAPI root path for reverse proxy. Set to `/api` in production. |
 
@@ -76,7 +80,11 @@ Configured in GitHub repository settings under Settings > Secrets and variables 
 | `DB_NAME` | Production database name | Deploy |
 | `DB_USERNAME` | Production database username | Deploy |
 | `DB_PASSWORD` | Production database password | Deploy |
-| `S3_BUCKET_NAME` | Production S3 bucket name | Deploy |
+| `S3_BUCKET_NAME` | Production S3 bucket name for COG storage | Deploy |
+| `AWS_REGION` | AWS region for S3 and other AWS services | Deploy |
+| `AWS_ACCESS_KEY_ID` | AWS IAM access key (optional with IAM role) | Deploy |
+| `AWS_SECRET_ACCESS_KEY` | AWS IAM secret key (optional with IAM role) | Deploy |
+| `AWS_SESSION_TOKEN` | Optional AWS STS session token | Deploy |
 | `SEED_SECRET` | Secret token for authorizing `POST /seed` requests | Deploy |
 | `NEXTAUTH_SECRET` | Production NextAuth.js secret | Deploy |
 
@@ -103,7 +111,11 @@ These are set in the deploy bundle `.env` and consumed by `docker-compose.prod.y
 | `DB_NAME` | api | Database name |
 | `DB_USERNAME` | api | Database username |
 | `DB_PASSWORD` | api | Database password |
-| `S3_BUCKET_NAME` | api | S3 bucket name |
+| `S3_BUCKET_NAME` | api | S3 bucket name for COG tile storage |
+| `AWS_REGION` | api | AWS region for S3 and GDAL operations |
+| `AWS_ACCESS_KEY_ID` | api | AWS IAM access key (optional with IAM role) |
+| `AWS_SECRET_ACCESS_KEY` | api | AWS IAM secret key (optional with IAM role) |
+| `AWS_SESSION_TOKEN` | api | AWS STS session token (optional) |
 | `SEED_SECRET` | api | Secret token for authorizing `POST /seed` requests |
 | `ROOT_PATH` | api | Always `/api` in production (set in compose file) |
 | `NEXTAUTH_URL` | client | Production URL for NextAuth.js |

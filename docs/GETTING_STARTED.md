@@ -33,6 +33,25 @@ cp .env.example .env
 
 The defaults in `.env.example` work out of the box for local development.
 
+**For S3 tile serving (optional):**
+
+If you want to test S3-backed COG tile serving locally, update your `.env` with AWS credentials:
+
+```bash
+# Required for S3 tile serving
+S3_BUCKET_NAME=your-bucket-name
+AWS_REGION=eu-north-1
+
+# Option A: Using AWS access keys (for local testing only)
+AWS_ACCESS_KEY_ID=your-access-key
+AWS_SECRET_ACCESS_KEY=your-secret-key
+
+# Option B: Using AWS IAM role (recommended for production)
+# Omit the access key variables and the API will use the EC2 IAM role
+```
+
+If you do not need S3 tile serving for your work, you can leave these blank.
+
 ### 3. Start all services
 
 ```bash
