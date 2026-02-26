@@ -89,6 +89,15 @@ The database runs on a separate RDS instance (not in Docker).
 4. FastAPI health endpoint runs `SELECT 1` against the database
 5. Aggregated status returns: client, API, and database health
 
+**COG tile serving request (with S3 storage):**
+1. Client requests `/api/cog/tiles/{z}/{x}/{y}` for map tile
+2. Nginx rewrites to `/cog/tiles/{z}/{x}/{y}` and proxies to FastAPI
+3. FastAPI COG router applies custom `s3_url_dependency` path dependency
+4. Path dependency prepends `s3://{S3_BUCKET_NAME}/` to the layer path stored in database (e.g., `temperature/2024.tif` becomes `s3://bucket/temperature/2024.tif`)
+5. TiTiler receives the full S3 URL and uses GDAL to read from S3 (via vsicurl or virtual file system)
+6. Tile is generated and returned as PNG/WebP
+7. GDAL caching (configured in lifespan) reduces repeated S3 fetches for overlapping requests
+
 ## Technology Stack
 
 | Component | Technology | Version | Purpose |
@@ -166,6 +175,7 @@ eccc-hudson-bay-lowlands/
 | Category model (new) | Top-level thematic grouping (e.g., "Climate", "Land Cover"); 1:N relationship to datasets | - |
 | `metadata_` mapped to `metadata` column | Avoids collision with SQLAlchemy `Base.metadata`; clean Pydantic access | - |
 | Cascade delete: Category > Dataset > Layer | Deleting a category removes its datasets and their layers; maintains referential integrity | - |
+| S3 private bucket tile serving via TiTiler | Custom path_dependency on TiTiler's TilerFactory prepends `s3://{bucket}/` to layer paths; GDAL env vars for vsicurl caching | - |
 | Trunk-based deployment | Single main branch with automated deploy simplifies release process | - |
 | Nginx reverse proxy in production | Unified entry point; client and API share a single domain | - |
 | Multi-stage Docker builds | Minimizes production image size; separates build and runtime dependencies | - |
