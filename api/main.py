@@ -17,7 +17,9 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan handler for startup and shutdown events."""
-    # Create all database tables on startup
+    # Drop and recreate all tables to keep schema in sync with ORM models.
+    # TODO: Replace with Alembic migrations once the data model is stable.
+    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     yield
 
