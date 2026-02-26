@@ -8,8 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from config import get_settings
 from db.base import Base
 from db.database import engine
-from models import Dataset, Layer  # noqa: F401  # Import models to register with Base metadata
-from routers import cog, datasets, health, layers
+from models import Category, Dataset, Layer  # noqa: F401  # Import models to register with Base metadata
+from routers import categories, cog, datasets, health, layers
 
 settings = get_settings()
 
@@ -35,6 +35,10 @@ tags_metadata = [
     {
         "name": "Layers",
         "description": "Read-only endpoints for geospatial layer metadata.",
+    },
+    {
+        "name": "Categories",
+        "description": "Read-only endpoints for category metadata and related datasets.",
     },
     {
         "name": "Datasets",
@@ -73,6 +77,7 @@ app.add_middleware(
 app.include_router(health.router)
 app.include_router(cog.router, prefix="/cog", tags=["COG"])
 app.include_router(layers.router, prefix="/layers", tags=["Layers"])
+app.include_router(categories.router, prefix="/categories", tags=["Categories"])
 app.include_router(datasets.router, prefix="/datasets", tags=["Datasets"])
 
 
@@ -92,5 +97,6 @@ def root():
         "health": "/health",
         "cog": "/cog",
         "layers": "/layers",
+        "categories": "/categories",
         "datasets": "/datasets",
     }

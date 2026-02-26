@@ -30,6 +30,7 @@ def list_datasets(
     offset: int = Query(default=0, ge=0, description="Number of items to skip"),
     limit: int = Query(default=10, ge=1, le=100, description="Number of items to return"),
     search: str | None = Query(default=None, description="Case-insensitive partial title search (en and fr)"),
+    category_id: int | None = Query(default=None, description="Filter datasets by category ID"),
     include_layers: bool = Query(default=False, description="Include related layers in response"),
     db: Session = Depends(get_db),
 ) -> Union[PaginatedDatasetResponse, PaginatedDatasetWithLayersResponse]:
@@ -39,11 +40,15 @@ def list_datasets(
 
     if search:
         search_filter = or_(
-            Dataset.metadata_["en"]["title"].as_string().ilike(f"%{search}%"),
-            Dataset.metadata_["fr"]["title"].as_string().ilike(f"%{search}%"),
+            Dataset.metadata_["title"]["en"].as_string().ilike(f"%{search}%"),
+            Dataset.metadata_["title"]["fr"].as_string().ilike(f"%{search}%"),
         )
         stmt = stmt.where(search_filter)
         count_stmt = count_stmt.where(search_filter)
+
+    if category_id is not None:
+        stmt = stmt.where(Dataset.category_id == category_id)
+        count_stmt = count_stmt.where(Dataset.category_id == category_id)
 
     if include_layers:
         stmt = stmt.options(selectinload(Dataset.layers))

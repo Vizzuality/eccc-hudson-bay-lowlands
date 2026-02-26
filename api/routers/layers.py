@@ -29,8 +29,8 @@ def list_layers(
 
     if search:
         search_filter = or_(
-            Layer.metadata_["en"]["title"].as_string().ilike(f"%{search}%"),
-            Layer.metadata_["fr"]["title"].as_string().ilike(f"%{search}%"),
+            Layer.metadata_["title"]["en"].as_string().ilike(f"%{search}%"),
+            Layer.metadata_["title"]["fr"].as_string().ilike(f"%{search}%"),
         )
         stmt = stmt.where(search_filter)
         count_stmt = count_stmt.where(search_filter)
