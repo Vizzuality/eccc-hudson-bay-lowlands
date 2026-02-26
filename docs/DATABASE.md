@@ -14,21 +14,46 @@ Schema reference and patterns for the ECCC Hudson Bay Lowlands PostgreSQL databa
 | Shapely | 2.0+ | Geometry operations and GeoJSON serialization |
 | pyproj | 3.6+ | CRS transformations (EPSG:3857, 4326, 6933) |
 
+## Data Model
+
+The application uses a three-level hierarchy: **Category > Dataset > Layer**.
+
+```
+Category (e.g., "Climate")
+  └── Dataset (e.g., "Temperature Observations")
+        └── Layer (e.g., "Mean Annual Temperature 2024")
+```
+
 ## Tables
 
-### `datasets`
+### `categories`
 
-Groups related layers with shared i18n metadata. Supports cascade deletion.
+Top-level grouping for related datasets.
 
 | Column | Type | Nullable | Description |
 |--------|------|----------|-------------|
 | `id` | `INTEGER` (PK, auto-increment) | No | Primary key |
-| `metadata` | `JSON` | No | i18n metadata: `{en: {title, description, citations, source}, fr: {...}}` |
+| `metadata` | `JSON` | No | Field-first i18n metadata (see i18n section below) |
+
+**ORM model**: `api/models/category.py`
+**Pydantic schema**: `api/schemas/category.py`
+
+**Relationships**: One-to-many with `datasets` via `category_id` FK. Cascade delete enabled.
+
+### `datasets`
+
+Groups related layers with shared i18n metadata. Belongs to a category.
+
+| Column | Type | Nullable | Description |
+|--------|------|----------|-------------|
+| `id` | `INTEGER` (PK, auto-increment) | No | Primary key |
+| `metadata` | `JSON` | No | Field-first i18n metadata (see i18n section below) |
+| `category_id` | `INTEGER` (FK, indexed) | No | Foreign key to `categories.id` |
 
 **ORM model**: `api/models/dataset.py`
 **Pydantic schema**: `api/schemas/dataset.py`
 
-**Relationships**: One-to-many with `layers` via `dataset_id` FK. Cascade delete enabled.
+**Relationships**: Many-to-one with `categories` via `category_id` FK. One-to-many with `layers` via `dataset_id` FK. Cascade delete enabled on layers.
 
 ### `layers`
 
@@ -37,11 +62,12 @@ Stores metadata about Cloud Optimized GeoTIFF (COG) and other geospatial layers 
 | Column | Type | Nullable | Description |
 |--------|------|----------|-------------|
 | `id` | `INTEGER` (PK, auto-increment) | No | Primary key |
-| `type` | `VARCHAR` | No | Layer type (e.g., `"raster"`, `"vector"`, `"tile"`) |
+| `format` | `VARCHAR` | No | Data format (e.g., `"cog"`, `"geojson"`, `"pmtiles"`) |
+| `type` | `VARCHAR` | Yes | Layer type (e.g., `"raster"`, `"vector"`) |
 | `path` | `VARCHAR` | No | Path or URL to the geospatial data (COG, vector file, WMS, etc.) |
-| `units` | `VARCHAR` | Yes | Data units (e.g., `"celsius"`, `"percent"`) |
-| `legend` | `JSON` | Yes | Legend configuration (arbitrary structure for UI rendering) |
-| `metadata` | `JSON` | No | i18n metadata: `{en: {title, description}, fr: {...}}` |
+| `unit` | `VARCHAR` | Yes | Data measurement unit (e.g., `"celsius"`, `"percent"`) |
+| `categories` | `JSON` | Yes | Category definitions for classified layers (list of `{value, label}`) |
+| `metadata` | `JSON` | No | Field-first i18n metadata (see i18n section below) |
 | `dataset_id` | `INTEGER` (FK, indexed) | Yes | Foreign key to `datasets.id`; nullable to allow orphaned layers |
 
 **ORM model**: `api/models/layer.py`
@@ -49,7 +75,51 @@ Stores metadata about Cloud Optimized GeoTIFF (COG) and other geospatial layers 
 
 **Relationships**: Many-to-one with `datasets` via `dataset_id` FK (optional).
 
-**i18n Note**: The `metadata` column stores JSONB with language keys at the top level. Python ORM attribute is `metadata_` to avoid collision with SQLAlchemy's reserved `Base.metadata`.
+**ORM Note**: The `metadata` column is accessed via the Python attribute `metadata_` to avoid collision with SQLAlchemy's reserved `Base.metadata`. Similarly, `format` maps to `format_` and `type` maps to `type_`.
+
+## Internationalization (i18n)
+
+All `metadata` columns use a **field-first** i18n structure. Each field contains an object with language keys, rather than grouping all fields under a language key.
+
+**Category metadata example:**
+
+```json
+{
+  "title": {"en": "Climate", "fr": "Climat"}
+}
+```
+
+**Dataset metadata example:**
+
+```json
+{
+  "title": {"en": "Temperature Observations", "fr": "Observations de température"},
+  "description": {"en": "Average daily temperature data", "fr": "Données de température quotidienne moyenne"},
+  "source": {"en": "Environment Canada", "fr": "Environnement Canada"},
+  "citation": null
+}
+```
+
+**Layer metadata example:**
+
+```json
+{
+  "title": {"en": "Mean Annual Temperature 2024", "fr": "Température annuelle moyenne 2024"},
+  "description": {"en": "Gridded temperature at 1km resolution", "fr": "Température maillée à 1 km de résolution"}
+}
+```
+
+**Layer categories (classified raster) example:**
+
+```json
+[
+  {"value": 1, "label": {"en": "Forest", "fr": "Forêt"}},
+  {"value": 2, "label": {"en": "Wetland", "fr": "Milieu humide"}},
+  {"value": 3, "label": {"en": "Open Water", "fr": "Eau libre"}}
+]
+```
+
+This field-first approach (as opposed to language-first) makes it easier to add or remove fields without restructuring. Pydantic schemas (`I18nText`, `LayerMetadata`, `DatasetMetadata`, `CategoryMetadata`) enforce the structure at the API boundary.
 
 ## Spatial Data Patterns
 
@@ -159,21 +229,31 @@ from sqlalchemy import Integer, String, JSON, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from db.base import Base
 
+class Category(Base):
+    __tablename__ = "categories"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    metadata_: Mapped[dict] = mapped_column("metadata", JSON, nullable=False)
+    datasets: Mapped[list["Dataset"]] = relationship(back_populates="category", cascade="all, delete-orphan")
+
 class Dataset(Base):
     __tablename__ = "datasets"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     metadata_: Mapped[dict] = mapped_column("metadata", JSON, nullable=False)
+    category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"), nullable=False, index=True)
+    category: Mapped["Category"] = relationship(back_populates="datasets")
     layers: Mapped[list["Layer"]] = relationship(back_populates="dataset", cascade="all, delete-orphan")
 
 class Layer(Base):
     __tablename__ = "layers"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    type: Mapped[str] = mapped_column(String, nullable=False)
+    format_: Mapped[str] = mapped_column("format", String, nullable=False)
+    type_: Mapped[str | None] = mapped_column("type", String, nullable=True)
     path: Mapped[str] = mapped_column(String, nullable=False)
-    units: Mapped[str | None] = mapped_column(String, nullable=True)
-    legend: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    unit: Mapped[str | None] = mapped_column(String, nullable=True)
+    categories: Mapped[list | None] = mapped_column(JSON, nullable=True)
     metadata_: Mapped[dict] = mapped_column("metadata", JSON, nullable=False)
     dataset_id: Mapped[int | None] = mapped_column(ForeignKey("datasets.id"), nullable=True, index=True)
     dataset: Mapped["Dataset | None"] = relationship(back_populates="layers")
@@ -181,9 +261,10 @@ class Layer(Base):
 
 **Key design notes**:
 - `metadata_` Python attribute maps to `"metadata"` DB column (avoids SQLAlchemy `Base.metadata` collision)
+- `format_` maps to `"format"` and `type_` maps to `"type"` (avoids Python built-in collisions)
 - Bidirectional relationships use `back_populates` for consistency
-- Cascade delete on Dataset ensures orphaned Layers are removed
-- `dataset_id` is indexed for fast FK lookups
+- Cascade delete: Category -> Datasets -> Layers (deleting a category removes all its datasets and layers)
+- `category_id` and `dataset_id` are indexed for fast FK lookups
 
 ### Query patterns
 
@@ -191,31 +272,40 @@ The API uses the SQLAlchemy 2.0 `select()` API:
 
 ```python
 from sqlalchemy import select, func, or_
+from sqlalchemy.orm import selectinload
 from models.layer import Layer
 from models.dataset import Dataset
+from models.category import Category
 
 # Count total
 total = db.scalar(select(func.count()).select_from(Layer))
 
-# Paginated list with optional search (case-insensitive title search in en+fr metadata)
+# Paginated list with optional search (field-first metadata: title.en, title.fr)
 stmt = select(Layer).offset(offset).limit(limit)
 if search:
     search_pattern = f"%{search}%"
     stmt = stmt.where(
         or_(
-            Layer.metadata_["en"]["title"].astext.ilike(search_pattern),
-            Layer.metadata_["fr"]["title"].astext.ilike(search_pattern),
+            Layer.metadata_["title"]["en"].as_string().ilike(search_pattern),
+            Layer.metadata_["title"]["fr"].as_string().ilike(search_pattern),
         )
     )
 layers = db.scalars(stmt).all()
 
-# Get with nested relationship (selectinload for eager loading)
-from sqlalchemy.orm import selectinload
+# Get dataset with nested layers (selectinload for eager loading)
 stmt = select(Dataset).options(selectinload(Dataset.layers)).where(Dataset.id == dataset_id)
 dataset = db.scalar(stmt)
+
+# Get category with nested datasets and their layers (two-level eager loading)
+stmt = (
+    select(Category)
+    .options(selectinload(Category.datasets).selectinload(Dataset.layers))
+    .where(Category.id == category_id)
+)
+category = db.scalar(stmt)
 ```
 
-**Search pattern note**: JSONB searches use `.astext` to convert JSON values to text, then `.ilike()` for case-insensitive pattern matching. This works for both en and fr title fields.
+**Search pattern note**: With the field-first i18n structure, JSONB paths are `metadata["title"]["en"]` and `metadata["title"]["fr"]`. The `.as_string()` method converts JSON values to text for case-insensitive `.ilike()` pattern matching.
 
 ### Session management
 
