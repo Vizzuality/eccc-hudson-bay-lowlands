@@ -26,3 +26,4 @@ def test_root_endpoint(client):
     assert "cog" in data
     assert data["cog"] == "/cog"
     assert data["layers"] == "/layers"
+    assert data["categories"] == "/categories"
