@@ -2,7 +2,7 @@ import { useTranslations } from "next-intl";
 import { useLayers } from "@/app/[locale]/url-store";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import DataLayersBottomBar from "@/containers/data-layers/bottom-bar";
-import DatasetSelector from "@/containers/data-layers/dataset-selector";
+import CategorySelector from "@/containers/data-layers/category-selector";
 import DataLayersList from "@/containers/data-layers/list";
 import DataLayersSearch from "@/containers/data-layers/search";
 import type { DataLayer } from "@/types";
@@ -30,7 +30,7 @@ const Main = () => {
           <p className="text-muted-foreground">{t("description")}</p>
         </header>
         <DataLayersSearch />
-        <DatasetSelector />
+        <CategorySelector />
         <DataLayersList
           items={mockItems}
           layers={layers}
