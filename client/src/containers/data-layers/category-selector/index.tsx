@@ -1,12 +1,20 @@
 import type { FC } from "react";
 import { useCategory } from "@/app/[locale]/url-store";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 interface CategorySelectorProps {
   items: { id: number; name: string }[];
+  isLoading: boolean;
 }
-const CategorySelector: FC<CategorySelectorProps> = ({ items }) => {
+
+const CategorySelector: FC<CategorySelectorProps> = ({ items, isLoading }) => {
   const { category, setCategory } = useCategory();
+
+  if (isLoading) {
+    return <CategorySelectorSkeleton />;
+  }
+
   return (
     <fieldset className="grid grid-cols-2 gap-2" aria-label="Category filter">
       <legend className="sr-only">Select a category</legend>
@@ -50,6 +58,23 @@ const CategorySelector: FC<CategorySelectorProps> = ({ items }) => {
         );
       })}
     </fieldset>
+  );
+};
+
+const CategorySelectorSkeleton = () => {
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      {[...Array(4).keys()].map((num) => (
+        <div
+          key={`category-selector-skeleton-${num}`}
+          className="bg-white/80 rounded-4xl p-6 space-y-2"
+        >
+          <Skeleton className="size-4 shrink-0 rounded-full" />
+          <Skeleton className="w-2/3 h-2.5" />
+          <Skeleton className="w-1/2 h-2" />
+        </div>
+      ))}
+    </div>
   );
 };
 

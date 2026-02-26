@@ -19,7 +19,7 @@ const mockItems: DataLayer[] = Array.from({ length: 20 }, (_, index) => ({
 
 const Main = () => {
   const { getTranslation } = useApiTranslation();
-  const { data: categories } = useQuery({
+  const { data: categories, isFetching: isLoading } = useQuery({
     queryKey: queryKeys.categories.all.queryKey,
     queryFn: () => API<CategoryResponse>({ url: "/categories" }),
     select: (data) =>
@@ -44,7 +44,7 @@ const Main = () => {
           <p className="text-muted-foreground">{t("description")}</p>
         </header>
         <DataLayersSearch />
-        <CategorySelector items={categories ?? []} />
+        <CategorySelector items={categories ?? []} isLoading={isLoading} />
         <DataLayersList
           items={mockItems}
           layers={layers}
