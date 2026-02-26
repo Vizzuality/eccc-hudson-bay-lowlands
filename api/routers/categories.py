@@ -19,11 +19,16 @@ from schemas.category import (
 router = APIRouter(tags=["Categories"])
 
 
-@router.get("", response_model=PaginatedCategoryResponse)
+@router.get(
+    "",
+    summary="List Categories",
+    description="Returns a paginated list of categories with optional title search.",
+    response_model=PaginatedCategoryResponse,
+)
 def list_categories(
-    offset: int = Query(default=0, ge=0),
-    limit: int = Query(default=10, ge=1, le=100),
-    search: str | None = Query(default=None),
+    offset: int = Query(default=0, ge=0, description="Number of items to skip"),
+    limit: int = Query(default=10, ge=1, le=100, description="Number of items to return"),
+    search: str | None = Query(default=None, description="Case-insensitive partial title search (en and fr)"),
     db: Session = Depends(get_db),
 ) -> PaginatedCategoryResponse:
     """List categories with pagination and optional title search."""
@@ -49,13 +54,20 @@ def list_categories(
 
 @router.get(
     "/{category_id}",
+    summary="Get Category",
+    description=(
+        "Returns a single category by ID. Use include_datasets=true to include nested datasets, "
+        "and include_layers=true to also include each dataset's layers."
+    ),
     response_model=Union[CategorySchema, CategoryWithDatasetsSchema, CategoryWithDatasetsAndLayersSchema],
     responses={404: {"description": "Category not found"}},
 )
 def get_category(
     category_id: int,
-    include_datasets: bool = Query(default=False),
-    include_layers: bool = Query(default=False),
+    include_datasets: bool = Query(default=False, description="Include nested datasets in response"),
+    include_layers: bool = Query(
+        default=False, description="Include layers within each dataset (requires include_datasets=true)"
+    ),
     db: Session = Depends(get_db),
 ) -> Union[CategorySchema, CategoryWithDatasetsSchema, CategoryWithDatasetsAndLayersSchema]:
     """Get a single category by ID with optional nested datasets and layers."""

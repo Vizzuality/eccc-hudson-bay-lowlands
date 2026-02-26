@@ -1,17 +1,37 @@
 """Pydantic schemas for Dataset responses."""
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from schemas.i18n import DatasetMetadata
 from schemas.layer import LayerSchema
 
 
 class DatasetSchema(BaseModel):
-    """Response schema for a dataset (without layers)."""
+    """Response schema for a dataset (without nested layers)."""
 
-    id: int
-    metadata: DatasetMetadata
-    category_id: int
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "id": 1,
+                    "metadata": {
+                        "title": {"en": "Climate Observations", "fr": "Observations climatiques"},
+                        "description": {
+                            "en": "Temperature and precipitation data",
+                            "fr": "Données de température et de précipitations",
+                        },
+                        "source": {"en": "Environment Canada", "fr": "Environnement Canada"},
+                        "citation": None,
+                    },
+                    "category_id": 1,
+                }
+            ]
+        }
+    }
+
+    id: int = Field(description="Unique dataset identifier")
+    metadata: DatasetMetadata = Field(description="Bilingual metadata (title, description, source, citation)")
+    category_id: int = Field(description="ID of the parent category")
 
     @classmethod
     def from_orm_dataset(cls, dataset) -> "DatasetSchema":
@@ -26,10 +46,10 @@ class DatasetSchema(BaseModel):
 class DatasetWithLayersSchema(BaseModel):
     """Response schema for a dataset with nested layers."""
 
-    id: int
-    metadata: DatasetMetadata
-    category_id: int
-    layers: list[LayerSchema]
+    id: int = Field(description="Unique dataset identifier")
+    metadata: DatasetMetadata = Field(description="Bilingual metadata (title, description, source, citation)")
+    category_id: int = Field(description="ID of the parent category")
+    layers: list[LayerSchema] = Field(description="Layers belonging to this dataset")
 
     @classmethod
     def from_orm_dataset(cls, dataset) -> "DatasetWithLayersSchema":
@@ -45,12 +65,12 @@ class DatasetWithLayersSchema(BaseModel):
 class PaginatedDatasetResponse(BaseModel):
     """Paginated dataset list response."""
 
-    data: list[DatasetSchema]
-    total: int
+    data: list[DatasetSchema] = Field(description="List of datasets for the current page")
+    total: int = Field(description="Total number of datasets matching the query")
 
 
 class PaginatedDatasetWithLayersResponse(BaseModel):
-    """Paginated dataset list response with layers."""
+    """Paginated dataset list response with nested layers."""
 
-    data: list[DatasetWithLayersSchema]
-    total: int
+    data: list[DatasetWithLayersSchema] = Field(description="List of datasets with their layers")
+    total: int = Field(description="Total number of datasets matching the query")

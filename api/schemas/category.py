@@ -1,6 +1,6 @@
 """Pydantic schemas for Category responses."""
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from schemas.dataset import DatasetSchema, DatasetWithLayersSchema
 from schemas.i18n import CategoryMetadata
@@ -9,8 +9,19 @@ from schemas.i18n import CategoryMetadata
 class CategorySchema(BaseModel):
     """Response schema for a category (without nested datasets)."""
 
-    id: int
-    metadata: CategoryMetadata
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "id": 1,
+                    "metadata": {"title": {"en": "Climate", "fr": "Climat"}},
+                }
+            ]
+        }
+    }
+
+    id: int = Field(description="Unique category identifier")
+    metadata: CategoryMetadata = Field(description="Bilingual metadata (title)")
 
     @classmethod
     def from_orm_category(cls, category) -> "CategorySchema":
@@ -21,9 +32,9 @@ class CategorySchema(BaseModel):
 class CategoryWithDatasetsSchema(BaseModel):
     """Response schema for a category with nested datasets (no layers)."""
 
-    id: int
-    metadata: CategoryMetadata
-    datasets: list[DatasetSchema]
+    id: int = Field(description="Unique category identifier")
+    metadata: CategoryMetadata = Field(description="Bilingual metadata (title)")
+    datasets: list[DatasetSchema] = Field(description="Datasets belonging to this category")
 
     @classmethod
     def from_orm_category(cls, category) -> "CategoryWithDatasetsSchema":
@@ -38,9 +49,9 @@ class CategoryWithDatasetsSchema(BaseModel):
 class CategoryWithDatasetsAndLayersSchema(BaseModel):
     """Response schema for a category with nested datasets and layers."""
 
-    id: int
-    metadata: CategoryMetadata
-    datasets: list[DatasetWithLayersSchema]
+    id: int = Field(description="Unique category identifier")
+    metadata: CategoryMetadata = Field(description="Bilingual metadata (title)")
+    datasets: list[DatasetWithLayersSchema] = Field(description="Datasets with their layers")
 
     @classmethod
     def from_orm_category(cls, category) -> "CategoryWithDatasetsAndLayersSchema":
@@ -55,5 +66,5 @@ class CategoryWithDatasetsAndLayersSchema(BaseModel):
 class PaginatedCategoryResponse(BaseModel):
     """Paginated category list response."""
 
-    data: list[CategorySchema]
-    total: int
+    data: list[CategorySchema] = Field(description="List of categories for the current page")
+    total: int = Field(description="Total number of categories matching the query")

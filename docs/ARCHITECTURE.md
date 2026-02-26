@@ -77,8 +77,8 @@ The database runs on a separate RDS instance (not in Docker).
 4. Next.js returns rendered page
 
 **API request (production):**
-1. Browser/client sends request to `/api/rasters`
-2. Nginx matches `location /api/` and rewrites to `/rasters`
+1. Browser/client sends request to `/api/layers`
+2. Nginx matches `location /api/` and rewrites to `/layers`
 3. Nginx proxies to FastAPI on port 8000
 4. FastAPI processes request, queries PostgreSQL, returns JSON
 
@@ -159,11 +159,13 @@ eccc-hudson-bay-lowlands/
 | PostGIS for spatial storage | Native spatial indexing and queries; SRID 4326 canonical storage | [ADR-001](ADR/001-postgis-spatial-storage.md) |
 | TiTiler for COG tile serving | Provides standards-compliant tile serving without custom tile generation code | [ADR-002](ADR/002-titiler-cog-serving.md) |
 | EPSG:6933 for area computation | Global equal-area projection for accurate area validation | [ADR-003](ADR/003-epsg6933-area-computation.md) |
-| i18n via JSONB metadata (not translation table) | Single metadata object per entity; no JOINs for translations; flexible to add languages | - |
+| Three-level hierarchy: Category > Dataset > Layer | Categories group datasets thematically; datasets group related layers; mirrors domain structure | - |
+| i18n via field-first JSONB metadata | Each field (title, description) holds `{en, fr}` translations; no JOINs; flexible to add fields or languages | - |
 | Layer model (renamed from Raster) | Domain-neutral name supports raster, vector, tiles, WMS; aligns with GIS industry terminology | - |
 | Dataset model (replaces Location) | Provides grouping for related layers via 1:N relationship; semantically cleaner than Location | - |
+| Category model (new) | Top-level thematic grouping (e.g., "Climate", "Land Cover"); 1:N relationship to datasets | - |
 | `metadata_` mapped to `metadata` column | Avoids collision with SQLAlchemy `Base.metadata`; clean Pydantic access | - |
-| Cascade delete on Dataset → Layers | Layers have no meaning without Dataset context; maintains referential integrity | - |
+| Cascade delete: Category > Dataset > Layer | Deleting a category removes its datasets and their layers; maintains referential integrity | - |
 | Trunk-based deployment | Single main branch with automated deploy simplifies release process | - |
 | Nginx reverse proxy in production | Unified entry point; client and API share a single domain | - |
 | Multi-stage Docker builds | Minimizes production image size; separates build and runtime dependencies | - |
