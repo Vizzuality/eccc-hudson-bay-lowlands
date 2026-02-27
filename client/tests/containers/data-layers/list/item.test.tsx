@@ -1,88 +1,142 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
+import { useLayers } from "@/app/[locale]/url-store";
+import { Accordion } from "@/components/ui/accordion";
 import DataLayersListItem, {
   type DataLayersListItemProps,
 } from "@/containers/data-layers/list/item";
 import messages from "@/i18n/messages/en.json";
-import { DATA_LAYERS } from "@/tests/helpers/mocks";
+import { LAYERS } from "@/tests/helpers/mocks";
 
-const mockItem = DATA_LAYERS[0];
+vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("@/app/[locale]/url-store")>();
+  return {
+    ...actual,
+    useLayers: vi.fn(),
+  };
+});
+
 const defaultProps: DataLayersListItemProps = {
-  id: mockItem.id,
-  title: mockItem.title,
-  description: mockItem.description,
-  isSelected: false,
+  id: 1,
+  title: "First Nation Locations",
+  description: "Dataset description",
+  layers: LAYERS,
   onChange: vi.fn(),
   onLearnMore: vi.fn(),
 };
 
+function setupHooks(selectedLayers: number[] = []) {
+  (useLayers as Mock).mockReturnValue({
+    layers: selectedLayers,
+    setLayers: vi.fn(),
+  });
+}
+
 describe("@containers/data-layers/list/item", () => {
-  const renderDataLayersListItem = (
-    props: Partial<DataLayersListItemProps> = {},
-  ) =>
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  const renderItem = (props: Partial<DataLayersListItemProps> = {}) =>
     render(
       <NextIntlClientProvider locale="en" messages={messages}>
-        <DataLayersListItem {...defaultProps} {...props} />
+        <Accordion type="multiple">
+          <DataLayersListItem {...defaultProps} {...props} />
+        </Accordion>
       </NextIntlClientProvider>,
     );
 
-  it("renders the title and description", () => {
-    renderDataLayersListItem();
-    expect(
-      screen.getByRole("heading", { name: mockItem.title }),
-    ).toBeInTheDocument();
-    expect(screen.getByText(mockItem.description)).toBeInTheDocument();
-  });
-
-  it("renders an unchecked checkbox when not selected", () => {
-    renderDataLayersListItem();
-    const checkbox = screen.getByRole("checkbox", { name: mockItem.title });
-    expect(checkbox).not.toBeChecked();
-  });
-
-  it("renders a checked checkbox when selected", () => {
-    renderDataLayersListItem({ isSelected: true });
-    const checkbox = screen.getByRole("checkbox", { name: mockItem.title });
-    expect(checkbox).toBeChecked();
-  });
-
-  it("calls onChange with (id, true) when clicking an unselected item", async () => {
+  const expandAccordion = async () => {
     const user = userEvent.setup();
-    const onChange = vi.fn();
-    renderDataLayersListItem({ onChange });
+    await user.click(screen.getByText(defaultProps.title));
+    return user;
+  };
 
-    await user.click(screen.getByRole("checkbox", { name: mockItem.title }));
+  it("renders the dataset title and description", () => {
+    setupHooks();
+    renderItem();
+
+    expect(screen.getByText("First Nation Locations")).toBeInTheDocument();
+    expect(screen.getByText("Dataset description")).toBeInTheDocument();
+  });
+
+  it("displays the total layer count", () => {
+    setupHooks();
+    renderItem();
+    expect(screen.getByText("2 layers")).toBeInTheDocument();
+  });
+
+  it("uses singular 'layer' when there is only one", () => {
+    setupHooks();
+    renderItem({ layers: [LAYERS[0]] });
+    expect(screen.getByText("1 layer")).toBeInTheDocument();
+  });
+
+  it("shows a badge with selected layer count when layers are active", () => {
+    setupHooks([10]);
+    renderItem();
+    expect(screen.getByText("1")).toBeInTheDocument();
+  });
+
+  it("does not show a badge when no layers are selected", () => {
+    setupHooks();
+    renderItem();
+    expect(screen.queryByText("0")).not.toBeInTheDocument();
+  });
+
+  it("renders layer items when the accordion is expanded", async () => {
+    setupHooks();
+    renderItem();
+    await expandAccordion();
+
+    expect(screen.getByText("Layer A")).toBeInTheDocument();
+    expect(screen.getByText("Layer B")).toBeInTheDocument();
+  });
+
+  it("renders checked checkboxes for selected layers", async () => {
+    setupHooks([10]);
+    renderItem();
+    await expandAccordion();
+
+    expect(screen.getByRole("checkbox", { name: "Layer A" })).toBeChecked();
+    expect(screen.getByRole("checkbox", { name: "Layer B" })).not.toBeChecked();
+  });
+
+  it("calls onChange with (layerId, true) when selecting a layer", async () => {
+    setupHooks();
+    const onChange = vi.fn();
+    renderItem({ onChange });
+    const user = await expandAccordion();
+
+    await user.click(screen.getByRole("checkbox", { name: "Layer A" }));
 
     expect(onChange).toHaveBeenCalledOnce();
-    expect(onChange).toHaveBeenCalledWith(mockItem.id, true);
+    expect(onChange).toHaveBeenCalledWith(10, true);
   });
 
-  it("calls onChange with (id, false) when clicking a selected item", async () => {
-    const user = userEvent.setup();
+  it("calls onChange with (layerId, false) when deselecting a layer", async () => {
+    setupHooks([10]);
     const onChange = vi.fn();
-    renderDataLayersListItem({ onChange, isSelected: true });
+    renderItem({ onChange });
+    const user = await expandAccordion();
 
-    await user.click(screen.getByRole("checkbox", { name: mockItem.title }));
+    await user.click(screen.getByRole("checkbox", { name: "Layer A" }));
 
     expect(onChange).toHaveBeenCalledOnce();
-    expect(onChange).toHaveBeenCalledWith(mockItem.id, false);
+    expect(onChange).toHaveBeenCalledWith(10, false);
   });
 
-  it("calls onLearnMore when the 'Learn more' button is clicked", async () => {
-    const user = userEvent.setup();
+  it("calls onLearnMore when the 'Data sources' button is clicked", async () => {
+    setupHooks();
     const onLearnMore = vi.fn();
-    renderDataLayersListItem({ onLearnMore });
+    renderItem({ onLearnMore });
+    const user = await expandAccordion();
 
-    await user.click(screen.getByRole("button", { name: /learn more/i }));
+    await user.click(screen.getByRole("button", { name: /data sources/i }));
 
     expect(onLearnMore).toHaveBeenCalledOnce();
-  });
-
-  it("associates the label with the checkbox via htmlFor/id", () => {
-    renderDataLayersListItem();
-    const checkbox = screen.getByRole("checkbox", { name: mockItem.title });
-    expect(checkbox).toHaveAttribute("id", mockItem.id);
   });
 });

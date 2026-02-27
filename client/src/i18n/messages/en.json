@@ -27,7 +27,7 @@
       "title": "All data ({count})"
     },
     "item": {
-      "learn-more": "Learn more"
+      "data-sources": "Data sources"
     }
   },
   "metadata": {

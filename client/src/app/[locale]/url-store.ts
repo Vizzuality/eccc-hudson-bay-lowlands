@@ -2,7 +2,6 @@ import {
   parseAsArrayOf,
   parseAsBoolean,
   parseAsInteger,
-  parseAsString,
   parseAsStringEnum,
   useQueryState,
 } from "nuqs";
@@ -32,7 +31,7 @@ export function useCategory() {
 export function useLayers() {
   const [layers, setLayers] = useQueryState(
     "layers",
-    parseAsArrayOf(parseAsString).withDefault([]),
+    parseAsArrayOf(parseAsInteger).withDefault([]),
   );
 
   return { layers, setLayers };
@@ -60,7 +59,7 @@ export function useMapAnalysis() {
 export function useMapBasemap() {
   const [basemap, setBasemap] = useQueryState(
     "basemap",
-    parseAsStringEnum(Object.keys(BASEMAPS)).withDefault(BasemapId.DEFAULT),
+    parseAsStringEnum(Object.keys(BASEMAPS)).withDefault(BasemapId.LIGHT),
   );
 
   return { basemap, setBasemap };

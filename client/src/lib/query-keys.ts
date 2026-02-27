@@ -4,6 +4,8 @@ export const queryKeys = createQueryKeyStore({
   categories: {
     all: null,
   },
-  datasets: null,
+  datasets: {
+    all: null,
+  },
   layers: null,
 });

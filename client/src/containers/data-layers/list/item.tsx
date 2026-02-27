@@ -1,65 +1,89 @@
-import { PlusIcon, XIcon } from "lucide-react";
+import { ChevronRightIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
+import { useLayers } from "@/app/[locale]/url-store";
+import {
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
-import type { DataLayer } from "@/types";
+import LayerItem from "@/containers/data-layers/list/layer-item";
+import { useApiTranslation } from "@/i18n/api-translation";
+import type { Layer } from "@/types";
 
-export interface DataLayersListItemProps extends DataLayer {
-  isSelected: boolean;
-  onChange: (id: string, isSelected: boolean) => void;
+export interface DataLayersListItemProps {
+  id: number;
+  title: string;
+  description: string;
+  layers: Layer[];
+  onChange: (id: number, isSelected: boolean) => void;
   onLearnMore: () => void;
 }
 
+const getLayerCountText = (layers: Layer[]) => {
+  return `${layers.length} layer${layers.length > 1 ? "s" : ""}`;
+};
+
 const DataLayersListItem: FC<DataLayersListItemProps> = ({
   id,
+  layers,
   title,
   description,
-  isSelected,
   onChange,
   onLearnMore,
 }) => {
-  const t = useTranslations("data-layers");
+  const { layers: selectedLayers } = useLayers();
+  const { getTranslation } = useApiTranslation();
+  const t = useTranslations("data-layers.item");
+  const currentSelectedFromLayers = layers.filter((layer) =>
+    selectedLayers.includes(layer.id),
+  );
   return (
-    <article className="relative group block **:transition-all **:duration-200 **:ease-out">
-      <label
-        htmlFor={id}
-        className={cn({
-          "absolute right-5 top-5 z-10": true,
-          "size-8 rounded-full flex items-center justify-center hover:bg-secondary group-hover:text-accent cursor-pointer": true,
-          "bg-primary text-primary-foreground group-hover:bg-primary hover:bg-primary":
-            isSelected,
-        })}
-      >
-        <input
-          type="checkbox"
-          id={id}
-          className="sr-only"
-          aria-label={title}
-          checked={isSelected}
-          onChange={() => onChange(id, !isSelected)}
-        />
-        {isSelected ? (
-          <XIcon className="size-4" aria-hidden />
-        ) : (
-          <PlusIcon className="size-4" aria-hidden />
-        )}
-      </label>
-      <div className="px-5 pt-5 pb-4 space-y-2 group-hover:translate-x-2">
-        <h2 className="text-sm font-semibold">{title}</h2>
-
-        <p className="text-xs text-muted-foreground font-medium">
+    <AccordionItem value={id.toString()} className="border-none group/item">
+      <AccordionTrigger className="">
+        <div className="flex items-center justify-between flex-1">
+          <div className="text-sm font-semibold">{title}</div>
+          <div className="flex items-center gap-2 shrink-0">
+            {currentSelectedFromLayers.length > 0 ? (
+              <span className="bg-accent text-white rounded-full text-xs font-bold py-0.5 px-2.5">
+                {currentSelectedFromLayers.length}
+              </span>
+            ) : null}
+            <span className="text-xs text-muted-foreground">
+              {getLayerCountText(layers)}
+            </span>
+          </div>
+        </div>
+      </AccordionTrigger>
+      <div className="ml-6 border-l border-transparent group-data-[state=open]/item:border-accent transition-colors">
+        <p className="px-5 text-xs text-muted-foreground font-medium">
           {description}
         </p>
-        <Button type="button" variant="link" onClick={onLearnMore}>
-          {t("item.learn-more")}
-        </Button>
+        <AccordionContent>
+          {layers.map((layer) => (
+            <LayerItem
+              key={layer.id}
+              id={layer.id}
+              title={getTranslation(layer.metadata.title)}
+              description={getTranslation(layer.metadata.description)}
+              isSelected={selectedLayers.includes(layer.id)}
+              onChange={onChange}
+            />
+          ))}
+          <div className="pl-5 pt-2">
+            <Button
+              variant="link"
+              onClick={onLearnMore}
+              className="gap-0.5 hover:gap-1.5 transition-[gap]"
+            >
+              {t("data-sources")}
+              <ChevronRightIcon />
+            </Button>
+          </div>
+        </AccordionContent>
       </div>
-      <div className="px-5">
-        <Separator className="bg-linear-to-l from-primary/20 to-secondary/30 group-hover:bg-[linear-gradient(90deg,#10B981_0%,rgba(230,244,241,0.30)_100%)]" />
-      </div>
-    </article>
+    </AccordionItem>
   );
 };
 
