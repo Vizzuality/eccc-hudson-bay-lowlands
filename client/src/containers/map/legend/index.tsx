@@ -19,14 +19,15 @@ const MapLegend = () => {
       <CollapsibleTrigger asChild>
         <Button
           type="button"
+          variant="secondary"
           size="sm"
-          className="group relative top-px w-fit justify-between rounded-b-none px-2.5 font-sans"
+          className="group relative rounded-md top-px w-fit justify-between rounded-b-none px-2.5 font-sans"
         >
-          <span className="block group-data-[state=open]:hidden">legend</span>
           <ArrowDownIcon
             aria-hidden
             className="group-data-[state=closed]:rotate-180"
           />
+          <span className="block group-data-[state=open]:hidden">legend</span>
         </Button>
       </CollapsibleTrigger>
       <CollapsibleContent className="w-[280px] rounded-tr-4xl bg-background text-foreground">

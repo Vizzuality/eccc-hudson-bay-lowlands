@@ -130,7 +130,7 @@ describe("@containers/data-layers/list", () => {
     await user.click(screen.getAllByText("Learn more mock")[0]);
 
     expect(
-      screen.getByRole("dialog", { name: /data layer details/i }),
+      screen.getByRole("dialog", { name: DATA_LAYERS[0].metadata.title }),
     ).toBeInTheDocument();
   });
 

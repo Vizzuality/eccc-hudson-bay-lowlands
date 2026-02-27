@@ -28,6 +28,11 @@
     },
     "item": {
       "data-sources": "Data sources"
+    },
+    "item-dialog": {
+      "source": "Source",
+      "citation": "Citation",
+      "ok": "OK"
     }
   },
   "metadata": {
