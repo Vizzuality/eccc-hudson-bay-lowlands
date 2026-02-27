@@ -17,7 +17,9 @@ const DataLayersList: FC<DataLayersListProps> = ({
   isLoading,
   onItemChange,
 }) => {
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogProps, setDialogProps] = useState<NormalizedDataset | null>(
+    null,
+  );
   const t = useTranslations("data-layers");
 
   if (isLoading) {
@@ -41,13 +43,14 @@ const DataLayersList: FC<DataLayersListProps> = ({
             description={item.metadata.description}
             layers={item.layers ?? []}
             onChange={(id, isSelected) => onItemChange(id, isSelected)}
-            onLearnMore={() => setDialogOpen(true)}
+            onLearnMore={() => setDialogProps(item)}
           />
         ))}
       </Accordion>
       <DataLayersListItemDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
+        open={!!dialogProps}
+        onOpenChange={() => setDialogProps(null)}
+        dataset={dialogProps}
       />
     </section>
   );
