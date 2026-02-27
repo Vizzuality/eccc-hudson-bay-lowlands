@@ -94,12 +94,13 @@ describe("@containers/map-sidebar/main", () => {
     expect(screen.getByText(/explore and combine/i)).toBeInTheDocument();
   });
 
-  it("passes layers and items to DataLayersList", () => {
+  it("passes datasets and onItemChange to DataLayersList", () => {
     setupHooks(["1", "5"]);
     renderMain();
 
-    expect(capturedListProps.layers).toEqual(["1", "5"]);
-    expect(capturedListProps.items).toHaveLength(20);
+    expect(capturedListProps.datasets).toBeDefined();
+    expect(Array.isArray(capturedListProps.datasets)).toBe(true);
+    expect(capturedListProps.onItemChange).toBeInstanceOf(Function);
   });
 
   it("adds a layer when handleItemChange is called with isSelected=true", () => {

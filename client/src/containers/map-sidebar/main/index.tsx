@@ -7,30 +7,38 @@ import CategorySelector from "@/containers/data-layers/category-selector";
 import DataLayersList from "@/containers/data-layers/list";
 import DataLayersSearch from "@/containers/data-layers/search";
 import { useApiTranslation } from "@/i18n/api-translation";
-import API from "@/lib/api";
+import { API, getCategoriesConfig, getDatasetsConfig } from "@/lib/api";
 import { queryKeys } from "@/lib/query-keys";
-import type { CategoryResponse, DataLayer } from "@/types";
-
-const mockItems: DataLayer[] = Array.from({ length: 20 }, (_, index) => ({
-  id: index.toString(),
-  title: `Layer ${index + 1}`,
-  description: `Description ${index + 1}`,
-}));
+import type { CategoryResponse, DatasetResponse } from "@/types";
 
 const Main = () => {
   const { getTranslation } = useApiTranslation();
-  const { data: categories, isFetching: isLoading } = useQuery({
+  const { data: categories, isFetching: isCategoriesLoading } = useQuery({
     queryKey: queryKeys.categories.all.queryKey,
-    queryFn: () => API<CategoryResponse>({ url: "/categories" }),
+    queryFn: () => API<CategoryResponse>(getCategoriesConfig),
     select: (data) =>
       data.data.map((category) => ({
         id: category.id,
         name: getTranslation(category.metadata.title),
       })),
   });
+  const { data: datasets } = useQuery({
+    queryKey: queryKeys.datasets.all.queryKey,
+    queryFn: () => API<DatasetResponse>(getDatasetsConfig),
+    select: (data) =>
+      data.data.map((dataset) => ({
+        ...dataset,
+        metadata: {
+          title: getTranslation(dataset.metadata.title),
+          description: getTranslation(dataset.metadata.description),
+          source: getTranslation(dataset.metadata.source),
+          citation: getTranslation(dataset.metadata.citation),
+        },
+      })),
+  });
   const t = useTranslations("map");
   const { layers, setLayers } = useLayers();
-  const handleItemChange = (id: string, isSelected: boolean) => {
+  const handleItemChange = (id: number, isSelected: boolean) => {
     setLayers(
       isSelected ? [...layers, id] : layers.filter((layer) => layer !== id),
     );
@@ -44,10 +52,12 @@ const Main = () => {
           <p className="text-muted-foreground">{t("description")}</p>
         </header>
         <DataLayersSearch />
-        <CategorySelector items={categories ?? []} isLoading={isLoading} />
+        <CategorySelector
+          items={categories ?? []}
+          isLoading={isCategoriesLoading}
+        />
         <DataLayersList
-          items={mockItems}
-          layers={layers}
+          datasets={datasets ?? []}
           onItemChange={handleItemChange}
         />
         <DataLayersBottomBar

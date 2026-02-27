@@ -4,9 +4,9 @@ import { Suspense } from "react";
 import MapContainer from "@/containers/map";
 import MapSidebar from "@/containers/map-sidebar";
 import TopBar from "@/containers/top-bar";
-import { API } from "@/lib/api";
+import { API, getCategoriesConfig, getDatasetsConfig } from "@/lib/api";
 import { queryKeys } from "@/lib/query-keys";
-import type { CategoryResponse } from "@/types";
+import type { CategoryResponse, DatasetResponse } from "@/types";
 
 export async function generateMetadata({
   params,
@@ -26,7 +26,11 @@ export default async function Home() {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: queryKeys.categories.all.queryKey,
-    queryFn: () => API<CategoryResponse>({ url: "/categories" }),
+    queryFn: () => API<CategoryResponse>(getCategoriesConfig),
+  });
+  await queryClient.prefetchQuery({
+    queryKey: queryKeys.datasets.all.queryKey,
+    queryFn: () => API<DatasetResponse>(getDatasetsConfig),
   });
 
   return (

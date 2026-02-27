@@ -19,11 +19,12 @@ const CategorySelector: FC<CategorySelectorProps> = ({ items, isLoading }) => {
     <fieldset className="grid grid-cols-2 gap-2" aria-label="Category filter">
       <legend className="sr-only">Select a category</legend>
       {[{ id: 0, name: "All" }, ...items].map((c) => {
-        const isActive = category === c.id;
+        const isActive = category === c.id || (category === null && c.id === 0);
+        const key = `category-selector-${c.id}`;
         return (
           <label
-            key={c.id}
-            htmlFor={c.id.toString()}
+            key={key}
+            htmlFor={key}
             className={cn({
               "bg-white/80 rounded-4xl p-6 cursor-pointer flex flex-col gap-2 shadow-lg transition-all": true,
               "border border-transparent select-none": true,
@@ -38,9 +39,9 @@ const CategorySelector: FC<CategorySelectorProps> = ({ items, isLoading }) => {
               type="radio"
               name="category"
               value={c.id}
-              id={c.id.toString()}
+              id={key}
               checked={isActive}
-              onChange={() => setCategory(c.id)}
+              onChange={() => setCategory(c.id || null)}
               className="sr-only"
             />
             <span

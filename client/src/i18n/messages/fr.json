@@ -12,7 +12,23 @@
   },
   "map": {
     "title": "Discover the Hudson & James bay region",
-    "description": "Explore and combine geographical data overlays. Analyze your area of interest and get custom insights."
+    "description": "Explore and combine geographical data overlays. Analyze your area of interest and get custom insights.",
+    "controls": {
+      "basemap": {
+        "title": "Map style"
+      }
+    }
+  },
+  "data-layers": {
+    "search": {
+      "placeholder": "Search..."
+    },
+    "list": {
+      "title": "All data ({count})"
+    },
+    "item": {
+      "data-sources": "Data sources"
+    }
   },
   "metadata": {
     "home": {

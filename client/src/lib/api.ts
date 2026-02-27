@@ -38,4 +38,13 @@ export const API = <T>(
 // In some case with react-query and swr you want to be able to override the return error type so you can also do it here like this
 export type ErrorType<Error> = AxiosError<Error>;
 
-export default API;
+export const getCategoriesConfig: AxiosRequestConfig = {
+  url: "/categories",
+};
+
+export const getDatasetsConfig: AxiosRequestConfig = {
+  url: "/datasets",
+  params: {
+    include_layers: true,
+  },
+};

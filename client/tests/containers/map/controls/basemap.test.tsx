@@ -13,14 +13,14 @@ vi.mock("@/app/[locale]/url-store", () => ({
 
 vi.mock("@/containers/map/constants", () => ({
   BASEMAPS: {
-    default: { id: "default", name: "Default" },
-    satellite: { id: "satellite", name: "Satellite" },
+    light: { id: "light", name: "Light", image: "/light.png" },
+    satellite: { id: "satellite", name: "Satellite", image: "/satellite.png" },
   },
 }));
 
 const mockSetBasemap = vi.fn();
 
-function setupHooks(basemap = "default") {
+function setupHooks(basemap = "light") {
   (useMapBasemap as Mock).mockReturnValue({
     basemap,
     setBasemap: mockSetBasemap,
@@ -45,27 +45,29 @@ describe("@containers/map/controls/settings/basemap", () => {
     renderBasemapControl();
 
     for (const b of Object.values(BASEMAPS)) {
-      expect(screen.getByRole("button", { name: b.name })).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: new RegExp(b.name) }),
+      ).toBeInTheDocument();
     }
   });
 
   it("highlights the active basemap", () => {
-    setupHooks("default");
+    setupHooks("light");
     renderBasemapControl();
 
-    const defaultBtn = screen.getByRole("button", { name: "Default" });
-    expect(defaultBtn.className).toContain("bg-blue-500/25");
+    const lightBtn = screen.getByRole("button", { name: /Light/ });
+    expect(lightBtn.className).toContain("bg-blue-500/25");
 
-    const satelliteBtn = screen.getByRole("button", { name: "Satellite" });
+    const satelliteBtn = screen.getByRole("button", { name: /Satellite/ });
     expect(satelliteBtn.className).not.toContain("bg-blue-500/25");
   });
 
   it("calls setBasemap when a different basemap is clicked", async () => {
-    setupHooks("default");
+    setupHooks("light");
     const user = userEvent.setup();
     renderBasemapControl();
 
-    await user.click(screen.getByRole("button", { name: "Satellite" }));
+    await user.click(screen.getByRole("button", { name: /Satellite/ }));
 
     expect(mockSetBasemap).toHaveBeenCalledWith("satellite");
   });
@@ -74,10 +76,10 @@ describe("@containers/map/controls/settings/basemap", () => {
     setupHooks("satellite");
     renderBasemapControl();
 
-    const satelliteBtn = screen.getByRole("button", { name: "Satellite" });
+    const satelliteBtn = screen.getByRole("button", { name: /Satellite/ });
     expect(satelliteBtn.className).toContain("bg-blue-500/25");
 
-    const defaultBtn = screen.getByRole("button", { name: "Default" });
-    expect(defaultBtn.className).not.toContain("bg-blue-500/25");
+    const lightBtn = screen.getByRole("button", { name: /Light/ });
+    expect(lightBtn.className).not.toContain("bg-blue-500/25");
   });
 });

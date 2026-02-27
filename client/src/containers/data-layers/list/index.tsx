@@ -1,18 +1,17 @@
 import { useTranslations } from "next-intl";
 import { type FC, useState } from "react";
+import { Accordion } from "@/components/ui/accordion";
 import DataLayersListItem from "@/containers/data-layers/list/item";
 import DataLayersListItemDialog from "@/containers/data-layers/list/item-dialog";
-import type { DataLayer } from "@/types";
+import type { NormalizedDataset } from "@/types";
 
 interface DataLayersListProps {
-  items: DataLayer[];
-  layers: string[];
-  onItemChange: (id: string, isSelected: boolean) => void;
+  datasets: NormalizedDataset[];
+  onItemChange: (id: number, isSelected: boolean) => void;
 }
 
 const DataLayersList: FC<DataLayersListProps> = ({
-  items,
-  layers,
+  datasets,
   onItemChange,
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -21,19 +20,23 @@ const DataLayersList: FC<DataLayersListProps> = ({
     <section aria-label="Data layers list">
       <p className="flex items-center gap-8 text-xs text-[rgba(26,37,61,0.66)] font-medium">
         <span className="shrink-0">
-          {t("list.title", { count: items.length })}
+          {t("list.title", { count: datasets.length })}
         </span>
         <span className="h-px flex-1 bg-[linear-gradient(90deg,rgba(26,37,61,0.10)_0%,rgba(69,99,163,0.10)_100%)]" />
       </p>
-      {items.map((item) => (
-        <DataLayersListItem
-          key={item.id}
-          {...item}
-          isSelected={layers.includes(item.id)}
-          onChange={(id, isSelected) => onItemChange(id, isSelected)}
-          onLearnMore={() => setDialogOpen(true)}
-        />
-      ))}
+      <Accordion type="multiple">
+        {datasets.map((item) => (
+          <DataLayersListItem
+            key={`dataset-item-${item.id}`}
+            id={item.id}
+            title={item.metadata.title}
+            description={item.metadata.description}
+            layers={item.layers ?? []}
+            onChange={(id, isSelected) => onItemChange(id, isSelected)}
+            onLearnMore={() => setDialogOpen(true)}
+          />
+        ))}
+      </Accordion>
       <DataLayersListItemDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}

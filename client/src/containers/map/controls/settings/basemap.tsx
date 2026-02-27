@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useMapBasemap } from "@/app/[locale]/url-store";
 import { BASEMAPS } from "@/containers/map/constants";
@@ -24,14 +25,14 @@ export const BasemapControl = () => {
             )}
             onClick={() => setBasemap(b.id)}
           >
-            {/* <Image
-							loading="lazy"
-							src={b.image}
-							alt={b.name}
-							width={200}
-							height={200}
-							className="mb-1 h-10 w-10 rounded-full object-cover"
-						/> */}
+            <Image
+              loading="lazy"
+              src={b.image}
+              alt={b.name}
+              width={200}
+              height={200}
+              className="mb-1 h-10 w-10 rounded-full object-cover"
+            />
 
             {b.name}
           </button>
