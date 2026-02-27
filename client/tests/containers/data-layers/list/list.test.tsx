@@ -31,11 +31,13 @@ describe("@containers/data-layers/list", () => {
   const renderList = (
     props: Partial<{
       datasets: NormalizedDataset[];
+      isLoading: boolean;
       onItemChange: (id: number, isSelected: boolean) => void;
     }> = {},
   ) => {
     const merged = {
       datasets: DATA_LAYERS,
+      isLoading: false,
       onItemChange: vi.fn(),
       ...props,
     };
@@ -54,6 +56,19 @@ describe("@containers/data-layers/list", () => {
     expect(
       screen.getByRole("region", { name: /data layers list/i }),
     ).toBeInTheDocument();
+  });
+
+  it("renders the skeleton while loading", () => {
+    renderList({ isLoading: true });
+
+    expect(
+      screen.getByRole("region", {
+        name: /data layers list skeleton/i,
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("region", { name: "Data layers list" }),
+    ).not.toBeInTheDocument();
   });
 
   it("displays the dataset count in the title", () => {
