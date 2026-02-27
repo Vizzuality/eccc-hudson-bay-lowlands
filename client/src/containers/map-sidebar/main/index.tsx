@@ -22,7 +22,7 @@ const Main = () => {
         name: getTranslation(category.metadata.title),
       })),
   });
-  const { data: datasets } = useQuery({
+  const { data: datasets, isFetching: isDatasetsLoading } = useQuery({
     queryKey: queryKeys.datasets.all.queryKey,
     queryFn: () => API<DatasetResponse>(getDatasetsConfig),
     select: (data) =>
@@ -59,6 +59,7 @@ const Main = () => {
         <DataLayersList
           datasets={datasets ?? []}
           onItemChange={handleItemChange}
+          isLoading={isDatasetsLoading}
         />
         <DataLayersBottomBar
           activeDataCount={layers.length}
