@@ -33,13 +33,18 @@ export interface LayerMetadata {
   description: Translatable;
 }
 
+export interface LayerCategory {
+  value: number;
+  label: Translatable;
+}
+
 export interface Layer {
   id: number;
   format: string;
   type: string;
   path: string;
   unit: string;
-  categories: null;
+  categories: LayerCategory[] | null;
   metadata: LayerMetadata;
   dataset_id: number;
 }
