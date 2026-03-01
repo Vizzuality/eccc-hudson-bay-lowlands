@@ -1,6 +1,7 @@
 import type { FC } from "react";
 import { useCategory } from "@/app/[locale]/url-store";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getCategoryIcon } from "@/containers/data-layers/category-selector/utils";
 import { cn } from "@/lib/utils";
 
 interface CategorySelectorProps {
@@ -21,6 +22,8 @@ const CategorySelector: FC<CategorySelectorProps> = ({ items, isLoading }) => {
       {[{ id: 0, name: "All" }, ...items].map((c) => {
         const isActive = category === c.id || (category === null && c.id === 0);
         const key = `category-selector-${c.id}`;
+        const Icon = getCategoryIcon(c.id);
+
         return (
           <label
             key={key}
@@ -35,6 +38,7 @@ const CategorySelector: FC<CategorySelectorProps> = ({ items, isLoading }) => {
                 isActive,
             })}
           >
+            {!!Icon && <Icon className={cn({ "text-accent": isActive })} />}
             <input
               type="radio"
               name="category"
@@ -53,6 +57,7 @@ const CategorySelector: FC<CategorySelectorProps> = ({ items, isLoading }) => {
               {c.name}
             </span>
             <span className="relative text-xs text-muted-foreground font-semibold">
+              {/* TODO: add correct count when API endpoint returns correct data */}
               5 data layers
             </span>
           </label>
