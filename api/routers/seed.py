@@ -1,5 +1,6 @@
 """Seed endpoint for populating the database via JSON payload."""
 
+import hmac
 import logging
 
 from fastapi import APIRouter, Depends, Header, HTTPException
@@ -17,7 +18,7 @@ router = APIRouter(tags=["Seed"])
 def verify_seed_secret(x_seed_secret: str = Header(description="Secret token to authorize seeding")) -> str:
     """Validate the seed secret from the request header."""
     settings = get_settings()
-    if x_seed_secret != settings.seed_secret:
+    if not hmac.compare_digest(x_seed_secret, settings.seed_secret):
         raise HTTPException(status_code=403, detail="Invalid seed secret")
     return x_seed_secret
 
@@ -37,7 +38,7 @@ def run_seed(
         counts = seed_database(db, payload=payload)
         db.commit()
         return {"status": "success", "counts": counts}
-    except Exception as e:
+    except Exception:
         db.rollback()
         logger.exception("Seed failed")
-        raise HTTPException(status_code=500, detail=f"Seed failed: {e}")
+        raise HTTPException(status_code=500, detail="Seed failed")
