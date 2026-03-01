@@ -40,7 +40,7 @@ class LayerSchema(BaseModel):
         default=None, description="Category definitions for categorical/classified layers"
     )
     metadata: LayerMetadata = Field(description="Bilingual metadata (title, description)")
-    dataset_id: int | None = Field(default=None, description="ID of the parent dataset, if any")
+    dataset_id: int = Field(description="ID of the parent dataset")
 
     @classmethod
     def from_orm_layer(cls, layer) -> "LayerSchema":

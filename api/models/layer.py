@@ -18,7 +18,7 @@ class Layer(Base):
     unit: Mapped[str | None] = mapped_column(String, nullable=True)
     categories: Mapped[list | None] = mapped_column(JSON, nullable=True)
     metadata_: Mapped[dict] = mapped_column("metadata", JSON, nullable=False)
-    dataset_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("datasets.id"), nullable=True)
+    dataset_id: Mapped[int] = mapped_column(Integer, ForeignKey("datasets.id"), nullable=False)
 
     dataset: Mapped["Dataset"] = relationship(  # noqa: F821
         "Dataset", back_populates="layers"
