@@ -1,6 +1,6 @@
 """COG (Cloud Optimized GeoTIFF) tile server router."""
 
-from fastapi import Query
+from fastapi import HTTPException, Query
 from titiler.core.factory import TilerFactory
 
 from config import get_settings
@@ -21,6 +21,8 @@ def s3_url_dependency(
         Full S3 URI (e.g., "s3://bucket-name/data/processed/peat_cog.tif")
     """
     settings = get_settings()
+    if not settings.s3_bucket_name:
+        raise HTTPException(status_code=503, detail="S3 bucket not configured")
     key = url.lstrip("/")
     return f"s3://{settings.s3_bucket_name}/{key}"
 
