@@ -1,7 +1,5 @@
 """Datasets endpoint router."""
 
-from typing import Union
-
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, selectinload
@@ -18,13 +16,18 @@ from schemas.dataset import (
 router = APIRouter(tags=["Datasets"])
 
 
+def _escape_like(value: str) -> str:
+    """Escape SQL LIKE wildcard characters."""
+    return value.replace("%", r"\%").replace("_", r"\_")
+
+
 @router.get(
     "",
     summary="List Datasets",
     description=(
         "Returns a paginated list of datasets with optional title search. Use include_layers=true to include related layers."
     ),
-    response_model=Union[PaginatedDatasetResponse, PaginatedDatasetWithLayersResponse],
+    response_model=PaginatedDatasetResponse | PaginatedDatasetWithLayersResponse,
 )
 def list_datasets(
     offset: int = Query(default=0, ge=0, description="Number of items to skip"),
@@ -33,15 +36,16 @@ def list_datasets(
     category_id: int | None = Query(default=None, description="Filter datasets by category ID"),
     include_layers: bool = Query(default=False, description="Include related layers in response"),
     db: Session = Depends(get_db),
-) -> Union[PaginatedDatasetResponse, PaginatedDatasetWithLayersResponse]:
+) -> PaginatedDatasetResponse | PaginatedDatasetWithLayersResponse:
     """List datasets with pagination and optional title search."""
     stmt = select(Dataset)
     count_stmt = select(func.count()).select_from(Dataset)
 
     if search:
+        escaped = _escape_like(search)
         search_filter = or_(
-            Dataset.metadata_["title"]["en"].as_string().ilike(f"%{search}%"),
-            Dataset.metadata_["title"]["fr"].as_string().ilike(f"%{search}%"),
+            Dataset.metadata_["title"]["en"].as_string().ilike(f"%{escaped}%"),
+            Dataset.metadata_["title"]["fr"].as_string().ilike(f"%{escaped}%"),
         )
         stmt = stmt.where(search_filter)
         count_stmt = count_stmt.where(search_filter)
@@ -71,14 +75,14 @@ def list_datasets(
     "/{dataset_id}",
     summary="Get Dataset",
     description=("Returns a single dataset by ID. Use include_layers=true to include related layers."),
-    response_model=Union[DatasetSchema, DatasetWithLayersSchema],
+    response_model=DatasetSchema | DatasetWithLayersSchema,
     responses={404: {"description": "Dataset not found"}},
 )
 def get_dataset(
     dataset_id: int,
     include_layers: bool = Query(default=False, description="Include related layers in response"),
     db: Session = Depends(get_db),
-) -> Union[DatasetSchema, DatasetWithLayersSchema]:
+) -> DatasetSchema | DatasetWithLayersSchema:
     """Get a single dataset by ID."""
     stmt = select(Dataset).where(Dataset.id == dataset_id)
 
