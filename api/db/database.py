@@ -21,10 +21,13 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 def get_db() -> Generator[Session, None, None]:
     """Dependency that provides a database session.
 
-    Yields a database session and ensures it is closed after use.
+    Yields a database session and ensures it is rolled back and closed on error.
     """
     db = SessionLocal()
     try:
         yield db
+    except Exception:
+        db.rollback()
+        raise
     finally:
         db.close()
