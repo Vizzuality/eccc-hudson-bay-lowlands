@@ -11,11 +11,8 @@ from pathlib import Path
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import numpy as np
 import pytest
-import rasterio
 from fastapi.testclient import TestClient
-from rasterio.transform import from_bounds
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -107,7 +104,7 @@ def category(db_session, sample_category_metadata):
     """Create a single category."""
     db_category = Category(metadata_=sample_category_metadata)
     db_session.add(db_category)
-    db_session.commit()
+    db_session.flush()
     db_session.refresh(db_category)
     yield db_category
 
@@ -122,7 +119,7 @@ def multiple_categories(db_session):
         )
         categories.append(db_category)
     db_session.add_all(categories)
-    db_session.commit()
+    db_session.flush()
     for c in categories:
         db_session.refresh(c)
     yield categories
@@ -141,7 +138,7 @@ def searchable_categories(db_session):
         db_category = Category(metadata_=md)
         categories.append(db_category)
     db_session.add_all(categories)
-    db_session.commit()
+    db_session.flush()
     for c in categories:
         db_session.refresh(c)
     yield categories
@@ -167,7 +164,7 @@ def category_with_datasets(db_session, sample_category_metadata, sample_dataset_
         dataset_id=db_dataset.id,
     )
     db_session.add(db_layer)
-    db_session.commit()
+    db_session.flush()
     db_session.refresh(db_category)
     yield db_category
 
@@ -178,24 +175,32 @@ def category_with_datasets(db_session, sample_category_metadata, sample_dataset_
 
 
 @pytest.fixture
-def layer(db_session, sample_layer_metadata):
-    """Create a single layer (no dataset)."""
+def layer(db_session, dataset, sample_layer_metadata):
+    """Create a single layer belonging to a dataset."""
     db_layer = Layer(
         format_="raster",
         type_="continuous",
         path="/data/test.tif",
         unit="celsius",
         metadata_=sample_layer_metadata,
+        dataset_id=dataset.id,
     )
     db_session.add(db_layer)
-    db_session.commit()
+    db_session.flush()
     db_session.refresh(db_layer)
     yield db_layer
 
 
 @pytest.fixture
-def multiple_layers(db_session):
+def multiple_layers(db_session, sample_category_metadata, sample_dataset_metadata):
     """Create 15 layers for pagination testing."""
+    db_category = Category(metadata_=sample_category_metadata)
+    db_session.add(db_category)
+    db_session.flush()
+    db_dataset = Dataset(metadata_=sample_dataset_metadata, category_id=db_category.id)
+    db_session.add(db_dataset)
+    db_session.flush()
+
     layers = []
     for i in range(1, 16):
         db_layer = Layer(
@@ -206,18 +211,26 @@ def multiple_layers(db_session):
                 "title": {"en": f"Layer {i:02d}", "fr": f"Couche {i:02d}"},
                 "description": {"en": f"Layer number {i}", "fr": f"Couche numero {i}"},
             },
+            dataset_id=db_dataset.id,
         )
         layers.append(db_layer)
     db_session.add_all(layers)
-    db_session.commit()
+    db_session.flush()
     for layer in layers:
         db_session.refresh(layer)
     yield layers
 
 
 @pytest.fixture
-def searchable_layers(db_session):
+def searchable_layers(db_session, sample_category_metadata, sample_dataset_metadata):
     """Create layers with distinct titles for search testing."""
+    db_category = Category(metadata_=sample_category_metadata)
+    db_session.add(db_category)
+    db_session.flush()
+    db_dataset = Dataset(metadata_=sample_dataset_metadata, category_id=db_category.id)
+    db_session.add(db_dataset)
+    db_session.flush()
+
     layers_data = [
         {"title": {"en": "Hudson Bay Temperature", "fr": "Temperature de la baie d'Hudson"}},
         {"title": {"en": "Arctic Ice Coverage", "fr": "Couverture de glace arctique"}},
@@ -230,10 +243,11 @@ def searchable_layers(db_session):
             type_="continuous",
             path=f"/data/search_{i}.tif",
             metadata_=md,
+            dataset_id=db_dataset.id,
         )
         layers.append(db_layer)
     db_session.add_all(layers)
-    db_session.commit()
+    db_session.flush()
     for layer in layers:
         db_session.refresh(layer)
     yield layers
@@ -249,7 +263,7 @@ def dataset(db_session, category, sample_dataset_metadata):
     """Create a single dataset (belongs to a category)."""
     db_dataset = Dataset(metadata_=sample_dataset_metadata, category_id=category.id)
     db_session.add(db_dataset)
-    db_session.commit()
+    db_session.flush()
     db_session.refresh(db_dataset)
     yield db_dataset
 
@@ -266,7 +280,7 @@ def layer_with_dataset(db_session, dataset, sample_layer_metadata):
         dataset_id=dataset.id,
     )
     db_session.add(db_layer)
-    db_session.commit()
+    db_session.flush()
     db_session.refresh(db_layer)
     yield db_layer
 
@@ -289,7 +303,7 @@ def multiple_datasets(db_session, sample_category_metadata):
         )
         datasets.append(db_dataset)
     db_session.add_all(datasets)
-    db_session.commit()
+    db_session.flush()
     for d in datasets:
         db_session.refresh(d)
     yield datasets
@@ -312,7 +326,7 @@ def searchable_datasets(db_session, sample_category_metadata):
         db_dataset = Dataset(metadata_=md, category_id=db_category.id)
         datasets.append(db_dataset)
     db_session.add_all(datasets)
-    db_session.commit()
+    db_session.flush()
     for d in datasets:
         db_session.refresh(d)
     yield datasets
@@ -330,6 +344,10 @@ def minimal_cog(tmp_path):
     Generates a 256x256 uint8 raster covering a portion of the Hudson Bay
     region (lon -90 to -80, lat 50 to 60) in EPSG:4326.
     """
+    import numpy as np
+    import rasterio
+    from rasterio.transform import from_bounds
+
     filepath = tmp_path / "test_cog.tif"
     data = np.random.randint(0, 255, (1, 256, 256), dtype=np.uint8)
     transform = from_bounds(-90, 50, -80, 60, 256, 256)
