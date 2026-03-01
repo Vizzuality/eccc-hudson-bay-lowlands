@@ -18,7 +18,7 @@ class Settings(BaseSettings):
 
     # Contact information
     contact_name: str = "ECCC Hudson Bay Lowlands Team"
-    contact_url: str = "https://github.com/eccc-hudson-bay-lowlands"
+    contact_url: str = "https://eccc.dev-vizzuality.com/"
     contact_email: str = "contact@example.com"
 
     # License
