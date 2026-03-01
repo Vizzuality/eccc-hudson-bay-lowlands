@@ -1,4 +1,8 @@
-import { QueryClient } from "@tanstack/react-query";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import MapContainer from "@/containers/map";
@@ -34,26 +38,28 @@ export default async function Home() {
   });
 
   return (
-    <main
-      className="h-screen flex flex-col"
-      style={{
-        background:
-          "radial-gradient(113.99% 208.31% at 0% 0%, var(--slate-200, #E2E8F0) 0%, var(--base-white, #FFF) 50.96%, var(--emerald-50, #ECFDF5) 100%), #FFF",
-      }}
-    >
-      <Suspense>
-        <TopBar />
-      </Suspense>
-
-      <section className="flex h-full overflow-hidden">
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <main
+        className="h-screen flex flex-col"
+        style={{
+          background:
+            "radial-gradient(113.99% 208.31% at 0% 0%, var(--slate-200, #E2E8F0) 0%, var(--base-white, #FFF) 50.96%, var(--emerald-50, #ECFDF5) 100%), #FFF",
+        }}
+      >
         <Suspense>
-          <MapSidebar />
+          <TopBar />
         </Suspense>
 
-        <Suspense>
-          <MapContainer className="flex-1 rounded-tl-3xl" />
-        </Suspense>
-      </section>
-    </main>
+        <section className="flex h-full overflow-hidden">
+          <Suspense>
+            <MapSidebar />
+          </Suspense>
+
+          <Suspense>
+            <MapContainer className="flex-1 rounded-tl-3xl" />
+          </Suspense>
+        </section>
+      </main>
+    </HydrationBoundary>
   );
 }
