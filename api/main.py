@@ -35,11 +35,8 @@ async def lifespan(app: FastAPI):
     for key, value in gdal_env.items():
         os.environ.setdefault(key, value)
 
-    # Create database tables on startup.
-    # Only drop+recreate in testing mode; production uses create_all only.
+    # Create database tables if they don't exist.
     # TODO: Replace with Alembic migrations once the data model is stable.
-    if settings.testing:
-        Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     yield
 
