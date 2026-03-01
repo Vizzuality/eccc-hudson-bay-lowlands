@@ -1,7 +1,5 @@
 """Categories endpoint router."""
 
-from typing import Union
-
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, selectinload
@@ -17,6 +15,11 @@ from schemas.category import (
 )
 
 router = APIRouter(tags=["Categories"])
+
+
+def _escape_like(value: str) -> str:
+    """Escape SQL LIKE wildcard characters."""
+    return value.replace("%", r"\%").replace("_", r"\_")
 
 
 @router.get(
@@ -36,9 +39,10 @@ def list_categories(
     count_stmt = select(func.count()).select_from(Category)
 
     if search:
+        escaped = _escape_like(search)
         search_filter = or_(
-            Category.metadata_["title"]["en"].as_string().ilike(f"%{search}%"),
-            Category.metadata_["title"]["fr"].as_string().ilike(f"%{search}%"),
+            Category.metadata_["title"]["en"].as_string().ilike(f"%{escaped}%"),
+            Category.metadata_["title"]["fr"].as_string().ilike(f"%{escaped}%"),
         )
         stmt = stmt.where(search_filter)
         count_stmt = count_stmt.where(search_filter)
@@ -59,7 +63,7 @@ def list_categories(
         "Returns a single category by ID. Use include_datasets=true to include nested datasets, "
         "and include_layers=true to also include each dataset's layers."
     ),
-    response_model=Union[CategorySchema, CategoryWithDatasetsSchema, CategoryWithDatasetsAndLayersSchema],
+    response_model=CategorySchema | CategoryWithDatasetsSchema | CategoryWithDatasetsAndLayersSchema,
     responses={404: {"description": "Category not found"}},
 )
 def get_category(
@@ -69,7 +73,7 @@ def get_category(
         default=False, description="Include layers within each dataset (requires include_datasets=true)"
     ),
     db: Session = Depends(get_db),
-) -> Union[CategorySchema, CategoryWithDatasetsSchema, CategoryWithDatasetsAndLayersSchema]:
+) -> CategorySchema | CategoryWithDatasetsSchema | CategoryWithDatasetsAndLayersSchema:
     """Get a single category by ID with optional nested datasets and layers."""
     stmt = select(Category).where(Category.id == category_id)
 

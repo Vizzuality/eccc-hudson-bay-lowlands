@@ -11,6 +11,11 @@ from schemas.layer import LayerSchema, PaginatedLayerResponse
 router = APIRouter(tags=["Layers"])
 
 
+def _escape_like(value: str) -> str:
+    """Escape SQL LIKE wildcard characters."""
+    return value.replace("%", r"\%").replace("_", r"\_")
+
+
 @router.get(
     "",
     summary="List Layers",
@@ -28,9 +33,10 @@ def list_layers(
     count_stmt = select(func.count()).select_from(Layer)
 
     if search:
+        escaped = _escape_like(search)
         search_filter = or_(
-            Layer.metadata_["title"]["en"].as_string().ilike(f"%{search}%"),
-            Layer.metadata_["title"]["fr"].as_string().ilike(f"%{search}%"),
+            Layer.metadata_["title"]["en"].as_string().ilike(f"%{escaped}%"),
+            Layer.metadata_["title"]["fr"].as_string().ilike(f"%{escaped}%"),
         )
         stmt = stmt.where(search_filter)
         count_stmt = count_stmt.where(search_filter)
