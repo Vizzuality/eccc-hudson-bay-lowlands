@@ -88,6 +88,20 @@ def test_gdal_env_setdefault_does_not_override():
             os.environ[key] = saved
 
 
+def test_s3_url_dependency_returns_503_when_bucket_not_configured():
+    """Test that s3_url_dependency raises 503 when S3_BUCKET_NAME is empty."""
+    from fastapi import HTTPException
+
+    with patch("routers.cog.get_settings") as mock_settings:
+        mock_settings.return_value.s3_bucket_name = ""
+        try:
+            s3_url_dependency(url="data/test.tif")
+            assert False, "Should have raised HTTPException"
+        except HTTPException as exc:
+            assert exc.status_code == 503
+            assert "S3 bucket not configured" in exc.detail
+
+
 def test_s3_url_dependency_builds_correct_uri():
     """Test that s3_url_dependency constructs the correct S3 URI."""
     with patch("routers.cog.get_settings") as mock_settings:
