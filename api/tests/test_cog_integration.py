@@ -6,9 +6,12 @@ local files. This exercises rasterio/GDAL tile generation, reprojection,
 and response formatting without requiring actual S3 access.
 """
 
+import io
+
 import pytest
 from fastapi import Query
 from fastapi.testclient import TestClient
+from PIL import Image
 
 from db.database import get_db
 from main import app
@@ -27,6 +30,57 @@ def cog_client(db_session, minimal_cog):
         url: str = Query(description="Relative path to the COG file"),
     ) -> str:
         return minimal_cog
+
+    app.dependency_overrides[get_db] = override_get_db
+    app.dependency_overrides[s3_url_dependency] = override_s3_url
+
+    yield TestClient(app, raise_server_exceptions=False)
+
+    app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def multiband_cog(tmp_path):
+    """Create a 3-band RGB Cloud Optimized GeoTIFF for integration testing."""
+    import numpy as np
+    import rasterio
+    from rasterio.transform import from_bounds
+
+    filepath = tmp_path / "rgb_cog.tif"
+    data = np.random.randint(0, 255, (3, 256, 256), dtype=np.uint8)
+    transform = from_bounds(-90, 50, -80, 60, 256, 256)
+
+    profile = {
+        "driver": "GTiff",
+        "dtype": "uint8",
+        "width": 256,
+        "height": 256,
+        "count": 3,
+        "crs": "EPSG:4326",
+        "transform": transform,
+        "tiled": True,
+        "blockxsize": 256,
+        "blockysize": 256,
+        "compress": "deflate",
+    }
+
+    with rasterio.open(filepath, "w", **profile) as dst:
+        dst.write(data)
+
+    return str(filepath)
+
+
+@pytest.fixture
+def multiband_client(db_session, multiband_cog):
+    """Provide a test client serving a multi-band COG."""
+
+    def override_get_db():
+        yield db_session
+
+    def override_s3_url(
+        url: str = Query(description="Relative path to the COG file"),
+    ) -> str:
+        return multiband_cog
 
     app.dependency_overrides[get_db] = override_get_db
     app.dependency_overrides[s3_url_dependency] = override_s3_url
@@ -159,7 +213,7 @@ def test_cog_full_flow_with_layer_path(cog_client, db_session, sample_category_m
         dataset_id=db_dataset.id,
     )
     db_session.add(db_layer)
-    db_session.commit()
+    db_session.flush()
     db_session.refresh(db_layer)
 
     response = cog_client.get("/cog/info", params={"url": db_layer.path})
@@ -169,3 +223,110 @@ def test_cog_full_flow_with_layer_path(cog_client, db_session, sample_category_m
     assert data["dtype"] == "uint8"
     assert data["count"] == 1
     assert "bounds" in data
+
+
+# =============================================================================
+# Tile Response Validation
+# =============================================================================
+
+
+def test_cog_tile_is_256x256_png(cog_client):
+    """Tile response should be a 256x256 PNG image."""
+    response = cog_client.get(
+        "/cog/tiles/WebMercatorQuad/2/1/1",
+        params={"url": "test.tif"},
+    )
+
+    assert response.status_code == 200
+    img = Image.open(io.BytesIO(response.content))
+    assert img.format == "PNG"
+    assert img.size == (256, 256)
+
+
+def test_cog_tile_with_rescale_param(cog_client):
+    """Tile request with rescale parameter should return a valid image."""
+    response = cog_client.get(
+        "/cog/tiles/WebMercatorQuad/2/1/1",
+        params={"url": "test.tif", "rescale": "0,200"},
+    )
+
+    assert response.status_code == 200
+    assert response.content[:4] == b"\x89PNG"
+
+
+def test_cog_tile_with_colormap_param(cog_client):
+    """Tile request with a named colormap should return a valid image."""
+    response = cog_client.get(
+        "/cog/tiles/WebMercatorQuad/2/1/1",
+        params={"url": "test.tif", "colormap_name": "viridis", "rescale": "0,255"},
+    )
+
+    assert response.status_code == 200
+    assert response.content[:4] == b"\x89PNG"
+
+
+def test_cog_tilejson_contains_tile_url_template(cog_client):
+    """TileJSON tiles array should contain a URL template with {z}/{x}/{y} placeholders."""
+    response = cog_client.get("/cog/WebMercatorQuad/tilejson.json", params={"url": "test.tif"})
+
+    assert response.status_code == 200
+    data = response.json()
+    tile_url = data["tiles"][0]
+    assert "{z}" in tile_url
+    assert "{x}" in tile_url
+    assert "{y}" in tile_url
+
+
+def test_cog_info_contains_crs(cog_client):
+    """COG info should return CRS information for the raster."""
+    response = cog_client.get("/cog/info", params={"url": "test.tif"})
+
+    assert response.status_code == 200
+    data = response.json()
+    assert "width" in data
+    assert "height" in data
+    assert data["width"] == 256
+    assert data["height"] == 256
+
+
+# =============================================================================
+# Multi-band COG Tests
+# =============================================================================
+
+
+def test_multiband_cog_info_reports_three_bands(multiband_client):
+    """Multi-band COG info should report 3 bands."""
+    response = multiband_client.get("/cog/info", params={"url": "rgb.tif"})
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["count"] == 3
+    assert data["dtype"] == "uint8"
+
+
+def test_multiband_cog_statistics_returns_all_bands(multiband_client):
+    """Statistics endpoint should return stats for all 3 bands."""
+    response = multiband_client.get("/cog/statistics", params={"url": "rgb.tif"})
+
+    assert response.status_code == 200
+    data = response.json()
+    assert "b1" in data
+    assert "b2" in data
+    assert "b3" in data
+    for band in ["b1", "b2", "b3"]:
+        assert "min" in data[band]
+        assert "max" in data[band]
+        assert "mean" in data[band]
+
+
+def test_multiband_cog_tile_returns_valid_image(multiband_client):
+    """Multi-band COG tile should return a valid PNG."""
+    response = multiband_client.get(
+        "/cog/tiles/WebMercatorQuad/2/1/1",
+        params={"url": "rgb.tif"},
+    )
+
+    assert response.status_code == 200
+    img = Image.open(io.BytesIO(response.content))
+    assert img.format == "PNG"
+    assert img.size == (256, 256)
