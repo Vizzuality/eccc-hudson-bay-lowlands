@@ -85,7 +85,7 @@ def _write_metadata(data: dict) -> Path:
 def test_seed_creates_correct_counts(db_session):
     metadata_path = _write_metadata(MINIMAL_METADATA)
     counts = seed_database(db_session, metadata_path)
-    db_session.commit()
+    db_session.flush()
 
     assert counts["categories"]["created"] == 1
     assert counts["datasets"]["created"] == 1
@@ -105,12 +105,12 @@ def test_seed_idempotent(db_session):
     metadata_path = _write_metadata(MINIMAL_METADATA)
 
     counts1 = seed_database(db_session, metadata_path)
-    db_session.commit()
+    db_session.flush()
     assert counts1["categories"]["created"] == 1
     assert counts1["layers"]["created"] == 3
 
     counts2 = seed_database(db_session, metadata_path)
-    db_session.commit()
+    db_session.flush()
     assert counts2["categories"]["updated"] == 1
     assert counts2["categories"]["created"] == 0
     assert counts2["datasets"]["updated"] == 1
@@ -131,7 +131,7 @@ def test_seed_idempotent(db_session):
 def test_empty_type_becomes_null(db_session):
     metadata_path = _write_metadata(MINIMAL_METADATA)
     seed_database(db_session, metadata_path)
-    db_session.commit()
+    db_session.flush()
 
     vector_layer = db_session.execute(select(Layer).where(Layer.path == "test.vector_id")).scalar_one()
     assert vector_layer.type_ is None
@@ -140,7 +140,7 @@ def test_empty_type_becomes_null(db_session):
 def test_empty_unit_becomes_null(db_session):
     metadata_path = _write_metadata(MINIMAL_METADATA)
     seed_database(db_session, metadata_path)
-    db_session.commit()
+    db_session.flush()
 
     vector_layer = db_session.execute(select(Layer).where(Layer.path == "test.vector_id")).scalar_one()
     assert vector_layer.unit is None
@@ -149,7 +149,7 @@ def test_empty_unit_becomes_null(db_session):
 def test_nonempty_type_preserved(db_session):
     metadata_path = _write_metadata(MINIMAL_METADATA)
     seed_database(db_session, metadata_path)
-    db_session.commit()
+    db_session.flush()
 
     raster_layer = db_session.execute(select(Layer).where(Layer.path == "data/test/layer_a.tif")).scalar_one()
     assert raster_layer.type_ == "continuous"
@@ -164,7 +164,7 @@ def test_nonempty_type_preserved(db_session):
 def test_categories_array_stored(db_session):
     metadata_path = _write_metadata(MINIMAL_METADATA)
     seed_database(db_session, metadata_path)
-    db_session.commit()
+    db_session.flush()
 
     cat_layer = db_session.execute(select(Layer).where(Layer.path == "data/test/layer_c.tif")).scalar_one()
     assert cat_layer.categories is not None
@@ -176,7 +176,7 @@ def test_categories_array_stored(db_session):
 def test_non_categorical_has_null_categories(db_session):
     metadata_path = _write_metadata(MINIMAL_METADATA)
     seed_database(db_session, metadata_path)
-    db_session.commit()
+    db_session.flush()
 
     raster_layer = db_session.execute(select(Layer).where(Layer.path == "data/test/layer_a.tif")).scalar_one()
     assert raster_layer.categories is None
@@ -190,7 +190,7 @@ def test_non_categorical_has_null_categories(db_session):
 def test_dataset_belongs_to_category(db_session):
     metadata_path = _write_metadata(MINIMAL_METADATA)
     seed_database(db_session, metadata_path)
-    db_session.commit()
+    db_session.flush()
 
     category = db_session.execute(select(Category)).scalar_one()
     dataset = db_session.execute(select(Dataset)).scalar_one()
@@ -200,7 +200,7 @@ def test_dataset_belongs_to_category(db_session):
 def test_layer_belongs_to_dataset(db_session):
     metadata_path = _write_metadata(MINIMAL_METADATA)
     seed_database(db_session, metadata_path)
-    db_session.commit()
+    db_session.flush()
 
     dataset = db_session.execute(select(Dataset)).scalar_one()
     layers = db_session.execute(select(Layer)).scalars().all()
@@ -211,7 +211,7 @@ def test_layer_belongs_to_dataset(db_session):
 def test_category_has_datasets_relationship(db_session):
     metadata_path = _write_metadata(MINIMAL_METADATA)
     seed_database(db_session, metadata_path)
-    db_session.commit()
+    db_session.flush()
 
     category = db_session.execute(select(Category)).scalar_one()
     assert len(category.datasets) == 1
@@ -220,7 +220,7 @@ def test_category_has_datasets_relationship(db_session):
 def test_dataset_has_layers_relationship(db_session):
     metadata_path = _write_metadata(MINIMAL_METADATA)
     seed_database(db_session, metadata_path)
-    db_session.commit()
+    db_session.flush()
 
     dataset = db_session.execute(select(Dataset)).scalar_one()
     assert len(dataset.layers) == 3
@@ -234,7 +234,7 @@ def test_dataset_has_layers_relationship(db_session):
 def test_category_metadata_stored(db_session):
     metadata_path = _write_metadata(MINIMAL_METADATA)
     seed_database(db_session, metadata_path)
-    db_session.commit()
+    db_session.flush()
 
     category = db_session.execute(select(Category)).scalar_one()
     assert category.metadata_["title"]["en"] == "Test Category"
@@ -244,7 +244,7 @@ def test_category_metadata_stored(db_session):
 def test_dataset_metadata_stored(db_session):
     metadata_path = _write_metadata(MINIMAL_METADATA)
     seed_database(db_session, metadata_path)
-    db_session.commit()
+    db_session.flush()
 
     dataset = db_session.execute(select(Dataset)).scalar_one()
     assert dataset.metadata_["title"]["en"] == "Test Dataset"
@@ -255,7 +255,7 @@ def test_dataset_metadata_stored(db_session):
 def test_layer_metadata_stored(db_session):
     metadata_path = _write_metadata(MINIMAL_METADATA)
     seed_database(db_session, metadata_path)
-    db_session.commit()
+    db_session.flush()
 
     layer = db_session.execute(select(Layer).where(Layer.path == "data/test/layer_a.tif")).scalar_one()
     assert layer.metadata_["title"]["en"] == "Layer A"
