@@ -25,16 +25,36 @@ export async function generateMetadata({
     description: t("description"),
   };
 }
-
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const { category } = await searchParams;
+  const categoryParam = Array.isArray(category) ? category[0] : category;
+  const categoryId =
+    typeof categoryParam === "string"
+      ? Number.parseInt(categoryParam, 10)
+      : undefined;
+  const queryParams = {
+    include_layers: true,
+    ...(typeof categoryId === "number" && Number.isFinite(categoryId)
+      ? { category_id: categoryId }
+      : {}),
+  };
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: queryKeys.categories.all.queryKey,
     queryFn: () => API<CategoryResponse>(getCategoriesConfig),
   });
   await queryClient.prefetchQuery({
-    queryKey: queryKeys.datasets.all.queryKey,
-    queryFn: () => API<DatasetResponse>(getDatasetsConfig),
+    queryKey: queryKeys.datasets.all(queryParams).queryKey,
+    queryFn: () => API<DatasetResponse>(getDatasetsConfig(queryParams)),
+  });
+  await queryClient.prefetchQuery({
+    queryKey: queryKeys.datasets.all({ include_layers: true }).queryKey,
+    queryFn: () =>
+      API<DatasetResponse>(getDatasetsConfig({ include_layers: true })),
   });
 
   return (
