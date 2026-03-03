@@ -95,7 +95,7 @@ module "github" {
     AWS_REGION                      = var.aws_region
   }
   global_variable_map = {
-    NEXT_PUBLIC_MAPBOX_API_TOKEN = "null"
+    NEXT_PUBLIC_MAPBOX_API_TOKEN = var.mapbox_token
   }
 }
 

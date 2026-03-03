@@ -30,3 +30,8 @@ variable "github_token" {
   type        = string
   description = "Github token to access the repository"
 }
+
+variable "mapbox_token" {
+  type        = string
+  description = "Mapbox API token"
+}
