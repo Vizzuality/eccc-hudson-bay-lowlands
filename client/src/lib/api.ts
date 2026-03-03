@@ -2,6 +2,7 @@ import Axios, { type AxiosError, type AxiosRequestConfig } from "axios";
 import qs from "query-string";
 
 import { env } from "@/env";
+import type { DatasetFilters } from "@/lib/schema";
 
 export const AXIOS_INSTANCE = Axios.create({
   baseURL: env.NEXT_PUBLIC_API_URL,
@@ -42,9 +43,11 @@ export const getCategoriesConfig: AxiosRequestConfig = {
   url: "/categories",
 };
 
-export const getDatasetsConfig: AxiosRequestConfig = {
+export const getDatasetsConfig = (
+  params?: DatasetFilters,
+): AxiosRequestConfig => ({
   url: "/datasets",
   params: {
-    include_layers: true,
+    ...params,
   },
-};
+});

@@ -1,4 +1,4 @@
-import type { Layer, NormalizedDataset } from "@/types";
+import type { CategorySelectorItem, Layer, NormalizedDataset } from "@/types";
 
 export const DATA_LAYERS: NormalizedDataset[] = [
   {
@@ -61,3 +61,11 @@ export const LAYERS: Layer[] = [
     dataset_id: 1,
   },
 ];
+
+export const CATEGORIES: CategorySelectorItem[] = [
+  { id: 1, name: "Category 1", layerCount: 2 },
+  { id: 2, name: "Category 2", layerCount: 3 },
+  { id: 3, name: "Category 3", layerCount: 0 },
+];
+
+export const TOTAL_LAYER_COUNT = 5;

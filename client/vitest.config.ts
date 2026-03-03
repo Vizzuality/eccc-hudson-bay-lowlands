@@ -49,6 +49,11 @@ export default defineConfig(({ mode }) => ({
         "src/containers/map/controls/settings/index.tsx",
         "src/containers/map/legend/**",
 
+        // React-query hooks & API plumbing (better covered by E2E)
+        "src/hooks/use-datasets.ts",
+        "src/lib/api.ts",
+        "src/lib/query-keys.ts",
+
         // Map-coupled components (better covered by E2E)
         "src/containers/map/index.tsx",
         "src/containers/map/controls/index.tsx",
