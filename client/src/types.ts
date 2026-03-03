@@ -12,6 +12,15 @@ export interface Category {
   };
 }
 
+export interface NormalizedCategory {
+  id: number;
+  name: string;
+}
+
+export interface CategorySelectorItem extends NormalizedCategory {
+  layerCount: number;
+}
+
 export type CategoryResponse = ApiResponse<Category>;
 
 interface DatasetMetadata<T> {

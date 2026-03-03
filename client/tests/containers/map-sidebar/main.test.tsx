@@ -1,10 +1,14 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { useLayers } from "@/app/[locale]/url-store";
 import Main from "@/containers/map-sidebar/main";
 import messages from "@/i18n/messages/en.json";
+import {
+  CATEGORIES,
+  DATA_LAYERS,
+  TOTAL_LAYER_COUNT,
+} from "@/tests/helpers/mocks";
 
 const mockSetLayers = vi.fn();
 
@@ -16,6 +20,22 @@ vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
     useLayers: vi.fn(),
   };
 });
+
+vi.mock("@/hooks/use-categories", () => ({
+  useCategories: vi.fn(() => ({
+    categoryItems: CATEGORIES,
+    totalLayerCount: TOTAL_LAYER_COUNT,
+    isCategoriesLoading: false,
+    category: null,
+  })),
+}));
+
+vi.mock("@/hooks/use-datasets", () => ({
+  useTranslatedDatasets: vi.fn(() => ({
+    data: DATA_LAYERS,
+    isFetching: false,
+  })),
+}));
 
 let capturedListProps: Record<string, unknown> = {};
 let capturedBottomBarProps: Record<string, unknown> = {};
@@ -48,32 +68,18 @@ vi.mock("@/components/ui/scroll-area", () => ({
   ),
 }));
 
-function setupHooks(layers: string[] = []) {
+function setupHooks(layers: number[] = []) {
   (useLayers as Mock).mockReturnValue({
     layers,
     setLayers: mockSetLayers,
   });
 }
 
-const createQueryClient = () =>
-  new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-        staleTime: 0,
-      },
-    },
-  });
-
 const renderMain = () => {
-  const queryClient = createQueryClient();
-
   return render(
-    <QueryClientProvider client={queryClient}>
-      <NextIntlClientProvider locale="en" messages={messages}>
-        <Main />
-      </NextIntlClientProvider>
-    </QueryClientProvider>,
+    <NextIntlClientProvider locale="en" messages={messages}>
+      <Main />
+    </NextIntlClientProvider>,
   );
 };
 
@@ -95,7 +101,7 @@ describe("@containers/map-sidebar/main", () => {
   });
 
   it("passes datasets and onItemChange to DataLayersList", () => {
-    setupHooks(["1", "5"]);
+    setupHooks([1, 5]);
     renderMain();
 
     expect(capturedListProps.datasets).toBeDefined();
@@ -104,40 +110,40 @@ describe("@containers/map-sidebar/main", () => {
   });
 
   it("adds a layer when handleItemChange is called with isSelected=true", () => {
-    setupHooks(["1", "2"]);
+    setupHooks([1, 2]);
     renderMain();
 
     const onItemChange = capturedListProps.onItemChange as (
-      id: string,
+      id: number,
       isSelected: boolean,
     ) => void;
-    onItemChange("3", true);
+    onItemChange(3, true);
 
-    expect(mockSetLayers).toHaveBeenCalledWith(["1", "2", "3"]);
+    expect(mockSetLayers).toHaveBeenCalledWith([1, 2, 3]);
   });
 
   it("removes a layer when handleItemChange is called with isSelected=false", () => {
-    setupHooks(["1", "2", "3"]);
+    setupHooks([1, 2, 3]);
     renderMain();
 
     const onItemChange = capturedListProps.onItemChange as (
-      id: string,
+      id: number,
       isSelected: boolean,
     ) => void;
-    onItemChange("2", false);
+    onItemChange(2, false);
 
-    expect(mockSetLayers).toHaveBeenCalledWith(["1", "3"]);
+    expect(mockSetLayers).toHaveBeenCalledWith([1, 3]);
   });
 
   it("passes active layer count to DataLayersBottomBar", () => {
-    setupHooks(["1", "2", "3"]);
+    setupHooks([1, 2, 3]);
     renderMain();
 
     expect(capturedBottomBarProps.activeDataCount).toBe(3);
   });
 
   it("clears all layers when onRemoveAll is called", () => {
-    setupHooks(["1", "2"]);
+    setupHooks([1, 2]);
     renderMain();
 
     const onRemoveAll = capturedBottomBarProps.onRemoveAll as () => void;
