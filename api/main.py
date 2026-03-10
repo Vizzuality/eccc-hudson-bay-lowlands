@@ -1,18 +1,27 @@
 """FastAPI application with enhanced OpenAPI configuration and CORS support."""
 
+import logging
 import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from config import get_settings
 from db.base import Base
 from db.database import engine
+from exception_handlers import http_exception_handler, unhandled_exception_handler, validation_exception_handler
 from models import Category, Dataset, Layer  # noqa: F401  # Import models to register with Base metadata
 from routers import categories, cog, datasets, health, layers, seed
 
 settings = get_settings()
+
+logging.basicConfig(
+    level=logging.getLevelName(settings.log_level.upper()),
+    format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
+)
 
 
 @asynccontextmanager
@@ -86,6 +95,11 @@ app = FastAPI(
     lifespan=lifespan,
     root_path=settings.root_path,
 )
+
+# Register centralized exception handlers
+app.add_exception_handler(StarletteHTTPException, http_exception_handler)
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(Exception, unhandled_exception_handler)
 
 # Configure CORS middleware
 app.add_middleware(
