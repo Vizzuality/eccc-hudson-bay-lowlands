@@ -58,7 +58,7 @@ module "dev" {
 
   beanstalk_platform = "64bit Amazon Linux 2023 v4.9.1 running Docker"
   beanstalk_tier     = "WebServer"
-  ec2_instance_type  = "t3.micro"
+  ec2_instance_type  = "t3.medium"
 
   elasticbeanstalk_iam_service_linked_role_name = "AWSServiceRoleForElasticBeanstalk"
   cname_prefix                                  = "${var.project_name}-dev-environment"
