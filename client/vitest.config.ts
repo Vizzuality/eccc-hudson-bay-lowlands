@@ -59,6 +59,7 @@ export default defineConfig(({ mode }) => ({
         "src/containers/map/controls/index.tsx",
         "src/containers/map/controls/zoom/**",
         "src/containers/map-sidebar/index.tsx",
+        "src/containers/map/layer-manager/**",
       ],
       thresholds: {
         statements: 85,

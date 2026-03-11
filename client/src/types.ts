@@ -59,9 +59,21 @@ export interface Layer {
 }
 
 export type LayersResponse = ApiResponse<Layer>;
+export type LayerResponse = Layer;
 
 export interface Dataset extends BaseDataset<Translatable> {}
 
 export interface NormalizedDataset extends BaseDataset<string> {}
 
 export type DatasetResponse = ApiResponse<Dataset>;
+
+export interface TileInfoResponse {
+  tilejson: string;
+  version: string;
+  scheme: string;
+  tiles: string[];
+  minzoom: number;
+  maxzoom: number;
+  bounds: [number, number, number, number];
+  center: number[];
+}

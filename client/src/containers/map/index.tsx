@@ -10,6 +10,7 @@ import { Controls } from "@/containers/map/controls";
 import SettingsControl from "@/containers/map/controls/settings";
 import { BasemapControl } from "@/containers/map/controls/settings/basemap";
 import ZoomControl from "@/containers/map/controls/zoom";
+import { LayerManager } from "@/containers/map/layer-manager";
 import MapLegend from "@/containers/map/legend";
 import { env } from "@/env";
 import { cn } from "@/lib/utils";
@@ -28,6 +29,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
   const [loaded, setLoaded] = useState<boolean>(false);
   const { basemap } = useMapBasemap();
   const mapStyle = BASEMAPS[basemap as BasemapId].mapStyle;
+
   return (
     <div className={cn("relative h-full w-full", className)}>
       <MapBoxMap
@@ -47,7 +49,12 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
         {...props}
       >
         <AnalyzeButton />
-        {loaded && children}
+        {loaded && (
+          <>
+            <LayerManager />
+            {children}
+          </>
+        )}
         <Controls>
           <ZoomControl />
           <SettingsControl>

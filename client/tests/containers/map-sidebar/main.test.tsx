@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
-import { useLayers } from "@/app/[locale]/url-store";
+import { useLayerIds } from "@/app/[locale]/url-store";
 import Main from "@/containers/map-sidebar/main";
 import messages from "@/i18n/messages/en.json";
 import {
@@ -10,14 +10,14 @@ import {
   TOTAL_LAYER_COUNT,
 } from "@/tests/helpers/mocks";
 
-const mockSetLayers = vi.fn();
+const mockSetLayerIds = vi.fn();
 
 vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
   const actual =
     await importOriginal<typeof import("@/app/[locale]/url-store")>();
   return {
     ...actual,
-    useLayers: vi.fn(),
+    useLayerIds: vi.fn(),
   };
 });
 
@@ -68,10 +68,10 @@ vi.mock("@/components/ui/scroll-area", () => ({
   ),
 }));
 
-function setupHooks(layers: number[] = []) {
-  (useLayers as Mock).mockReturnValue({
-    layers,
-    setLayers: mockSetLayers,
+function setupHooks(layerIds: number[] = []) {
+  (useLayerIds as Mock).mockReturnValue({
+    layerIds,
+    setLayerIds: mockSetLayerIds,
   });
 }
 
@@ -119,7 +119,7 @@ describe("@containers/map-sidebar/main", () => {
     ) => void;
     onItemChange(3, true);
 
-    expect(mockSetLayers).toHaveBeenCalledWith([1, 2, 3]);
+    expect(mockSetLayerIds).toHaveBeenCalledWith([1, 2, 3]);
   });
 
   it("removes a layer when handleItemChange is called with isSelected=false", () => {
@@ -132,7 +132,7 @@ describe("@containers/map-sidebar/main", () => {
     ) => void;
     onItemChange(2, false);
 
-    expect(mockSetLayers).toHaveBeenCalledWith([1, 3]);
+    expect(mockSetLayerIds).toHaveBeenCalledWith([1, 3]);
   });
 
   it("passes active layer count to DataLayersBottomBar", () => {
@@ -149,6 +149,6 @@ describe("@containers/map-sidebar/main", () => {
     const onRemoveAll = capturedBottomBarProps.onRemoveAll as () => void;
     onRemoveAll();
 
-    expect(mockSetLayers).toHaveBeenCalledWith([]);
+    expect(mockSetLayerIds).toHaveBeenCalledWith([]);
   });
 });

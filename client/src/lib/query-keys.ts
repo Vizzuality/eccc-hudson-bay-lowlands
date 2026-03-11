@@ -10,5 +10,13 @@ export const queryKeys = createQueryKeyStore({
       queryKey: [{ filters: filters ?? {} }],
     }),
   },
-  layers: null,
+  layers: {
+    all: null,
+    byId: (id: number) => ({
+      queryKey: [{ id }],
+    }),
+  },
+  cog: {
+    tileInfo: (path: string) => [{ path }],
+  },
 });

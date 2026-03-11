@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
-import { useLayers } from "@/app/[locale]/url-store";
+import { useLayerIds } from "@/app/[locale]/url-store";
 import { Accordion } from "@/components/ui/accordion";
 import DataLayersListItem, {
   type DataLayersListItemProps,
@@ -15,7 +15,7 @@ vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
     await importOriginal<typeof import("@/app/[locale]/url-store")>();
   return {
     ...actual,
-    useLayers: vi.fn(),
+    useLayerIds: vi.fn(),
   };
 });
 
@@ -28,10 +28,10 @@ const defaultProps: DataLayersListItemProps = {
   onLearnMore: vi.fn(),
 };
 
-function setupHooks(selectedLayers: number[] = []) {
-  (useLayers as Mock).mockReturnValue({
-    layers: selectedLayers,
-    setLayers: vi.fn(),
+function setupHooks(selectedLayerIds: number[] = []) {
+  (useLayerIds as Mock).mockReturnValue({
+    layerIds: selectedLayerIds,
+    setLayerIds: vi.fn(),
   });
 }
 
