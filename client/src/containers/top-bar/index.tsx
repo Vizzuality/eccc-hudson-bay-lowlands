@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,7 @@ const TopBar = () => {
   const pathname = usePathname();
   return (
     <header className="flex justify-between items-center p-4">
-      <p>{t("title")}</p>
+      <Image src="/logo.svg" alt={t("title")} width={126} height={37} />
       <section className="flex items-center gap-4">
         <nav className="border-slate-200 border-r">
           <ul className="flex gap-4">
