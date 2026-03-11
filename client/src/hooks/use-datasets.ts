@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { useApiTranslation } from "@/i18n/api-translation";
-import { API, getDatasetsConfig } from "@/lib/api";
+import { API } from "@/lib/api";
+import { getDatasetsConfig } from "@/lib/api/config";
 import { queryKeys } from "@/lib/query-keys";
 import type { DatasetFilters } from "@/lib/schema";
 import type { DatasetResponse } from "@/types";

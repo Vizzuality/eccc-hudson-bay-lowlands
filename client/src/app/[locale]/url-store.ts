@@ -28,13 +28,13 @@ export function useCategory() {
   return { category, setCategory };
 }
 
-export function useLayers() {
-  const [layers, setLayers] = useQueryState(
+export function useLayerIds() {
+  const [layerIds, setLayerIds] = useQueryState(
     "layers",
     parseAsArrayOf(parseAsInteger).withDefault([]),
   );
 
-  return { layers, setLayers };
+  return { layerIds, setLayerIds };
 }
 
 // TODO: Probably should be a shape object

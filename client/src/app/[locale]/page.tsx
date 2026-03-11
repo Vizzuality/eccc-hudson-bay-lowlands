@@ -8,7 +8,8 @@ import { Suspense } from "react";
 import MapContainer from "@/containers/map";
 import MapSidebar from "@/containers/map-sidebar";
 import TopBar from "@/containers/top-bar";
-import { API, getCategoriesConfig, getDatasetsConfig } from "@/lib/api";
+import { API } from "@/lib/api";
+import { getCategoriesConfig, getDatasetsConfig } from "@/lib/api/config";
 import { queryKeys } from "@/lib/query-keys";
 import type { CategoryResponse, DatasetResponse } from "@/types";
 
@@ -38,6 +39,7 @@ export default async function Home({
       : undefined;
   const queryParams = {
     include_layers: true,
+    limit: 99,
     ...(typeof categoryId === "number" && Number.isFinite(categoryId)
       ? { category_id: categoryId }
       : {}),
@@ -52,7 +54,8 @@ export default async function Home({
     queryFn: () => API<DatasetResponse>(getDatasetsConfig(queryParams)),
   });
   await queryClient.prefetchQuery({
-    queryKey: queryKeys.datasets.all({ include_layers: true }).queryKey,
+    queryKey: queryKeys.datasets.all({ include_layers: true, limit: 99 })
+      .queryKey,
     queryFn: () =>
       API<DatasetResponse>(getDatasetsConfig({ include_layers: true })),
   });

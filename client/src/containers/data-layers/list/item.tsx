@@ -1,7 +1,7 @@
 import { ChevronRightIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
-import { useLayers } from "@/app/[locale]/url-store";
+import { useLayerIds } from "@/app/[locale]/url-store";
 import {
   AccordionContent,
   AccordionItem,
@@ -33,11 +33,11 @@ const DataLayersListItem: FC<DataLayersListItemProps> = ({
   onChange,
   onLearnMore,
 }) => {
-  const { layers: selectedLayers } = useLayers();
+  const { layerIds: selectedLayerIds } = useLayerIds();
   const { getTranslation } = useApiTranslation();
   const t = useTranslations("data-layers.item");
   const currentSelectedFromLayers = layers.filter((layer) =>
-    selectedLayers.includes(layer.id),
+    selectedLayerIds.includes(layer.id),
   );
   return (
     <AccordionItem value={id.toString()} className="border-none group/item">
@@ -67,7 +67,7 @@ const DataLayersListItem: FC<DataLayersListItemProps> = ({
               id={layer.id}
               title={getTranslation(layer.metadata.title)}
               description={getTranslation(layer.metadata.description)}
-              isSelected={selectedLayers.includes(layer.id)}
+              isSelected={selectedLayerIds.includes(layer.id)}
               onChange={onChange}
             />
           ))}

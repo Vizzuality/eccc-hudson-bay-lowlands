@@ -2,7 +2,6 @@ import Axios, { type AxiosError, type AxiosRequestConfig } from "axios";
 import qs from "query-string";
 
 import { env } from "@/env";
-import type { DatasetFilters } from "@/lib/schema";
 
 export const AXIOS_INSTANCE = Axios.create({
   baseURL: env.NEXT_PUBLIC_API_URL,
@@ -38,16 +37,3 @@ export const API = <T>(
 
 // In some case with react-query and swr you want to be able to override the return error type so you can also do it here like this
 export type ErrorType<Error> = AxiosError<Error>;
-
-export const getCategoriesConfig: AxiosRequestConfig = {
-  url: "/categories",
-};
-
-export const getDatasetsConfig = (
-  params?: DatasetFilters,
-): AxiosRequestConfig => ({
-  url: "/datasets",
-  params: {
-    ...params,
-  },
-});
