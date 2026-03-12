@@ -1,12 +1,7 @@
 "use client";
 
-import {
-  type LayerProps,
-  Layer as RMLayer,
-  Source as RMSource,
-  type SourceProps,
-} from "react-map-gl/mapbox";
-import { type Config, parseConfig } from "@/lib/json-converter";
+import { Layer as RMLayer, Source as RMSource } from "react-map-gl/mapbox";
+import { getVectorLayerConfig } from "@/containers/map/layer-manager/item/utils";
 
 interface VectorLayerManagerItemProps {
   id: number;
@@ -21,34 +16,7 @@ const VectorLayerManagerItem = ({
   settings,
   beforeId,
 }: VectorLayerManagerItemProps) => {
-  const visibility = settings.visibility ?? true;
-
-  const c = parseConfig<Config>({
-    config: {
-      source: {
-        url: `mapbox://${path}`,
-        type: "vector",
-      },
-      styles: [
-        {
-          type: "fill",
-          layout: {
-            visibility: visibility ? "visible" : "none",
-          },
-        },
-      ],
-    },
-    params_config: [
-      {
-        key: "visibility",
-        default: true,
-      },
-    ],
-    settings,
-  });
-
-  const source = c?.source as SourceProps;
-  const styles = c?.styles as LayerProps[];
+  const { source, styles } = getVectorLayerConfig(path, settings);
 
   return (
     <RMSource id={`${id}-source`} key={`${id}-source`} {...source}>
