@@ -45,6 +45,93 @@
                   "en": "Estimated peat depth at 30 m resolution in cm.",
                   "fr": "Profondeur de la tourbe estimée à une résolution de 30 m en cm."
                 }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "color": "#0E2780",
+                      "label": {
+                        "en": "<100 cm",
+                        "fr": "<100 cm"
+                      }
+                    },
+                    {
+                      "color": "#01CB2A",
+                      "label": {
+                        "en": "100–200 cm",
+                        "fr": "100–200 cm"
+                      }
+                    },
+                    {
+                      "color": "#F9DF08",
+                      "label": {
+                        "en": "200–300 cm",
+                        "fr": "200–300 cm"
+                      }
+                    },
+                    {
+                      "color": "#CA4935",
+                      "label": {
+                        "en": "300–600 cm",
+                        "fr": "300–600 cm"
+                      }
+                    }
+                  ]
+                },
+                "colormap": [
+                  [
+                    0,
+                    "#0E2780"
+                  ],
+                  [
+                    100,
+                    "#0E2780"
+                  ],
+                  [
+                    100.0001,
+                    "#01CB2A"
+                  ],
+                  [
+                    200,
+                    "#01CB2A"
+                  ],
+                  [
+                    200.0001,
+                    "#F9DF08"
+                  ],
+                  [
+                    300,
+                    "#F9DF08"
+                  ],
+                  [
+                    300.0001,
+                    "#CA4935"
+                  ],
+                  [
+                    600,
+                    "#CA4935"
+                  ]
+                ]
               }
             },
             {
@@ -62,6 +149,108 @@
                   "en": "Estimated soil carbon stored in peatlands at 30 m resolution in kg/m².",
                   "fr": "Stock de carbone du sol estimé dans les tourbières à une résolution de 30 m en kg/m²."
                 }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "color": "#FFEA01",
+                      "label": {
+                        "en": "33–69",
+                        "fr": "33–69"
+                      }
+                    },
+                    {
+                      "color": "#31CF53",
+                      "label": {
+                        "en": "70–82",
+                        "fr": "70–82"
+                      }
+                    },
+                    {
+                      "color": "#00948E",
+                      "label": {
+                        "en": "83–91",
+                        "fr": "83–91"
+                      }
+                    },
+                    {
+                      "color": "#3E5591",
+                      "label": {
+                        "en": "92–102",
+                        "fr": "92–102"
+                      }
+                    },
+                    {
+                      "color": "#4A0057",
+                      "label": {
+                        "en": "103–242",
+                        "fr": "103–242"
+                      }
+                    }
+                  ]
+                },
+                "colormap": [
+                  [
+                    33,
+                    "#FFEA01"
+                  ],
+                  [
+                    69,
+                    "#FFEA01"
+                  ],
+                  [
+                    69.0001,
+                    "#31CF53"
+                  ],
+                  [
+                    82,
+                    "#31CF53"
+                  ],
+                  [
+                    82.0001,
+                    "#00948E"
+                  ],
+                  [
+                    91,
+                    "#00948E"
+                  ],
+                  [
+                    91.0001,
+                    "#3E5591"
+                  ],
+                  [
+                    102,
+                    "#3E5591"
+                  ],
+                  [
+                    102.0001,
+                    "#4A0057"
+                  ],
+                  [
+                    242,
+                    "#4A0057"
+                  ]
+                ]
               }
             }
           ]
@@ -94,12 +283,42 @@
               "type": "categorical",
               "unit": "category",
               "categories": [
-                { "value": 1, "label": { "en": "Permanent water", "fr": "Eau permanente" } },
-                { "value": 2, "label": { "en": "Permanent land", "fr": "Terre permanente" } },
-                { "value": 3, "label": { "en": "Stable", "fr": "Stable" } },
-                { "value": 4, "label": { "en": "Wetter", "fr": "Plus humide" } },
-                { "value": 5, "label": { "en": "Drier", "fr": "Plus sec" } }
-  ],
+                {
+                  "value": 1,
+                  "label": {
+                    "en": "Permanent water",
+                    "fr": "Eau permanente"
+                  }
+                },
+                {
+                  "value": 2,
+                  "label": {
+                    "en": "Permanent land",
+                    "fr": "Terre permanente"
+                  }
+                },
+                {
+                  "value": 3,
+                  "label": {
+                    "en": "Stable",
+                    "fr": "Stable"
+                  }
+                },
+                {
+                  "value": 4,
+                  "label": {
+                    "en": "Wetter",
+                    "fr": "Plus humide"
+                  }
+                },
+                {
+                  "value": 5,
+                  "label": {
+                    "en": "Drier",
+                    "fr": "Plus sec"
+                  }
+                }
+              ],
               "metadata": {
                 "title": {
                   "en": "Inundation Trends",
@@ -108,6 +327,73 @@
                 "description": {
                   "en": "Trends showing areas becoming wetter or drier over time.",
                   "fr": "Tendances montrant les zones devenant plus humides ou plus sèches au fil du temps."
+                }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "color": "#1726aa",
+                      "label": {
+                        "en": "Permanent water",
+                        "fr": "Eau permanente"
+                      }
+                    },
+                    {
+                      "color": "#9d5707",
+                      "label": {
+                        "en": "Permanent land",
+                        "fr": "Terre permanente"
+                      }
+                    },
+                    {
+                      "color": "#ffffcc",
+                      "label": {
+                        "en": "Stable",
+                        "fr": "Stable"
+                      }
+                    },
+                    {
+                      "color": "#1bb9b9",
+                      "label": {
+                        "en": "Wetter",
+                        "fr": "Plus humide"
+                      }
+                    },
+                    {
+                      "color": "#b78607",
+                      "label": {
+                        "en": "Drier",
+                        "fr": "Plus sec"
+                      }
+                    }
+                  ]
+                },
+                "colormap": {
+                  "1": "#1726aa",
+                  "2": "#9d5707",
+                  "3": "#ffffcc",
+                  "4": "#1bb9b9",
+                  "5": "#b78607"
                 }
               }
             },
@@ -126,6 +412,69 @@
                   "en": "Frequency of water occurrence from 1984–2023.",
                   "fr": "Fréquence d'occurrence de l'eau de 1984 à 2023."
                 }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "gradient",
+                  "items": [
+                    {
+                      "value": 0,
+                      "color": "#f7fbff",
+                      "label": {
+                        "en": "0%",
+                        "fr": "0%"
+                      }
+                    },
+                    {
+                      "value": 50,
+                      "color": "#6baed6",
+                      "label": {
+                        "en": "50%",
+                        "fr": "50%"
+                      }
+                    },
+                    {
+                      "value": 100,
+                      "color": "#08306b",
+                      "label": {
+                        "en": "100%",
+                        "fr": "100%"
+                      }
+                    }
+                  ]
+                },
+                "colormap": [
+                  [
+                    0,
+                    "#f7fbff"
+                  ],
+                  [
+                    50,
+                    "#6baed6"
+                  ],
+                  [
+                    100,
+                    "#08306b"
+                  ]
+                ]
               }
             }
           ]
@@ -137,18 +486,18 @@
               "en": "Flood Susceptibility Index",
               "fr": "Indice de vulnérabilité aux inondations"
             },
-              "description": {
-                "en": "This flood susceptibility index is based on historical flood patterns and machine learning models. Values range from 0 (low susceptibility) to 100 (high susceptibility).",
-                "fr": "Cet indice de susceptibilité aux inondations est basé sur les modèles historiques et l'apprentissage automatique. Les valeurs vont de 0 (faible) à 100 (élevée)."
-              },
-              "source": {
-                "en": "https://app.geo.ca/en-ca/map-browser/record/df106e11-4cee-425d-bd38-7e51ac674128",
-                "fr": "https://app.geo.ca/fr-ca/map-browser/record/df106e11-4cee-425d-bd38-7e51ac674128"
-              },
-              "citation": {
-                "en": "Natural Resources Canada, Canada Centre for Mapping and Earth Observation. (2022). Flood Susceptibility Index (FSI) [GIS dataset]. GEO.ca.",
-                "fr": "Centre canadien de cartographie et d'observation de la terre, Ressources naturelles Canada. (2022). Indice de susceptibilité aux inondations (FSI) [jeu de données SIG]. GEO.ca."
-              }
+            "description": {
+              "en": "This flood susceptibility index is based on historical flood patterns and machine learning models. Values range from 0 (low susceptibility) to 100 (high susceptibility).",
+              "fr": "Cet indice de susceptibilité aux inondations est basé sur les modèles historiques et l'apprentissage automatique. Les valeurs vont de 0 (faible) à 100 (élevée)."
+            },
+            "source": {
+              "en": "https://app.geo.ca/en-ca/map-browser/record/df106e11-4cee-425d-bd38-7e51ac674128",
+              "fr": "https://app.geo.ca/fr-ca/map-browser/record/df106e11-4cee-425d-bd38-7e51ac674128"
+            },
+            "citation": {
+              "en": "Natural Resources Canada, Canada Centre for Mapping and Earth Observation. (2022). Flood Susceptibility Index (FSI) [GIS dataset]. GEO.ca.",
+              "fr": "Centre canadien de cartographie et d'observation de la terre, Ressources naturelles Canada. (2022). Indice de susceptibilité aux inondations (FSI) [jeu de données SIG]. GEO.ca."
+            }
           },
           "layers": [
             {
@@ -166,6 +515,93 @@
                   "en": "Flood susceptibility score from low to high risk.",
                   "fr": "Score de susceptibilité aux inondations allant de faible à élevé."
                 }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "gradient",
+                  "items": [
+                    {
+                      "value": 0,
+                      "color": "#ffffcc",
+                      "label": {
+                        "en": "0%",
+                        "fr": "0%"
+                      }
+                    },
+                    {
+                      "value": 25,
+                      "color": "#a1dab4",
+                      "label": {
+                        "en": "25%",
+                        "fr": "25%"
+                      }
+                    },
+                    {
+                      "value": 50,
+                      "color": "#41b6c4",
+                      "label": {
+                        "en": "50%",
+                        "fr": "50%"
+                      }
+                    },
+                    {
+                      "value": 75,
+                      "color": "#2c7fb8",
+                      "label": {
+                        "en": "75%",
+                        "fr": "75%"
+                      }
+                    },
+                    {
+                      "value": 100,
+                      "color": "#253494",
+                      "label": {
+                        "en": "100%",
+                        "fr": "100%"
+                      }
+                    }
+                  ]
+                },
+                "colormap": [
+                  [
+                    0,
+                    "#ffffcc"
+                  ],
+                  [
+                    25,
+                    "#a1dab4"
+                  ],
+                  [
+                    50,
+                    "#41b6c4"
+                  ],
+                  [
+                    75,
+                    "#2c7fb8"
+                  ],
+                  [
+                    100,
+                    "#253494"
+                  ]
+                ]
               }
             }
           ]
@@ -177,18 +613,18 @@
               "en": "Annual 30 m snow dynamics (2018-2019 to 2023-2024)",
               "fr": "Dynamique annuelle de la neige à 30 m (2018-2019 à 2023-2024)"
             },
-              "description": {
-                "en": "Provides annual snow cover dynamics across Canada at 30 m resolution for winters 2018–2019 to 2023–2024, derived from Landsat and Sentinel-2 imagery.",
-                "fr": "Fournit la dynamique annuelle de la couverture neigeuse au Canada à une résolution de 30 m pour les hivers 2018–2019 à 2023–2024, dérivée des images Landsat et Sentinel-2."
-              },
-              "source": {
-                "en": "https://app.geo.ca/en-ca/map-browser/record/1ed7fdec-9a50-4fe9-aa16-78f9ee3f05bc",
-                "fr": "https://app.geo.ca/fr-ca/map-browser/record/1ed7fdec-9a50-4fe9-aa16-78f9ee3f05bc"
-              },
-              "citation": {
-                "en": "Government of Canada; Natural Resources Canada; CCMEO/GEMS/CCRS. (2025). Annual 30 m snow dynamics (2018–2024) – Canada.",
-                "fr": "Gouvernement du Canada; Ressources naturelles Canada; CCCOT/SGST/CCT. (2025-10-01). Dynamique annuelle de la neige à 30 m (2018-2019 à 2023-2024) – Canada."
-              }
+            "description": {
+              "en": "Provides annual snow cover dynamics across Canada at 30 m resolution for winters 2018–2019 to 2023–2024, derived from Landsat and Sentinel-2 imagery.",
+              "fr": "Fournit la dynamique annuelle de la couverture neigeuse au Canada à une résolution de 30 m pour les hivers 2018–2019 à 2023–2024, dérivée des images Landsat et Sentinel-2."
+            },
+            "source": {
+              "en": "https://app.geo.ca/en-ca/map-browser/record/1ed7fdec-9a50-4fe9-aa16-78f9ee3f05bc",
+              "fr": "https://app.geo.ca/fr-ca/map-browser/record/1ed7fdec-9a50-4fe9-aa16-78f9ee3f05bc"
+            },
+            "citation": {
+              "en": "Government of Canada; Natural Resources Canada; CCMEO/GEMS/CCRS. (2025). Annual 30 m snow dynamics (2018–2024) – Canada.",
+              "fr": "Gouvernement du Canada; Ressources naturelles Canada; CCCOT/SGST/CCT. (2025-10-01). Dynamique annuelle de la neige à 30 m (2018-2019 à 2023-2024) – Canada."
+            }
           },
           "layers": [
             {
@@ -199,13 +635,76 @@
               "unit": "date",
               "metadata": {
                 "title": {
-                  "en": "End of Snow Period for Winter 2018-2019", 
+                  "en": "End of Snow Period for Winter 2018-2019",
                   "fr": "Fin de la Période de Neige pour l'Hiver 2018-2019"
                 },
                 "description": {
-                  "en": "Last day of seasonal snow cover during the winter 2018-2019.", 
+                  "en": "Last day of seasonal snow cover during the winter 2018-2019.",
                   "fr": "Dernier jour de couverture neigeuse saisonnière durant l'hiver 2018-2019."
                 }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "gradient",
+                  "items": [
+                    {
+                      "value": -47,
+                      "color": "#357ca3",
+                      "label": {
+                        "en": "-47",
+                        "fr": "-47"
+                      }
+                    },
+                    {
+                      "value": 94,
+                      "color": "#0b0405",
+                      "label": {
+                        "en": "94",
+                        "fr": "94"
+                      }
+                    },
+                    {
+                      "value": 235,
+                      "color": "#def5e5",
+                      "label": {
+                        "en": "235",
+                        "fr": "235"
+                      }
+                    }
+                  ]
+                },
+                "colormap": [
+                  [
+                    -47,
+                    "#357ca3"
+                  ],
+                  [
+                    94,
+                    "#0b0405"
+                  ],
+                  [
+                    235,
+                    "#def5e5"
+                  ]
+                ]
               }
             },
             {
@@ -216,13 +715,76 @@
               "unit": "date",
               "metadata": {
                 "title": {
-                  "en": "End of Snow Period for Winter 2019-2020", 
+                  "en": "End of Snow Period for Winter 2019-2020",
                   "fr": "Fin de la Période de Neige pour l'Hiver 2019-2020"
                 },
                 "description": {
-                  "en": "Last day of seasonal snow cover during the winter 2019-2020.", 
+                  "en": "Last day of seasonal snow cover during the winter 2019-2020.",
                   "fr": "Dernier jour de couverture neigeuse saisonnière durant l'hiver 2019-2020."
                 }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "gradient",
+                  "items": [
+                    {
+                      "value": -47,
+                      "color": "#357ca3",
+                      "label": {
+                        "en": "-47",
+                        "fr": "-47"
+                      }
+                    },
+                    {
+                      "value": 94,
+                      "color": "#0b0405",
+                      "label": {
+                        "en": "94",
+                        "fr": "94"
+                      }
+                    },
+                    {
+                      "value": 235,
+                      "color": "#def5e5",
+                      "label": {
+                        "en": "235",
+                        "fr": "235"
+                      }
+                    }
+                  ]
+                },
+                "colormap": [
+                  [
+                    -47,
+                    "#357ca3"
+                  ],
+                  [
+                    94,
+                    "#0b0405"
+                  ],
+                  [
+                    235,
+                    "#def5e5"
+                  ]
+                ]
               }
             },
             {
@@ -233,30 +795,156 @@
               "unit": "date",
               "metadata": {
                 "title": {
-                  "en": "End of Snow Period for Winter 2020-2021", 
+                  "en": "End of Snow Period for Winter 2020-2021",
                   "fr": "Fin de la Période de Neige pour l'Hiver 2020-2021"
                 },
                 "description": {
-                  "en": "Last day of seasonal snow cover during the winter 2020-2021.", 
+                  "en": "Last day of seasonal snow cover during the winter 2020-2021.",
                   "fr": "Dernier jour de couverture neigeuse saisonnière durant l'hiver 2020-2021."
                 }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "gradient",
+                  "items": [
+                    {
+                      "value": -47,
+                      "color": "#357ca3",
+                      "label": {
+                        "en": "-47",
+                        "fr": "-47"
+                      }
+                    },
+                    {
+                      "value": 94,
+                      "color": "#0b0405",
+                      "label": {
+                        "en": "94",
+                        "fr": "94"
+                      }
+                    },
+                    {
+                      "value": 235,
+                      "color": "#def5e5",
+                      "label": {
+                        "en": "235",
+                        "fr": "235"
+                      }
+                    }
+                  ]
+                },
+                "colormap": [
+                  [
+                    -47,
+                    "#357ca3"
+                  ],
+                  [
+                    94,
+                    "#0b0405"
+                  ],
+                  [
+                    235,
+                    "#def5e5"
+                  ]
+                ]
               }
             },
             {
               "id": null,
               "format": "raster",
               "path": "/data/processed/snow_dynamics/endL_winter_2122_cog.tif",
-              "type": "continuous", 
+              "type": "continuous",
               "unit": "date",
               "metadata": {
                 "title": {
-                  "en": "End of Snow Period for Winter 2021-2022", 
+                  "en": "End of Snow Period for Winter 2021-2022",
                   "fr": "Fin de la Période de Neige pour l'Hiver 2021-2022"
                 },
                 "description": {
-                  "en": "Last day of seasonal snow cover during the winter 2021-2022.", 
+                  "en": "Last day of seasonal snow cover during the winter 2021-2022.",
                   "fr": "Dernier jour de couverture neigeuse saisonnière durant l'hiver 2021-2022."
                 }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "gradient",
+                  "items": [
+                    {
+                      "value": -47,
+                      "color": "#357ca3",
+                      "label": {
+                        "en": "-47",
+                        "fr": "-47"
+                      }
+                    },
+                    {
+                      "value": 94,
+                      "color": "#0b0405",
+                      "label": {
+                        "en": "94",
+                        "fr": "94"
+                      }
+                    },
+                    {
+                      "value": 235,
+                      "color": "#def5e5",
+                      "label": {
+                        "en": "235",
+                        "fr": "235"
+                      }
+                    }
+                  ]
+                },
+                "colormap": [
+                  [
+                    -47,
+                    "#357ca3"
+                  ],
+                  [
+                    94,
+                    "#0b0405"
+                  ],
+                  [
+                    235,
+                    "#def5e5"
+                  ]
+                ]
               }
             },
             {
@@ -267,13 +955,76 @@
               "unit": "date",
               "metadata": {
                 "title": {
-                  "en": "End of Snow Period for Winter 2022-2023", 
+                  "en": "End of Snow Period for Winter 2022-2023",
                   "fr": "Fin de la Période de Neige pour l'Hiver 2022-2023"
                 },
                 "description": {
-                  "en": "Last day of seasonal snow cover during the winter 2022-2023.", 
+                  "en": "Last day of seasonal snow cover during the winter 2022-2023.",
                   "fr": "Dernier jour de couverture neigeuse saisonnière durant l'hiver 2022-2023."
                 }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "gradient",
+                  "items": [
+                    {
+                      "value": -47,
+                      "color": "#357ca3",
+                      "label": {
+                        "en": "-47",
+                        "fr": "-47"
+                      }
+                    },
+                    {
+                      "value": 94,
+                      "color": "#0b0405",
+                      "label": {
+                        "en": "94",
+                        "fr": "94"
+                      }
+                    },
+                    {
+                      "value": 235,
+                      "color": "#def5e5",
+                      "label": {
+                        "en": "235",
+                        "fr": "235"
+                      }
+                    }
+                  ]
+                },
+                "colormap": [
+                  [
+                    -47,
+                    "#357ca3"
+                  ],
+                  [
+                    94,
+                    "#0b0405"
+                  ],
+                  [
+                    235,
+                    "#def5e5"
+                  ]
+                ]
               }
             },
             {
@@ -284,109 +1035,556 @@
               "unit": "date",
               "metadata": {
                 "title": {
-                  "en": "End of Snow Period for Winter 2023-2024", 
+                  "en": "End of Snow Period for Winter 2023-2024",
                   "fr": "Fin de la Période de Neige pour l'Hiver 2023-2024"
                 },
                 "description": {
-                  "en": "Last day of seasonal snow cover during the winter 2023-2024.", 
+                  "en": "Last day of seasonal snow cover during the winter 2023-2024.",
                   "fr": "Dernier jour de couverture neigeuse saisonnière durant l'hiver 2023-2024."
                 }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "gradient",
+                  "items": [
+                    {
+                      "value": -47,
+                      "color": "#357ca3",
+                      "label": {
+                        "en": "-47",
+                        "fr": "-47"
+                      }
+                    },
+                    {
+                      "value": 94,
+                      "color": "#0b0405",
+                      "label": {
+                        "en": "94",
+                        "fr": "94"
+                      }
+                    },
+                    {
+                      "value": 235,
+                      "color": "#def5e5",
+                      "label": {
+                        "en": "235",
+                        "fr": "235"
+                      }
+                    }
+                  ]
+                },
+                "colormap": [
+                  [
+                    -47,
+                    "#357ca3"
+                  ],
+                  [
+                    94,
+                    "#0b0405"
+                  ],
+                  [
+                    235,
+                    "#def5e5"
+                  ]
+                ]
               }
             },
-            { "id": null,
+            {
+              "id": null,
               "format": "raster",
               "path": "/data/processed/snow_dynamics/lengthT_winter_1819_cog.tif",
               "type": "continuous",
               "unit": "days",
               "metadata": {
                 "title": {
-                  "en": "Total Snow Length for Winter 2018-2019", 
+                  "en": "Total Snow Length for Winter 2018-2019",
                   "fr": "Durée Totale de la Neige pour l'Hiver 2018-2019"
                 },
                 "description": {
-                  "en": "Total number of days with snow cover during the winter 2018-2019.", 
+                  "en": "Total number of days with snow cover during the winter 2018-2019.",
                   "fr": "Nombre total de jours de couverture neigeuse durant l'hiver 2018-2019."
                 }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "gradient",
+                  "items": [
+                    {
+                      "value": 0,
+                      "color": "#357ca3",
+                      "label": {
+                        "en": "0",
+                        "fr": "0"
+                      }
+                    },
+                    {
+                      "value": 217,
+                      "color": "#0b0405",
+                      "label": {
+                        "en": "217",
+                        "fr": "217"
+                      }
+                    },
+                    {
+                      "value": 435,
+                      "color": "#def5e5",
+                      "label": {
+                        "en": "435",
+                        "fr": "435"
+                      }
+                    }
+                  ]
+                },
+                "colormap": [
+                  [
+                    0,
+                    "#357ca3"
+                  ],
+                  [
+                    217,
+                    "#0b0405"
+                  ],
+                  [
+                    435,
+                    "#def5e5"
+                  ]
+                ]
               }
             },
-            { "id": null,
+            {
+              "id": null,
               "format": "raster",
               "path": "/data/processed/snow_dynamics/lengthT_winter_1920_cog.tif",
               "type": "continuous",
               "unit": "days",
               "metadata": {
                 "title": {
-                  "en": "Total Snow Length for Winter 2019-2020", 
+                  "en": "Total Snow Length for Winter 2019-2020",
                   "fr": "Durée Totale de la Neige pour l'Hiver 2019-2020"
                 },
                 "description": {
-                  "en": "Total number of days with snow cover during the winter 2019-2020.", 
+                  "en": "Total number of days with snow cover during the winter 2019-2020.",
                   "fr": "Nombre total de jours de couverture neigeuse durant l'hiver 2019-2020."
                 }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "gradient",
+                  "items": [
+                    {
+                      "value": 0,
+                      "color": "#357ca3",
+                      "label": {
+                        "en": "0",
+                        "fr": "0"
+                      }
+                    },
+                    {
+                      "value": 217,
+                      "color": "#0b0405",
+                      "label": {
+                        "en": "217",
+                        "fr": "217"
+                      }
+                    },
+                    {
+                      "value": 435,
+                      "color": "#def5e5",
+                      "label": {
+                        "en": "435",
+                        "fr": "435"
+                      }
+                    }
+                  ]
+                },
+                "colormap": [
+                  [
+                    0,
+                    "#357ca3"
+                  ],
+                  [
+                    217,
+                    "#0b0405"
+                  ],
+                  [
+                    435,
+                    "#def5e5"
+                  ]
+                ]
               }
             },
-             { "id": null,
+            {
+              "id": null,
               "format": "raster",
               "path": "/data/processed/snow_dynamics/lengthT_winter_2021_cog.tif",
               "type": "continuous",
               "unit": "days",
               "metadata": {
                 "title": {
-                  "en": "Total Snow Length for Winter 2020-2021", 
+                  "en": "Total Snow Length for Winter 2020-2021",
                   "fr": "Durée Totale de la Neige pour l'Hiver 2020-2021"
                 },
                 "description": {
-                  "en": "Total number of days with snow cover during the winter 2020-2021.", 
+                  "en": "Total number of days with snow cover during the winter 2020-2021.",
                   "fr": "Nombre total de jours de couverture neigeuse durant l'hiver 2020-2021."
                 }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "gradient",
+                  "items": [
+                    {
+                      "value": 0,
+                      "color": "#357ca3",
+                      "label": {
+                        "en": "0",
+                        "fr": "0"
+                      }
+                    },
+                    {
+                      "value": 217,
+                      "color": "#0b0405",
+                      "label": {
+                        "en": "217",
+                        "fr": "217"
+                      }
+                    },
+                    {
+                      "value": 435,
+                      "color": "#def5e5",
+                      "label": {
+                        "en": "435",
+                        "fr": "435"
+                      }
+                    }
+                  ]
+                },
+                "colormap": [
+                  [
+                    0,
+                    "#357ca3"
+                  ],
+                  [
+                    217,
+                    "#0b0405"
+                  ],
+                  [
+                    435,
+                    "#def5e5"
+                  ]
+                ]
               }
             },
-             { "id": null,
+            {
+              "id": null,
               "format": "raster",
               "path": "/data/processed/snow_dynamics/lengthT_winter_2122_cog.tif",
               "type": "continuous",
               "unit": "days",
               "metadata": {
                 "title": {
-                  "en": "Total Snow Length for Winter 2021-2022", 
+                  "en": "Total Snow Length for Winter 2021-2022",
                   "fr": "Durée Totale de la Neige pour l'Hiver 2021-2022"
                 },
                 "description": {
-                  "en": "Total number of days with snow cover during the winter 2021-2022.", 
+                  "en": "Total number of days with snow cover during the winter 2021-2022.",
                   "fr": "Nombre total de jours de couverture neigeuse durant l'hiver 2021-2022."
                 }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "gradient",
+                  "items": [
+                    {
+                      "value": 0,
+                      "color": "#357ca3",
+                      "label": {
+                        "en": "0",
+                        "fr": "0"
+                      }
+                    },
+                    {
+                      "value": 217,
+                      "color": "#0b0405",
+                      "label": {
+                        "en": "217",
+                        "fr": "217"
+                      }
+                    },
+                    {
+                      "value": 435,
+                      "color": "#def5e5",
+                      "label": {
+                        "en": "435",
+                        "fr": "435"
+                      }
+                    }
+                  ]
+                },
+                "colormap": [
+                  [
+                    0,
+                    "#357ca3"
+                  ],
+                  [
+                    217,
+                    "#0b0405"
+                  ],
+                  [
+                    435,
+                    "#def5e5"
+                  ]
+                ]
               }
             },
-             { "id": null,
+            {
+              "id": null,
               "format": "raster",
               "path": "/data/processed/snow_dynamics/lengthT_winter_2223_cog.tif",
               "type": "continuous",
               "unit": "days",
               "metadata": {
                 "title": {
-                  "en": "Total Snow Length for Winter 2022-2023", 
+                  "en": "Total Snow Length for Winter 2022-2023",
                   "fr": "Durée Totale de la Neige pour l'Hiver 2022-2023"
                 },
                 "description": {
-                  "en": "Total number of days with snow cover during the winter 2022-2023.", 
+                  "en": "Total number of days with snow cover during the winter 2022-2023.",
                   "fr": "Nombre total de jours de couverture neigeuse durant l'hiver 2022-2023."
                 }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "gradient",
+                  "items": [
+                    {
+                      "value": 0,
+                      "color": "#357ca3",
+                      "label": {
+                        "en": "0",
+                        "fr": "0"
+                      }
+                    },
+                    {
+                      "value": 217,
+                      "color": "#0b0405",
+                      "label": {
+                        "en": "217",
+                        "fr": "217"
+                      }
+                    },
+                    {
+                      "value": 435,
+                      "color": "#def5e5",
+                      "label": {
+                        "en": "435",
+                        "fr": "435"
+                      }
+                    }
+                  ]
+                },
+                "colormap": [
+                  [
+                    0,
+                    "#357ca3"
+                  ],
+                  [
+                    217,
+                    "#0b0405"
+                  ],
+                  [
+                    435,
+                    "#def5e5"
+                  ]
+                ]
               }
             },
-             { "id": null,
+            {
+              "id": null,
               "format": "raster",
               "path": "/data/processed/snow_dynamics/lengthT_winter_2324_cog.tif",
               "type": "continuous",
               "unit": "days",
               "metadata": {
                 "title": {
-                  "en": "Total Snow Length for Winter 2023-2024", 
+                  "en": "Total Snow Length for Winter 2023-2024",
                   "fr": "Durée Totale de la Neige pour l'Hiver 2023-2024"
                 },
                 "description": {
-                  "en": "Total number of days with snow cover during the winter 2023-2024.", 
+                  "en": "Total number of days with snow cover during the winter 2023-2024.",
                   "fr": "Nombre total de jours de couverture neigeuse durant l'hiver 2023-2024."
                 }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "gradient",
+                  "items": [
+                    {
+                      "value": 0,
+                      "color": "#357ca3",
+                      "label": {
+                        "en": "0",
+                        "fr": "0"
+                      }
+                    },
+                    {
+                      "value": 217,
+                      "color": "#0b0405",
+                      "label": {
+                        "en": "217",
+                        "fr": "217"
+                      }
+                    },
+                    {
+                      "value": 435,
+                      "color": "#def5e5",
+                      "label": {
+                        "en": "435",
+                        "fr": "435"
+                      }
+                    }
+                  ]
+                },
+                "colormap": [
+                  [
+                    0,
+                    "#357ca3"
+                  ],
+                  [
+                    217,
+                    "#0b0405"
+                  ],
+                  [
+                    435,
+                    "#def5e5"
+                  ]
+                ]
               }
             }
           ]
@@ -398,19 +1596,19 @@
               "en": "Treed Area (1984-2022)",
               "fr": "Zone Arborée au Canada (1984-2022)"
             },
-              "description": {
-                "en": "Provides treed area dynamics across Canada's forest ecosystems from 1984–2022 at 30 m resolution, derived from Landsat imagery. This dataset identifies areas that remained treed, transitioned to treed (newly treed), or transitioned to other cover that is not treed vegetation (was-treed).",
-                "fr": "Fournit la dynamique des zones arborées des écosystèmes canadiens de 1984 à 2022 à une résolution de 30 m, dérivée des images Landsat. Ce jeu de données identifie les zones restées arborées, devenues arborées (nouvellement arborées) ou converties en une autre couverture non arborée (anciennement arborées)."
-              },
-              "source": {
-                "en": "https://opendata.nfis.org/mapserver/nfis-change_eng.html",
-                "fr": "https://opendata.nfis.org/mapserver/nfis-change_fra.html"
-              },
-              "citation": {
-                "en": "Hermosilla, T., Wulder, M.A., White, J.C., Bater, C.W., Baral, S.K., Leach, J.A., 2025. Expansion of treed area over Canada’s forested ecosystems: spatial and temporal trends. Forestry: An International Journal of Forest Research 98(5) 786-799. https://doi.org/10.1093/forestry/cpaf015.",
-                "fr": "Hermosilla, T., Wulder, M.A., White, J.C., Bater, C.W., Baral, S.K., Leach, J.A., 2025. Expansion of treed area over Canada’s forested ecosystems: spatial and temporal trends. Forestry: An International Journal of Forest Research 98(5) 786-799. https://doi.org/10.1093/forestry/cpaf015."
-              }
+            "description": {
+              "en": "Provides treed area dynamics across Canada's forest ecosystems from 1984–2022 at 30 m resolution, derived from Landsat imagery. This dataset identifies areas that remained treed, transitioned to treed (newly treed), or transitioned to other cover that is not treed vegetation (was-treed).",
+              "fr": "Fournit la dynamique des zones arborées des écosystèmes canadiens de 1984 à 2022 à une résolution de 30 m, dérivée des images Landsat. Ce jeu de données identifie les zones restées arborées, devenues arborées (nouvellement arborées) ou converties en une autre couverture non arborée (anciennement arborées)."
             },
+            "source": {
+              "en": "https://opendata.nfis.org/mapserver/nfis-change_eng.html",
+              "fr": "https://opendata.nfis.org/mapserver/nfis-change_fra.html"
+            },
+            "citation": {
+              "en": "Hermosilla, T., Wulder, M.A., White, J.C., Bater, C.W., Baral, S.K., Leach, J.A., 2025. Expansion of treed area over Canada’s forested ecosystems: spatial and temporal trends. Forestry: An International Journal of Forest Research 98(5) 786-799. https://doi.org/10.1093/forestry/cpaf015.",
+              "fr": "Hermosilla, T., Wulder, M.A., White, J.C., Bater, C.W., Baral, S.K., Leach, J.A., 2025. Expansion of treed area over Canada’s forested ecosystems: spatial and temporal trends. Forestry: An International Journal of Forest Research 98(5) 786-799. https://doi.org/10.1093/forestry/cpaf015."
+            }
+          },
           "layers": [
             {
               "id": null,
@@ -419,19 +1617,102 @@
               "type": "categorical",
               "unit": "category",
               "categories": [
-                {"value": 0, "label": { "en": "Non-Treed", "fr": "Non Arboré" } },
-                { "value": 1, "label": { "en": "Always Treed", "fr": "Toujours Arboré" } },
-                { "value": 2, "label": { "en": "Newly Treed (Tree Gain)", "fr": "Nouvellement Arboré (Gain de Bois)" } },
-                { "value": 3, "label": { "en": "Was-Treed (Tree Loss)", "fr": "Anciennement Arboré (Perte de Bois)" } }
+                {
+                  "value": 0,
+                  "label": {
+                    "en": "Non-Treed",
+                    "fr": "Non Arboré"
+                  }
+                },
+                {
+                  "value": 1,
+                  "label": {
+                    "en": "Always Treed",
+                    "fr": "Toujours Arboré"
+                  }
+                },
+                {
+                  "value": 2,
+                  "label": {
+                    "en": "Newly Treed (Tree Gain)",
+                    "fr": "Nouvellement Arboré (Gain de Bois)"
+                  }
+                },
+                {
+                  "value": 3,
+                  "label": {
+                    "en": "Was-Treed (Tree Loss)",
+                    "fr": "Anciennement Arboré (Perte de Bois)"
+                  }
+                }
               ],
               "metadata": {
                 "title": {
-                  "en": "Treed Area (1984–2022)", 
+                  "en": "Treed Area (1984–2022)",
                   "fr": "Zone Arborée (1984–2022)"
                 },
                 "description": {
-                  "en": "Classification of treed area over the period in always treed, newly treed (tree gain), and was-treed (tree loss) areas.", 
+                  "en": "Classification of treed area over the period in always treed, newly treed (tree gain), and was-treed (tree loss) areas.",
                   "fr": "Classification des zones arborées sur la période en zones toujours arborées, nouvellement arborées (gain) et anciennement arborées (perte)."
+                }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "color": "#bfb6ba",
+                      "label": {
+                        "en": "Non-Treed",
+                        "fr": "Non Arboré"
+                      }
+                    },
+                    {
+                      "color": "#0c4c23",
+                      "label": {
+                        "en": "Always Treed",
+                        "fr": "Toujours Arboré"
+                      }
+                    },
+                    {
+                      "color": "#5cad34",
+                      "label": {
+                        "en": "Newly Treed (Tree Gain)",
+                        "fr": "Nouvellement Arboré (Gain de Bois)"
+                      }
+                    },
+                    {
+                      "color": "#ca0003",
+                      "label": {
+                        "en": "Was-Treed (Tree Loss)",
+                        "fr": "Anciennement Arboré (Perte de Bois)"
+                      }
+                    }
+                  ]
+                },
+                "colormap": {
+                  "0": "#bfb6ba",
+                  "1": "#0c4c23",
+                  "2": "#5cad34",
+                  "3": "#ca0003"
                 }
               }
             }
@@ -444,18 +1725,18 @@
               "en": "Ecosystem Classification",
               "fr": "Classification des Écosystèmes"
             },
-              "description": {
-                "en": "Provides a 12-class ecosystem classification map of the Hudson Bay Lowlands derived from Landsat imagery and expert-based decision tree methods.",
-                "fr": "Fournit une carte de classification des écosystèmes à 12 classes des basses terres de la baie d'Hudson dérivée des images Landsat et de méthodes expertes."
-              },
-              "source": {
-                "en": "",
-                "fr": ""
-              },
-              "citation": {
-                "en": "Olthof, I., Biccum, T., Dingle‑Robertson, L., Duffe, J.; Environment and Climate Change Canada (ECCC), Geomatics Research Section. (2025‑11‑25). Hudson Bay Lowland Ecosystem Classification (HBL‑EC).",
-                "fr": "Olthof, I., Biccum, T., Dingle‑Robertson, L., Duffe, J.; Environnement et Changement climatique Canada (ECCC), Section de recherche en géomatique. (2025‑11‑25). Classification des écosystèmes des basses terres de la baie d'Hudson (HBL‑EC)."
-              }
+            "description": {
+              "en": "Provides a 12-class ecosystem classification map of the Hudson Bay Lowlands derived from Landsat imagery and expert-based decision tree methods.",
+              "fr": "Fournit une carte de classification des écosystèmes à 12 classes des basses terres de la baie d'Hudson dérivée des images Landsat et de méthodes expertes."
+            },
+            "source": {
+              "en": "",
+              "fr": ""
+            },
+            "citation": {
+              "en": "Olthof, I., Biccum, T., Dingle‑Robertson, L., Duffe, J.; Environment and Climate Change Canada (ECCC), Geomatics Research Section. (2025‑11‑25). Hudson Bay Lowland Ecosystem Classification (HBL‑EC).",
+              "fr": "Olthof, I., Biccum, T., Dingle‑Robertson, L., Duffe, J.; Environnement et Changement climatique Canada (ECCC), Section de recherche en géomatique. (2025‑11‑25). Classification des écosystèmes des basses terres de la baie d'Hudson (HBL‑EC)."
+            }
           },
           "layers": [
             {
@@ -465,27 +1746,222 @@
               "type": "categorical",
               "unit": "category",
               "categories": [
-                { "value": 1, "label": { "en": "Temperate/Boreal Forest", "fr": "Forêt Tempérée/Boréale" } },
-                { "value": 2, "label": { "en": "Treed Wetland", "fr": "Zone Humide Arborée" } },
-                { "value": 3, "label": { "en": "Shrubland‑grassland", "fr": "Landes‑prairies" } },
-                { "value": 4, "label": { "en": "Shrubland‑grassland (Fire Disturbance)", "fr": "Landes‑prairies (Perturbation par le feu)" } },
-                { "value": 5, "label": { "en": "Graminoid Fen", "fr": "Tourbière à graminoïdes" } },
-                { "value": 6, "label": { "en": "Shrub Fen", "fr": "Tourbière arbustive" } },
-                { "value": 7, "label": { "en": "Emergent/Open Wetland", "fr": "Zone humide émergente/ouverte" } },
-                { "value": 8, "label": { "en": "Bog", "fr": "Tourbière" } },
-                { "value": 9, "label": { "en": "Mudflats", "fr": "Vasières" } },
-                { "value": 10, "label": { "en": "Coastal Marsh", "fr": "Marais côtier" } },
-                { "value": 11, "label": { "en": "Supralittoral Marine", "fr": "Supralittoral marin" } },
-                { "value": 12, "label": { "en": "Water", "fr": "Eau" } }
+                {
+                  "value": 1,
+                  "label": {
+                    "en": "Temperate/Boreal Forest",
+                    "fr": "Forêt Tempérée/Boréale"
+                  }
+                },
+                {
+                  "value": 2,
+                  "label": {
+                    "en": "Treed Wetland",
+                    "fr": "Zone Humide Arborée"
+                  }
+                },
+                {
+                  "value": 3,
+                  "label": {
+                    "en": "Shrubland‑grassland",
+                    "fr": "Landes‑prairies"
+                  }
+                },
+                {
+                  "value": 4,
+                  "label": {
+                    "en": "Shrubland‑grassland (Fire Disturbance)",
+                    "fr": "Landes‑prairies (Perturbation par le feu)"
+                  }
+                },
+                {
+                  "value": 5,
+                  "label": {
+                    "en": "Graminoid Fen",
+                    "fr": "Tourbière à graminoïdes"
+                  }
+                },
+                {
+                  "value": 6,
+                  "label": {
+                    "en": "Shrub Fen",
+                    "fr": "Tourbière arbustive"
+                  }
+                },
+                {
+                  "value": 7,
+                  "label": {
+                    "en": "Emergent/Open Wetland",
+                    "fr": "Zone humide émergente/ouverte"
+                  }
+                },
+                {
+                  "value": 8,
+                  "label": {
+                    "en": "Bog",
+                    "fr": "Tourbière"
+                  }
+                },
+                {
+                  "value": 9,
+                  "label": {
+                    "en": "Mudflats",
+                    "fr": "Vasières"
+                  }
+                },
+                {
+                  "value": 10,
+                  "label": {
+                    "en": "Coastal Marsh",
+                    "fr": "Marais côtier"
+                  }
+                },
+                {
+                  "value": 11,
+                  "label": {
+                    "en": "Supralittoral Marine",
+                    "fr": "Supralittoral marin"
+                  }
+                },
+                {
+                  "value": 12,
+                  "label": {
+                    "en": "Water",
+                    "fr": "Eau"
+                  }
+                }
               ],
               "metadata": {
                 "title": {
-                  "en": "Ecosystem Classification", 
+                  "en": "Ecosystem Classification",
                   "fr": "Classification des Écosystèmes"
                 },
                 "description": {
-                  "en": "Classification of ecosystem types across the region.", 
+                  "en": "Classification of ecosystem types across the region.",
                   "fr": "Classification des types d'écosystèmes dans la région."
+                }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "raster",
+                    "paint": {
+                      "raster-opacity": "@@#params.opacity"
+                    }
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "color": "#005a00",
+                      "label": {
+                        "en": "Temperate/Boreal Forest",
+                        "fr": "Forêt Tempérée/Boréale"
+                      }
+                    },
+                    {
+                      "color": "#009a00",
+                      "label": {
+                        "en": "Treed Wetland",
+                        "fr": "Zone Humide Arborée"
+                      }
+                    },
+                    {
+                      "color": "#ffad31",
+                      "label": {
+                        "en": "Shrubland‑grassland",
+                        "fr": "Landes‑prairies"
+                      }
+                    },
+                    {
+                      "color": "#ffff00",
+                      "label": {
+                        "en": "Shrubland‑grassland (Fire Disturbance)",
+                        "fr": "Landes‑prairies (Perturbation par le feu)"
+                      }
+                    },
+                    {
+                      "color": "#95c575",
+                      "label": {
+                        "en": "Graminoid Fen",
+                        "fr": "Tourbière à graminoïdes"
+                      }
+                    },
+                    {
+                      "color": "#28658d",
+                      "label": {
+                        "en": "Shrub Fen",
+                        "fr": "Tourbière arbustive"
+                      }
+                    },
+                    {
+                      "color": "#d10000",
+                      "label": {
+                        "en": "Emergent/Open Wetland",
+                        "fr": "Zone humide émergente/ouverte"
+                      }
+                    },
+                    {
+                      "color": "#b25fb2",
+                      "label": {
+                        "en": "Bog",
+                        "fr": "Tourbière"
+                      }
+                    },
+                    {
+                      "color": "#cc6600",
+                      "label": {
+                        "en": "Mudflats",
+                        "fr": "Vasières"
+                      }
+                    },
+                    {
+                      "color": "#433575",
+                      "label": {
+                        "en": "Coastal Marsh",
+                        "fr": "Marais côtier"
+                      }
+                    },
+                    {
+                      "color": "#969696",
+                      "label": {
+                        "en": "Supralittoral Marine",
+                        "fr": "Supralittoral marin"
+                      }
+                    },
+                    {
+                      "color": "#12343e",
+                      "label": {
+                        "en": "Water",
+                        "fr": "Eau"
+                      }
+                    }
+                  ]
+                },
+                "colormap": {
+                  "1": "#005a00",
+                  "2": "#009a00",
+                  "3": "#ffad31",
+                  "4": "#ffff00",
+                  "5": "#95c575",
+                  "6": "#28658d",
+                  "7": "#d10000",
+                  "8": "#b25fb2",
+                  "9": "#cc6600",
+                  "10": "#433575",
+                  "11": "#969696",
+                  "12": "#12343e"
                 }
               }
             }
@@ -498,18 +1974,18 @@
               "en": "Ecological Framework",
               "fr": "Cadre Écologique"
             },
-              "description": {
-                "en": "Defines the ecological framework of the region, including ecozones, ecoprovinces, ecoregions, and ecodistricts.",
-                "fr": "Définit le cadre écologique de la région, y compris les écozones, les écoprovinces, les écorégions et les écodistricts."
-              },
-              "source": {
-                "en": "https://sis.agr.gc.ca/cansis/nsdb/ecostrat/gis_data.html",
-                "fr": "https://sis.agr.gc.ca/siscan/nsdb/ecostrat/gis_data.html"
-              },
-              "citation": {
-                "en": "Government of Canada. (2017). National Ecological Framework for Canada [GIS dataset]",
-                "fr": "Gouvernement du Canada. (2017). Cadre écologique national du Canada [jeu de données SIG]."
-              }
+            "description": {
+              "en": "Defines the ecological framework of the region, including ecozones, ecoprovinces, ecoregions, and ecodistricts.",
+              "fr": "Définit le cadre écologique de la région, y compris les écozones, les écoprovinces, les écorégions et les écodistricts."
+            },
+            "source": {
+              "en": "https://sis.agr.gc.ca/cansis/nsdb/ecostrat/gis_data.html",
+              "fr": "https://sis.agr.gc.ca/siscan/nsdb/ecostrat/gis_data.html"
+            },
+            "citation": {
+              "en": "Government of Canada. (2017). National Ecological Framework for Canada [GIS dataset]",
+              "fr": "Gouvernement du Canada. (2017). Cadre écologique national du Canada [jeu de données SIG]."
+            }
           },
           "layers": [
             {
@@ -520,12 +1996,47 @@
               "unit": "",
               "metadata": {
                 "title": {
-                  "en": "Ecozones", 
+                  "en": "Ecozones",
                   "fr": "Écozones"
                 },
                 "description": {
-                  "en": "Major ecological regions defined by climate, vegetation, and landforms.", 
+                  "en": "Major ecological regions defined by climate, vegetation, and landforms.",
                   "fr": "Principales régions écologiques définies par le climat, la végétation et les formes de relief."
+                }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "line",
+                    "paint": {
+                      "line-color": "#6e6e6e",
+                      "line-width": 1
+                    },
+                    "source-layer": "ecozones"
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "color": "#6e6e6e",
+                      "line-width": 1,
+                      "label": {
+                        "en": "Ecozones",
+                        "fr": "Écozones"
+                      }
+                    }
+                  ]
                 }
               }
             },
@@ -537,12 +2048,55 @@
               "unit": "",
               "metadata": {
                 "title": {
-                  "en": "Ecoprovinces", 
+                  "en": "Ecoprovinces",
                   "fr": "Écoprovinces"
                 },
                 "description": {
-                  "en": "Regional subdivisions of ecozones based on climate, geology, and vegetation patterns.", 
+                  "en": "Regional subdivisions of ecozones based on climate, geology, and vegetation patterns.",
                   "fr": "Subdivisions régionales des écozones basées sur le climat, la géologie et les modèles de végétation."
+                }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "line",
+                    "paint": {
+                      "line-color": "#6e6e6e",
+                      "line-width": 1,
+                      "line-dasharray": [
+                        1,
+                        2
+                      ]
+                    },
+                    "source-layer": "ecoprovinces"
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "color": "#6e6e6e",
+                      "line-width": 1,
+                      "line-dasharray": [
+                        1,
+                        2
+                      ],
+                      "label": {
+                        "en": "Ecoprovinces",
+                        "fr": "Écoprovinces"
+                      }
+                    }
+                  ]
                 }
               }
             },
@@ -554,12 +2108,47 @@
               "unit": "",
               "metadata": {
                 "title": {
-                  "en": "Ecoregions", 
+                  "en": "Ecoregions",
                   "fr": "Écorégions"
                 },
                 "description": {
-                  "en": "Areas within ecoprovinces with similar ecosystems and natural features.", 
+                  "en": "Areas within ecoprovinces with similar ecosystems and natural features.",
                   "fr": "Zones au sein des écoprovinces avec des écosystèmes et des caractéristiques naturelles similaires."
+                }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "line",
+                    "paint": {
+                      "line-color": "#6e6e6e",
+                      "line-width": 1
+                    },
+                    "source-layer": "ecoregions"
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "color": "#6e6e6e",
+                      "line-width": 1,
+                      "label": {
+                        "en": "Ecoregions",
+                        "fr": "Écorégions"
+                      }
+                    }
+                  ]
                 }
               }
             },
@@ -571,12 +2160,55 @@
               "unit": "",
               "metadata": {
                 "title": {
-                  "en": "Ecodistricts", 
+                  "en": "Ecodistricts",
                   "fr": "Écodistricts"
                 },
                 "description": {
-                  "en": "Smaller units within ecoregions with distinct ecological characteristics.", 
+                  "en": "Smaller units within ecoregions with distinct ecological characteristics.",
                   "fr": "Unités plus petites au sein des écorégions avec des caractéristiques écologiques distinctes."
+                }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "line",
+                    "paint": {
+                      "line-color": "#535445",
+                      "line-width": 1,
+                      "line-dasharray": [
+                        1,
+                        2
+                      ]
+                    },
+                    "source-layer": "ecodistricts"
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "color": "#535445",
+                      "line-width": 1,
+                      "line-dasharray": [
+                        1,
+                        2
+                      ],
+                      "label": {
+                        "en": "Ecodistricts",
+                        "fr": "Écodistricts"
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -600,18 +2232,18 @@
               "en": "Indigenous Territories",
               "fr": "Territoires Autochtones"
             },
-              "description": {
-                "en": "Native Land maps Indigenous territories, treaties, and languages. The map is a living document informed by contributions of Indigenous communities.",
-                "fr": "Native Land cartographie les territoires, traités et langues autochtones. La carte est un document vivant informé par les communautés autochtones."
-              },
-              "source": {
-                "en": "https://native-land.ca/",
-                "fr": "https://native-land.ca/"
-              },
-              "citation": {
-                "en": "Native Land Digital. https://native-land.ca/",
-                "fr": "Native Land Digital. https://native-land.ca/"
-              }
+            "description": {
+              "en": "Native Land maps Indigenous territories, treaties, and languages. The map is a living document informed by contributions of Indigenous communities.",
+              "fr": "Native Land cartographie les territoires, traités et langues autochtones. La carte est un document vivant informé par les communautés autochtones."
+            },
+            "source": {
+              "en": "https://native-land.ca/",
+              "fr": "https://native-land.ca/"
+            },
+            "citation": {
+              "en": "Native Land Digital. https://native-land.ca/",
+              "fr": "Native Land Digital. https://native-land.ca/"
+            }
           },
           "layers": [
             {
@@ -622,11 +2254,11 @@
               "unit": "",
               "metadata": {
                 "title": {
-                  "en": "Indigenous Territories", 
+                  "en": "Indigenous Territories",
                   "fr": "Territoires Autochtones"
                 },
                 "description": {
-                  "en": "Indigenous territories.", 
+                  "en": "Indigenous territories.",
                   "fr": "Territoires autochtones."
                 }
               }
@@ -651,104 +2283,293 @@
               "en": "Mining Claims",
               "fr": "Concessions Minières"
             },
-              "description": {
-                "en": "This dataset provides a comprehensive overview of active mining claims, land tenures, and early exploration projects in Ontario, Canada.",
-                "fr": "Ce jeu de données fournit un aperçu complet des concessions minières actives, des tenures foncières et des projets d'exploration précoce en Ontario, Canada."
-              },
-              "source": {
-                "en": "https://www.geologyontario.mndm.gov.on.ca/ogsearth.html",
-                "fr": "https://www.geologyontario.mndm.gov.on.ca/ogsearth_f.html"
-              },
-              "citation": {
-                "en": "Ministry of Energy and Mines. (2026). Mining Claims – Operational GIS data for Ontario; Ontario Geological Survey, Mining Lands Administration System (MLAS).",
-                "fr": "Ministère de l'Énergie et des Mines. (2026). Concessions minières – Données SIG opérationnelles pour l'Ontario; Commission géologique de l'Ontario, Système d'administration des terres minières (MLAS)."
-              }
+            "description": {
+              "en": "This dataset provides a comprehensive overview of active mining claims, land tenures, and early exploration projects in Ontario, Canada.",
+              "fr": "Ce jeu de données fournit un aperçu complet des concessions minières actives, des tenures foncières et des projets d'exploration précoce en Ontario, Canada."
+            },
+            "source": {
+              "en": "https://www.geologyontario.mndm.gov.on.ca/ogsearth.html",
+              "fr": "https://www.geologyontario.mndm.gov.on.ca/ogsearth_f.html"
+            },
+            "citation": {
+              "en": "Ministry of Energy and Mines. (2026). Mining Claims – Operational GIS data for Ontario; Ontario Geological Survey, Mining Lands Administration System (MLAS).",
+              "fr": "Ministère de l'Énergie et des Mines. (2026). Concessions minières – Données SIG opérationnelles pour l'Ontario; Commission géologique de l'Ontario, Système d'administration des terres minières (MLAS)."
+            }
           },
           "layers": [
-            { 
+            {
               "id": null,
               "format": "vector",
               "path": "ecc-design.52kxijg9",
               "type": "",
               "unit": "",
-              "metadata": { 
+              "metadata": {
                 "title": {
-                  "en": "Mining Land Tenure", 
+                  "en": "Mining Land Tenure",
                   "fr": "Tenure Minière"
                 },
                 "description": {
-                  "en": "Lands occupied by mining land tenures.", 
+                  "en": "Lands occupied by mining land tenures.",
                   "fr": "Terrains occupés par des tenures minières."
-                } 
-                } 
+                }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "fill",
+                    "paint": {
+                      "fill-color": "rgba(8, 95, 217, 0.5)",
+                      "fill-outline-color": "#085FD9"
+                    },
+                    "source-layer": "Mining_Land_Tenure"
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "fill-color": "rgba(8, 95, 217, 0.5)",
+                      "fill-outline-color": "#085FD9",
+                      "label": {
+                        "en": "Mining Land Tenure",
+                        "fr": "Tenure Minière"
+                      }
+                    }
+                  ]
+                }
+              }
             },
-            { 
+            {
               "id": null,
               "format": "vector",
               "path": "ecc-design.1w9uoecm",
               "type": "",
               "unit": "",
-              "metadata": { 
+              "metadata": {
                 "title": {
-                  "en": "Non-Mining Land Tenure", 
+                  "en": "Non-Mining Land Tenure",
                   "fr": "Tenure Non Minière"
                 },
                 "description": {
-                  "en": "Lands occupied by land tenures unrelated to mining.", 
+                  "en": "Lands occupied by land tenures unrelated to mining.",
                   "fr": "Terrains occupés par des tenures non liées à l'exploitation minière."
-                } 
-                } 
+                }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "fill",
+                    "paint": {
+                      "fill-color": "#8c8c8c",
+                      "fill-outline-color": "#8c8c8c"
+                    },
+                    "source-layer": "Non_Mining_Land_Tenure"
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "fill-color": "#8c8c8c",
+                      "fill-outline-color": "#8c8c8c",
+                      "label": {
+                        "en": "Non-Mining Land Tenure",
+                        "fr": "Tenure Non Minière"
+                      }
+                    }
+                  ]
+                }
+              }
             },
-            { 
+            {
               "id": null,
               "format": "vector",
               "path": "ecc-design.0eeafkm9",
               "type": "",
               "unit": "",
-              "metadata": { 
+              "metadata": {
                 "title": {
-                  "en": "Operational Cell Claims", 
+                  "en": "Operational Cell Claims",
                   "fr": "Concessions Cellules Opérationnelles"
                 },
                 "description": {
-                  "en": "Lands registered as mining claims.", 
+                  "en": "Lands registered as mining claims.",
                   "fr": "Terrains enregistrés comme concessions minières."
-                } 
-                } 
+                }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "line",
+                    "paint": {
+                      "line-color": "#f4984e",
+                      "line-width": [
+                        "interpolate",
+                        [
+                          "linear"
+                        ],
+                        [
+                          "zoom"
+                        ],
+                        0,
+                        0.1,
+                        7.88,
+                        0.1,
+                        22,
+                        1
+                      ]
+                    },
+                    "source-layer": "Operational_Cell_Claims"
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "fill-color": "rgba(8, 95, 217, 0.5)",
+                      "fill-outline-color": "#085FD9",
+                      "label": {
+                        "en": "Operational Cell Claims",
+                        "fr": "Concessions Cellules Opérationnelles"
+                      }
+                    }
+                  ]
+                }
+              }
             },
-            { 
-              "id": null, 
+            {
+              "id": null,
               "format": "vector",
-              "path": "ecc-design.3qoami28", 
+              "path": "ecc-design.3qoami28",
               "type": "polygon",
               "unit": "",
-              "metadata": { 
+              "metadata": {
                 "title": {
-                  "en": "Operational Alienations", 
+                  "en": "Operational Alienations",
                   "fr": "Aliénations Opérationnelles"
                 },
                 "description": {
-                  "en": "Lands withdrawn or with restrictions related to mining claims.", 
+                  "en": "Lands withdrawn or with restrictions related to mining claims.",
                   "fr": "Terrains retirés ou avec des restrictions liées aux concessions minières."
-                } 
-              } 
+                }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "fill",
+                    "paint": {
+                      "fill-color": "rgba(225, 14, 78, 0.52)",
+                      "fill-outline-color": "#e10e4e"
+                    },
+                    "source-layer": "Operational_Alienations"
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "fill-color": "rgba(225, 14, 78, 0.52)",
+                      "fill-outline-color": "#e10e4e",
+                      "label": {
+                        "en": "Operational Alienations",
+                        "fr": "Aliénations Opérationnelles"
+                      }
+                    }
+                  ]
+                }
+              }
             },
-            { 
-              "id": null, 
+            {
+              "id": null,
               "format": "vector",
-              "path": "ecc-design.5bf0y7wr", 
+              "path": "ecc-design.5bf0y7wr",
               "type": "",
               "unit": "",
-              "metadata": { 
+              "metadata": {
                 "title": {
-                  "en": "Plans & Permits", 
+                  "en": "Plans & Permits",
                   "fr": "Plans & Permis"
                 },
                 "description": {
-                  "en": "Lands occupied by early exploration projects.", 
+                  "en": "Lands occupied by early exploration projects.",
                   "fr": "Terrains occupés par des projets d'exploration précoce."
-                } 
-              } 
+                }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "type": "fill",
+                    "paint": {
+                      "fill-color": "rgba(116, 163, 36, 0.5)",
+                      "fill-outline-color": "#74a324"
+                    },
+                    "source-layer": "Plans_Permits"
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "fill-color": "rgba(116, 163, 36, 0.5)",
+                      "fill-outline-color": "#74a324",
+                      "label": {
+                        "en": "Plans & Permits",
+                        "fr": "Plans & Permis"
+                      }
+                    }
+                  ]
+                }
+              }
             }
           ]
         }

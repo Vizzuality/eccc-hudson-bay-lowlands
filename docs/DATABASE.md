@@ -62,11 +62,12 @@ Stores metadata about Cloud Optimized GeoTIFF (COG) and other geospatial layers 
 | Column | Type | Nullable | Description |
 |--------|------|----------|-------------|
 | `id` | `INTEGER` (PK, auto-increment) | No | Primary key |
-| `format` | `VARCHAR` | No | Data format (e.g., `"cog"`, `"geojson"`, `"pmtiles"`) |
-| `type` | `VARCHAR` | Yes | Layer type (e.g., `"raster"`, `"vector"`) |
-| `path` | `VARCHAR` | No | Path or URL to the geospatial data (COG, vector file, WMS, etc.) |
-| `unit` | `VARCHAR` | Yes | Data measurement unit (e.g., `"celsius"`, `"percent"`) |
-| `categories` | `JSON` | Yes | Category definitions for classified layers (list of `{value, label}`) |
+| `format` | `VARCHAR` | No | Data format: `"raster"` or `"vector"` |
+| `type` | `VARCHAR` | Yes | Layer type: `"continuous"`, `"categorical"`, or `NULL` |
+| `path` | `VARCHAR` | No | Data path — relative S3 key for rasters (e.g., `temperature/2024_cog.tif`), or tileset ID for vectors (e.g., `ecc-design.5qnlusni`) |
+| `unit` | `VARCHAR` | Yes | Data measurement unit (e.g., `"celsius"`, `"percent"`, `"category"`) |
+| `categories` | `JSON` | Yes | Category definitions for categorical layers (list of `{value, label}`) |
+| `config` | `JSON` | Yes | Visualization configuration (styles, legend, params). See [Layer Config](#layer-config) section below |
 | `metadata` | `JSON` | No | Field-first i18n metadata (see i18n section below) |
 | `dataset_id` | `INTEGER` (FK, indexed) | Yes | Foreign key to `datasets.id`; nullable to allow orphaned layers |
 
@@ -120,6 +121,91 @@ All `metadata` columns use a **field-first** i18n structure. Each field contains
 ```
 
 This field-first approach (as opposed to language-first) makes it easier to add or remove fields without restructuring. Pydantic schemas (`I18nText`, `LayerMetadata`, `DatasetMetadata`, `CategoryMetadata`) enforce the structure at the API boundary.
+
+## Layer Config
+
+The `config` JSON column stores visualization configuration for rendering layers on the map. Its structure varies by layer `format`.
+
+### Common Fields (all formats)
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `styles` | `list[dict]` | Yes | Mapbox GL style layers (paint properties, layout, source-layer) |
+| `params_config` | `list[{key, default}]` | Yes | Configurable UI parameters (e.g., opacity, visibility) |
+| `legend_config` | `{type, items}` | Yes | Legend rendering config. `type` is `"gradient"` for continuous data or `"basic"` for categorical/simple data |
+
+### Raster Layers (`format = "raster"`)
+
+Raster configs include a `colormap` field for mapping pixel values to colors. The colormap structure depends on the layer `type`:
+
+- **Continuous** (`type = "continuous"`): `colormap` is an array of `[value, color]` pairs for gradient interpolation
+- **Categorical** (`type = "categorical"`): `colormap` is a dict of `{value: color}` for discrete class mapping. The layer also has a `categories` column with `[{value, label}]` entries that provide bilingual labels for each class
+
+**Continuous raster example:**
+
+```json
+{
+  "colormap": [[0, "#0E2780"], [100, "#01CB2A"]],
+  "styles": [{"type": "raster", "paint": {"raster-opacity": "@@#params.opacity"}}],
+  "params_config": [{"key": "opacity", "default": 1}, {"key": "visibility", "default": true}],
+  "legend_config": {
+    "type": "gradient",
+    "items": [
+      {"value": 0, "color": "#0E2780", "label": {"en": "0 cm", "fr": "0 cm"}},
+      {"value": 100, "color": "#01CB2A", "label": {"en": "100 cm", "fr": "100 cm"}}
+    ]
+  }
+}
+```
+
+**Categorical raster example:**
+
+```json
+{
+  "colormap": {"1": "#2d7d3f", "2": "#7fcdbb"},
+  "styles": [{"type": "raster", "paint": {"raster-opacity": "@@#params.opacity"}}],
+  "params_config": [{"key": "opacity", "default": 1}, {"key": "visibility", "default": true}],
+  "legend_config": {
+    "type": "basic",
+    "items": [
+      {"color": "#2d7d3f", "label": {"en": "Forest", "fr": "Forêt"}},
+      {"color": "#7fcdbb", "label": {"en": "Wetland", "fr": "Milieu humide"}}
+    ]
+  }
+}
+```
+
+### Vector Layers (`format = "vector"`)
+
+Vector configs do **not** use `colormap`. Styles reference a `source-layer` and use Mapbox GL paint properties for the geometry type (line, fill, circle). Legend items may include extra fields like `line-width` or `fill-color` for rendering legend swatches.
+
+**Vector example:**
+
+```json
+{
+  "styles": [
+    {
+      "type": "line",
+      "paint": {"line-color": "#6e6e6e", "line-width": 1},
+      "source-layer": "ecozones"
+    }
+  ],
+  "params_config": [{"key": "opacity", "default": 1}, {"key": "visibility", "default": true}],
+  "legend_config": {
+    "type": "basic",
+    "items": [
+      {"color": "#6e6e6e", "line-width": 1, "label": {"en": "Ecozones", "fr": "Écozones"}}
+    ]
+  }
+}
+```
+
+### Pydantic Schema
+
+The config is validated by `LayerConfig` (defined in `api/schemas/i18n.py`), which composes:
+- `ParamsConfigEntry` — `{key: str, default: bool | int | float}`
+- `LegendConfig` — `{type: str, items: list[LegendItem]}`
+- `LegendItem` — `{color, label: I18nText, value}` with `extra = "allow"` to support vector-specific fields like `line-width`
 
 ## Spatial Data Patterns
 
@@ -254,6 +340,7 @@ class Layer(Base):
     path: Mapped[str] = mapped_column(String, nullable=False)
     unit: Mapped[str | None] = mapped_column(String, nullable=True)
     categories: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    config: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     metadata_: Mapped[dict] = mapped_column("metadata", JSON, nullable=False)
     dataset_id: Mapped[int | None] = mapped_column(ForeignKey("datasets.id"), nullable=True, index=True)
     dataset: Mapped["Dataset | None"] = relationship(back_populates="layers")

@@ -2,7 +2,7 @@
 
 from pydantic import BaseModel, Field
 
-from schemas.i18n import LayerCategory, LayerMetadata
+from schemas.i18n import LayerCategory, LayerConfig, LayerMetadata
 
 
 class LayerSchema(BaseModel):
@@ -13,11 +13,26 @@ class LayerSchema(BaseModel):
             "examples": [
                 {
                     "id": 1,
-                    "format": "cog",
-                    "type": "raster",
-                    "path": "s3://eccc-hbl/layers/temperature_2024.tif",
+                    "format": "raster",
+                    "type": "continuous",
+                    "path": "temperature/mean_annual_2024_cog.tif",
                     "unit": "celsius",
                     "categories": None,
+                    "config": {
+                        "colormap": [[0, "#0E2780"], [30, "#01CB2A"]],
+                        "styles": [{"type": "raster", "paint": {"raster-opacity": "@@#params.opacity"}}],
+                        "params_config": [
+                            {"key": "opacity", "default": 1},
+                            {"key": "visibility", "default": True},
+                        ],
+                        "legend_config": {
+                            "type": "gradient",
+                            "items": [
+                                {"value": 0, "color": "#0E2780", "label": {"en": "0°C", "fr": "0°C"}},
+                                {"value": 30, "color": "#01CB2A", "label": {"en": "30°C", "fr": "30°C"}},
+                            ],
+                        },
+                    },
                     "metadata": {
                         "title": {"en": "Mean Annual Temperature", "fr": "Température annuelle moyenne"},
                         "description": {
@@ -39,6 +54,10 @@ class LayerSchema(BaseModel):
     categories: list[LayerCategory] | None = Field(
         default=None, description="Category definitions for categorical/classified layers"
     )
+    config: LayerConfig | None = Field(
+        default=None,
+        description="Visualization configuration (source, styles, params, legend). Varies by format.",
+    )
     metadata: LayerMetadata = Field(description="Bilingual metadata (title, description)")
     dataset_id: int = Field(description="ID of the parent dataset")
 
@@ -52,6 +71,7 @@ class LayerSchema(BaseModel):
             path=layer.path,
             unit=layer.unit,
             categories=layer.categories,
+            config=layer.config,
             metadata=layer.metadata_,
             dataset_id=layer.dataset_id,
         )
