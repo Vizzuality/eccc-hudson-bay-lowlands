@@ -17,6 +17,7 @@ class Layer(Base):
     path: Mapped[str] = mapped_column(String, nullable=False)
     unit: Mapped[str | None] = mapped_column(String, nullable=True)
     categories: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    config: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     metadata_: Mapped[dict] = mapped_column("metadata", JSON, nullable=False)
     dataset_id: Mapped[int] = mapped_column(Integer, ForeignKey("datasets.id"), nullable=False)
 

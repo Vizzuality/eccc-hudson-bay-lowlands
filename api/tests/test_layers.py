@@ -181,3 +181,142 @@ def test_get_layer_metadata_bilingual(client, layer):
 
     assert metadata["title"]["en"] == "Test Layer"
     assert metadata["title"]["fr"] == "Couche de test"
+
+
+# =============================================================================
+# Layer Config Tests
+# =============================================================================
+
+
+def test_get_layer_with_config(client, db_session, dataset, sample_layer_metadata):
+    """Layers with a config return it in the response."""
+    from models import Layer
+
+    sample_config = {
+        "colormap": [[0, "#0E2780"], [100, "#01CB2A"]],
+        "styles": [{"type": "raster", "paint": {"raster-opacity": "@@#params.opacity"}}],
+        "params_config": [{"key": "opacity", "default": 1}, {"key": "visibility", "default": True}],
+        "legend_config": {
+            "type": "basic",
+            "items": [{"color": "#0E2780", "label": {"en": "Low", "fr": "Bas"}}],
+        },
+    }
+    db_layer = Layer(
+        format_="raster",
+        type_="continuous",
+        path="/data/config_test.tif",
+        unit="cm",
+        config=sample_config,
+        metadata_=sample_layer_metadata,
+        dataset_id=dataset.id,
+    )
+    db_session.add(db_layer)
+    db_session.flush()
+    db_session.refresh(db_layer)
+
+    response = client.get(f"/layers/{db_layer.id}")
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data["config"] is not None
+    assert data["config"]["colormap"] == [[0, "#0E2780"], [100, "#01CB2A"]]
+    assert data["config"]["styles"][0]["type"] == "raster"
+    assert data["config"]["params_config"][0]["key"] == "opacity"
+    assert data["config"]["legend_config"]["type"] == "basic"
+    assert data["config"]["legend_config"]["items"][0]["color"] == "#0E2780"
+
+
+def test_get_vector_layer_with_config(client, db_session, dataset, sample_layer_metadata):
+    """Vector layers with config (no colormap) return it correctly."""
+    from models import Layer
+
+    vector_config = {
+        "styles": [
+            {
+                "type": "line",
+                "paint": {"line-color": "#6e6e6e", "line-width": 1},
+                "source-layer": "ecozones",
+            }
+        ],
+        "params_config": [{"key": "opacity", "default": 1}, {"key": "visibility", "default": True}],
+        "legend_config": {
+            "type": "basic",
+            "items": [{"color": "#6e6e6e", "line-width": 1, "label": {"en": "Ecozones", "fr": "Écozones"}}],
+        },
+    }
+    db_layer = Layer(
+        format_="vector",
+        path="ecc-design.5qnlusni",
+        config=vector_config,
+        metadata_=sample_layer_metadata,
+        dataset_id=dataset.id,
+    )
+    db_session.add(db_layer)
+    db_session.flush()
+    db_session.refresh(db_layer)
+
+    response = client.get(f"/layers/{db_layer.id}")
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data["format"] == "vector"
+    assert data["config"] is not None
+    assert data["config"].get("colormap") is None
+    assert data["config"]["styles"][0]["source-layer"] == "ecozones"
+    assert data["config"]["styles"][0]["paint"]["line-color"] == "#6e6e6e"
+    assert data["config"]["legend_config"]["items"][0]["line-width"] == 1
+
+
+def test_get_categorical_layer_with_config_and_categories(client, db_session, dataset, sample_layer_metadata):
+    """Categorical layers return both categories and config together."""
+    from models import Layer
+
+    categories = [
+        {"value": 1, "label": {"en": "Forest", "fr": "Forêt"}},
+        {"value": 2, "label": {"en": "Wetland", "fr": "Milieu humide"}},
+    ]
+    config = {
+        "colormap": {1: "#2d7d3f", 2: "#7fcdbb"},
+        "styles": [{"type": "raster", "paint": {"raster-opacity": "@@#params.opacity"}}],
+        "params_config": [{"key": "opacity", "default": 1}, {"key": "visibility", "default": True}],
+        "legend_config": {
+            "type": "basic",
+            "items": [
+                {"color": "#2d7d3f", "label": {"en": "Forest", "fr": "Forêt"}},
+                {"color": "#7fcdbb", "label": {"en": "Wetland", "fr": "Milieu humide"}},
+            ],
+        },
+    }
+    db_layer = Layer(
+        format_="raster",
+        type_="categorical",
+        path="/data/landcover.tif",
+        unit="category",
+        categories=categories,
+        config=config,
+        metadata_=sample_layer_metadata,
+        dataset_id=dataset.id,
+    )
+    db_session.add(db_layer)
+    db_session.flush()
+    db_session.refresh(db_layer)
+
+    response = client.get(f"/layers/{db_layer.id}")
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data["type"] == "categorical"
+    assert data["categories"] is not None
+    assert len(data["categories"]) == 2
+    assert data["categories"][0]["value"] == 1
+    assert data["categories"][0]["label"]["en"] == "Forest"
+    assert data["config"] is not None
+    assert data["config"]["colormap"] == {"1": "#2d7d3f", "2": "#7fcdbb"}
+    assert data["config"]["legend_config"]["type"] == "basic"
+
+
+def test_layer_config_null_by_default(client, layer):
+    """Layers without config return config as null."""
+    response = client.get(f"/layers/{layer.id}")
+    data = response.json()
+    assert data["config"] is None

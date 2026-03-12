@@ -30,6 +30,21 @@ MINIMAL_METADATA = {
                             "path": "/data/test/layer_a.tif",
                             "type": "continuous",
                             "unit": "cm",
+                            "config": {
+                                "colormap": [[0, "#0E2780"], [100, "#01CB2A"]],
+                                "styles": [{"type": "raster", "paint": {"raster-opacity": "@@#params.opacity"}}],
+                                "params_config": [
+                                    {"key": "opacity", "default": 1},
+                                    {"key": "visibility", "default": True},
+                                ],
+                                "legend_config": {
+                                    "type": "basic",
+                                    "items": [
+                                        {"color": "#0E2780", "label": {"en": "<100 cm", "fr": "<100 cm"}},
+                                        {"color": "#01CB2A", "label": {"en": ">100 cm", "fr": ">100 cm"}},
+                                    ],
+                                },
+                            },
                             "metadata": {
                                 "title": {"en": "Layer A", "fr": "Couche A"},
                                 "description": {"en": "Layer A desc", "fr": "Couche A desc"},
@@ -41,6 +56,29 @@ MINIMAL_METADATA = {
                             "path": "test.vector_id",
                             "type": "",
                             "unit": "",
+                            "config": {
+                                "styles": [
+                                    {
+                                        "type": "line",
+                                        "paint": {"line-color": "#6e6e6e", "line-width": 1},
+                                        "source-layer": "boundaries",
+                                    }
+                                ],
+                                "params_config": [
+                                    {"key": "opacity", "default": 1},
+                                    {"key": "visibility", "default": True},
+                                ],
+                                "legend_config": {
+                                    "type": "basic",
+                                    "items": [
+                                        {
+                                            "color": "#6e6e6e",
+                                            "line-width": 1,
+                                            "label": {"en": "Boundary", "fr": "Limite"},
+                                        }
+                                    ],
+                                },
+                            },
                             "metadata": {
                                 "title": {"en": "Layer B Vector", "fr": "Couche B Vecteur"},
                                 "description": {"en": "Vector layer", "fr": "Couche vecteur"},
@@ -291,3 +329,47 @@ def test_seed_endpoint_invalid_secret(client):
     """POST /seed with wrong secret returns 403."""
     response = client.post("/seed", json=MINIMAL_METADATA, headers={"X-Seed-Secret": "wrong"})
     assert response.status_code == 403
+
+
+# =============================================================================
+# Config Persistence
+# =============================================================================
+
+
+def test_seed_stores_config(db_session):
+    """Seed persists the config JSON for layers that have it."""
+    metadata_path = _write_metadata(MINIMAL_METADATA)
+    seed_database(db_session, metadata_path)
+    db_session.flush()
+
+    layer = db_session.execute(select(Layer).where(Layer.path == "data/test/layer_a.tif")).scalar_one()
+    assert layer.config is not None
+    assert layer.config["colormap"] == [[0, "#0E2780"], [100, "#01CB2A"]]
+    assert layer.config["styles"][0]["type"] == "raster"
+    assert layer.config["params_config"][0]["key"] == "opacity"
+    assert layer.config["legend_config"]["type"] == "basic"
+    assert len(layer.config["legend_config"]["items"]) == 2
+
+
+def test_seed_stores_vector_config(db_session):
+    """Seed persists config for vector layers (no colormap, has source-layer)."""
+    metadata_path = _write_metadata(MINIMAL_METADATA)
+    seed_database(db_session, metadata_path)
+    db_session.flush()
+
+    layer = db_session.execute(select(Layer).where(Layer.path == "test.vector_id")).scalar_one()
+    assert layer.config is not None
+    assert "colormap" not in layer.config
+    assert layer.config["styles"][0]["source-layer"] == "boundaries"
+    assert layer.config["styles"][0]["paint"]["line-color"] == "#6e6e6e"
+    assert layer.config["legend_config"]["items"][0]["line-width"] == 1
+
+
+def test_seed_layer_without_config(db_session):
+    """Layers without config in the seed data have null config."""
+    metadata_path = _write_metadata(MINIMAL_METADATA)
+    seed_database(db_session, metadata_path)
+    db_session.flush()
+
+    cat_layer = db_session.execute(select(Layer).where(Layer.path == "data/test/layer_c.tif")).scalar_one()
+    assert cat_layer.config is None

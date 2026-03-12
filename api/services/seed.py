@@ -69,12 +69,14 @@ def upsert_layer(session: Session, layer_data: dict, dataset_id: int) -> tuple[L
     type_value = normalize_empty_string(layer_data.get("type"))
     unit_value = normalize_empty_string(layer_data.get("unit"))
     categories_value = layer_data.get("categories") or None
+    config_value = layer_data.get("config") or None
 
     if existing:
         existing.format_ = layer_data["format"]
         existing.type_ = type_value
         existing.unit = unit_value
         existing.categories = categories_value
+        existing.config = config_value
         existing.metadata_ = layer_data["metadata"]
         existing.dataset_id = dataset_id
         logger.info("    Updated layer: %s", path)
@@ -86,6 +88,7 @@ def upsert_layer(session: Session, layer_data: dict, dataset_id: int) -> tuple[L
         path=path,
         unit=unit_value,
         categories=categories_value,
+        config=config_value,
         metadata_=layer_data["metadata"],
         dataset_id=dataset_id,
     )

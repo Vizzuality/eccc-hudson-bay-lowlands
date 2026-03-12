@@ -72,5 +72,3 @@ async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONR
             "path": request.url.path,
         },
     )
-
-
