@@ -1,9 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { MapProps } from "react-map-gl/mapbox";
 import MapBoxMap from "react-map-gl/mapbox";
-import { useMapBasemap } from "@/app/[locale]/url-store";
+import {
+  type LayersSettings,
+  useLayerIds,
+  useMapBasemap,
+  useSyncLayersSettings,
+} from "@/app/[locale]/url-store";
 import AnalyzeButton from "@/containers/map/analyze-button";
 import { BASEMAPS, type BasemapId } from "@/containers/map/constants";
 import { Controls } from "@/containers/map/controls";
@@ -12,6 +17,7 @@ import { BasemapControl } from "@/containers/map/controls/settings/basemap";
 import ZoomControl from "@/containers/map/controls/zoom";
 import { LayerManager } from "@/containers/map/layer-manager";
 import MapLegend from "@/containers/map/legend";
+import MapLegendItem from "@/containers/map/legend/item";
 import { env } from "@/env";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +35,34 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
   const [loaded, setLoaded] = useState<boolean>(false);
   const { basemap } = useMapBasemap();
   const mapStyle = BASEMAPS[basemap as BasemapId].mapStyle;
+  const { layerIds, setLayerIds } = useLayerIds();
+  const { layersSettings, setLayersSettings } = useSyncLayersSettings();
+
+  useMemo(() => {
+    if (!layerIds?.length && !layersSettings) return;
+
+    if (!layerIds?.length && layersSettings) {
+      setTimeout(() => {
+        setLayersSettings(null);
+      }, 0);
+      return;
+    }
+
+    const lSettingsKeys = Object.keys(layersSettings || {});
+
+    lSettingsKeys.forEach((key) => {
+      if (layerIds.includes(Number(key))) return;
+
+      setTimeout(() => {
+        setLayersSettings((prev) => {
+          const current = { ...prev } as LayersSettings<unknown>;
+          delete current[Number(key)];
+          return current;
+        });
+      }, 0);
+    });
+  }, [layerIds, layersSettings, setLayersSettings]);
+  console.info("layerIds", layerIds);
 
   return (
     <div className={cn("relative h-full w-full", className)}>
@@ -61,7 +95,36 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
             <BasemapControl />
           </SettingsControl>
         </Controls>
-        <MapLegend />
+        <MapLegend
+          sortable={{ enabled: true, handle: true }}
+          onChangeOrder={(v) => {
+            setLayerIds(v.map(Number));
+          }}
+        >
+          {layerIds.map((id) => (
+            <MapLegendItem
+              key={`map-legend-item-${id}`}
+              id={id.toString()}
+              sortable={{ enabled: true, handle: true }}
+              settingsManager={{
+                visibility: true,
+                remove: true,
+              }}
+              settings={layersSettings?.[id.toString()] || {}}
+              onChangeVisibility={(v) => {
+                setLayersSettings({
+                  ...layersSettings,
+                  [id]: { visibility: v },
+                });
+              }}
+              onRemove={(id) => {
+                setLayerIds(
+                  layerIds.filter((layerId) => layerId !== Number(id)),
+                );
+              }}
+            />
+          ))}
+        </MapLegend>
       </MapBoxMap>
     </div>
   );

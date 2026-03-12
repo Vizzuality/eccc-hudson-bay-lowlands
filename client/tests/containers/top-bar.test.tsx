@@ -43,7 +43,9 @@ describe("@containers/top-bar", () => {
   it("renders the site title", () => {
     renderTopBar();
 
-    expect(screen.getByText("lowlands spatial data")).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: "lowlands spatial data" }),
+    ).toBeInTheDocument();
   });
 
   it("renders navigation links for all items", () => {

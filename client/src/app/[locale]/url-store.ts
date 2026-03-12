@@ -1,7 +1,9 @@
+import { type } from "arktype";
 import {
   parseAsArrayOf,
   parseAsBoolean,
   parseAsInteger,
+  parseAsJson,
   parseAsStringEnum,
   useQueryState,
 } from "nuqs";
@@ -36,6 +38,26 @@ export function useLayerIds() {
 
   return { layerIds, setLayerIds };
 }
+
+const layerSettingsSchema = type<LayersSettings<unknown>>({});
+export type LayersSettings<T> = Record<string, Record<string, T>>;
+
+function parseLayersSettings(value: unknown): LayersSettings<unknown> | null {
+  const result = layerSettingsSchema(value);
+  if (result instanceof type.errors) return null;
+  return result as LayersSettings<unknown>;
+}
+
+export const layersSettingsParser = parseAsJson(parseLayersSettings);
+
+export const useSyncLayersSettings = () => {
+  const [layersSettings, setLayersSettings] = useQueryState(
+    "layers-settings",
+    layersSettingsParser,
+  );
+
+  return { layersSettings, setLayersSettings };
+};
 
 // TODO: Probably should be a shape object
 export function useMapShape() {
