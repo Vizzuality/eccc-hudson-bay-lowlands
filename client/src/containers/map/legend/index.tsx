@@ -1,20 +1,47 @@
 import { ArrowDownIcon } from "lucide-react";
-import { useState } from "react";
+import {
+  Children,
+  type FC,
+  isValidElement,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import MapLegendItem from "@/containers/map/legend/item";
+import SortableList from "@/containers/map/legend/sortable/list";
+import type { MapLegendProps } from "@/containers/map/legend/types";
+import { cn } from "@/lib/utils";
 
-const MapLegend = () => {
+const MapLegend: FC<MapLegendProps> = ({
+  children,
+  sortable,
+  onChangeOrder,
+}) => {
   const [open, setOpen] = useState(false);
+  const isChildren = useMemo(() => {
+    return !!Children.count(
+      Children.toArray(children).filter((c) => isValidElement(c)),
+    );
+  }, [children]);
+
+  useEffect(() => {
+    if (!isChildren && open) {
+      setOpen(false);
+    }
+  }, [isChildren, open]);
+
   return (
     <Collapsible
       open={open}
       onOpenChange={setOpen}
-      className="absolute left-0 bottom-0"
+      className={cn("absolute left-0 bottom-0", {
+        hidden: !isChildren,
+      })}
     >
       <CollapsibleTrigger asChild>
         <Button
@@ -31,18 +58,19 @@ const MapLegend = () => {
         </Button>
       </CollapsibleTrigger>
       <CollapsibleContent className="w-[280px] rounded-tr-4xl bg-background text-foreground">
-        <div className="max-h-[500px] overflow-y-auto p-1.5">
-          <MapLegendItem
-            title="First nation locations"
-            species={[
-              { name: "Cree", color: "#C3551D" },
-              { name: "Michif Piyii (Métis)", color: "#8A5E3D" },
-              { name: "Dënéndeh", color: "#46C0CE" },
-              { name: "Anishininiimowin (Oji-Cree)", color: "#9BB96A" },
-              { name: "Anishinabewaki", color: "#436BFE" },
-            ]}
-          />
-        </div>
+        {isChildren && open && (
+          <div className="max-h-[500px] overflow-y-auto p-4">
+            <div className="bg-popover text-popover-foreground flex h-full flex-col">
+              {!!sortable.enabled && !!onChangeOrder && (
+                <SortableList sortable={sortable} onChangeOrder={onChangeOrder}>
+                  {children}
+                </SortableList>
+              )}
+
+              {!sortable.enabled && children}
+            </div>
+          </div>
+        )}
       </CollapsibleContent>
     </Collapsible>
   );

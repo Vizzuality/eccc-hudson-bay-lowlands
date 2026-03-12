@@ -39,6 +39,7 @@ export default defineConfig(({ mode }) => ({
         "src/proxy.ts",
         "src/types.ts",
         "src/lib/utils.ts",
+        "src/lib/json-converter/**",
         "src/i18n/**",
         "src/**/constants.ts",
 

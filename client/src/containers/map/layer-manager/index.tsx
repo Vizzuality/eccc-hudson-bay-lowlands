@@ -3,16 +3,14 @@
 import { type FC, useMemo } from "react";
 
 import { Layer, useMap } from "react-map-gl/mapbox";
-import { useLayerManager } from "@/containers/map/layer-manager/hooks";
-import LayerManagerItem from "./item";
-
-export type LayersSettings<T> = Record<string, Record<string, T>>;
+import { useLayerIds } from "@/app/[locale]/url-store";
+import LayerManagerItem from "@/containers/map/layer-manager/item";
 
 export const LayerManager: FC<{
   children?: React.ReactNode;
 }> = ({ children }) => {
   const { current: map } = useMap();
-  const { layers } = useLayerManager();
+  const { layerIds } = useLayerIds();
   const baseLayer = useMemo(() => {
     if (map && map.isStyleLoaded()) {
       const layers = map!.getStyle()!.layers;
@@ -25,8 +23,8 @@ export const LayerManager: FC<{
   }, [map]);
 
   const LAYERS = useMemo(() => {
-    return layers.toReversed();
-  }, [layers]);
+    return layerIds.toReversed();
+  }, [layerIds]);
 
   return (
     <>
@@ -36,12 +34,12 @@ export const LayerManager: FC<{
           - https://github.com/visgl/react-map-gl/issues/939#issuecomment-625290200
         */}
       {LAYERS.map((l, i, arr) => {
-        const beforeId = i === 0 ? baseLayer : `${arr[i - 1].id}-layer`;
+        const beforeId = i === 0 ? baseLayer : `${arr[i - 1]}-layer`;
 
         return (
           <Layer
-            id={`${l.id}-layer`}
-            key={l.id.toString()}
+            id={`${l}-layer`}
+            key={l.toString()}
             type="background"
             layout={{ visibility: "none" }}
             beforeId={beforeId}
@@ -54,14 +52,10 @@ export const LayerManager: FC<{
           The first item will always be at the top of the layers stack
         */}
       {LAYERS.map((l, i, arr) => {
-        const beforeId = i === 0 ? baseLayer : `${arr[i - 1].id}-layer`;
+        const beforeId = i === 0 ? baseLayer : `${arr[i - 1]}-layer`;
 
         return (
-          <LayerManagerItem
-            key={l.id.toString()}
-            id={l.id}
-            beforeId={beforeId}
-          />
+          <LayerManagerItem key={l.toString()} id={l} beforeId={beforeId} />
         );
       })}
     </>
