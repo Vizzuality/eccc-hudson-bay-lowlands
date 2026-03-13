@@ -100,39 +100,12 @@ describe("@containers/map-sidebar/main", () => {
     expect(screen.getByText(/explore and combine/i)).toBeInTheDocument();
   });
 
-  it("passes datasets and onItemChange to DataLayersList", () => {
+  it("passes datasets to DataLayersList", () => {
     setupHooks([1, 5]);
     renderMain();
 
     expect(capturedListProps.datasets).toBeDefined();
     expect(Array.isArray(capturedListProps.datasets)).toBe(true);
-    expect(capturedListProps.onItemChange).toBeInstanceOf(Function);
-  });
-
-  it("adds a layer when handleItemChange is called with isSelected=true", () => {
-    setupHooks([1, 2]);
-    renderMain();
-
-    const onItemChange = capturedListProps.onItemChange as (
-      id: number,
-      isSelected: boolean,
-    ) => void;
-    onItemChange(3, true);
-
-    expect(mockSetLayerIds).toHaveBeenCalledWith([1, 2, 3]);
-  });
-
-  it("removes a layer when handleItemChange is called with isSelected=false", () => {
-    setupHooks([1, 2, 3]);
-    renderMain();
-
-    const onItemChange = capturedListProps.onItemChange as (
-      id: number,
-      isSelected: boolean,
-    ) => void;
-    onItemChange(2, false);
-
-    expect(mockSetLayerIds).toHaveBeenCalledWith([1, 3]);
   });
 
   it("passes active layer count to DataLayersBottomBar", () => {

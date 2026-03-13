@@ -88,8 +88,7 @@ describe("@containers/data-layers/list", () => {
   });
 
   it("passes correct props to each dataset item", () => {
-    const onItemChange = vi.fn();
-    renderList({ onItemChange });
+    renderList();
 
     expect(capturedItemProps).toHaveLength(DATA_LAYERS.length);
     for (let i = 0; i < DATA_LAYERS.length; i++) {
@@ -99,22 +98,8 @@ describe("@containers/data-layers/list", () => {
         description: DATA_LAYERS[i].metadata.description,
         layers: [],
       });
-      expect(capturedItemProps[i].onChange).toBeTypeOf("function");
       expect(capturedItemProps[i].onLearnMore).toBeTypeOf("function");
     }
-  });
-
-  it("forwards onItemChange to each item's onChange", () => {
-    const onItemChange = vi.fn();
-    renderList({ onItemChange });
-
-    const onChange = capturedItemProps[0].onChange as (
-      id: number,
-      isSelected: boolean,
-    ) => void;
-    onChange(10, true);
-
-    expect(onItemChange).toHaveBeenCalledWith(10, true);
   });
 
   it("renders an empty list when no datasets are provided", () => {

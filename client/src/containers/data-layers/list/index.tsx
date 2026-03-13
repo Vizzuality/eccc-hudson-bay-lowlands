@@ -3,20 +3,15 @@ import { type FC, useState } from "react";
 import { Accordion } from "@/components/ui/accordion";
 import { Skeleton } from "@/components/ui/skeleton";
 import DataLayersListItem from "@/containers/data-layers/list/item";
-import DataLayersListItemDialog from "@/containers/data-layers/list/item-dialog";
+import DataLayersListItemDialog from "@/containers/data-layers/list/item/item-dialog";
 import type { NormalizedDataset } from "@/types";
 
 interface DataLayersListProps {
   datasets: NormalizedDataset[];
   isLoading: boolean;
-  onItemChange: (id: number, isSelected: boolean) => void;
 }
 
-const DataLayersList: FC<DataLayersListProps> = ({
-  datasets,
-  isLoading,
-  onItemChange,
-}) => {
+const DataLayersList: FC<DataLayersListProps> = ({ datasets, isLoading }) => {
   const [dialogProps, setDialogProps] = useState<NormalizedDataset | null>(
     null,
   );
@@ -42,7 +37,6 @@ const DataLayersList: FC<DataLayersListProps> = ({
             title={item.metadata.title}
             description={item.metadata.description}
             layers={item.layers ?? []}
-            onChange={(id, isSelected) => onItemChange(id, isSelected)}
             onLearnMore={() => setDialogProps(item)}
           />
         ))}

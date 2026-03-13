@@ -1,25 +1,29 @@
 import { PlusIcon, XIcon } from "lucide-react";
-import type { FC } from "react";
-import { Separator } from "@/components/ui/separator";
+import { type FC, useCallback } from "react";
+import { useLayerIds } from "@/app/[locale]/url-store";
 import { cn } from "@/lib/utils";
 
-interface LayerItemProps {
+interface ItemHeaderProps {
   id: number;
   title: string;
   description: string;
-  isSelected: boolean;
-  onChange: (id: number, isSelected: boolean) => void;
 }
+const ItemHeader: FC<ItemHeaderProps> = ({ id, title, description }) => {
+  const { layerIds, setLayerIds } = useLayerIds();
+  const isSelected = layerIds.includes(id);
+  const handleItemChange = useCallback(
+    (isSelected: boolean) => {
+      setLayerIds(
+        isSelected
+          ? [...layerIds, id]
+          : layerIds.filter((layerId) => layerId !== id),
+      );
+    },
+    [layerIds, id, setLayerIds],
+  );
 
-const LayerItem: FC<LayerItemProps> = ({
-  id,
-  title,
-  description,
-  isSelected,
-  onChange,
-}) => {
   return (
-    <article className="relative group block **:transition-all **:duration-200 **:ease-out">
+    <header>
       <label
         htmlFor={id.toString()}
         className={cn({
@@ -35,7 +39,7 @@ const LayerItem: FC<LayerItemProps> = ({
           className="sr-only"
           aria-label={title}
           checked={isSelected}
-          onChange={() => onChange(id, !isSelected)}
+          onChange={() => handleItemChange(!isSelected)}
         />
         {isSelected ? (
           <XIcon className="size-4" aria-hidden />
@@ -50,11 +54,8 @@ const LayerItem: FC<LayerItemProps> = ({
           {description}
         </p>
       </div>
-      <div className="px-5">
-        <Separator className="bg-linear-to-r from-secondary/30 to-primary/20 group-hover:bg-[linear-gradient(90deg,rgba(230,244,241,0.30)_0%,#10B981_100%)]" />
-      </div>
-    </article>
+    </header>
   );
 };
 
-export default LayerItem;
+export default ItemHeader;
