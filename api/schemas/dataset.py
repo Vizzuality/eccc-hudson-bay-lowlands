@@ -5,6 +5,10 @@ from pydantic import BaseModel, Field
 from schemas.i18n import DatasetMetadata
 from schemas.layer import LayerSchema
 
+_DATASET_ID_DESC = "Unique dataset identifier"
+_DATASET_METADATA_DESC = "Bilingual metadata (title, description, source, citation)"
+_CATEGORY_ID_DESC = "ID of the parent category"
+
 
 class DatasetSchema(BaseModel):
     """Response schema for a dataset (without nested layers)."""
@@ -29,9 +33,9 @@ class DatasetSchema(BaseModel):
         }
     }
 
-    id: int = Field(description="Unique dataset identifier")
-    metadata: DatasetMetadata = Field(description="Bilingual metadata (title, description, source, citation)")
-    category_id: int = Field(description="ID of the parent category")
+    id: int = Field(description=_DATASET_ID_DESC)
+    metadata: DatasetMetadata = Field(description=_DATASET_METADATA_DESC)
+    category_id: int = Field(description=_CATEGORY_ID_DESC)
 
     @classmethod
     def from_orm_dataset(cls, dataset) -> "DatasetSchema":
@@ -46,9 +50,9 @@ class DatasetSchema(BaseModel):
 class DatasetWithLayersSchema(BaseModel):
     """Response schema for a dataset with nested layers."""
 
-    id: int = Field(description="Unique dataset identifier")
-    metadata: DatasetMetadata = Field(description="Bilingual metadata (title, description, source, citation)")
-    category_id: int = Field(description="ID of the parent category")
+    id: int = Field(description=_DATASET_ID_DESC)
+    metadata: DatasetMetadata = Field(description=_DATASET_METADATA_DESC)
+    category_id: int = Field(description=_CATEGORY_ID_DESC)
     layers: list[LayerSchema] = Field(description="Layers belonging to this dataset")
 
     @classmethod

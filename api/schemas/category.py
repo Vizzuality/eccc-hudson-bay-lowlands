@@ -5,6 +5,9 @@ from pydantic import BaseModel, Field
 from schemas.dataset import DatasetSchema, DatasetWithLayersSchema
 from schemas.i18n import CategoryMetadata
 
+_CATEGORY_ID_DESC = "Unique category identifier"
+_CATEGORY_METADATA_DESC = "Bilingual metadata (title)"
+
 
 class CategorySchema(BaseModel):
     """Response schema for a category (without nested datasets)."""
@@ -20,8 +23,8 @@ class CategorySchema(BaseModel):
         }
     }
 
-    id: int = Field(description="Unique category identifier")
-    metadata: CategoryMetadata = Field(description="Bilingual metadata (title)")
+    id: int = Field(description=_CATEGORY_ID_DESC)
+    metadata: CategoryMetadata = Field(description=_CATEGORY_METADATA_DESC)
 
     @classmethod
     def from_orm_category(cls, category) -> "CategorySchema":
@@ -32,8 +35,8 @@ class CategorySchema(BaseModel):
 class CategoryWithDatasetsSchema(BaseModel):
     """Response schema for a category with nested datasets (no layers)."""
 
-    id: int = Field(description="Unique category identifier")
-    metadata: CategoryMetadata = Field(description="Bilingual metadata (title)")
+    id: int = Field(description=_CATEGORY_ID_DESC)
+    metadata: CategoryMetadata = Field(description=_CATEGORY_METADATA_DESC)
     datasets: list[DatasetSchema] = Field(description="Datasets belonging to this category")
 
     @classmethod
@@ -49,8 +52,8 @@ class CategoryWithDatasetsSchema(BaseModel):
 class CategoryWithDatasetsAndLayersSchema(BaseModel):
     """Response schema for a category with nested datasets and layers."""
 
-    id: int = Field(description="Unique category identifier")
-    metadata: CategoryMetadata = Field(description="Bilingual metadata (title)")
+    id: int = Field(description=_CATEGORY_ID_DESC)
+    metadata: CategoryMetadata = Field(description=_CATEGORY_METADATA_DESC)
     datasets: list[DatasetWithLayersSchema] = Field(description="Datasets with their layers")
 
     @classmethod
