@@ -15,10 +15,11 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from db.base import Base
 from db.database import SessionLocal, engine
+from logging_config import setup_logging
 from models import Category, Dataset, Layer  # noqa: F401
 from services.seed import DEFAULT_METADATA_PATH, seed_database
 
-logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+setup_logging("INFO")
 logger = logging.getLogger(__name__)
 
 
