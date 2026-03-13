@@ -22,7 +22,7 @@ export const SortableItem: React.FC<SortableItemProps> = ({
   });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: transform ? CSS.Transform.toString(transform) : undefined,
     transition,
   };
 

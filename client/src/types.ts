@@ -49,6 +49,11 @@ export interface LayerCategory {
   label: Translatable;
 }
 
+export interface LegendItem {
+  value: number;
+  color: string;
+  label: Translatable;
+}
 export interface LayerConfig {
   colormap: [number, string][] | Record<string, string>;
   styles: LayerProps[];
@@ -56,6 +61,10 @@ export interface LayerConfig {
     key: string;
     default: unknown;
   }[];
+  legend_config: {
+    type: "gradient" | "basic";
+    items: LegendItem[];
+  };
 }
 
 export interface Layer {

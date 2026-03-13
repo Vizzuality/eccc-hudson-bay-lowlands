@@ -59,7 +59,7 @@ const MapLegend: FC<MapLegendProps> = ({
       </CollapsibleTrigger>
       <CollapsibleContent className="w-[280px] rounded-tr-4xl bg-background text-foreground">
         {isChildren && open && (
-          <div className="max-h-[500px] overflow-y-auto p-4">
+          <div className="max-h-[500px] overflow-y-auto">
             <div className="bg-popover text-popover-foreground flex h-full flex-col">
               {!!sortable.enabled && !!onChangeOrder && (
                 <SortableList sortable={sortable} onChangeOrder={onChangeOrder}>
