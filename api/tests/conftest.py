@@ -349,7 +349,8 @@ def minimal_cog(tmp_path):
     from rasterio.transform import from_bounds
 
     filepath = tmp_path / "test_cog.tif"
-    data = np.random.randint(0, 255, (1, 256, 256), dtype=np.uint8)
+    rng = np.random.default_rng()
+    data = rng.integers(0, 255, (1, 256, 256), dtype=np.uint8)
     transform = from_bounds(-90, 50, -80, 60, 256, 256)
 
     profile = {
