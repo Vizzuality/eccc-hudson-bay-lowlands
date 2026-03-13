@@ -1,3 +1,5 @@
+import type { LayerProps } from "react-map-gl/mapbox";
+
 export type Translatable = Record<string, string>;
 
 export interface ApiResponse<T> {
@@ -47,6 +49,15 @@ export interface LayerCategory {
   label: Translatable;
 }
 
+export interface LayerConfig {
+  colormap: [number, string][] | Record<string, string>;
+  styles: LayerProps[];
+  params_config: {
+    key: string;
+    default: unknown;
+  }[];
+}
+
 export interface Layer {
   id: number;
   format: string;
@@ -56,6 +67,7 @@ export interface Layer {
   categories: LayerCategory[] | null;
   metadata: LayerMetadata;
   dataset_id: number;
+  config: LayerConfig;
 }
 
 export type LayersResponse = ApiResponse<Layer>;
