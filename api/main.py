@@ -42,9 +42,8 @@ async def lifespan(app: FastAPI):
     for key, value in gdal_env.items():
         os.environ.setdefault(key, value)
 
-    # Drop and recreate all tables to ensure schema matches models
-    # TODO: Replace with Alembic migrations once the data model is stable
-    Base.metadata.drop_all(bind=engine)
+    # Create database tables if they don't exist.
+    # TODO: Replace with Alembic migrations once the data model is stable.
     Base.metadata.create_all(bind=engine)
 
     yield
