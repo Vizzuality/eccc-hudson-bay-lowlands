@@ -47,7 +47,7 @@ def multiband_cog(tmp_path):
     from rasterio.transform import from_bounds
 
     filepath = tmp_path / "rgb_cog.tif"
-    rng = np.random.default_rng()
+    rng = np.random.default_rng(42)
     data = rng.integers(0, 255, (3, 256, 256), dtype=np.uint8)
     transform = from_bounds(-90, 50, -80, 60, 256, 256)
 
