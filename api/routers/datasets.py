@@ -31,12 +31,12 @@ def _escape_like(value: str) -> str:
     ),
 )
 def list_datasets(
+    db: Annotated[Session, Depends(get_db)],
     offset: int = Query(default=0, ge=0, description="Number of items to skip"),
     limit: int = Query(default=10, ge=1, le=100, description="Number of items to return"),
     search: str | None = Query(default=None, description="Case-insensitive partial title search (en and fr)"),
     category_id: int | None = Query(default=None, description="Filter datasets by category ID"),
     include_layers: bool = Query(default=False, description="Include related layers in response"),
-    db: Annotated[Session, Depends(get_db)],
 ) -> PaginatedDatasetResponse | PaginatedDatasetWithLayersResponse:
     """List datasets with pagination and optional title search."""
     stmt = select(Dataset)
@@ -80,8 +80,8 @@ def list_datasets(
 )
 def get_dataset(
     dataset_id: int,
-    include_layers: bool = Query(default=False, description="Include related layers in response"),
     db: Annotated[Session, Depends(get_db)],
+    include_layers: bool = Query(default=False, description="Include related layers in response"),
 ) -> DatasetSchema | DatasetWithLayersSchema:
     """Get a single dataset by ID."""
     stmt = select(Dataset).where(Dataset.id == dataset_id)

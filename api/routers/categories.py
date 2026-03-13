@@ -30,10 +30,10 @@ def _escape_like(value: str) -> str:
     description="Returns a paginated list of categories with optional title search.",
 )
 def list_categories(
+    db: Annotated[Session, Depends(get_db)],
     offset: int = Query(default=0, ge=0, description="Number of items to skip"),
     limit: int = Query(default=10, ge=1, le=100, description="Number of items to return"),
     search: str | None = Query(default=None, description="Case-insensitive partial title search (en and fr)"),
-    db: Annotated[Session, Depends(get_db)],
 ) -> PaginatedCategoryResponse:
     """List categories with pagination and optional title search."""
     stmt = select(Category)
@@ -68,11 +68,11 @@ def list_categories(
 )
 def get_category(
     category_id: int,
+    db: Annotated[Session, Depends(get_db)],
     include_datasets: bool = Query(default=False, description="Include nested datasets in response"),
     include_layers: bool = Query(
         default=False, description="Include layers within each dataset (requires include_datasets=true)"
     ),
-    db: Annotated[Session, Depends(get_db)],
 ) -> CategorySchema | CategoryWithDatasetsSchema | CategoryWithDatasetsAndLayersSchema:
     """Get a single category by ID with optional nested datasets and layers."""
     stmt = select(Category).where(Category.id == category_id)

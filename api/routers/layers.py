@@ -24,10 +24,10 @@ def _escape_like(value: str) -> str:
     description="Returns a paginated list of layers with optional title search.",
 )
 def list_layers(
+    db: Annotated[Session, Depends(get_db)],
     offset: int = Query(default=0, ge=0, description="Number of items to skip"),
     limit: int = Query(default=10, ge=1, le=100, description="Number of items to return"),
     search: str | None = Query(default=None, description="Case-insensitive partial title search (en and fr)"),
-    db: Annotated[Session, Depends(get_db)],
 ) -> PaginatedLayerResponse:
     """List layers with pagination and optional title search."""
     stmt = select(Layer)
