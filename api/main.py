@@ -13,7 +13,7 @@ from db.base import Base
 from db.database import engine
 from exception_handlers import http_exception_handler, unhandled_exception_handler, validation_exception_handler
 from logging_config import setup_logging
-from models import Category, Dataset, Layer  # noqa: F401  # Import models to register with Base metadata
+from models import Category, Dataset, Layer  # noqa: F401  # Register models with Base metadata
 from routers import categories, cog, datasets, health, layers, seed
 
 settings = get_settings()
@@ -42,9 +42,11 @@ async def lifespan(app: FastAPI):
     for key, value in gdal_env.items():
         os.environ.setdefault(key, value)
 
-    # Create database tables if they don't exist.
-    # TODO: Replace with Alembic migrations once the data model is stable.
+    # Drop and recreate all tables to ensure schema matches models
+    # TODO: Replace with Alembic migrations once the data model is stable
+    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
+
     yield
 
 
