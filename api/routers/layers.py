@@ -1,5 +1,7 @@
 """Layers endpoint router."""
 
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
@@ -25,7 +27,7 @@ def list_layers(
     offset: int = Query(default=0, ge=0, description="Number of items to skip"),
     limit: int = Query(default=10, ge=1, le=100, description="Number of items to return"),
     search: str | None = Query(default=None, description="Case-insensitive partial title search (en and fr)"),
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ) -> PaginatedLayerResponse:
     """List layers with pagination and optional title search."""
     stmt = select(Layer)
@@ -57,7 +59,7 @@ def list_layers(
 )
 def get_layer(
     layer_id: int,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ) -> LayerSchema:
     """Get a single layer by ID."""
     layer = db.get(Layer, layer_id)

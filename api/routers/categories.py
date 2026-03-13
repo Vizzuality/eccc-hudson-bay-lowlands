@@ -1,5 +1,7 @@
 """Categories endpoint router."""
 
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, selectinload
@@ -31,7 +33,7 @@ def list_categories(
     offset: int = Query(default=0, ge=0, description="Number of items to skip"),
     limit: int = Query(default=10, ge=1, le=100, description="Number of items to return"),
     search: str | None = Query(default=None, description="Case-insensitive partial title search (en and fr)"),
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ) -> PaginatedCategoryResponse:
     """List categories with pagination and optional title search."""
     stmt = select(Category)
@@ -70,7 +72,7 @@ def get_category(
     include_layers: bool = Query(
         default=False, description="Include layers within each dataset (requires include_datasets=true)"
     ),
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ) -> CategorySchema | CategoryWithDatasetsSchema | CategoryWithDatasetsAndLayersSchema:
     """Get a single category by ID with optional nested datasets and layers."""
     stmt = select(Category).where(Category.id == category_id)

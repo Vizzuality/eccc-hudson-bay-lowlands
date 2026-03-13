@@ -1,5 +1,7 @@
 """Datasets endpoint router."""
 
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, selectinload
@@ -34,7 +36,7 @@ def list_datasets(
     search: str | None = Query(default=None, description="Case-insensitive partial title search (en and fr)"),
     category_id: int | None = Query(default=None, description="Filter datasets by category ID"),
     include_layers: bool = Query(default=False, description="Include related layers in response"),
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ) -> PaginatedDatasetResponse | PaginatedDatasetWithLayersResponse:
     """List datasets with pagination and optional title search."""
     stmt = select(Dataset)
@@ -79,7 +81,7 @@ def list_datasets(
 def get_dataset(
     dataset_id: int,
     include_layers: bool = Query(default=False, description="Include related layers in response"),
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ) -> DatasetSchema | DatasetWithLayersSchema:
     """Get a single dataset by ID."""
     stmt = select(Dataset).where(Dataset.id == dataset_id)

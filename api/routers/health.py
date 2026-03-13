@@ -1,5 +1,7 @@
 """Health check endpoint router."""
 
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
@@ -16,7 +18,7 @@ router = APIRouter(tags=["Health"])
     description="Returns the health status of the API service and database connectivity.",
     response_description="Health status object with service details",
 )
-def health(db: Session = Depends(get_db)):
+def health(db: Annotated[Session, Depends(get_db)]):
     """Health check endpoint that verifies API and database connectivity."""
     try:
         db.execute(text("SELECT 1"))

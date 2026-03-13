@@ -2,6 +2,7 @@
 
 import hmac
 import logging
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, Header, HTTPException
 from sqlalchemy.orm import Session
@@ -15,7 +16,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(tags=["Seed"])
 
 
-def verify_seed_secret(x_seed_secret: str = Header(description="Secret token to authorize seeding")) -> str:
+def verify_seed_secret(x_seed_secret: Annotated[str, Header(description="Secret token to authorize seeding")]) -> str:
     """Validate the seed secret from the request header."""
     settings = get_settings()
     if not hmac.compare_digest(x_seed_secret, settings.seed_secret):
@@ -30,8 +31,8 @@ def verify_seed_secret(x_seed_secret: str = Header(description="Secret token to 
 )
 def run_seed(
     payload: dict,
-    db: Session = Depends(get_db),
-    _secret: str = Depends(verify_seed_secret),
+    db: Annotated[Session, Depends(get_db)],
+    _secret: Annotated[str, Depends(verify_seed_secret)],
 ):
     """Seed the database with the provided metadata payload."""
     try:
