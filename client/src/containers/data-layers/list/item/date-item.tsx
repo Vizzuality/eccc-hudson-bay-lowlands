@@ -32,8 +32,6 @@ const DateItem: FC<DateItemProps> = ({ layers }) => {
   const selectedLayer = layers[selectedLayerIndex];
   const isLayerVisible = layerIds.includes(selectedLayer?.id);
 
-  console.info({ selectedLayerIndex, isLayerVisible });
-
   return (
     <ItemContainer>
       <ItemHeader

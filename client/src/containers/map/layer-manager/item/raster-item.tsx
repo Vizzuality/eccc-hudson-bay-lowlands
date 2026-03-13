@@ -31,7 +31,12 @@ const RasterLayerManagerItem = ({
   });
 
   if (!isLayerSuccess || !isTileInfoSuccess) return null;
-  const { source, styles } = getRasterLayerConfig({ path, settings, tileInfo });
+  const { source, styles } = getRasterLayerConfig({
+    path,
+    settings,
+    tileInfo,
+    config: layer.config,
+  });
 
   return (
     <RMSource id={`${id}-source`} key={`${id}-source`} {...source}>
