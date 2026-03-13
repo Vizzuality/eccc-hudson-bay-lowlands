@@ -62,7 +62,6 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
       }, 0);
     });
   }, [layerIds, layersSettings, setLayersSettings]);
-  console.info("layerIds", layerIds);
 
   return (
     <div className={cn("relative h-full w-full", className)}>

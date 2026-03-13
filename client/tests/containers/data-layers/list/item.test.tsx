@@ -24,7 +24,6 @@ const defaultProps: DataLayersListItemProps = {
   title: "First Nation Locations",
   description: "Dataset description",
   layers: LAYERS,
-  onChange: vi.fn(),
   onLearnMore: vi.fn(),
 };
 
@@ -103,30 +102,6 @@ describe("@containers/data-layers/list/item", () => {
 
     expect(screen.getByRole("checkbox", { name: "Layer A" })).toBeChecked();
     expect(screen.getByRole("checkbox", { name: "Layer B" })).not.toBeChecked();
-  });
-
-  it("calls onChange with (layerId, true) when selecting a layer", async () => {
-    setupHooks();
-    const onChange = vi.fn();
-    renderItem({ onChange });
-    const user = await expandAccordion();
-
-    await user.click(screen.getByRole("checkbox", { name: "Layer A" }));
-
-    expect(onChange).toHaveBeenCalledOnce();
-    expect(onChange).toHaveBeenCalledWith(10, true);
-  });
-
-  it("calls onChange with (layerId, false) when deselecting a layer", async () => {
-    setupHooks([10]);
-    const onChange = vi.fn();
-    renderItem({ onChange });
-    const user = await expandAccordion();
-
-    await user.click(screen.getByRole("checkbox", { name: "Layer A" }));
-
-    expect(onChange).toHaveBeenCalledOnce();
-    expect(onChange).toHaveBeenCalledWith(10, false);
   });
 
   it("calls onLearnMore when the 'Data sources' button is clicked", async () => {

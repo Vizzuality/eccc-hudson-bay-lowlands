@@ -19,13 +19,6 @@ const Main = () => {
     });
   const t = useTranslations("map");
   const { layerIds, setLayerIds } = useLayerIds();
-  const handleItemChange = (id: number, isSelected: boolean) => {
-    setLayerIds(
-      isSelected
-        ? [...layerIds, id]
-        : layerIds.filter((layerId) => layerId !== id),
-    );
-  };
 
   return (
     <ScrollArea className="h-full">
@@ -42,7 +35,6 @@ const Main = () => {
         />
         <DataLayersList
           datasets={filteredDatasets ?? []}
-          onItemChange={handleItemChange}
           isLoading={isFilteredDatasetsLoading}
         />
         <DataLayersBottomBar

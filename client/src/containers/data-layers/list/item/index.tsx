@@ -8,7 +8,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import LayerItem from "@/containers/data-layers/list/layer-item";
+import DateItem from "@/containers/data-layers/list/item/date-item";
+import LayerItem from "@/containers/data-layers/list/item/layer-item";
 import { useApiTranslation } from "@/i18n/api-translation";
 import type { Layer } from "@/types";
 
@@ -17,12 +18,20 @@ export interface DataLayersListItemProps {
   title: string;
   description: string;
   layers: Layer[];
-  onChange: (id: number, isSelected: boolean) => void;
   onLearnMore: () => void;
 }
 
 const getLayerCountText = (layers: Layer[]) => {
   return `${layers.length} layer${layers.length > 1 ? "s" : ""}`;
+};
+const getGroupedDateLayers = (layers: Layer[]) => {
+  const dateLayers = layers.filter((layer) => layer.unit === "date");
+  const daysLayers = layers.filter((layer) => layer.unit === "days");
+
+  return {
+    dateLayers,
+    daysLayers,
+  };
 };
 
 const DataLayersListItem: FC<DataLayersListItemProps> = ({
@@ -30,7 +39,6 @@ const DataLayersListItem: FC<DataLayersListItemProps> = ({
   layers,
   title,
   description,
-  onChange,
   onLearnMore,
 }) => {
   const { layerIds: selectedLayerIds } = useLayerIds();
@@ -39,6 +47,10 @@ const DataLayersListItem: FC<DataLayersListItemProps> = ({
   const currentSelectedFromLayers = layers.filter((layer) =>
     selectedLayerIds.includes(layer.id),
   );
+  const isDateLayers = layers.every(
+    (layer) => layer.unit === "date" || layer.unit === "days",
+  );
+
   return (
     <AccordionItem value={id.toString()} className="border-none group/item">
       <AccordionTrigger className="">
@@ -61,16 +73,23 @@ const DataLayersListItem: FC<DataLayersListItemProps> = ({
           {description}
         </p>
         <AccordionContent>
-          {layers.map((layer) => (
-            <LayerItem
-              key={layer.id}
-              id={layer.id}
-              title={getTranslation(layer.metadata.title)}
-              description={getTranslation(layer.metadata.description)}
-              isSelected={selectedLayerIds.includes(layer.id)}
-              onChange={onChange}
-            />
-          ))}
+          {isDateLayers
+            ? Object.entries(getGroupedDateLayers(layers)).map(
+                ([key, layers]) => (
+                  <DateItem
+                    key={`list-layer-item-grouped-${key}`}
+                    layers={layers}
+                  />
+                ),
+              )
+            : layers.map((layer) => (
+                <LayerItem
+                  key={`list-layer-item-${layer.id}`}
+                  id={layer.id}
+                  title={getTranslation(layer.metadata.title)}
+                  description={getTranslation(layer.metadata.description)}
+                />
+              ))}
           <div className="pl-5 pt-2">
             <Button
               variant="link"

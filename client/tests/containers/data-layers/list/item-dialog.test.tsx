@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import { describe, expect, it, vi } from "vitest";
-import DataLayersListItemDialog from "@/containers/data-layers/list/item-dialog";
+import DataLayersListItemDialog from "@/containers/data-layers/list/item/item-dialog";
 import messages from "@/i18n/messages/en.json";
 import { DATA_LAYERS } from "@/tests/helpers/mocks";
 import type { NormalizedDataset } from "@/types";
