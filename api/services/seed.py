@@ -98,6 +98,35 @@ def upsert_layer(session: Session, layer_data: dict, dataset_id: int) -> tuple[L
     return new_layer, True
 
 
+def _load_seed_data(metadata_path: Path | str | None, payload: dict | None) -> dict:
+    """Load seed data from a payload dict or metadata file."""
+    if payload is not None:
+        logger.info("Seeding from provided payload")
+        return payload
+
+    if metadata_path is None:
+        metadata_path = DEFAULT_METADATA_PATH
+    metadata_path = Path(metadata_path)
+    logger.info("Loading metadata from: %s", metadata_path)
+    with open(metadata_path) as f:
+        return json.load(f)
+
+
+def _record_upsert(counts: dict, entity: str, is_new: bool) -> None:
+    """Increment the created or updated counter for an entity type."""
+    counts[entity]["created" if is_new else "updated"] += 1
+
+
+def _seed_dataset(session: Session, ds_data: dict, category_id: int, counts: dict) -> None:
+    """Seed a single dataset and its child layers."""
+    dataset, is_new = upsert_dataset(session, ds_data, category_id)
+    _record_upsert(counts, "datasets", is_new)
+
+    for layer_data in ds_data.get("layers", []):
+        _, is_new = upsert_layer(session, layer_data, dataset.id)
+        _record_upsert(counts, "layers", is_new)
+
+
 def seed_database(
     session: Session,
     metadata_path: Path | str | None = None,
@@ -113,16 +142,7 @@ def seed_database(
     Returns:
         Summary dict with counts of created/updated records.
     """
-    if payload is not None:
-        data = payload
-        logger.info("Seeding from provided payload")
-    else:
-        if metadata_path is None:
-            metadata_path = DEFAULT_METADATA_PATH
-        metadata_path = Path(metadata_path)
-        logger.info("Loading metadata from: %s", metadata_path)
-        with open(metadata_path) as f:
-            data = json.load(f)
+    data = _load_seed_data(metadata_path, payload)
 
     counts = {
         "categories": {"created": 0, "updated": 0},
@@ -132,15 +152,10 @@ def seed_database(
 
     for cat_data in data["categories"]:
         category, is_new = upsert_category(session, cat_data)
-        counts["categories"]["created" if is_new else "updated"] += 1
+        _record_upsert(counts, "categories", is_new)
 
         for ds_data in cat_data.get("datasets", []):
-            dataset, is_new = upsert_dataset(session, ds_data, category.id)
-            counts["datasets"]["created" if is_new else "updated"] += 1
-
-            for layer_data in ds_data.get("layers", []):
-                _, is_new = upsert_layer(session, layer_data, dataset.id)
-                counts["layers"]["created" if is_new else "updated"] += 1
+            _seed_dataset(session, ds_data, category.id, counts)
 
     logger.info("Seed complete: %s", counts)
     return counts
