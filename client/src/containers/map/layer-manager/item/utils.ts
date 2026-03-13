@@ -57,14 +57,19 @@ export const getRasterLayerConfig = ({
   settings,
   tileInfo,
   config,
+  withColormap,
 }: {
   path: string;
   settings: Record<string, unknown>;
   tileInfo: TileInfoResponse;
   config: LayerConfig;
+  withColormap: boolean;
 }) => {
   const { styles, params_config, colormap } = config;
   const visibility = settings.visibility ?? true;
+  const colormapQueryParam = withColormap
+    ? getColormapQueryParam(colormap)
+    : "&colormap_name=viridis";
 
   const c = parseConfig<Config>({
     config: {
@@ -74,7 +79,7 @@ export const getRasterLayerConfig = ({
           env.NEXT_PUBLIC_API_URL +
             `/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encodeURIComponent(
               path,
-            )}${getColormapQueryParam(colormap)}`,
+            )}${colormapQueryParam}`,
         ],
         minzoom: tileInfo.minzoom,
         maxzoom: tileInfo.maxzoom,
