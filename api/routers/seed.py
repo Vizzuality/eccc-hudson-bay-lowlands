@@ -28,6 +28,10 @@ def verify_seed_secret(x_seed_secret: Annotated[str, Header(description="Secret 
     "",
     summary="Seed the database",
     description="Populate the database from a JSON payload. Requires X-Seed-Secret header. Idempotent.",
+    responses={
+        200: {"description": "Database seeded successfully"},
+        500: {"description": "Seed failed"},
+    },
 )
 def run_seed(
     payload: dict,
