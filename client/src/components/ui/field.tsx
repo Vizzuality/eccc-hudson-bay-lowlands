@@ -81,10 +81,9 @@ function Field({
   className,
   orientation = "vertical",
   ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof fieldVariants>) {
+}: React.ComponentProps<"fieldset"> & VariantProps<typeof fieldVariants>) {
   return (
-    <div
-      role="group"
+    <fieldset
       data-slot="field"
       data-orientation={orientation}
       className={cn(fieldVariants({ orientation }), className)}
@@ -210,7 +209,7 @@ function FieldError({
     return (
       <ul className="ml-4 flex list-disc flex-col gap-1">
         {uniqueErrors.map(
-          (error, index) =>
+          (error) =>
             error?.message && <li key={error.message}>{error.message}</li>,
         )}
       </ul>

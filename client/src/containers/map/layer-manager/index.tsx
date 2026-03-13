@@ -12,8 +12,8 @@ export const LayerManager: FC<{
   const { current: map } = useMap();
   const { layerIds } = useLayerIds();
   const baseLayer = useMemo(() => {
-    if (map && map.isStyleLoaded()) {
-      const layers = map!.getStyle()!.layers;
+    if (map?.isStyleLoaded()) {
+      const layers = map.getStyle()?.layers;
       // Find the custom layer to be able to sort the layers
       const customLayer = layers?.find((l) => l.id.includes("custom-layer"));
       // Find the first label layer to be able to sort the layers if there is no custom layer
