@@ -49,6 +49,15 @@ const makeDataset = (
     categories: null,
     metadata: { title: { en: "" }, description: { en: "" } },
     dataset_id: id,
+    config: {
+      colormap: [],
+      styles: [],
+      params_config: [],
+      legend_config: {
+        type: "basic",
+        items: [],
+      },
+    },
   })),
 });
 

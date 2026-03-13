@@ -46,6 +46,15 @@ export const LAYERS: Layer[] = [
       description: { en: "Layer A desc", fr: "Desc couche A" },
     },
     dataset_id: 1,
+    config: {
+      colormap: [],
+      styles: [],
+      params_config: [],
+      legend_config: {
+        type: "basic",
+        items: [],
+      },
+    },
   },
   {
     id: 20,
@@ -59,6 +68,15 @@ export const LAYERS: Layer[] = [
       description: { en: "Layer B desc", fr: "Desc couche B" },
     },
     dataset_id: 1,
+    config: {
+      colormap: [],
+      styles: [],
+      params_config: [],
+      legend_config: {
+        type: "basic",
+        items: [],
+      },
+    },
   },
 ];
 
