@@ -27,7 +27,6 @@ def _escape_like(value: str) -> str:
     description=(
         "Returns a paginated list of datasets with optional title search. Use include_layers=true to include related layers."
     ),
-    response_model=PaginatedDatasetResponse | PaginatedDatasetWithLayersResponse,
 )
 def list_datasets(
     offset: int = Query(default=0, ge=0, description="Number of items to skip"),
@@ -75,7 +74,6 @@ def list_datasets(
     "/{dataset_id}",
     summary="Get Dataset",
     description=("Returns a single dataset by ID. Use include_layers=true to include related layers."),
-    response_model=DatasetSchema | DatasetWithLayersSchema,
     responses={404: {"description": "Dataset not found"}},
 )
 def get_dataset(

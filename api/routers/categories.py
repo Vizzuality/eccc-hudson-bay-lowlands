@@ -26,7 +26,6 @@ def _escape_like(value: str) -> str:
     "",
     summary="List Categories",
     description="Returns a paginated list of categories with optional title search.",
-    response_model=PaginatedCategoryResponse,
 )
 def list_categories(
     offset: int = Query(default=0, ge=0, description="Number of items to skip"),
@@ -63,7 +62,6 @@ def list_categories(
         "Returns a single category by ID. Use include_datasets=true to include nested datasets, "
         "and include_layers=true to also include each dataset's layers."
     ),
-    response_model=CategorySchema | CategoryWithDatasetsSchema | CategoryWithDatasetsAndLayersSchema,
     responses={404: {"description": "Category not found"}},
 )
 def get_category(

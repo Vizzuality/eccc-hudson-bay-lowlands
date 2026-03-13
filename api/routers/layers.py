@@ -20,7 +20,6 @@ def _escape_like(value: str) -> str:
     "",
     summary="List Layers",
     description="Returns a paginated list of layers with optional title search.",
-    response_model=PaginatedLayerResponse,
 )
 def list_layers(
     offset: int = Query(default=0, ge=0, description="Number of items to skip"),
@@ -54,7 +53,6 @@ def list_layers(
     "/{layer_id}",
     summary="Get Layer",
     description="Returns a single layer by ID.",
-    response_model=LayerSchema,
     responses={404: {"description": "Layer not found"}},
 )
 def get_layer(
