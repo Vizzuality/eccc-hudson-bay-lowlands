@@ -100,10 +100,11 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
             setLayerIds(v.map(Number));
           }}
         >
-          {layerIds.map((id) => (
+          {layerIds.map((id, index) => (
             <MapLegendItem
               key={`map-legend-item-${id}`}
               id={id.toString()}
+              className={index === 0 ? "border-t-0 pt-4 pb-6" : "border-t py-6"}
               sortable={{ enabled: true, handle: true }}
               settingsManager={{
                 visibility: true,
