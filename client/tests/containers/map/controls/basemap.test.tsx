@@ -56,10 +56,10 @@ describe("@containers/map/controls/settings/basemap", () => {
     renderBasemapControl();
 
     const lightBtn = screen.getByRole("button", { name: /Light/ });
-    expect(lightBtn.className).toContain("bg-blue-500/25");
+    expect(lightBtn.className).toContain("border-accent");
 
     const satelliteBtn = screen.getByRole("button", { name: /Satellite/ });
-    expect(satelliteBtn.className).not.toContain("bg-blue-500/25");
+    expect(satelliteBtn.className).not.toContain("border-accent");
   });
 
   it("calls setBasemap when a different basemap is clicked", async () => {
@@ -77,9 +77,9 @@ describe("@containers/map/controls/settings/basemap", () => {
     renderBasemapControl();
 
     const satelliteBtn = screen.getByRole("button", { name: /Satellite/ });
-    expect(satelliteBtn.className).toContain("bg-blue-500/25");
+    expect(satelliteBtn.className).toContain("border-accent");
 
     const lightBtn = screen.getByRole("button", { name: /Light/ });
-    expect(lightBtn.className).not.toContain("bg-blue-500/25");
+    expect(lightBtn.className).not.toContain("border-accent");
   });
 });
