@@ -11,31 +11,31 @@ export const BasemapControl = () => {
   return (
     <>
       <h3 className="text-xs font-bold uppercase mb-4">{t("title")}</h3>
-      <div className="flex overflow-hidden">
+      <div className="flex gap-4 overflow-hidden">
         {Object.values(BASEMAPS).map((b) => (
-          <button
-            key={b.id}
-            type="button"
-            className={cn(
-              "cursor-pointer text-foreground shadow-muted flex appearance-none items-center gap-2 border-0 py-2 pr-4 pl-2",
-              {
-                "hover:bg-gray-300": basemap !== b.id,
-                "bg-blue-500/25": basemap === b.id,
-              },
-            )}
-            onClick={() => setBasemap(b.id)}
-          >
-            <Image
-              loading="lazy"
-              src={b.image}
-              alt={b.name}
-              width={200}
-              height={200}
-              className="mb-1 h-10 w-10 rounded-full object-cover"
-            />
-
-            {b.name}
-          </button>
+          <div key={b.id} className="flex flex-col gap-1 items-center">
+            <button
+              key={b.id}
+              type="button"
+              className={cn(
+                "relative w-20 h-16 cursor-pointer rounded appearance-none p-0 border-2 border-transparent overflow-hidden",
+                {
+                  "border-accent": basemap === b.id,
+                },
+              )}
+              onClick={() => setBasemap(b.id)}
+            >
+              <Image
+                fill
+                loading="lazy"
+                src={b.image}
+                alt={b.name}
+                sizes="80px"
+                className="object-cover"
+              />
+            </button>
+            <p className="text-sm font-medium">{b.name}</p>
+          </div>
         ))}
       </div>
     </>
