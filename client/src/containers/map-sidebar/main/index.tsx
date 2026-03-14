@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { useLayerIds } from "@/app/[locale]/url-store";
+import { useDataLayersSearch, useLayerIds } from "@/app/[locale]/url-store";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import DataLayersBottomBar from "@/containers/data-layers/bottom-bar";
 import CategorySelector from "@/containers/data-layers/category-selector";
@@ -9,6 +9,7 @@ import { useCategories } from "@/hooks/use-categories";
 import { useTranslatedDatasets } from "@/hooks/use-datasets";
 
 const Main = () => {
+  const { dataLayersSearch } = useDataLayersSearch();
   const { categoryItems, totalLayerCount, isCategoriesLoading, category } =
     useCategories();
   const { data: filteredDatasets, isFetching: isFilteredDatasetsLoading } =
@@ -16,6 +17,7 @@ const Main = () => {
       include_layers: true,
       limit: 99,
       category_id: category ?? undefined,
+      search: dataLayersSearch ?? undefined,
     });
   const t = useTranslations("map");
   const { layerIds, setLayerIds } = useLayerIds();

@@ -21,7 +21,8 @@
   },
   "data-layers": {
     "search": {
-      "placeholder": "Search..."
+      "placeholder": "Search...",
+      "clear": "Clear search"
     },
     "list": {
       "title": "All data ({count})"

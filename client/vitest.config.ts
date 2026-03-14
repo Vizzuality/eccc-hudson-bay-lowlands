@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => ({
 
         // React-query hooks & API plumbing (better covered by E2E)
         "src/hooks/use-datasets.ts",
-        "src/lib/api.ts",
+        "src/lib/api/**",
         "src/lib/query-keys.ts",
 
         // Map-coupled components (better covered by E2E)
