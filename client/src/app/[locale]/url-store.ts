@@ -4,6 +4,7 @@ import {
   parseAsBoolean,
   parseAsInteger,
   parseAsJson,
+  parseAsString,
   parseAsStringEnum,
   useQueryState,
 } from "nuqs";
@@ -85,4 +86,13 @@ export function useMapBasemap() {
   );
 
   return { basemap, setBasemap };
+}
+
+export function useDataLayersSearch() {
+  const [dataLayersSearch, setDataLayersSearch] = useQueryState(
+    "dataLayersSearch",
+    parseAsString,
+  );
+
+  return { dataLayersSearch, setDataLayersSearch };
 }

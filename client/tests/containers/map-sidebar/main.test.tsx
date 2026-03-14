@@ -11,6 +11,7 @@ import {
 } from "@/tests/helpers/mocks";
 
 const mockSetLayerIds = vi.fn();
+const mockSetDataLayersSearch = vi.fn();
 
 vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
   const actual =
@@ -18,6 +19,10 @@ vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
   return {
     ...actual,
     useLayerIds: vi.fn(),
+    useDataLayersSearch: vi.fn(() => ({
+      dataLayersSearch: null as string | null,
+      setDataLayersSearch: mockSetDataLayersSearch,
+    })),
   };
 });
 

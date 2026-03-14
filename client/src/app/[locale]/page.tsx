@@ -31,8 +31,11 @@ export default async function Home({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const { category } = await searchParams;
+  const { category, dataLayersSearch } = await searchParams;
   const categoryParam = Array.isArray(category) ? category[0] : category;
+  const dataLayersSearchParam = Array.isArray(dataLayersSearch)
+    ? dataLayersSearch[0]
+    : dataLayersSearch;
   const categoryId =
     typeof categoryParam === "string"
       ? Number.parseInt(categoryParam, 10)
@@ -42,6 +45,9 @@ export default async function Home({
     limit: 99,
     ...(typeof categoryId === "number" && Number.isFinite(categoryId)
       ? { category_id: categoryId }
+      : {}),
+    ...(typeof dataLayersSearchParam === "string"
+      ? { search: dataLayersSearchParam }
       : {}),
   };
   const queryClient = new QueryClient();
