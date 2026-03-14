@@ -97,10 +97,10 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
         <MapLegend
           sortable={{ enabled: true, handle: true }}
           onChangeOrder={(v) => {
-            setLayerIds(v.map(Number));
+            setLayerIds(v.map(Number).toReversed());
           }}
         >
-          {layerIds.map((id, index) => (
+          {layerIds.toReversed().map((id, index) => (
             <MapLegendItem
               key={`map-legend-item-${id}`}
               id={id.toString()}
