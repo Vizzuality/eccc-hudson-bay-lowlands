@@ -4,11 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Layer as RMLayer, Source as RMSource } from "react-map-gl/mapbox";
 import { getRasterLayerConfig } from "@/containers/map/layer-manager/item/utils";
 import { API } from "@/lib/api";
-import {
-  getLayerConfig,
-  getTileJsonConfig,
-  validTileRequest,
-} from "@/lib/api/config";
+import { getLayerConfig, getTileJsonConfig } from "@/lib/api/config";
 import { queryKeys } from "@/lib/query-keys";
 import type { LayerResponse, TileInfoResponse } from "@/types";
 
@@ -33,24 +29,17 @@ const RasterLayerManagerItem = ({
     queryFn: () => API<TileInfoResponse>(getTileJsonConfig(path)),
     enabled: isLayerSuccess && !!path,
   });
-  const colormap = layer?.config?.colormap
-    ? JSON.stringify(layer?.config?.colormap)
-    : "";
-  const { isSuccess: isValidTileSuccess } = useQuery({
-    queryKey: queryKeys.cog.validTileRequest(path, encodeURIComponent(colormap))
-      .queryKey,
-    queryFn: () => API(validTileRequest(path, encodeURIComponent(colormap))),
-    enabled: isLayerSuccess && !!path && !!colormap,
-  });
 
   if (!isLayerSuccess || !isTileInfoSuccess) return null;
+
+  const withColormap = !!layer.config?.colormap;
 
   const { source, styles } = getRasterLayerConfig({
     path,
     settings,
     tileInfo,
     config: layer.config,
-    withColormap: isValidTileSuccess,
+    withColormap,
   });
 
   return (

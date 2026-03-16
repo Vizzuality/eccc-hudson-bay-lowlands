@@ -31,11 +31,3 @@ export const getTileJsonConfig = (
 ): AxiosRequestConfig => ({
   url: `/cog/${tileMatrixSetId}/tilejson.json?url=${path}`,
 });
-
-// Temporary endpoint to check if the tile is successfully fetched
-export const validTileRequest = (
-  path: string,
-  colormap: string,
-): AxiosRequestConfig => ({
-  url: `/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${path}&colormap=${colormap}`,
-});
