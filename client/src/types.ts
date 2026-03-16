@@ -76,7 +76,7 @@ export interface Layer {
   categories: LayerCategory[] | null;
   metadata: LayerMetadata;
   dataset_id: number;
-  config: LayerConfig;
+  config: LayerConfig | null;
 }
 
 export type LayersResponse = ApiResponse<Layer>;

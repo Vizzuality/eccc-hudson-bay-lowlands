@@ -81,8 +81,10 @@ export const getRasterLayerConfig = ({
               path,
             )}${colormapQueryParam}`,
         ],
-        minzoom: tileInfo.minzoom,
-        maxzoom: tileInfo.maxzoom,
+        // TODO: check with science if all rasters should have minzoom/maxzoom
+        // returned by the TileJSON, or if fallbacks are expected.
+        minzoom: tileInfo.minzoom ?? 0,
+        maxzoom: tileInfo.maxzoom ?? 24,
         bounds: tileInfo.bounds,
       },
       styles: styles.map((style) => ({

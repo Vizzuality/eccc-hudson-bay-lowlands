@@ -31,6 +31,7 @@ const LayerManagerItem = ({ id, beforeId }: LayerManagerItemProps) => {
   }
 
   if (format === "vector") {
+    if (!layer.config) return null;
     return (
       <VectorLayerManagerItem
         id={id}
