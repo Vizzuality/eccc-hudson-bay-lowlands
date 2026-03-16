@@ -39,7 +39,10 @@ const MapLegendItem: FC<MapLegendItemProps> = ({
 
   if (!isLayerSuccess) return null;
 
-  const { type, items } = layer.config.legend_config;
+  const legendConfig = layer.config?.legend_config;
+  if (!legendConfig) return null;
+
+  const { type, items } = legendConfig;
 
   return (
     <Accordion type="single" defaultValue={`${id}`} asChild>
