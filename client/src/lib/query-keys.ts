@@ -18,6 +18,5 @@ export const queryKeys = createQueryKeyStore({
   },
   cog: {
     tileInfo: (path: string) => [{ path }],
-    validTileRequest: (path: string, colormap: string) => [{ path, colormap }],
   },
 });
