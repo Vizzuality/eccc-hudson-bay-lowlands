@@ -2,10 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Layer as RMLayer, Source as RMSource } from "react-map-gl/mapbox";
-import {
-  DEFAULT_RASTER_CONFIG,
-  getRasterLayerConfig,
-} from "@/containers/map/layer-manager/item/utils";
+import { getRasterLayerConfig } from "@/containers/map/layer-manager/item/utils";
 import { API } from "@/lib/api";
 import { getLayerConfig, getTileJsonConfig } from "@/lib/api/config";
 import { queryKeys } from "@/lib/query-keys";
@@ -33,16 +30,15 @@ const RasterLayerManagerItem = ({
     enabled: isLayerSuccess && !!path,
   });
 
-  if (!isLayerSuccess || !isTileInfoSuccess) return null;
+  if (!isLayerSuccess || !isTileInfoSuccess || !layer.config) return null;
 
-  const config = layer.config ?? DEFAULT_RASTER_CONFIG;
-  const withColormap = !!layer.config?.colormap;
+  const withColormap = !!layer.config.colormap;
 
   const { source, styles } = getRasterLayerConfig({
     path,
     settings,
     tileInfo,
-    config,
+    config: layer.config,
     withColormap,
   });
 
