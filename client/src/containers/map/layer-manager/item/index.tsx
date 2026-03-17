@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { useSyncLayersSettings } from "@/app/[locale]/url-store";
 import RasterLayerManagerItem from "@/containers/map/layer-manager/item/raster-item";
 import VectorLayerManagerItem from "@/containers/map/layer-manager/item/vector-item";
