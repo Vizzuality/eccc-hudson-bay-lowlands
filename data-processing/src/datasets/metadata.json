@@ -2261,6 +2261,50 @@
                   "en": "Indigenous territories.",
                   "fr": "Territoires autochtones."
                 }
+              },
+              "config": {
+                "colormap": null,
+                "styles": [
+                  {
+                    "type": "fill",
+                    "source-layer": "Indigenous Territories",
+                    "paint": {
+                      "fill-color": [
+                        "match", ["get", "Name"],
+                        ["Cree"], "rgba(161, 69, 23, 0.85)",
+                        ["Michif Piyii (Métis)"], "rgba(139, 94, 60, 0.8)",
+                        ["Denendeh (Dënësųłinë́ Nëné)"], "rgba(61, 64, 32, 0.85)",
+                        ["Anishinabewaki ᐊᓂᔑᓈᐯᐗᑭ"], "rgba(123, 144, 90, 0.85)",
+                        ["Anishininiimowin (Oji-Cree)"], "rgba(139, 94, 60, 0.85)",
+                        ["Eeyou Istchee"], "rgba(94, 111, 115, 0.85)",
+                        ["ᐃᓕᓕᐗᔅᑭᔾ | Ililiwaskiy (Moose Cree)"], "rgba(176, 121, 105, 0.85)",
+                        ["Abitibiwinni Aki"], "rgba(107, 78, 61, 0.85)",
+                        ["Dënéndeh"], "rgba(155, 153, 105, 0.85)",
+                        "rgba(234, 230, 230, 0.85)"
+                      ],
+                      "fill-outline-color": "rgba(0, 0, 0, 0.2)"
+                    }
+                  }
+                ],
+                "params_config": [
+                  { "key": "opacity", "default": 1 },
+                  { "key": "visibility", "default": true }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    { "color": "rgba(161, 69, 23, 0.85)",   "label": { "en": "Cree",                                "fr": "Cri" } },
+                    { "color": "rgba(139, 94, 60, 0.8)",    "label": { "en": "Michif Piyii (Métis)",                "fr": "Michif Piyii (Métis)" } },
+                    { "color": "rgba(61, 64, 32, 0.85)",    "label": { "en": "Denendeh (Dënësųłinë́ Nëné)",        "fr": "Denendeh (Dënësųłinë́ Nëné)" } },
+                    { "color": "rgba(123, 144, 90, 0.85)",  "label": { "en": "Anishinabewaki ᐊᓂᔑᓈᐯᐗᑭ",            "fr": "Anishinabewaki ᐊᓂᔑᓈᐯᐗᑭ" } },
+                    { "color": "rgba(139, 94, 60, 0.85)",   "label": { "en": "Anishininiimowin (Oji-Cree)",        "fr": "Anishininiimowin (Oji-Cree)" } },
+                    { "color": "rgba(94, 111, 115, 0.85)",  "label": { "en": "Eeyou Istchee",                      "fr": "Eeyou Istchee" } },
+                    { "color": "rgba(176, 121, 105, 0.85)", "label": { "en": "ᐃᓕᓕᐗᔅᑭᔾ | Ililiwaskiy (Moose Cree)", "fr": "ᐃᓕᓕᐗᔅᑭᔾ | Ililiwaskiy (Moose Cree)" } },
+                    { "color": "rgba(107, 78, 61, 0.85)",   "label": { "en": "Abitibiwinni Aki",                   "fr": "Abitibiwinni Aki" } },
+                    { "color": "rgba(155, 153, 105, 0.85)", "label": { "en": "Dënéndeh",                           "fr": "Dënéndeh" } },
+                    { "color": "rgba(234, 230, 230, 0.85)", "label": { "en": "Other",                              "fr": "Autre" } }
+                  ]
+                }
               }
             }
           ]

@@ -36,7 +36,7 @@ const LayerManagerItem = ({ id, beforeId }: LayerManagerItemProps) => {
         id={id}
         beforeId={beforeId}
         path={layer.path}
-        config={layer.config}
+        config={layer.config!}
         settings={settings}
       />
     );
