@@ -10,7 +10,7 @@ const getColormapQueryParam = (
 
   const colormapObject: Record<string, string> = Array.isArray(colormap)
     ? Object.fromEntries(
-        colormap.map(([value, color]) => [String(value), color]),
+        colormap.map(([value, color]) => [String(Math.ceil(value)), color]),
       )
     : colormap;
 
