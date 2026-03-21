@@ -6,6 +6,9 @@ ignoredBuiltDependencies:
   - unrs-resolver
 
 
+overrides:
+  undici: "7.24.1"
+
 catalog:
   "@biomejs/biome": "2.2.0"
   "@types/node": "24.1.0"
