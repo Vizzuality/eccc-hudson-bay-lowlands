@@ -3,12 +3,12 @@
 
 ## Resource: S3 Bucket
 resource "aws_s3_bucket" "this" {
-  bucket = "${var.project}-${var.environment}-bucket"
+  bucket = "${var.project}-tiles"
   ## Beware: This allows TF to destroy the resource even if the bucket is not empty
   force_destroy = true
 
   tags = merge({
-    Name = "${var.project}-${var.environment}-bucket"
+    Name = "${var.project}-tiles"
   })
 }
 

@@ -119,3 +119,11 @@ variable "github_additional_environment_variables" {
   description = "Github additional environment-specific variables"
   default     = {}
 }
+
+variable "s3" {
+  description = "Shared S3 bucket outputs (name and ARN)"
+  type = object({
+    name = string
+    arn  = string
+  })
+}

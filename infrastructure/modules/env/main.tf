@@ -15,7 +15,7 @@ module "beanstalk" {
   ec2_instance_type                             = var.ec2_instance_type
   elasticbeanstalk_iam_service_linked_role_name = var.elasticbeanstalk_iam_service_linked_role_name
   cname_prefix                                  = var.cname_prefix
-  s3                                            = module.s3.s3_outputs
+  s3                                            = var.s3
 }
 
 module "postgresql" {
@@ -36,13 +36,6 @@ module "postgresql" {
   availability_zones          = var.availability_zones
   database_name               = var.project
 }
-
-module "s3" {
-  source      = "../s3"
-  project     = var.project
-  environment = var.environment
-}
-
 
 module "github" {
   source                   = "../github"

@@ -44,6 +44,11 @@ module "vpc" {
   aws_region = var.aws_region
 }
 
+module "s3" {
+  source  = "./modules/s3"
+  project = var.project_name
+}
+
 module "dev" {
   source      = "./modules/env"
   project     = var.project_name
@@ -67,6 +72,7 @@ module "dev" {
   repo_name          = var.repo_name
   github_owner       = var.github_owner
   github_token       = var.github_token
+  s3                 = module.s3.s3_outputs
 
   # TODO: Enable when basic auth is implemented in the application
   # basic_auth_enabled  = var.basic_auth_enabled
@@ -102,6 +108,7 @@ module "staging" {
   repo_name          = var.repo_name
   github_owner       = var.github_owner
   github_token       = var.github_token
+  s3                 = module.s3.s3_outputs
 
   # TODO: Enable when basic auth is implemented in the application
   # basic_auth_enabled  = var.basic_auth_enabled

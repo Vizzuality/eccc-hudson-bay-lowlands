@@ -10,7 +10,7 @@ locals {
     DB_PASSWORD    = module.postgresql.password
     DB_USERNAME    = module.postgresql.username
     DB_PORT        = module.postgresql.port
-    S3_BUCKET_NAME = module.s3.s3_outputs.name
+    S3_BUCKET_NAME = var.s3.name
     SEED_SECRET    = random_string.seed_secret.result
 
   }
