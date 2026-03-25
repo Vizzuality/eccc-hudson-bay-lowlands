@@ -1,7 +1,11 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import Analysis from "@/containers/map-sidebar/analysis";
+import { WIDGETS } from "@/containers/widgets/constants";
+import messages from "@/i18n/messages/en.json";
 
 const mockPush = vi.fn();
 
@@ -9,26 +13,60 @@ vi.mock("next/navigation", () => ({
   useRouter: vi.fn(() => ({ push: mockPush })),
 }));
 
+const renderAnalysis = () => {
+  return render(
+    <NextIntlClientProvider locale="en" messages={messages}>
+      <TooltipProvider>
+        <Analysis />
+      </TooltipProvider>
+    </NextIntlClientProvider>,
+  );
+};
+
 describe("@containers/map-sidebar/analysis", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("renders the heading", () => {
-    render(<Analysis />);
+    renderAnalysis();
 
     expect(
       screen.getByRole("heading", { name: /my area of interest/i }),
     ).toBeInTheDocument();
   });
 
+  it("renders every analysis widget with its translated title", () => {
+    renderAnalysis();
+
+    const widgetNamespaces = (
+      Object.keys(messages.widgets) as Array<keyof typeof messages.widgets>
+    ).filter((key) => key !== "share");
+
+    expect(widgetNamespaces).toHaveLength(WIDGETS.length);
+
+    for (const key of widgetNamespaces) {
+      expect(
+        screen.getByRole("heading", { name: messages.widgets[key].title }),
+      ).toBeInTheDocument();
+    }
+  });
+
+  it("renders the share widget", () => {
+    renderAnalysis();
+
+    expect(
+      screen.getByRole("button", { name: messages.widgets.share.title }),
+    ).toBeInTheDocument();
+  });
+
   it("opens the close dialog when the close button is clicked", async () => {
     const user = userEvent.setup();
-    render(<Analysis />);
+    renderAnalysis();
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 
-    await user.click(screen.getByRole("button"));
+    await user.click(screen.getByRole("button", { name: /leave analysis/i }));
 
     expect(
       screen.getByRole("dialog", { name: /leave current analysis/i }),
@@ -37,9 +75,9 @@ describe("@containers/map-sidebar/analysis", () => {
 
   it("closes the dialog when Cancel is clicked", async () => {
     const user = userEvent.setup();
-    render(<Analysis />);
+    renderAnalysis();
 
-    await user.click(screen.getByRole("button"));
+    await user.click(screen.getByRole("button", { name: /leave analysis/i }));
     const dialog = screen.getByRole("dialog");
     await user.click(within(dialog).getByRole("button", { name: /cancel/i }));
 
