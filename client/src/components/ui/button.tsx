@@ -16,7 +16,7 @@ const buttonVariants = cva(
           "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:text-accent dark:hover:bg-accent/50",
+        ghost: "hover:bg-secondary dark:hover:bg-accent/50",
         link: "text-accent font-bold h-auto !p-0 text-2xs leading-5",
         menuItem:
           "text-muted-foreground hover:text-accent focus:text-accent-foreground font-semibold aria-[current=page]:cursor-default aria-[current=page]:text-accent-foreground aria-[current=page]:font-bold px-3 py-1.5 text-xs",

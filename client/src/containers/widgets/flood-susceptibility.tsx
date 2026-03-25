@@ -1,0 +1,38 @@
+import { WavesIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
+import RichText from "@/components/ui/rich-text";
+import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
+
+const FloodSusceptibility = () => {
+  const t = useTranslations("widgets.flood-susceptibility");
+
+  return (
+    <WidgetCard
+      title={t("title")}
+      description={
+        <RichText>
+          {(tags) =>
+            t.rich("description", {
+              ...tags,
+              fsi_avg: 50,
+              fsi_low_perc: 20,
+              fsi_moderate_perc: 30,
+              fsi_high_perc: 50,
+            })
+          }
+        </RichText>
+      }
+      icon={
+        <WidgetCardIcon
+          icon={<WavesIcon className="size-5 text-red-500" />}
+          backgroundColor="#EF4444"
+        />
+      }
+      onDowloadButtonClick={() => {}}
+      onInfoButtonClick={() => {}}
+      onAddToMapButtonClick={() => {}}
+    ></WidgetCard>
+  );
+};
+
+export default FloodSusceptibility;

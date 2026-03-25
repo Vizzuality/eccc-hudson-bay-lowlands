@@ -36,6 +36,35 @@
       "ok": "OK"
     }
   },
+  "widgets": {
+    "carbon-peatlands": {
+      "title": "Carbon and Peatlands",
+      "description": "<p>Within your selected area, peat depth averages <b>{peat_depth_avg} cm</b>, reaching up to <b>{peat_depth_max} cm</b>, storing about <b>{carbon_total} Mt</b> of carbon at an average density of <b>{carbon_density} kg/m²</b>.</p>"
+    },
+    "water-dynamics": {
+      "title": "Water Dynamics",
+      "description": "<p>Long-term observations (1984-2023) indicate that, on average, <b>{water_perm_perc}%</b> of the area is permanent water, <b>{water_ephemeral_perc}%</b> is ephemeral water, and <b>{land_perm_perc}%</b> is permanently dry land, with a mean inundation frequency of <b>{freq_mean}%</b>.</p>"
+    },
+    "flood-susceptibility": {
+      "title": "Flood susceptibility",
+      "description": "<p>The flood susceptibility index identifies which parts of the landscape are more vulnerable, with an average value of <b>{fsi_avg}</b> (0–100) and approximately <b>{fsi_low_perc}%</b> of the area at low risk, <b>{fsi_moderate_perc}%</b> at moderate risk, and <b>{fsi_high_perc}%</b> at high risk.</p>"
+    },
+    "snow-dynamics": {
+      "title": "Snow dynamics",
+      "description": "<p>Snow cover shapes seasonal conditions and ecosystem processes. For the winter of <b>{selected_winter}</b>, snow persisted for an average of <b>{lengthT_mean} days</b>, typically ending around <b>{endL_mean_date}</b>.</p>"
+    },
+    "tree-cover-change": {
+      "title": "Tree cover change"
+    },
+    "ecosystem-types": {
+      "title": "Ecosystem types",
+      "description": "<p>The selected area contains <b>{ecosystem_count}</b> ecosystem types and is predominantly <b>{dominant_ecosystem} ({dominant_ecosystem_perc}%)</b>. This composition reflects the area’s habitat diversity and influences patterns in carbon storage, water dynamics, and vegetation.</p>"
+    },
+    "share": {
+      "title": "Share",
+      "description": "Together, these indicators provide an integrated view of your area’s environment and ecological value, showing how physical and biological factors interact to shape landscape function and resilience. Understanding these patterns might support conservation, climate adaptation, and land use decisions."
+    }
+  },
   "metadata": {
     "home": {
       "title": "Discover the Hudson & James bay region",
