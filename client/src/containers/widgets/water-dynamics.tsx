@@ -39,6 +39,16 @@ const WaterDynamics: FC<WidgetCardBaseProps> = ({ id }) => {
       <MoreInfoTooltip title={t("more-info.title")}>
         {t("more-info.description")}
       </MoreInfoTooltip>
+      <RichText className="text-muted-foreground text-sm font-medium leading-5">
+        {(tags) =>
+          t.rich("description-2", {
+            ...tags,
+            trend_wetter_perc: 10,
+            trend_drier_perc: 20,
+            trend_stable_perc: 70,
+          })
+        }
+      </RichText>
     </WidgetCard>
   );
 };

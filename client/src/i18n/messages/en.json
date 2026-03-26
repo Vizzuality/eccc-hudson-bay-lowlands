@@ -52,6 +52,7 @@
     "water-dynamics": {
       "title": "Water Dynamics",
       "description": "<p>Long-term observations (1984-2023) indicate that, on average, <b>{water_perm_perc}%</b> of the area is permanent water, <b>{water_ephemeral_perc}%</b> is ephemeral water, and <b>{land_perm_perc}%</b> is permanently dry land, with a mean inundation frequency of <b>{freq_mean}%</b>.</p>",
+      "description-2": "<p>Inter-annual trends highlight areas where wetlands are expanding, contracting, or remaining stable, revealing shifts in hydrological dynamics across the landscape. Across the selected area, <b>{trend_wetter_perc}%</b> shows a tendency toward increased water presence, <b>{trend_drier_perc}%</b> toward decreased water presence, and <b>{trend_stable_perc}%</b> remains largely unchanged.</p>",
       "more-info": {
         "title": "Why are water dynamics important?",
         "description": "Surface water influences wetlands, rivers, and ponds, shaping habitats, vegetation, and ecosystem processes. Shifts in inundation can signal environmental change and affect carbon storage and biodiversity."
@@ -75,6 +76,7 @@
     },
     "tree-cover-change": {
       "title": "Tree cover change",
+      "description": "<p>Tree cover in the area has changed between 1984 and 2022. Currently, <b>{total_treed_area}</b> km² of the area is treed. Since 1984, <b>{newly_treed_area}</b> km² has gained treed cover while <b>{was_treed_area}</b> km² of tree cover was lost, resulting in a net change of <b>{changed_treed_area}</b> km².</p>",
       "more-info": {
         "title": "Why is tree cover change important?",
         "description": "Trees provide important ecosystem services, including carbon storage, habitat, soil stabilization, and water regulation. Changes in tree cover can alter these functions and signal broader environmental shifts."
