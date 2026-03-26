@@ -6,6 +6,7 @@ import {
   useMapAnalysis,
   useMapStatus,
 } from "@/app/[locale]/url-store";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import Analysis from "@/containers/map-sidebar/analysis";
 import Main from "@/containers/map-sidebar/main";
 import { cn } from "@/lib/utils";
@@ -52,12 +53,14 @@ const MapSidebar = () => {
       <div
         className={cn(
           "h-full shrink-0 overflow-hidden transition-[width,opacity,padding] duration-300 ease-in-out",
-          isHidden ? "w-0" : "w-[476px]",
+          isHidden ? "w-0" : "w-[600px]",
         )}
       >
-        <div className="h-full">
-          {mapStatus === MapStatus.analysis ? <Analysis /> : <Main />}
-        </div>
+        <ScrollArea className="h-full">
+          <div className="px-6">
+            {mapStatus === MapStatus.analysis ? <Analysis /> : <Main />}
+          </div>
+        </ScrollArea>
       </div>
       <div
         className={cn(
