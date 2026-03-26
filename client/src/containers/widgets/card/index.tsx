@@ -26,7 +26,7 @@ const WidgetCard: FC<WidgetCardProps> = ({
   onAddToMapButtonClick,
 }) => {
   return (
-    <Card id={id}>
+    <Card id={id} className="gap-2">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2">

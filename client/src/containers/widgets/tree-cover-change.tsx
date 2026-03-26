@@ -1,6 +1,7 @@
 import { TreesIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
+import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
 import type { WidgetCardBaseProps } from "@/containers/widgets/types";
 
@@ -20,7 +21,11 @@ const TreeCoverChange: FC<WidgetCardBaseProps> = ({ id }) => {
       onDowloadButtonClick={() => {}}
       onInfoButtonClick={() => {}}
       onAddToMapButtonClick={() => {}}
-    ></WidgetCard>
+    >
+      <MoreInfoTooltip title={t("more-info.title")}>
+        {t("more-info.description")}
+      </MoreInfoTooltip>
+    </WidgetCard>
   );
 };
 
