@@ -23,7 +23,7 @@ function AnalysisPanel({ onLeaveRequest }: { onLeaveRequest: () => void }) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <header className="min-w-0 shrink-0 space-y-4 mb-4">
+      <header className="min-w-0 shrink-0 space-y-4 mb-4 px-6">
         <div className="flex items-center justify-between gap-2">
           <h1 className="text-4xl font-normal leading-10">{t("title")}</h1>
           <ShareButton size="xl" className="font-bold" />
@@ -47,11 +47,11 @@ function AnalysisPanel({ onLeaveRequest }: { onLeaveRequest: () => void }) {
         </RichText>
       </header>
 
-      <div className="shrink-0">
+      <div className="shrink-0 px-6">
         <AnalysisNavigation />
       </div>
 
-      <ScrollArea className="min-h-0 flex-1" viewportRef={viewportRef}>
+      <ScrollArea className="min-h-0 flex-1 px-6" viewportRef={viewportRef}>
         <section className="space-y-4">
           {WIDGETS.map((widget) => (
             <WidgetSection
