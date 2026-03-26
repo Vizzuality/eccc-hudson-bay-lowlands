@@ -56,7 +56,7 @@ describe("@containers/map-sidebar/analysis", () => {
     renderAnalysis();
 
     expect(
-      screen.getByRole("button", { name: messages.widgets.share.title }),
+      screen.getByText(messages.widgets.share.description),
     ).toBeInTheDocument();
   });
 

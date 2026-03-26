@@ -4,16 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 const ShareWidget = () => {
-  const t = useTranslations("widgets.share");
+  const t = useTranslations();
   return (
     <Card>
       <CardContent className="flex items-center gap-6">
         <div>Icon</div>
         <div className="space-y-2">
-          <p className="text-sm">{t("description")}</p>
+          <p className="text-sm">{t("widgets.share.description")}</p>
           <Button variant="ghost" className="px-0!">
             <Share2Icon />
-            {t("title")}
+            {t("share.title")}
           </Button>
         </div>
       </CardContent>
