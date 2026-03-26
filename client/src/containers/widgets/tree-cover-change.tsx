@@ -1,6 +1,7 @@
 import { TreesIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
+import RichText from "@/components/ui/rich-text";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
 import type { WidgetCardBaseProps } from "@/containers/widgets/types";
@@ -25,6 +26,17 @@ const TreeCoverChange: FC<WidgetCardBaseProps> = ({ id }) => {
       <MoreInfoTooltip title={t("more-info.title")}>
         {t("more-info.description")}
       </MoreInfoTooltip>
+      <RichText className="text-muted-foreground text-sm font-medium leading-5">
+        {(tags) =>
+          t.rich("description", {
+            ...tags,
+            total_treed_area: 100,
+            newly_treed_area: 50,
+            was_treed_area: 30,
+            changed_treed_area: 20,
+          })
+        }
+      </RichText>
     </WidgetCard>
   );
 };

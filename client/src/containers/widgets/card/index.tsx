@@ -77,7 +77,7 @@ const WidgetCard: FC<WidgetCardProps> = ({
         </CardTitle>
         {!!description && <CardDescription>{description}</CardDescription>}
       </CardHeader>
-      <CardContent>{children}</CardContent>
+      <CardContent className="space-y-2">{children}</CardContent>
     </Card>
   );
 };
