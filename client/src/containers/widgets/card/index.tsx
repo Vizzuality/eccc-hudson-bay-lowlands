@@ -13,18 +13,10 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-interface WidgetCardProps {
-  title: string;
-  description?: React.ReactNode;
-  icon: React.ReactNode;
-  children?: React.ReactNode;
-  onDowloadButtonClick: () => void;
-  onInfoButtonClick: () => void;
-  onAddToMapButtonClick: () => void;
-}
+import type { WidgetCardProps } from "@/containers/widgets/types";
 
 const WidgetCard: FC<WidgetCardProps> = ({
+  id,
   title,
   description,
   children,
@@ -34,7 +26,7 @@ const WidgetCard: FC<WidgetCardProps> = ({
   onAddToMapButtonClick,
 }) => {
   return (
-    <Card>
+    <Card id={id}>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2">

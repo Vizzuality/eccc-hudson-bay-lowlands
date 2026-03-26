@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import { useDataLayersSearch, useLayerIds } from "@/app/[locale]/url-store";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import DataLayersBottomBar from "@/containers/data-layers/bottom-bar";
 import CategorySelector from "@/containers/data-layers/category-selector";
 import DataLayersList from "@/containers/data-layers/list";
@@ -22,26 +23,28 @@ const Main = () => {
   const { layerIds, setLayerIds } = useLayerIds();
 
   return (
-    <div className="space-y-4">
-      <header className="min-w-0">
-        <h1 className="text-4xl mb-5">{t("title")}</h1>
-        <p className="text-muted-foreground">{t("description")}</p>
-      </header>
-      <DataLayersSearch />
-      <CategorySelector
-        items={categoryItems}
-        isLoading={isCategoriesLoading}
-        totalLayerCount={totalLayerCount}
-      />
-      <DataLayersList
-        datasets={filteredDatasets ?? []}
-        isLoading={isFilteredDatasetsLoading}
-      />
-      <DataLayersBottomBar
-        activeDataCount={layerIds.length}
-        onRemoveAll={() => setLayerIds([])}
-      />
-    </div>
+    <ScrollArea className="min-h-0 flex-1">
+      <div className="space-y-4">
+        <header className="min-w-0">
+          <h1 className="text-4xl mb-5">{t("title")}</h1>
+          <p className="text-muted-foreground">{t("description")}</p>
+        </header>
+        <DataLayersSearch />
+        <CategorySelector
+          items={categoryItems}
+          isLoading={isCategoriesLoading}
+          totalLayerCount={totalLayerCount}
+        />
+        <DataLayersList
+          datasets={filteredDatasets ?? []}
+          isLoading={isFilteredDatasetsLoading}
+        />
+        <DataLayersBottomBar
+          activeDataCount={layerIds.length}
+          onRemoveAll={() => setLayerIds([])}
+        />
+      </div>
+    </ScrollArea>
   );
 };
 

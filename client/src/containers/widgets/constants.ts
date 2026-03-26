@@ -6,10 +6,10 @@ import TreeCoverChange from "@/containers/widgets/tree-cover-change";
 import WaterDynamics from "@/containers/widgets/water-dynamics";
 
 export const WIDGETS = [
-  { id: "carbon_peatlands", component: CarbonPeatland },
-  { id: "water_dynamics", component: WaterDynamics },
-  { id: "flood_susceptibility", component: FloodSusceptibility },
-  { id: "snow_dynamics", component: SnowDynamics },
-  { id: "tree_cover_change", component: TreeCoverChange },
-  { id: "ecosystem_types", component: EcosystemTypes },
+  { id: "carbon-peatlands", component: CarbonPeatland },
+  { id: "water-dynamics", component: WaterDynamics },
+  { id: "flood-susceptibility", component: FloodSusceptibility },
+  { id: "snow-dynamics", component: SnowDynamics },
+  { id: "tree-cover-change", component: TreeCoverChange },
+  { id: "ecosystem-types", component: EcosystemTypes },
 ];
