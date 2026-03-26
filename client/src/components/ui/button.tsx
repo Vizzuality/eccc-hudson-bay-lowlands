@@ -20,6 +20,7 @@ const buttonVariants = cva(
         link: "text-accent font-bold h-auto !p-0 text-2xs leading-5",
         menuItem:
           "text-muted-foreground hover:text-accent focus:text-accent-foreground font-semibold aria-[current=page]:cursor-default aria-[current=page]:text-accent-foreground aria-[current=page]:font-bold px-3 py-1.5 text-xs",
+        clean: "p-0! normal-case",
       },
       size: {
         default: "h-10 px-6 py-2 has-[>svg]:px-3",
