@@ -1,13 +1,16 @@
 import { AtomIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
+import type { WidgetCardBaseProps } from "@/containers/widgets/types";
 
-const CarbonPeatland = () => {
+const CarbonPeatland: FC<WidgetCardBaseProps> = ({ id }) => {
   const t = useTranslations("widgets.carbon-peatlands");
 
   return (
     <WidgetCard
+      id={id}
       title={t("title")}
       description={
         <RichText>

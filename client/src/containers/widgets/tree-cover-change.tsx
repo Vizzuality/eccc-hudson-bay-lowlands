@@ -1,12 +1,15 @@
 import { TreesIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import type { FC } from "react";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
+import type { WidgetCardBaseProps } from "@/containers/widgets/types";
 
-const TreeCoverChange = () => {
+const TreeCoverChange: FC<WidgetCardBaseProps> = ({ id }) => {
   const t = useTranslations("widgets.tree-cover-change");
 
   return (
     <WidgetCard
+      id={id}
       title={t("title")}
       icon={
         <WidgetCardIcon

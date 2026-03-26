@@ -6,7 +6,6 @@ import {
   useMapAnalysis,
   useMapStatus,
 } from "@/app/[locale]/url-store";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import Analysis from "@/containers/map-sidebar/analysis";
 import Main from "@/containers/map-sidebar/main";
 import { cn } from "@/lib/utils";
@@ -15,6 +14,7 @@ const MapSidebar = () => {
   const { mapStatus } = useMapStatus();
   const { datasets } = useMapAnalysis();
   const sidebarRef = useRef<HTMLDivElement>(null);
+
   const { default: mapRef } = useMap();
 
   const isHidden = mapStatus === MapStatus.upload;
@@ -56,11 +56,9 @@ const MapSidebar = () => {
           isHidden ? "w-0" : "w-[600px]",
         )}
       >
-        <ScrollArea className="h-full">
-          <div className="px-6">
-            {mapStatus === MapStatus.analysis ? <Analysis /> : <Main />}
-          </div>
-        </ScrollArea>
+        <div className="flex h-full min-h-0 flex-col px-6">
+          {mapStatus === MapStatus.analysis ? <Analysis /> : <Main />}
+        </div>
       </div>
       <div
         className={cn(

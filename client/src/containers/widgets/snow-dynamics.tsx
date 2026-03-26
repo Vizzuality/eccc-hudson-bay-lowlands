@@ -1,7 +1,9 @@
 import { SnowflakeIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
+import type { WidgetCardBaseProps } from "@/containers/widgets/types";
 
 const Description = () => {
   const t = useTranslations("widgets.snow-dynamics");
@@ -19,11 +21,12 @@ const Description = () => {
   );
 };
 
-const SnowDynamics = () => {
+const SnowDynamics: FC<WidgetCardBaseProps> = ({ id }) => {
   const t = useTranslations("widgets.snow-dynamics");
 
   return (
     <WidgetCard
+      id={id}
       title={t("title")}
       description={<Description />}
       icon={
