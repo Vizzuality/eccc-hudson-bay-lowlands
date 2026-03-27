@@ -79,48 +79,6 @@ export interface Layer {
   config: LayerConfig | null;
 }
 
-export interface WidgetData {
-  peat_carbon: {
-    label: Translatable;
-    unit: string;
-    chart: { x: string; y: number }[];
-    stats: {
-      peat_depth_avg: number;
-      peat_depth_max: number;
-      carbon_total: number;
-    };
-  };
-  water_dynamics: {
-    unit: string;
-    chart: { key: string; label: Translatable; value: number }[];
-    stats: {
-      water_perm_perc: number;
-      water_ephemeral_perc: number;
-      land_perm_perc: number;
-      freq_mean: number;
-      trend_wetter_perc: number;
-      trend_drier_perc: number;
-      trend_stable_perc: number;
-    };
-  };
-  flood_susceptibility: {
-    chart: { key: string; label: Translatable; value: number }[];
-    stats: {
-      fsi_avg: number;
-      fsi_low_perc: string;
-      fsi_moderate_perc: string;
-      fsi_high_perc: string;
-    };
-  };
-  snow_dynamics: {
-    chart: { key: string; label: Translatable; value: number }[];
-    stats: {
-      lengthT_mean: number;
-      endL_mean_date: number;
-    };
-  };
-}
-
 export type LayersResponse = ApiResponse<Layer>;
 export type LayerResponse = Layer;
 
