@@ -41,7 +41,7 @@
     "description": "<p>You have selected a region of <b>{aoi_size} km²</b> within the HJBL. The following sections summarize its main environmental characteristics based on carbon storage, hydrology, seasonal snow, flood risk, tree cover dynamics, ecosystem composition, and species diversity.</p>"
   },
   "widgets": {
-    "carbon-peatlands": {
+    "peat_carbon": {
       "title": "Carbon and Peatlands",
       "description": "<p>Within your selected area, peat depth averages <b>{peat_depth_avg} cm</b>, reaching up to <b>{peat_depth_max} cm</b>, storing about <b>{carbon_total} Mt</b> of carbon at an average density of <b>{carbon_density} kg/m²</b>.</p>",
       "more-info": {
@@ -49,7 +49,7 @@
         "description": "Peat soils shape the landscape and act as long-term carbon reservoirs, influencing water flow, vegetation, and habitat. Disturbance can release this stored carbon, reducing their capacity to support climate regulation."
       }
     },
-    "water-dynamics": {
+    "water_dynamics": {
       "title": "Water Dynamics",
       "description": "<p>Long-term observations (1984-2023) indicate that, on average, <b>{water_perm_perc}%</b> of the area is permanent water, <b>{water_ephemeral_perc}%</b> is ephemeral water, and <b>{land_perm_perc}%</b> is permanently dry land, with a mean inundation frequency of <b>{freq_mean}%</b>.</p>",
       "description-2": "<p>Inter-annual trends highlight areas where wetlands are expanding, contracting, or remaining stable, revealing shifts in hydrological dynamics across the landscape. Across the selected area, <b>{trend_wetter_perc}%</b> shows a tendency toward increased water presence, <b>{trend_drier_perc}%</b> toward decreased water presence, and <b>{trend_stable_perc}%</b> remains largely unchanged.</p>",
@@ -58,7 +58,7 @@
         "description": "Surface water influences wetlands, rivers, and ponds, shaping habitats, vegetation, and ecosystem processes. Shifts in inundation can signal environmental change and affect carbon storage and biodiversity."
       }
     },
-    "flood-susceptibility": {
+    "flood_susceptibility": {
       "title": "Flood susceptibility",
       "description": "<p>The flood susceptibility index identifies which parts of the landscape are more vulnerable, with an average value of <b>{fsi_avg}</b> (0–100) and approximately <b>{fsi_low_perc}%</b> of the area at low risk, <b>{fsi_moderate_perc}%</b> at moderate risk, and <b>{fsi_high_perc}%</b> at high risk.</p>",
       "more-info": {
@@ -66,7 +66,7 @@
         "description": "Wetlands and rivers in the area also help regulate floods and maintain habitat and landscape resilience. Understanding where flooding is more likely supports climate adaptation and informed land-use planning."
       }
     },
-    "snow-dynamics": {
+    "snow_dynamics": {
       "title": "Snow dynamics",
       "description": "<p>Snow cover shapes seasonal conditions and ecosystem processes. For the winter of <b>{selected_winter}</b>, snow persisted for an average of <b>{lengthT_mean} days</b>, typically ending around <b>{endL_mean_date}</b>.</p>",
       "more-info": {
@@ -74,7 +74,7 @@
         "description": "The timing and duration of snow influence spring runoff, soil moisture, and the growing season, affecting vegetation and wetland dynamics."
       }
     },
-    "tree-cover-change": {
+    "tree_cover_change": {
       "title": "Tree cover change",
       "description": "<p>Tree cover in the area has changed between 1984 and 2022. Currently, <b>{total_treed_area}</b> km² of the area is treed. Since 1984, <b>{newly_treed_area}</b> km² has gained treed cover while <b>{was_treed_area}</b> km² of tree cover was lost, resulting in a net change of <b>{changed_treed_area}</b> km².</p>",
       "more-info": {
@@ -82,7 +82,7 @@
         "description": "Trees provide important ecosystem services, including carbon storage, habitat, soil stabilization, and water regulation. Changes in tree cover can alter these functions and signal broader environmental shifts."
       }
     },
-    "ecosystem-types": {
+    "ecosystem_types": {
       "title": "Ecosystem types",
       "description": "<p>The selected area contains <b>{ecosystem_count}</b> ecosystem types and is predominantly <b>{dominant_ecosystem} ({dominant_ecosystem_perc}%)</b>. This composition reflects the area’s habitat diversity and influences patterns in carbon storage, water dynamics, and vegetation.</p>",
       "more-info": {

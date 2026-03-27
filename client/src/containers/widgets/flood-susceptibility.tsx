@@ -2,6 +2,7 @@ import { WavesIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
+import type { FloodSusceptibilityStats } from "@/containers/analysis/types";
 import DonutChart from "@/containers/charts/donut-chart";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
@@ -25,8 +26,13 @@ const mockData = [
     value: 50,
   },
 ];
-const FloodSusceptibility: FC<WidgetCardBaseProps> = ({ id }) => {
-  const t = useTranslations("widgets.flood-susceptibility");
+
+interface FloodSusceptibilityProps extends WidgetCardBaseProps {
+  stats: FloodSusceptibilityStats;
+}
+
+const FloodSusceptibility: FC<FloodSusceptibilityProps> = ({ id, stats }) => {
+  const t = useTranslations("widgets.flood_susceptibility");
   const { getTranslation } = useApiTranslation();
   const data = mockData.map((item) => ({
     key: item.key,
@@ -69,10 +75,7 @@ const FloodSusceptibility: FC<WidgetCardBaseProps> = ({ id }) => {
             {(tags) =>
               t.rich("description", {
                 ...tags,
-                fsi_avg: 50,
-                fsi_low_perc: 20,
-                fsi_moderate_perc: 30,
-                fsi_high_perc: 50,
+                ...stats,
               })
             }
           </RichText>
