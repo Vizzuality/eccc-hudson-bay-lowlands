@@ -11,7 +11,7 @@ export interface CategoricalDataPoint {
   value: number;
 }
 
-export interface BaseWidgetData<
+export interface WidgetData<
   TChart extends TimeSeriesDataPoint | CategoricalDataPoint,
   TStats,
 > {
@@ -19,14 +19,6 @@ export interface BaseWidgetData<
   chart: TChart[];
   stats: TStats;
 }
-
-export interface LabeledWidgetData<
-  TChart extends TimeSeriesDataPoint | CategoricalDataPoint,
-  TStats,
-> extends BaseWidgetData<TChart, TStats> {
-  label: Translatable;
-}
-
 export interface PeatCarbonStats {
   peat_depth_avg: number;
   peat_depth_max: number;
@@ -62,12 +54,12 @@ export interface EcosystemTypesStats {
 }
 
 export interface AnalysisResult {
-  peat_carbon: LabeledWidgetData<TimeSeriesDataPoint, PeatCarbonStats>;
-  water_dynamics: BaseWidgetData<CategoricalDataPoint, WaterDynamicsStats>;
-  flood_susceptibility: BaseWidgetData<
+  peat_carbon: WidgetData<TimeSeriesDataPoint, PeatCarbonStats>;
+  water_dynamics: WidgetData<CategoricalDataPoint, WaterDynamicsStats>;
+  flood_susceptibility: WidgetData<
     CategoricalDataPoint,
     FloodSusceptibilityStats
   >;
-  snow_dynamics: LabeledWidgetData<TimeSeriesDataPoint, SnowDynamicsStats>;
-  ecosystem_types: BaseWidgetData<CategoricalDataPoint, EcosystemTypesStats>;
+  snow_dynamics: WidgetData<TimeSeriesDataPoint, SnowDynamicsStats>;
+  ecosystem_types: WidgetData<CategoricalDataPoint, EcosystemTypesStats>;
 }
