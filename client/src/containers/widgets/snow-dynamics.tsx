@@ -2,9 +2,29 @@ import { SnowflakeIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
+import LineChart from "@/containers/charts/line-chart";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
 import type { WidgetCardBaseProps } from "@/containers/widgets/types";
+
+const mockData = [
+  { x: "2021", y: 10 },
+  { x: "2022", y: 14 },
+  { x: "2023", y: 18 },
+  { x: "2024", y: 22 },
+  { x: "2025", y: 26 },
+  { x: "2027", y: 30 },
+  { x: "2028", y: 34 },
+  { x: "2029", y: 38 },
+  { x: "2030", y: 42 },
+];
+
+const chartConfig = {
+  y: {
+    label: "Mean Snow Duration per Winter (days)",
+    color: "var(--color-indigo-700)",
+  },
+};
 
 const Description = () => {
   const t = useTranslations("widgets.snow-dynamics");
@@ -43,6 +63,11 @@ const SnowDynamics: FC<WidgetCardBaseProps> = ({ id }) => {
       <MoreInfoTooltip title={t("more-info.title")}>
         {t("more-info.description")}
       </MoreInfoTooltip>
+      <LineChart
+        title="Mean Snow Duration per Winter (days)"
+        data={mockData}
+        chartConfig={chartConfig}
+      />
     </WidgetCard>
   );
 };
