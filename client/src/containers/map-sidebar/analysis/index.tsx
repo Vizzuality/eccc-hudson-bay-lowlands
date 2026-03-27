@@ -11,9 +11,9 @@ import {
   useAnalysisViewportRef,
 } from "@/containers/analysis/analysis-context";
 import AnalysisNavigation from "@/containers/analysis/navigation";
+import type { AnalysisResult } from "@/containers/analysis/types";
 import WidgetSection from "@/containers/analysis/widget-section";
 import CloseDialog from "@/containers/map-sidebar/analysis/close-dialog";
-import type { AnalysisResult } from "@/containers/analysis/types";
 import { mockAnalysisResult } from "@/containers/map-sidebar/analysis/mockData";
 import ShareButton from "@/containers/share-button";
 import Widget from "@/containers/widgets";
