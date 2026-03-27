@@ -11,10 +11,12 @@ import {
   useAnalysisViewportRef,
 } from "@/containers/analysis/analysis-context";
 import AnalysisNavigation from "@/containers/analysis/navigation";
+import type { AnalysisResult } from "@/containers/analysis/types";
 import WidgetSection from "@/containers/analysis/widget-section";
 import CloseDialog from "@/containers/map-sidebar/analysis/close-dialog";
+import { mockAnalysisResult } from "@/containers/map-sidebar/analysis/mockData";
 import ShareButton from "@/containers/share-button";
-import { WIDGETS } from "@/containers/widgets/constants";
+import Widget from "@/containers/widgets";
 import ShareWidget from "@/containers/widgets/share";
 
 function AnalysisPanel({ onLeaveRequest }: { onLeaveRequest: () => void }) {
@@ -53,14 +55,13 @@ function AnalysisPanel({ onLeaveRequest }: { onLeaveRequest: () => void }) {
 
       <ScrollArea className="min-h-0 flex-1 px-6" viewportRef={viewportRef}>
         <section className="space-y-4">
-          {WIDGETS.map((widget) => (
-            <WidgetSection
-              key={`analysis-widget-section-${widget.id}`}
-              id={widget.id}
-            >
-              <widget.component id={widget.id} />
-            </WidgetSection>
-          ))}
+          {(Object.keys(mockAnalysisResult) as (keyof AnalysisResult)[]).map(
+            (id) => (
+              <WidgetSection key={`analysis-widget-section-${id}`} id={id}>
+                <Widget id={id} data={mockAnalysisResult} />
+              </WidgetSection>
+            ),
+          )}
           <ShareWidget />
         </section>
       </ScrollArea>

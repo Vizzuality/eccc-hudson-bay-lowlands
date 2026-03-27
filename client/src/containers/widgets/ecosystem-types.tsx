@@ -2,6 +2,7 @@ import { GlobeIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
+import type { EcosystemTypesStats } from "@/containers/analysis/types";
 import TreeMap from "@/containers/charts/tree-map";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
@@ -44,8 +45,13 @@ const chartConfig = {
     color: "var(--color-green-800)",
   },
 };
-const EcosystemTypes: FC<WidgetCardBaseProps> = ({ id }) => {
-  const t = useTranslations("widgets.ecosystem-types");
+
+interface EcosystemTypesProps extends WidgetCardBaseProps {
+  stats: EcosystemTypesStats;
+}
+
+const EcosystemTypes: FC<EcosystemTypesProps> = ({ id, stats }) => {
+  const t = useTranslations("widgets.ecosystem_types");
   const { getTranslation } = useApiTranslation();
   const data = mockData.map((item) => ({
     key: item.key,
@@ -63,9 +69,7 @@ const EcosystemTypes: FC<WidgetCardBaseProps> = ({ id }) => {
           {(tags) =>
             t.rich("description", {
               ...tags,
-              ecosystem_count: 10,
-              dominant_ecosystem: "Forest",
-              dominant_ecosystem_perc: 50,
+              ...stats,
             })
           }
         </RichText>

@@ -8,6 +8,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import ChartTitle from "@/containers/charts/title";
 
 const seriesKey = "y" as const;
 
@@ -24,9 +25,7 @@ const VerticalBarChart: FC<VerticalBarChartProps> = ({
 }) => {
   return (
     <section className="space-y-2">
-      <h3 className="text-xs font-bold leading-4 text-muted-foreground uppercase">
-        {title}
-      </h3>
+      <ChartTitle>{title}</ChartTitle>
       <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
         <BarChart accessibilityLayer data={data} margin={{ left: -20 }}>
           <CartesianGrid vertical={false} strokeDasharray="4 4" />

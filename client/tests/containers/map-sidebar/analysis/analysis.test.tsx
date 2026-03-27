@@ -4,7 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Analysis from "@/containers/map-sidebar/analysis";
-import { WIDGETS } from "@/containers/widgets/constants";
+import { mockAnalysisResult } from "@/containers/map-sidebar/analysis/mockData";
 import messages from "@/i18n/messages/en.json";
 
 const mockPush = vi.fn();
@@ -43,7 +43,9 @@ describe("@containers/map-sidebar/analysis", () => {
       Object.keys(messages.widgets) as Array<keyof typeof messages.widgets>
     ).filter((key) => key !== "share");
 
-    expect(widgetNamespaces).toHaveLength(WIDGETS.length);
+    expect(widgetNamespaces).toHaveLength(
+      Object.keys(mockAnalysisResult).length,
+    );
 
     for (const key of widgetNamespaces) {
       expect(
