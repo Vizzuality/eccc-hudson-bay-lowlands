@@ -7,6 +7,7 @@ export interface WidgetCardProps extends WidgetCardBaseProps {
   description?: React.ReactNode;
   icon: React.ReactNode;
   children?: React.ReactNode;
+  className?: string;
   onDowloadButtonClick: () => void;
   onInfoButtonClick: () => void;
   onAddToMapButtonClick: () => void;

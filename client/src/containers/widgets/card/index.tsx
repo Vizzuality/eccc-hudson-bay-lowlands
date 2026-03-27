@@ -14,6 +14,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { WidgetCardProps } from "@/containers/widgets/types";
+import { cn } from "@/lib/utils";
 
 const WidgetCard: FC<WidgetCardProps> = ({
   id,
@@ -21,6 +22,7 @@ const WidgetCard: FC<WidgetCardProps> = ({
   description,
   children,
   icon,
+  className,
   onDowloadButtonClick,
   onInfoButtonClick,
   onAddToMapButtonClick,
@@ -77,7 +79,9 @@ const WidgetCard: FC<WidgetCardProps> = ({
         </CardTitle>
         {!!description && <CardDescription>{description}</CardDescription>}
       </CardHeader>
-      <CardContent className="space-y-2">{children}</CardContent>
+      <CardContent className={cn("space-y-2", className)}>
+        {children}
+      </CardContent>
     </Card>
   );
 };
