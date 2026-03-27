@@ -2,6 +2,7 @@ import { SnowflakeIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
+import type { SnowDynamicsStats } from "@/containers/analysis/types";
 import LineChart from "@/containers/charts/line-chart";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
@@ -26,30 +27,32 @@ const chartConfig = {
   },
 };
 
-const Description = () => {
-  const t = useTranslations("widgets.snow-dynamics");
+const Description = ({ stats }: { stats: SnowDynamicsStats }) => {
+  const t = useTranslations("widgets.snow_dynamics");
   return (
     <RichText>
       {(tags) =>
         t.rich("description", {
           ...tags,
-          selected_winter: 2021,
-          lengthT_mean: 100,
-          endL_mean_date: 2021,
+          ...stats,
         })
       }
     </RichText>
   );
 };
 
-const SnowDynamics: FC<WidgetCardBaseProps> = ({ id }) => {
-  const t = useTranslations("widgets.snow-dynamics");
+interface SnowDynamicsProps extends WidgetCardBaseProps {
+  stats: SnowDynamicsStats;
+}
+
+const SnowDynamics: FC<SnowDynamicsProps> = ({ id, stats }) => {
+  const t = useTranslations("widgets.snow_dynamics");
 
   return (
     <WidgetCard
       id={id}
       title={t("title")}
-      description={<Description />}
+      description={<Description stats={stats} />}
       icon={
         <WidgetCardIcon
           icon={<SnowflakeIcon className="size-5 text-indigo-700" />}

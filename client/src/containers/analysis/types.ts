@@ -23,6 +23,7 @@ export interface PeatCarbonStats {
   peat_depth_avg: number;
   peat_depth_max: number;
   carbon_total: number;
+  carbon_density: number;
 }
 
 export interface WaterDynamicsStats {
@@ -37,20 +38,28 @@ export interface WaterDynamicsStats {
 
 export interface FloodSusceptibilityStats {
   fsi_avg: number;
-  fsi_low_perc: string;
-  fsi_moderate_perc: string;
-  fsi_high_perc: string;
+  fsi_low_perc: number;
+  fsi_moderate_perc: number;
+  fsi_high_perc: number;
 }
 
 export interface SnowDynamicsStats {
+  selected_winter: string;
   lengthT_mean: number;
-  endL_mean_date: number;
+  endL_mean_date: string;
 }
 
 export interface EcosystemTypesStats {
   ecosystem_count: number;
   dominant_ecosystem: string;
   dominant_ecosystem_perc: number;
+}
+
+export interface TreeCoverChangeStats {
+  total_treed_area: number;
+  newly_treed_area: number;
+  was_treed_area: number;
+  changed_treed_area: number;
 }
 
 export interface AnalysisResult {
@@ -61,5 +70,6 @@ export interface AnalysisResult {
     FloodSusceptibilityStats
   >;
   snow_dynamics: WidgetData<TimeSeriesDataPoint, SnowDynamicsStats>;
+  tree_cover_change: WidgetData<CategoricalDataPoint, TreeCoverChangeStats>;
   ecosystem_types: WidgetData<CategoricalDataPoint, EcosystemTypesStats>;
 }

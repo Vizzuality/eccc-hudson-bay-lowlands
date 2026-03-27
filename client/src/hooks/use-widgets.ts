@@ -1,11 +1,11 @@
 import { useTranslations } from "next-intl";
-import { WIDGETS } from "@/containers/widgets/constants";
+import { mockAnalysisResult } from "@/containers/map-sidebar/analysis/mockData";
 
 export function useWidgets() {
   const t = useTranslations();
 
-  return WIDGETS.map((widget) => ({
-    id: widget.id,
-    title: t(`widgets.${widget.id}.title`),
+  return Object.keys(mockAnalysisResult).map((id) => ({
+    id,
+    title: t(`widgets.${id}.title`),
   }));
 }

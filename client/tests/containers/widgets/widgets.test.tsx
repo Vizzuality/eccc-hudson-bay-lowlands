@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import type { ReactElement } from "react";
 import { describe, expect, it } from "vitest";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { mockAnalysisResult } from "@/containers/map-sidebar/analysis/mockData";
 import CarbonPeatland from "@/containers/widgets/carbon-peatland";
 import EcosystemTypes from "@/containers/widgets/ecosystem-types";
 import FloodSusceptibility from "@/containers/widgets/flood-susceptibility";
@@ -21,20 +22,69 @@ const renderWithProviders = (ui: ReactElement) =>
   );
 
 const widgetCardComponents = [
-  { name: "CarbonPeatland", Component: CarbonPeatland },
-  { name: "WaterDynamics", Component: WaterDynamics },
-  { name: "FloodSusceptibility", Component: FloodSusceptibility },
-  { name: "SnowDynamics", Component: SnowDynamics },
-  { name: "TreeCoverChange", Component: TreeCoverChange },
-  { name: "EcosystemTypes", Component: EcosystemTypes },
+  {
+    name: "CarbonPeatland",
+    element: (
+      <CarbonPeatland
+        id="peat_carbon"
+        stats={mockAnalysisResult.peat_carbon.stats}
+      />
+    ),
+  },
+  {
+    name: "WaterDynamics",
+    element: (
+      <WaterDynamics
+        id="water_dynamics"
+        unit={mockAnalysisResult.water_dynamics.unit}
+        stats={mockAnalysisResult.water_dynamics.stats}
+      />
+    ),
+  },
+  {
+    name: "FloodSusceptibility",
+    element: (
+      <FloodSusceptibility
+        id="flood_susceptibility"
+        stats={mockAnalysisResult.flood_susceptibility.stats}
+      />
+    ),
+  },
+  {
+    name: "SnowDynamics",
+    element: (
+      <SnowDynamics
+        id="snow_dynamics"
+        stats={mockAnalysisResult.snow_dynamics.stats}
+      />
+    ),
+  },
+  {
+    name: "TreeCoverChange",
+    element: (
+      <TreeCoverChange
+        id="tree_cover_change"
+        stats={mockAnalysisResult.tree_cover_change.stats}
+      />
+    ),
+  },
+  {
+    name: "EcosystemTypes",
+    element: (
+      <EcosystemTypes
+        id="ecosystem_types"
+        stats={mockAnalysisResult.ecosystem_types.stats}
+      />
+    ),
+  },
 ] as const;
 
 describe("@containers/widgets", () => {
   it.each(widgetCardComponents)(
     "$name invokes WidgetCard action handlers when buttons are clicked",
-    async ({ Component }) => {
+    async ({ element }) => {
       const user = userEvent.setup();
-      renderWithProviders(<Component />);
+      renderWithProviders(element);
 
       await user.click(screen.getByRole("button", { name: /download image/i }));
       await user.click(screen.getByRole("button", { name: /more info/i }));
@@ -46,7 +96,7 @@ describe("@containers/widgets", () => {
     renderWithProviders(<ShareWidget />);
 
     expect(
-      screen.getByRole("button", { name: messages.widgets.share.title }),
+      screen.getByRole("button", { name: messages.share.title }),
     ).toBeInTheDocument();
   });
 });

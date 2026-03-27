@@ -2,7 +2,9 @@ import { DropletsIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
+import type { WaterDynamicsStats } from "@/containers/analysis/types";
 import DonutChart from "@/containers/charts/donut-chart";
+import Highlight from "@/containers/highlight";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
 import type { WidgetCardBaseProps } from "@/containers/widgets/types";
@@ -25,8 +27,13 @@ const mockData = [
   },
 ];
 
-const WaterDynamics: FC<WidgetCardBaseProps> = ({ id }) => {
-  const t = useTranslations("widgets.water-dynamics");
+interface WaterDynamicsProps extends WidgetCardBaseProps {
+  unit: string;
+  stats: WaterDynamicsStats;
+}
+
+const WaterDynamics: FC<WaterDynamicsProps> = ({ id, unit, stats }) => {
+  const t = useTranslations("widgets.water_dynamics");
   const { getTranslation } = useApiTranslation();
   const data = Object.entries(mockData[0]).map(([key, value]) => ({
     key,
@@ -82,15 +89,27 @@ const WaterDynamics: FC<WidgetCardBaseProps> = ({ id }) => {
             {(tags) =>
               t.rich("description-2", {
                 ...tags,
-                trend_wetter_perc: 10,
-                trend_drier_perc: 20,
-                trend_stable_perc: 70,
+                ...stats,
               })
             }
           </RichText>
           <MoreInfoTooltip title={t("more-info.title")}>
             {t("more-info.description")}
           </MoreInfoTooltip>
+          <div className="flex gap-2">
+            <Highlight
+              label="Wetter"
+              value={`${stats.trend_wetter_perc} ${unit}`}
+            />
+            <Highlight
+              label="Dried"
+              value={`${stats.trend_drier_perc} ${unit}`}
+            />
+            <Highlight
+              label="Stable"
+              value={`${stats.trend_stable_perc} ${unit}`}
+            />
+          </div>
         </div>
       </div>
     </WidgetCard>
