@@ -81,6 +81,9 @@ export interface Layer {
 
 export interface WidgetData {
   peat_carbon: {
+    label: Translatable;
+    unit: string;
+    chart: { x: string; y: number }[];
     stats: {
       peat_depth_avg: number;
       peat_depth_max: number;
@@ -88,6 +91,8 @@ export interface WidgetData {
     };
   };
   water_dynamics: {
+    unit: string;
+    chart: { key: string; label: Translatable; value: number }[];
     stats: {
       water_perm_perc: number;
       water_ephemeral_perc: number;
@@ -99,6 +104,7 @@ export interface WidgetData {
     };
   };
   flood_susceptibility: {
+    chart: { key: string; label: Translatable; value: number }[];
     stats: {
       fsi_avg: number;
       fsi_low_perc: string;
@@ -107,6 +113,7 @@ export interface WidgetData {
     };
   };
   snow_dynamics: {
+    chart: { key: string; label: Translatable; value: number }[];
     stats: {
       lengthT_mean: number;
       endL_mean_date: number;
