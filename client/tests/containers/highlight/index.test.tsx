@@ -10,10 +10,9 @@ describe("@containers/highlight", () => {
     expect(screen.getByText("Snow depth")).toBeInTheDocument();
   });
 
-  it("applies the className to the component", () => {
+  it("applies the className to the value element", () => {
     render(<Highlight label="Label" value="42" className="bg-red-500" />);
 
-    const highlightEl = screen.getByRole("region", { name: "Label" });
-    expect(highlightEl).toHaveClass("bg-red-500");
+    expect(screen.getByText("42")).toHaveClass("bg-red-500");
   });
 });
