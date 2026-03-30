@@ -99,15 +99,17 @@ const WaterDynamics: FC<WaterDynamicsProps> = ({ id, unit, stats }) => {
           <div className="flex gap-2">
             <Highlight
               label="Wetter"
-              value={`${stats.trend_wetter_perc} ${unit}`}
+              value={`${stats.trend_wetter_perc}${unit}`}
+              className="text-sky-600"
             />
             <Highlight
               label="Dried"
-              value={`${stats.trend_drier_perc} ${unit}`}
+              value={`${stats.trend_drier_perc}${unit}`}
+              className="text-yellow-600"
             />
             <Highlight
               label="Stable"
-              value={`${stats.trend_stable_perc} ${unit}`}
+              value={`${stats.trend_stable_perc}${unit}`}
             />
           </div>
         </div>
