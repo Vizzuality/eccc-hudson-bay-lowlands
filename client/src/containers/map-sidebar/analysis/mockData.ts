@@ -12,7 +12,7 @@ export const mockAnalysisResult: AnalysisResult = {
     },
   },
   water_dynamics: {
-    unit: "cm",
+    unit: "%",
     chart: [],
     stats: {
       water_perm_perc: 8.3,
