@@ -25,6 +25,8 @@ export default defineConfig(({ mode }) => ({
         "src/app/**/route.ts",
         "src/app/**/providers.tsx",
 
+        "src/lib/utils/**",
+
         // UI library (shadcn)
         "src/components/ui/**",
 
@@ -56,6 +58,7 @@ export default defineConfig(({ mode }) => ({
         "src/lib/query-keys.ts",
 
         // Map-coupled components (better covered by E2E)
+        "src/hooks/use-map-draw.ts",
         "src/containers/map/index.tsx",
         "src/containers/map/controls/index.tsx",
         "src/containers/map/controls/zoom/**",
