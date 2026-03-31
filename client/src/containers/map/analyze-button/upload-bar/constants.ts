@@ -1,0 +1,1 @@
+export const MAX_AREA_SIZE_SQUARE_METER = 200000000000; // 200k km²
