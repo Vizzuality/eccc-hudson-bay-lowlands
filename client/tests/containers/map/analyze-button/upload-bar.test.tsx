@@ -1,14 +1,35 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
-import { MapStatus, useMapShape, useMapStatus } from "@/app/[locale]/url-store";
+import { MapStatus, useMapStatus } from "@/app/[locale]/url-store";
 import UploadBar from "@/containers/map/analyze-button/upload-bar";
+import messages from "@/i18n/messages/en.json";
+
+const { mockUseMapDraw, mockSetAnalysisSettings } = vi.hoisted(() => ({
+  mockUseMapDraw: vi.fn(),
+  mockSetAnalysisSettings: vi.fn(),
+}));
 
 vi.mock("@/app/[locale]/url-store", () => ({
   MapStatus: { default: "default", upload: "upload", analysis: "analysis" },
   useMapStatus: vi.fn(),
-  useMapShape: vi.fn(),
 }));
+
+vi.mock("@/hooks/use-map-draw", () => ({
+  default: (props: {
+    onDrawingStart?: () => void;
+  }) => mockUseMapDraw(props),
+}));
+
+vi.mock("@/hooks/use-analysis-settings", () => ({
+  default: () => [
+    { locationType: "draw" as const, geometry: null },
+    mockSetAnalysisSettings,
+  ],
+}));
+
+const mockRedraw = vi.fn();
 
 vi.mock("@/components/ui/popover", () => ({
   PopoverContent: ({ children }: { children: React.ReactNode }) => (
@@ -16,28 +37,42 @@ vi.mock("@/components/ui/popover", () => ({
   ),
 }));
 
-const mockSetMapStatus = vi.fn();
-const mockSetMapShape = vi.fn();
+let capturedOnDrawingStart: (() => void) | undefined;
 
-function setupHooks(mapShape = false) {
+const renderUploadBar = (mapStatus = MapStatus.upload) => {
+  setupHooks(mapStatus);
+  return render(
+    <NextIntlClientProvider locale="en" messages={messages}>
+      <UploadBar />
+    </NextIntlClientProvider>,
+  );
+};
+
+function setupHooks(mapStatus = MapStatus.upload) {
   (useMapStatus as Mock).mockReturnValue({
-    mapStatus: MapStatus.upload,
-    setMapStatus: mockSetMapStatus,
+    mapStatus,
+    setMapStatus: vi.fn(),
   });
-  (useMapShape as Mock).mockReturnValue({
-    mapShape,
-    setMapShape: mockSetMapShape,
+  mockUseMapDraw.mockImplementation((props) => {
+    capturedOnDrawingStart = props?.onDrawingStart;
+    return { redraw: mockRedraw };
+  });
+}
+
+function startDrawing() {
+  act(() => {
+    capturedOnDrawingStart?.();
   });
 }
 
 describe("@containers/map/analyze-button/upload-bar", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    capturedOnDrawingStart = undefined;
   });
 
-  it("renders upload prompt when no shape is present", () => {
-    setupHooks(false);
-    render(<UploadBar />);
+  it("renders instructions and upload button when not drawing", () => {
+    renderUploadBar();
 
     expect(
       screen.getByText(/click on the map to start drawing/i),
@@ -45,19 +80,9 @@ describe("@containers/map/analyze-button/upload-bar", () => {
     expect(screen.getByRole("button", { name: /upload/i })).toBeInTheDocument();
   });
 
-  it("calls setMapShape(true) when Upload is clicked", async () => {
-    setupHooks(false);
-    const user = userEvent.setup();
-    render(<UploadBar />);
-
-    await user.click(screen.getByRole("button", { name: /upload/i }));
-
-    expect(mockSetMapShape).toHaveBeenCalledWith(true);
-  });
-
-  it("renders confirm and clear controls when a shape is present", () => {
-    setupHooks(true);
-    render(<UploadBar />);
+  it("renders verify shape and clear/confirm after drawing starts", () => {
+    renderUploadBar();
+    startDrawing();
 
     expect(screen.getByText(/verify your shape/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /clear/i })).toBeInTheDocument();
@@ -66,32 +91,45 @@ describe("@containers/map/analyze-button/upload-bar", () => {
     ).toBeInTheDocument();
   });
 
-  it("hides upload prompt when a shape is present", () => {
-    setupHooks(true);
-    render(<UploadBar />);
+  it("hides the initial instructions while drawing", () => {
+    renderUploadBar();
+    startDrawing();
 
     expect(
       screen.queryByText(/click on the map to start drawing/i),
     ).not.toBeInTheDocument();
   });
 
-  it("calls setMapShape(false) when Clear is clicked", async () => {
-    setupHooks(true);
+  it("calls redraw and clears analysis geometry when Clear is clicked", async () => {
     const user = userEvent.setup();
-    render(<UploadBar />);
+    renderUploadBar();
+    startDrawing();
 
     await user.click(screen.getByRole("button", { name: /clear/i }));
 
-    expect(mockSetMapShape).toHaveBeenCalledWith(false);
+    expect(mockRedraw).toHaveBeenCalled();
+    expect(mockSetAnalysisSettings).toHaveBeenCalled();
+    const updater = mockSetAnalysisSettings.mock.calls[0][0];
+    expect(
+      updater({ locationType: "draw", geometry: { type: "Feature" } }),
+    ).toEqual(expect.objectContaining({ geometry: null }));
   });
 
-  it("transitions to analysis when Confirm is clicked", async () => {
-    setupHooks(true);
+  it("returns to instructions after Confirm is clicked", async () => {
     const user = userEvent.setup();
-    render(<UploadBar />);
+    renderUploadBar();
+    startDrawing();
 
     await user.click(screen.getByRole("button", { name: /confirm/i }));
 
-    expect(mockSetMapStatus).toHaveBeenCalledWith(MapStatus.analysis);
+    expect(
+      screen.getByText(/click on the map to start drawing/i),
+    ).toBeInTheDocument();
+  });
+
+  it("runs redraw when map status becomes default", () => {
+    renderUploadBar(MapStatus.default);
+
+    expect(mockRedraw).toHaveBeenCalled();
   });
 });
