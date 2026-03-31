@@ -17,9 +17,7 @@ vi.mock("@/app/[locale]/url-store", () => ({
 }));
 
 vi.mock("@/hooks/use-map-draw", () => ({
-  default: (props: {
-    onDrawingStart?: () => void;
-  }) => mockUseMapDraw(props),
+  default: (props: { onDrawingStart?: () => void }) => mockUseMapDraw(props),
 }));
 
 vi.mock("@/hooks/use-analysis-settings", () => ({

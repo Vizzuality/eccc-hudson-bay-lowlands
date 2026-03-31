@@ -177,8 +177,8 @@ export async function convertFilesToGeojson(
     }
   } else {
     try {
-      // @ts-expect-error
       loader = await selectLoader(fileToParse, [
+        // @ts-expect-error
         ShapefileLoader,
         KMLLoader,
         GeoJSONLoader,
