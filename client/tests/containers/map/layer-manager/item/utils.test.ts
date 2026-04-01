@@ -211,7 +211,7 @@ describe("getRasterLayerConfig", () => {
       expect(tile).toContain(`colormap=${encoded}`);
     });
 
-    it("encodes a continuous colormap as a 256-entry interpolated gradient with rescale", () => {
+    it("encodes a continuous colormap as a 128-entry interpolated gradient in interval format", () => {
       const config: LayerConfig = {
         ...baseConfig,
         colormap: [
@@ -230,18 +230,20 @@ describe("getRasterLayerConfig", () => {
       });
 
       const [tile] = (source as Record<string, unknown>).tiles as string[];
-      // Should contain rescale param
-      expect(tile).toContain("rescale=0%2C100");
-      // Should contain a 256-entry colormap object
       expect(tile).toContain("colormap=");
       expect(tile).not.toContain("colormap_name=viridis");
-      // Parse the colormap from the URL to verify it has 256 entries
+      expect(tile).not.toContain("rescale");
+      // Parse the colormap from the URL to verify it's an interval array
       const colormapMatch = tile.match(/colormap=([^&]+)/);
       expect(colormapMatch).not.toBeNull();
       const decoded = JSON.parse(decodeURIComponent(colormapMatch![1]));
-      expect(Object.keys(decoded)).toHaveLength(256);
-      expect(decoded["0"]).toEqual([0, 0, 0, 255]);
-      expect(decoded["255"]).toEqual([255, 255, 255, 255]);
+      expect(decoded).toHaveLength(128);
+      // First interval starts at 0, last interval ends at 100
+      expect(decoded[0][0][0]).toBe(0);
+      expect(decoded[127][0][1]).toBe(100);
+      // First color is black, last color is white
+      expect(decoded[0][1]).toEqual([0, 0, 0, 255]);
+      expect(decoded[127][1]).toEqual([255, 255, 255, 255]);
     });
   });
 
@@ -338,20 +340,25 @@ describe("hexToRgba", () => {
 });
 
 describe("interpolateColormap", () => {
-  it("interpolates two stops into 256 entries", () => {
+  it("interpolates two stops into 128 interval entries", () => {
     const stops: [number, string][] = [
       [0, "#000000"],
       [100, "#ffffff"],
     ];
     const result = interpolateColormap(stops);
 
-    // Returns object with string keys 0-255 and RGBA arrays
-    expect(Object.keys(result)).toHaveLength(256);
-    expect(result["0"]).toEqual([0, 0, 0, 255]);
-    expect(result["255"]).toEqual([255, 255, 255, 255]);
-    // Midpoint should be roughly [128, 128, 128, 255]
-    expect(result["128"][0]).toBeGreaterThanOrEqual(127);
-    expect(result["128"][0]).toBeLessThanOrEqual(129);
+    expect(result).toHaveLength(128);
+    // First interval starts at 0
+    expect(result[0][0][0]).toBe(0);
+    // Last interval ends at 100
+    expect(result[127][0][1]).toBe(100);
+    // First color is black
+    expect(result[0][1]).toEqual([0, 0, 0, 255]);
+    // Last color is white
+    expect(result[127][1]).toEqual([255, 255, 255, 255]);
+    // Midpoint should be roughly gray
+    expect(result[64][1][0]).toBeGreaterThanOrEqual(126);
+    expect(result[64][1][0]).toBeLessThanOrEqual(130);
   });
 
   it("interpolates three stops correctly", () => {
@@ -362,22 +369,26 @@ describe("interpolateColormap", () => {
     ];
     const result = interpolateColormap(stops);
 
-    expect(Object.keys(result)).toHaveLength(256);
-    // At value 0 (index 0): pure red
-    expect(result["0"]).toEqual([255, 0, 0, 255]);
-    // At value 100 (index 255): pure blue
-    expect(result["255"]).toEqual([0, 0, 255, 255]);
-    // At value 50 (index ~128): pure green
-    expect(result["128"][1]).toBeGreaterThanOrEqual(253);
+    expect(result).toHaveLength(128);
+    // First color is red
+    expect(result[0][1]).toEqual([255, 0, 0, 255]);
+    // Last color is blue
+    expect(result[127][1]).toEqual([0, 0, 255, 255]);
+    // Midpoint (~index 64) should be near green
+    expect(result[64][1][1]).toBeGreaterThanOrEqual(250);
   });
 
-  it("handles single stop by filling all 256 entries with that color", () => {
+  it("handles single stop by returning one interval", () => {
     const stops: [number, string][] = [[50, "#ff0000"]];
     const result = interpolateColormap(stops);
 
-    expect(Object.keys(result)).toHaveLength(256);
-    expect(result["0"]).toEqual([255, 0, 0, 255]);
-    expect(result["255"]).toEqual([255, 0, 0, 255]);
+    expect(result).toHaveLength(1);
+    expect(result[0][0]).toEqual([50, 50]);
+    expect(result[0][1]).toEqual([255, 0, 0, 255]);
+  });
+
+  it("returns empty array for empty colormap", () => {
+    expect(interpolateColormap([])).toEqual([]);
   });
 });
 
