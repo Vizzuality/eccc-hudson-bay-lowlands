@@ -40,6 +40,7 @@ const RasterLayerManagerItem = ({
     tileInfo,
     config: layer.config,
     withColormap,
+    layerType: layer.type,
   });
 
   return (

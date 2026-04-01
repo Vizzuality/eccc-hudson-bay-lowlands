@@ -42,6 +42,7 @@ describe("getRasterLayerConfig", () => {
         tileInfo,
         config: baseConfig,
         withColormap: false,
+        layerType: undefined,
       });
 
       const [tile] = (source as Record<string, unknown>).tiles as string[];
@@ -55,6 +56,7 @@ describe("getRasterLayerConfig", () => {
         tileInfo,
         config: baseConfig,
         withColormap: false,
+        layerType: undefined,
       });
 
       const [tile] = (source as Record<string, unknown>).tiles as string[];
@@ -70,6 +72,7 @@ describe("getRasterLayerConfig", () => {
         tileInfo,
         config: baseConfig,
         withColormap: false,
+        layerType: undefined,
       });
 
       const [tile] = (source as Record<string, unknown>).tiles as string[];
@@ -77,7 +80,7 @@ describe("getRasterLayerConfig", () => {
       expect(tile).not.toContain("&colormap=");
     });
 
-    it("encodes an array colormap in the tile URL when withColormap is true", () => {
+    it("encodes a categorical array colormap as a discrete dict", () => {
       const config: LayerConfig = {
         ...baseConfig,
         colormap: [
@@ -92,6 +95,7 @@ describe("getRasterLayerConfig", () => {
         tileInfo,
         config,
         withColormap: true,
+        layerType: "categorical",
       });
 
       const [tile] = (source as Record<string, unknown>).tiles as string[];
@@ -114,6 +118,7 @@ describe("getRasterLayerConfig", () => {
         tileInfo,
         config,
         withColormap: true,
+        layerType: "categorical",
       });
 
       const [tile] = (source as Record<string, unknown>).tiles as string[];
@@ -123,7 +128,7 @@ describe("getRasterLayerConfig", () => {
       expect(tile).toContain(`colormap=${encoded}`);
     });
 
-    it("converts paired-range array colormap to interval format", () => {
+    it("converts a continuous paired-range colormap to interval format", () => {
       const config: LayerConfig = {
         ...baseConfig,
         colormap: [
@@ -140,6 +145,7 @@ describe("getRasterLayerConfig", () => {
         tileInfo,
         config,
         withColormap: true,
+        layerType: "continuous",
       });
 
       const [tile] = (source as Record<string, unknown>).tiles as string[];
@@ -152,13 +158,14 @@ describe("getRasterLayerConfig", () => {
       expect(tile).not.toContain("colormap_name=viridis");
     });
 
-    it("keeps discrete format for non-paired array colormaps", () => {
+    it("converts a continuous control-point colormap to interval format", () => {
       const config: LayerConfig = {
         ...baseConfig,
         colormap: [
           [0, "#f7fbff"],
-          [50, "#6baed6"],
-          [100, "#08306b"],
+          [50, "#f7fbff"],
+          [51, "#6baed6"],
+          [100, "#6baed6"],
         ],
       };
 
@@ -168,12 +175,15 @@ describe("getRasterLayerConfig", () => {
         tileInfo,
         config,
         withColormap: true,
+        layerType: "continuous",
       });
 
       const [tile] = (source as Record<string, unknown>).tiles as string[];
-      const encoded = encodeURIComponent(
-        JSON.stringify({ "0": "#f7fbff", "50": "#6baed6", "100": "#08306b" }),
-      );
+      const expected = [
+        [[0, 50], [247, 251, 255, 255]],
+        [[51, 100], [107, 174, 214, 255]],
+      ];
+      const encoded = encodeURIComponent(JSON.stringify(expected));
       expect(tile).toContain(`colormap=${encoded}`);
     });
   });
@@ -186,6 +196,7 @@ describe("getRasterLayerConfig", () => {
         tileInfo,
         config: baseConfig,
         withColormap: false,
+        layerType: undefined,
       });
 
       const s = source as Record<string, unknown>;
@@ -200,6 +211,7 @@ describe("getRasterLayerConfig", () => {
         tileInfo,
         config: baseConfig,
         withColormap: false,
+        layerType: undefined,
       });
 
       expect((source as Record<string, unknown>).bounds).toEqual([
@@ -216,6 +228,7 @@ describe("getRasterLayerConfig", () => {
         tileInfo,
         config: baseConfig,
         withColormap: false,
+        layerType: undefined,
       });
 
       expect(styles[0].layout?.visibility).toBe("visible");
@@ -228,6 +241,7 @@ describe("getRasterLayerConfig", () => {
         tileInfo,
         config: baseConfig,
         withColormap: false,
+        layerType: undefined,
       });
 
       expect(styles[0].layout?.visibility).toBe("visible");
@@ -240,6 +254,7 @@ describe("getRasterLayerConfig", () => {
         tileInfo,
         config: baseConfig,
         withColormap: false,
+        layerType: undefined,
       });
 
       expect(styles[0].layout?.visibility).toBe("none");
