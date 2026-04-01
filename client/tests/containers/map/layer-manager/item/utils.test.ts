@@ -164,14 +164,13 @@ describe("getRasterLayerConfig", () => {
       expect(tile).not.toContain("colormap_name=viridis");
     });
 
-    it("converts a continuous control-point colormap to interval format", () => {
+    it("converts a continuous breakpoint colormap to interval format", () => {
       const config: LayerConfig = {
         ...baseConfig,
         colormap: [
           [0, "#f7fbff"],
-          [50, "#f7fbff"],
-          [51, "#6baed6"],
-          [100, "#6baed6"],
+          [50, "#6baed6"],
+          [100, "#08306b"],
         ],
       };
 
@@ -187,12 +186,16 @@ describe("getRasterLayerConfig", () => {
       const [tile] = (source as Record<string, unknown>).tiles as string[];
       const expected = [
         [
-          [0, 50],
+          [0, 49],
           [247, 251, 255, 255],
         ],
         [
-          [51, 100],
+          [50, 99],
           [107, 174, 214, 255],
+        ],
+        [
+          [100, 100],
+          [8, 48, 107, 255],
         ],
       ];
       const encoded = encodeURIComponent(JSON.stringify(expected));
