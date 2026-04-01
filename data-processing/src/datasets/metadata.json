@@ -2267,7 +2267,38 @@
                 "styles": [
                   {
                     "type": "fill",
-                    "source-layer": "Indigenous Territories",
+                    "source-layer": "4pgB_next_nld_terr_prod_source_layer",
+                    "filter": [
+                      "in",
+                      ["get", "Name"],
+                      ["literal", [
+                        "Cree",
+                        "Michif Piyii (Métis)",
+                        "Denendeh (Dënësųłinë́ Nëné)",
+                        "Anishinabewaki ᐊᓂᔑᓈᐯᐗᑭ",
+                        "Anishininiimowin (Oji-Cree)",
+                        "Eeyou Istchee",
+                        "ᐃᓕᓕᐗᔅᑭᔾ | Ililiwaskiy (Moose Cree)",
+                        "Abitibiwinni Aki",
+                        "Dënéndeh"
+                      ]]
+                    ],
+                    "layout": {
+                      "fill-sort-key": [
+                        "match",
+                        ["get", "Name"],
+                        ["Cree"], 1,
+                        ["Denendeh (Dënësųłinë́ Nëné)"], 2,
+                        ["Michif Piyii (Métis)"], 3,
+                        ["Dënéndeh"], 4,
+                        ["Anishinabewaki ᐊᓂᔑᓈᐯᐗᑭ"], 5,
+                        ["Anishininiimowin (Oji-Cree)"], 6,
+                        ["Eeyou Istchee"], 7,
+                        ["ᐃᓕᓕᐗᔅᑭᔾ | Ililiwaskiy (Moose Cree)"], 8,
+                        ["Abitibiwinni Aki"], 9,
+                        0
+                      ]
+                    },
                     "paint": {
                       "fill-color": [
                         "match",
@@ -2311,7 +2342,7 @@
                           "Dënéndeh"
                         ],
                         "rgba(155, 153, 105, 0.85)",
-                        "rgba(234, 230, 230, 0.85)"
+                        "rgba(0, 0, 0, 0)"
                       ],
                       "fill-outline-color": "rgba(0, 0, 0, 0.2)"
                     }

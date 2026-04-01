@@ -38,6 +38,7 @@ export const getVectorLayerConfig = ({
       styles: styles.map((style) => ({
         ...style,
         layout: {
+          ...style.layout,
           visibility: visibility ? "visible" : "none",
         },
       })),
@@ -88,6 +89,7 @@ export const getRasterLayerConfig = ({
       styles: styles.map((style) => ({
         ...style,
         layout: {
+          ...style.layout,
           visibility: visibility ? "visible" : "none",
         },
       })),
