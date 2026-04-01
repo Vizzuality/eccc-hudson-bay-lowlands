@@ -3,10 +3,51 @@ import { env } from "@/env";
 import { type Config, parseConfig } from "@/lib/json-converter";
 import type { LayerConfig, TileInfoResponse } from "@/types";
 
+type Rgba = [number, number, number, number];
+
+export const hexToRgba = (hex: string): Rgba => {
+  const h = hex.replace("#", "");
+  return [
+    parseInt(h.substring(0, 2), 16),
+    parseInt(h.substring(2, 4), 16),
+    parseInt(h.substring(4, 6), 16),
+    255,
+  ];
+};
+
+/**
+ * Detect paired-range colormaps where consecutive pairs share the same color
+ * to define value ranges (e.g. [[0,"#blue"],[100,"#blue"],[101,"#green"],[200,"#green"]]).
+ */
+const isPairedRangeColormap = (colormap: [number, string][]): boolean => {
+  if (colormap.length < 2 || colormap.length % 2 !== 0) return false;
+  for (let i = 0; i < colormap.length; i += 2) {
+    if (colormap[i][1] !== colormap[i + 1][1]) return false;
+  }
+  return true;
+};
+
+const toIntervalColormap = (
+  colormap: [number, string][],
+): [[number, number], Rgba][] => {
+  const intervals: [[number, number], Rgba][] = [];
+  for (let i = 0; i < colormap.length; i += 2) {
+    intervals.push([
+      [colormap[i][0], colormap[i + 1][0]],
+      hexToRgba(colormap[i][1]),
+    ]);
+  }
+  return intervals;
+};
+
 const getColormapQueryParam = (
   colormap: LayerConfig["colormap"] | undefined,
 ): string => {
   if (!colormap) return "";
+
+  if (Array.isArray(colormap) && isPairedRangeColormap(colormap)) {
+    return `&colormap=${encodeURIComponent(JSON.stringify(toIntervalColormap(colormap)))}`;
+  }
 
   const colormapObject: Record<string, string> = Array.isArray(colormap)
     ? Object.fromEntries(
