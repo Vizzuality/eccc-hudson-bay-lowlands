@@ -91,6 +91,7 @@ const getColormapQueryParam = (
   }
 
   if (Array.isArray(colormap) && layerType === "continuous") {
+    if (colormap.length === 0) return "";
     const minVal = colormap[0][0];
     const maxVal = colormap[colormap.length - 1][0];
     const rescale = `&rescale=${encodeURIComponent(`${minVal},${maxVal}`)}`;
