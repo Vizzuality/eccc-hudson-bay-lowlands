@@ -34,7 +34,7 @@
               "id": null,
               "format": "raster",
               "path": "/data/processed/carbon_peatland/peat_cog.tif",
-              "type": "continuous",
+              "type": "choropleth",
               "unit": "cm",
               "metadata": {
                 "title": {
@@ -138,7 +138,7 @@
               "id": null,
               "format": "raster",
               "path": "/data/processed/carbon_peatland/carbon_cog.tif",
-              "type": "continuous",
+              "type": "choropleth",
               "unit": "kg/m²",
               "metadata": {
                 "title": {
