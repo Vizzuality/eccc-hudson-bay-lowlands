@@ -25,14 +25,77 @@ const toIntervalColormap = (
     return [[value, upperBound], hexToRgba(color)];
   });
 
+/** Linearly interpolate between colormap stops to produce a 256-entry discrete colormap.
+ *  Each key is an index 0-255 mapping to an RGBA array.
+ *  Used with TiTiler's `rescale` param to map the data range to 0-255.
+ */
+export const interpolateColormap = (
+  colormap: [number, string][],
+): Record<string, Rgba> => {
+  if (colormap.length === 0) return {};
+
+  const rgbaStops = colormap.map(
+    ([value, color]) => [value, hexToRgba(color)] as const,
+  );
+
+  if (rgbaStops.length === 1) {
+    const [, rgba] = rgbaStops[0];
+    return Object.fromEntries(
+      Array.from({ length: 256 }, (_, i) => [String(i), [...rgba]]),
+    );
+  }
+
+  const minVal = rgbaStops[0][0];
+  const maxVal = rgbaStops[rgbaStops.length - 1][0];
+  const range = maxVal - minVal || 1;
+
+  const result: Record<string, Rgba> = {};
+  for (let i = 0; i < 256; i++) {
+    const dataValue = minVal + (i / 255) * range;
+
+    let lowerIdx = 0;
+    for (let s = 0; s < rgbaStops.length - 1; s++) {
+      if (rgbaStops[s + 1][0] >= dataValue) {
+        lowerIdx = s;
+        break;
+      }
+      lowerIdx = s;
+    }
+    const upperIdx = Math.min(lowerIdx + 1, rgbaStops.length - 1);
+
+    const [lowerVal, lowerRgba] = rgbaStops[lowerIdx];
+    const [upperVal, upperRgba] = rgbaStops[upperIdx];
+
+    const segmentRange = upperVal - lowerVal || 1;
+    const t = Math.max(0, Math.min(1, (dataValue - lowerVal) / segmentRange));
+
+    result[String(i)] = [
+      Math.round(lowerRgba[0] + t * (upperRgba[0] - lowerRgba[0])),
+      Math.round(lowerRgba[1] + t * (upperRgba[1] - lowerRgba[1])),
+      Math.round(lowerRgba[2] + t * (upperRgba[2] - lowerRgba[2])),
+      255,
+    ];
+  }
+
+  return result;
+};
+
 const getColormapQueryParam = (
   colormap: LayerConfig["colormap"] | undefined,
   layerType: string | undefined,
 ): string => {
   if (!colormap) return "";
 
-  if (Array.isArray(colormap) && layerType === "continuous") {
+  if (Array.isArray(colormap) && layerType === "choropleth") {
     return `&colormap=${encodeURIComponent(JSON.stringify(toIntervalColormap(colormap)))}`;
+  }
+
+  if (Array.isArray(colormap) && layerType === "continuous") {
+    const minVal = colormap[0][0];
+    const maxVal = colormap[colormap.length - 1][0];
+    const rescale = `&rescale=${encodeURIComponent(`${minVal},${maxVal}`)}`;
+    const interpolated = interpolateColormap(colormap);
+    return `${rescale}&colormap=${encodeURIComponent(JSON.stringify(interpolated))}`;
   }
 
   const colormapObject: Record<string, string> = Array.isArray(colormap)
