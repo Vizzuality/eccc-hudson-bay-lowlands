@@ -151,11 +151,19 @@ describe("getRasterLayerConfig", () => {
       const [tile] = (source as Record<string, unknown>).tiles as string[];
       const expected = [
         [
-          [0, 100],
+          [0, 99],
           [14, 39, 128, 255],
         ],
         [
-          [101, 200],
+          [100, 100],
+          [14, 39, 128, 255],
+        ],
+        [
+          [101, 199],
+          [1, 203, 42, 255],
+        ],
+        [
+          [200, 200],
           [1, 203, 42, 255],
         ],
       ];
