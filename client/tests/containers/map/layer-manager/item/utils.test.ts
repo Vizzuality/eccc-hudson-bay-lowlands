@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   getRasterLayerConfig,
   getVectorLayerConfig,
+  hexToRgba,
 } from "@/containers/map/layer-manager/item/utils";
 import type { LayerConfig, TileInfoResponse } from "@/types";
 
@@ -121,6 +122,60 @@ describe("getRasterLayerConfig", () => {
       );
       expect(tile).toContain(`colormap=${encoded}`);
     });
+
+    it("converts paired-range array colormap to interval format", () => {
+      const config: LayerConfig = {
+        ...baseConfig,
+        colormap: [
+          [0, "#0E2780"],
+          [100, "#0E2780"],
+          [101, "#01CB2A"],
+          [200, "#01CB2A"],
+        ],
+      };
+
+      const { source } = getRasterLayerConfig({
+        path: "peat.tif",
+        settings: {},
+        tileInfo,
+        config,
+        withColormap: true,
+      });
+
+      const [tile] = (source as Record<string, unknown>).tiles as string[];
+      const expected = [
+        [[0, 100], [14, 39, 128, 255]],
+        [[101, 200], [1, 203, 42, 255]],
+      ];
+      const encoded = encodeURIComponent(JSON.stringify(expected));
+      expect(tile).toContain(`colormap=${encoded}`);
+      expect(tile).not.toContain("colormap_name=viridis");
+    });
+
+    it("keeps discrete format for non-paired array colormaps", () => {
+      const config: LayerConfig = {
+        ...baseConfig,
+        colormap: [
+          [0, "#f7fbff"],
+          [50, "#6baed6"],
+          [100, "#08306b"],
+        ],
+      };
+
+      const { source } = getRasterLayerConfig({
+        path: "frequency.tif",
+        settings: {},
+        tileInfo,
+        config,
+        withColormap: true,
+      });
+
+      const [tile] = (source as Record<string, unknown>).tiles as string[];
+      const encoded = encodeURIComponent(
+        JSON.stringify({ "0": "#f7fbff", "50": "#6baed6", "100": "#08306b" }),
+      );
+      expect(tile).toContain(`colormap=${encoded}`);
+    });
   });
 
   describe("tileInfo passthrough", () => {
@@ -189,6 +244,24 @@ describe("getRasterLayerConfig", () => {
 
       expect(styles[0].layout?.visibility).toBe("none");
     });
+  });
+});
+
+describe("hexToRgba", () => {
+  it("converts a hex color to an RGBA tuple with full opacity", () => {
+    expect(hexToRgba("#0E2780")).toEqual([14, 39, 128, 255]);
+  });
+
+  it("handles hex without hash prefix", () => {
+    expect(hexToRgba("ff0000")).toEqual([255, 0, 0, 255]);
+  });
+
+  it("converts black", () => {
+    expect(hexToRgba("#000000")).toEqual([0, 0, 0, 255]);
+  });
+
+  it("converts white", () => {
+    expect(hexToRgba("#ffffff")).toEqual([255, 255, 255, 255]);
   });
 });
 
