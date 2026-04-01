@@ -3,10 +3,97 @@ import { env } from "@/env";
 import { type Config, parseConfig } from "@/lib/json-converter";
 import type { LayerConfig, TileInfoResponse } from "@/types";
 
+type Rgba = [number, number, number, number];
+
+export const hexToRgba = (hex: string): Rgba => {
+  const h = hex.replace("#", "");
+  return [
+    parseInt(h.substring(0, 2), 16),
+    parseInt(h.substring(2, 4), 16),
+    parseInt(h.substring(4, 6), 16),
+    255,
+  ];
+};
+
+/** Convert an array colormap to TiTiler interval format. */
+const toIntervalColormap = (
+  colormap: [number, string][],
+): [[number, number], Rgba][] =>
+  colormap.map(([value, color], i) => {
+    const next = colormap[i + 1];
+    const upperBound = next ? next[0] - 1 : value;
+    return [[value, upperBound], hexToRgba(color)];
+  });
+
+const GRADIENT_STEPS = 128;
+
+/** Linearly interpolate between colormap stops to produce interval entries.
+ *  Returns 128 intervals covering the full data range with smoothly graded colors.
+ *  Uses TiTiler interval format so no `rescale` param is needed.
+ */
+export const interpolateColormap = (
+  colormap: [number, string][],
+): [[number, number], Rgba][] => {
+  if (colormap.length === 0) return [];
+
+  const rgbaStops = colormap.map(
+    ([value, color]) => [value, hexToRgba(color)] as const,
+  );
+
+  if (rgbaStops.length === 1) {
+    const [value, rgba] = rgbaStops[0];
+    return [[[value, value], [...rgba] as Rgba]];
+  }
+
+  const minVal = rgbaStops[0][0];
+  const maxVal = rgbaStops[rgbaStops.length - 1][0];
+  const range = maxVal - minVal || 1;
+  const step = range / GRADIENT_STEPS;
+
+  return Array.from({ length: GRADIENT_STEPS }, (_, i) => {
+    const lower = minVal + i * step;
+    const upper = i === GRADIENT_STEPS - 1 ? maxVal : minVal + (i + 1) * step;
+    const dataValue = i === GRADIENT_STEPS - 1 ? maxVal : lower;
+
+    let lowerIdx = rgbaStops.length - 2;
+    for (let s = 0; s < rgbaStops.length - 1; s++) {
+      if (rgbaStops[s + 1][0] >= dataValue) {
+        lowerIdx = s;
+        break;
+      }
+    }
+    const upperIdx = Math.min(lowerIdx + 1, rgbaStops.length - 1);
+
+    const [lowerVal, lowerRgba] = rgbaStops[lowerIdx];
+    const [upperVal, upperRgba] = rgbaStops[upperIdx];
+
+    const segmentRange = upperVal - lowerVal || 1;
+    const t = Math.max(0, Math.min(1, (dataValue - lowerVal) / segmentRange));
+
+    const rgba: Rgba = [
+      Math.round(lowerRgba[0] + t * (upperRgba[0] - lowerRgba[0])),
+      Math.round(lowerRgba[1] + t * (upperRgba[1] - lowerRgba[1])),
+      Math.round(lowerRgba[2] + t * (upperRgba[2] - lowerRgba[2])),
+      255,
+    ];
+
+    return [[lower, upper], rgba] as [[number, number], Rgba];
+  });
+};
+
 const getColormapQueryParam = (
   colormap: LayerConfig["colormap"] | undefined,
+  layerType: string | undefined,
 ): string => {
   if (!colormap) return "";
+
+  if (Array.isArray(colormap) && layerType === "choropleth") {
+    return `&colormap=${encodeURIComponent(JSON.stringify(toIntervalColormap(colormap)))}`;
+  }
+
+  if (Array.isArray(colormap) && layerType === "continuous") {
+    return `&colormap=${encodeURIComponent(JSON.stringify(interpolateColormap(colormap)))}`;
+  }
 
   const colormapObject: Record<string, string> = Array.isArray(colormap)
     ? Object.fromEntries(
@@ -58,17 +145,19 @@ export const getRasterLayerConfig = ({
   tileInfo,
   config,
   withColormap,
+  layerType,
 }: {
   path: string;
   settings: Record<string, unknown>;
   tileInfo: TileInfoResponse;
   config: LayerConfig;
   withColormap: boolean;
+  layerType: string | undefined;
 }) => {
   const { styles, params_config, colormap } = config;
   const visibility = settings.visibility ?? true;
   const colormapQueryParam = withColormap
-    ? getColormapQueryParam(colormap)
+    ? getColormapQueryParam(colormap, layerType)
     : "&colormap_name=viridis";
 
   const c = parseConfig<Config>({
