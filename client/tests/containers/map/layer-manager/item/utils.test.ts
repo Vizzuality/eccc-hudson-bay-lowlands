@@ -150,8 +150,14 @@ describe("getRasterLayerConfig", () => {
 
       const [tile] = (source as Record<string, unknown>).tiles as string[];
       const expected = [
-        [[0, 100], [14, 39, 128, 255]],
-        [[101, 200], [1, 203, 42, 255]],
+        [
+          [0, 100],
+          [14, 39, 128, 255],
+        ],
+        [
+          [101, 200],
+          [1, 203, 42, 255],
+        ],
       ];
       const encoded = encodeURIComponent(JSON.stringify(expected));
       expect(tile).toContain(`colormap=${encoded}`);
@@ -180,8 +186,14 @@ describe("getRasterLayerConfig", () => {
 
       const [tile] = (source as Record<string, unknown>).tiles as string[];
       const expected = [
-        [[0, 50], [247, 251, 255, 255]],
-        [[51, 100], [107, 174, 214, 255]],
+        [
+          [0, 50],
+          [247, 251, 255, 255],
+        ],
+        [
+          [51, 100],
+          [107, 174, 214, 255],
+        ],
       ];
       const encoded = encodeURIComponent(JSON.stringify(expected));
       expect(tile).toContain(`colormap=${encoded}`);
