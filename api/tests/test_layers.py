@@ -203,7 +203,7 @@ def test_get_layer_with_config(client, db_session, dataset, sample_layer_metadat
     }
     db_layer = Layer(
         format_="raster",
-        type_="continuous",
+        type_="choropleth",
         path="/data/config_test.tif",
         unit="cm",
         config=sample_config,

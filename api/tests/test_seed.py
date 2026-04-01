@@ -28,7 +28,7 @@ MINIMAL_METADATA = {
                             "id": None,
                             "format": "raster",
                             "path": "/data/test/layer_a.tif",
-                            "type": "continuous",
+                            "type": "choropleth",
                             "unit": "cm",
                             "config": {
                                 "colormap": [[0, "#0E2780"], [100, "#01CB2A"]],
@@ -190,7 +190,7 @@ def test_nonempty_type_preserved(db_session):
     db_session.flush()
 
     raster_layer = db_session.execute(select(Layer).where(Layer.path == "data/test/layer_a.tif")).scalar_one()
-    assert raster_layer.type_ == "continuous"
+    assert raster_layer.type_ == "choropleth"
     assert raster_layer.unit == "cm"
 
 
