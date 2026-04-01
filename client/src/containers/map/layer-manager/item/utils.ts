@@ -15,18 +15,6 @@ export const hexToRgba = (hex: string): Rgba => {
   ];
 };
 
-/**
- * Detect paired-range colormaps where consecutive pairs share the same color
- * to define value ranges (e.g. [[0,"#blue"],[100,"#blue"],[101,"#green"],[200,"#green"]]).
- */
-const isPairedRangeColormap = (colormap: [number, string][]): boolean => {
-  if (colormap.length < 2 || colormap.length % 2 !== 0) return false;
-  for (let i = 0; i < colormap.length; i += 2) {
-    if (colormap[i][1] !== colormap[i + 1][1]) return false;
-  }
-  return true;
-};
-
 const toIntervalColormap = (
   colormap: [number, string][],
 ): [[number, number], Rgba][] => {
@@ -42,10 +30,11 @@ const toIntervalColormap = (
 
 const getColormapQueryParam = (
   colormap: LayerConfig["colormap"] | undefined,
+  layerType: string | undefined,
 ): string => {
   if (!colormap) return "";
 
-  if (Array.isArray(colormap) && isPairedRangeColormap(colormap)) {
+  if (Array.isArray(colormap) && layerType === "continuous") {
     return `&colormap=${encodeURIComponent(JSON.stringify(toIntervalColormap(colormap)))}`;
   }
 
@@ -100,17 +89,19 @@ export const getRasterLayerConfig = ({
   tileInfo,
   config,
   withColormap,
+  layerType,
 }: {
   path: string;
   settings: Record<string, unknown>;
   tileInfo: TileInfoResponse;
   config: LayerConfig;
   withColormap: boolean;
+  layerType: string | undefined;
 }) => {
   const { styles, params_config, colormap } = config;
   const visibility = settings.visibility ?? true;
   const colormapQueryParam = withColormap
-    ? getColormapQueryParam(colormap)
+    ? getColormapQueryParam(colormap, layerType)
     : "&colormap_name=viridis";
 
   const c = parseConfig<Config>({
