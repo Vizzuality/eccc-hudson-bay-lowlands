@@ -4,6 +4,7 @@ import {
   getRasterLayerConfig,
   getVectorLayerConfig,
   hexToRgba,
+  interpolateColormap,
 } from "@/containers/map/layer-manager/item/utils";
 import type { LayerConfig, TileInfoResponse } from "@/types";
 
@@ -128,7 +129,7 @@ describe("getRasterLayerConfig", () => {
       expect(tile).toContain(`colormap=${encoded}`);
     });
 
-    it("converts a continuous paired-range colormap to interval format", () => {
+    it("converts a choropleth paired-range colormap to interval format", () => {
       const config: LayerConfig = {
         ...baseConfig,
         colormap: [
@@ -145,7 +146,7 @@ describe("getRasterLayerConfig", () => {
         tileInfo,
         config,
         withColormap: true,
-        layerType: "continuous",
+        layerType: "choropleth",
       });
 
       const [tile] = (source as Record<string, unknown>).tiles as string[];
@@ -172,7 +173,7 @@ describe("getRasterLayerConfig", () => {
       expect(tile).not.toContain("colormap_name=viridis");
     });
 
-    it("converts a continuous breakpoint colormap to interval format", () => {
+    it("converts a choropleth breakpoint colormap to interval format", () => {
       const config: LayerConfig = {
         ...baseConfig,
         colormap: [
@@ -188,7 +189,7 @@ describe("getRasterLayerConfig", () => {
         tileInfo,
         config,
         withColormap: true,
-        layerType: "continuous",
+        layerType: "choropleth",
       });
 
       const [tile] = (source as Record<string, unknown>).tiles as string[];
@@ -208,6 +209,39 @@ describe("getRasterLayerConfig", () => {
       ];
       const encoded = encodeURIComponent(JSON.stringify(expected));
       expect(tile).toContain(`colormap=${encoded}`);
+    });
+
+    it("encodes a continuous colormap as a 256-entry interpolated gradient with rescale", () => {
+      const config: LayerConfig = {
+        ...baseConfig,
+        colormap: [
+          [0, "#000000"],
+          [100, "#ffffff"],
+        ],
+      };
+
+      const { source } = getRasterLayerConfig({
+        path: "gradient.tif",
+        settings: {},
+        tileInfo,
+        config,
+        withColormap: true,
+        layerType: "continuous",
+      });
+
+      const [tile] = (source as Record<string, unknown>).tiles as string[];
+      // Should contain rescale param
+      expect(tile).toContain("rescale=0%2C100");
+      // Should contain a 256-entry colormap object
+      expect(tile).toContain("colormap=");
+      expect(tile).not.toContain("colormap_name=viridis");
+      // Parse the colormap from the URL to verify it has 256 entries
+      const colormapMatch = tile.match(/colormap=([^&]+)/);
+      expect(colormapMatch).not.toBeNull();
+      const decoded = JSON.parse(decodeURIComponent(colormapMatch![1]));
+      expect(Object.keys(decoded)).toHaveLength(256);
+      expect(decoded["0"]).toEqual([0, 0, 0, 255]);
+      expect(decoded["255"]).toEqual([255, 255, 255, 255]);
     });
   });
 
@@ -300,6 +334,50 @@ describe("hexToRgba", () => {
 
   it("converts white", () => {
     expect(hexToRgba("#ffffff")).toEqual([255, 255, 255, 255]);
+  });
+});
+
+describe("interpolateColormap", () => {
+  it("interpolates two stops into 256 entries", () => {
+    const stops: [number, string][] = [
+      [0, "#000000"],
+      [100, "#ffffff"],
+    ];
+    const result = interpolateColormap(stops);
+
+    // Returns object with string keys 0-255 and RGBA arrays
+    expect(Object.keys(result)).toHaveLength(256);
+    expect(result["0"]).toEqual([0, 0, 0, 255]);
+    expect(result["255"]).toEqual([255, 255, 255, 255]);
+    // Midpoint should be roughly [128, 128, 128, 255]
+    expect(result["128"][0]).toBeGreaterThanOrEqual(127);
+    expect(result["128"][0]).toBeLessThanOrEqual(129);
+  });
+
+  it("interpolates three stops correctly", () => {
+    const stops: [number, string][] = [
+      [0, "#ff0000"],
+      [50, "#00ff00"],
+      [100, "#0000ff"],
+    ];
+    const result = interpolateColormap(stops);
+
+    expect(Object.keys(result)).toHaveLength(256);
+    // At value 0 (index 0): pure red
+    expect(result["0"]).toEqual([255, 0, 0, 255]);
+    // At value 100 (index 255): pure blue
+    expect(result["255"]).toEqual([0, 0, 255, 255]);
+    // At value 50 (index ~128): pure green
+    expect(result["128"][1]).toBeGreaterThanOrEqual(253);
+  });
+
+  it("handles single stop by filling all 256 entries with that color", () => {
+    const stops: [number, string][] = [[50, "#ff0000"]];
+    const result = interpolateColormap(stops);
+
+    expect(Object.keys(result)).toHaveLength(256);
+    expect(result["0"]).toEqual([255, 0, 0, 255]);
+    expect(result["255"]).toEqual([255, 0, 0, 255]);
   });
 });
 
