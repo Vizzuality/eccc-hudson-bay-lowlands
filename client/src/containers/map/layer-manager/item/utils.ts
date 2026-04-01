@@ -15,39 +15,15 @@ export const hexToRgba = (hex: string): Rgba => {
   ];
 };
 
-/**
- * Convert an array colormap to TiTiler interval format.
- *
- * Handles two patterns found in metadata.json:
- *  - Paired ranges: consecutive entries share a color → [min, max] pair (step by 2).
- *    e.g. [[0,"#blue"],[100,"#blue"],[101,"#green"],[200,"#green"]]
- *  - Breakpoints: each entry has a unique color → interval runs until the next entry (step by 1).
- *    e.g. [[0,"#aaa"],[50,"#bbb"],[100,"#ccc"]]
- */
+/** Convert an array colormap to TiTiler interval format. */
 const toIntervalColormap = (
   colormap: [number, string][],
-): [[number, number], Rgba][] => {
-  const intervals: [[number, number], Rgba][] = [];
-  let i = 0;
-
-  while (i < colormap.length) {
-    const [value, color] = colormap[i];
+): [[number, number], Rgba][] =>
+  colormap.map(([value, color], i) => {
     const next = colormap[i + 1];
-
-    if (next && next[1] === color) {
-      // Paired range: the two entries share a color and define [min, max].
-      intervals.push([[value, next[0]], hexToRgba(color)]);
-      i += 2;
-    } else {
-      // Breakpoint: interval spans from this value to just before the next entry.
-      const upperBound = next ? next[0] - 1 : value;
-      intervals.push([[value, upperBound], hexToRgba(color)]);
-      i += 1;
-    }
-  }
-
-  return intervals;
-};
+    const upperBound = next ? next[0] - 1 : value;
+    return [[value, upperBound], hexToRgba(color)];
+  });
 
 const getColormapQueryParam = (
   colormap: LayerConfig["colormap"] | undefined,
