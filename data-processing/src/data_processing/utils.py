@@ -1,32 +1,52 @@
+import math
 import os
 import subprocess
 from pathlib import Path
 
 import geopandas as gpd
+import numpy as np
 import rasterio
 from rasterio.features import shapes
 from rasterio.mask import mask
 from shapely import union_all
-from shapely.geometry import shape
+from shapely.geometry import shape, mapping
 
+
+def detect_raster_type(geotiff_path: Path, categorical_threshold: int = 20) -> str:
+    """
+    Detect whether a raster is categorical or continuous based on number of unique values.
+
+    Args:
+        geotiff_path (Path): Input raster path
+        categorical_threshold (int): Max number of unique values to consider categorical
+
+    Returns:
+        "categorical" or "continuous"
+    """
+    with rasterio.open(geotiff_path) as src:
+        band = src.read(1)
+        unique_vals = np.unique(band)
+        if len(unique_vals) <= categorical_threshold:
+            return "categorical"
+        else:
+            return "continuous"
 
 def convert_to_cog(
     geotiff_path: Path,
     cog_output_path: Path,
     compression: str = "DEFLATE",
     block_size: int = 512,
-    overview_resampling: str = "nearest",
+    tile_size: int = 256,
 ) -> None:
     """
-    Convert a GeoTIFF file to COG format.
+    Convert a GeoTIFF file to a COG with appropriate overviews, without reprojecting.
 
     Args:
         geotiff_path (Path): Path to the input GeoTIFF.
         cog_output_path (Path): Path where the COG will be written.
         compression (str): Lossless compression method (DEFLATE, LZW, ZSTD).
         block_size (int): Internal tile size (pixels).
-        overview_resampling (str): Resampling method for overviews.
-                                     Use 'nearest' to avoid smoothing.
+        tile_size (int): Target tile size for computing overview levels (default 256).
     """
     geotiff_path = geotiff_path.resolve()
     cog_output_path = cog_output_path.resolve()
@@ -34,15 +54,22 @@ def convert_to_cog(
     if not geotiff_path.exists():
         raise FileNotFoundError(f"Input GeoTIFF not found: {geotiff_path}")
 
+    # Detect raster type
+    raster_type = detect_raster_type(geotiff_path)
+    if raster_type == "categorical":
+        overview_resampling = "mode"
+    else:
+        overview_resampling = "average"
+
     # Ensure output directory exists
     cog_output_path.parent.mkdir(parents=True, exist_ok=True)
 
+    # Build rio-cogeo command without web optimization (no CRS change)
     command = [
         "rio",
         "cogeo",
         "create",
-        "--overview-resampling",
-        overview_resampling,
+        "--overview-resampling", overview_resampling,
         "--co", f"COMPRESS={compression}",
         "--co", "BIGTIFF=YES",
         "--co", f"BLOCKXSIZE={block_size}",
@@ -53,7 +80,7 @@ def convert_to_cog(
 
     try:
         subprocess.run(command, check=True, capture_output=True, text=True)
-        print(f"✔ Converted {geotiff_path.name} to COG")
+        print(f"✔ Converted {geotiff_path.name} to COG ({raster_type}, {overview_resampling}")
     except subprocess.CalledProcessError as e:
         error_msg = e.stderr.strip() if e.stderr else str(e)
         raise RuntimeError(
@@ -102,12 +129,34 @@ def clip_raster_to_vector(
             else:
                 boundary = gdf_reproj.geometry.iloc[0]
 
+        # Convert Shapely geometry to GeoJSON-like dict format for rasterio.mask
+        boundary_geojson = mapping(boundary)
+
+        # Determine appropriate nodata value if not set
+        original_nodata = src.nodata
+        if original_nodata is None:
+            # For integer dtypes, use a value outside the data range
+            if src.dtypes[0] in ['uint8']:
+                nodata_value = 255
+            elif src.dtypes[0] in ['uint16']:
+                nodata_value = 65535
+            elif src.dtypes[0] in ['int16']:
+                nodata_value = -32768
+            elif src.dtypes[0] in ['int32']:
+                nodata_value = -2147483648
+            else:
+                # For float dtypes
+                nodata_value = -9999.0
+        else:
+            nodata_value = original_nodata
+
         # Clip the raster
         clipped_image, clipped_transform = mask(
             src,
-            [boundary],
+            [boundary_geojson],
             crop=crop,
-            nodata=src.nodata
+            nodata=nodata_value,
+            filled=True
         )
 
         # Update metadata
@@ -115,7 +164,8 @@ def clip_raster_to_vector(
         clipped_meta.update({
             "height": clipped_image.shape[1],
             "width": clipped_image.shape[2],
-            "transform": clipped_transform
+            "transform": clipped_transform,
+            "nodata": nodata_value
         })
 
         # Write clipped raster

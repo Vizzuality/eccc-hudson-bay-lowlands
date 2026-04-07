@@ -1,0 +1,40 @@
+{
+  "layers": [
+    {
+      "path": "/data/processed/dynamic_surface_water/inundation_trends_cog.tif",
+      "mapping": {
+        "1": { "en": "Permanent water", "fr": "Eau permanente" },
+        "2": { "en": "Permanent land", "fr": "Terre permanente" },
+        "3": { "en": "Stable", "fr": "Stable" },
+        "4": { "en": "Wetter", "fr": "Plus humide" },
+        "5": { "en": "Drier", "fr": "Plus sec" }
+      }
+    },
+    {
+      "path": "/data/processed/treed_area_1984-2022_cog.tif",
+      "mapping": {
+        "0": { "en": "Non-Treed", "fr": "Non Arboré" },
+        "1": { "en": "Always Treed", "fr": "Toujours Arboré" },
+        "2": { "en": "Newly Treed (Tree Gain)", "fr": "Nouvellement Arboré (Gain de Bois)" },
+        "3": { "en": "Was-Treed (Tree Loss)", "fr": "Anciennement Arboré (Perte de Bois)" }
+      }
+    },
+    {
+      "path": "/data/processed/ecosystem_classification_cog.tif",
+      "mapping": {
+        "1": { "en": "Temperate/Boreal Forest", "fr": "Forêt Tempérée/Boréale" },
+        "2": { "en": "Treed Wetland", "fr": "Zone Humide Arborée" },
+        "3": { "en": "Shrubland-grassland", "fr": "Landes-prairies" },
+        "4": { "en": "Shrubland-grassland (Fire Disturbance)", "fr": "Landes-prairies (Perturbation par le feu)" },
+        "5": { "en": "Graminoid Fen", "fr": "Tourbière à graminoïdes" },
+        "6": { "en": "Shrub Fen", "fr": "Tourbière arbustive" },
+        "7": { "en": "Emergent/Open Wetland", "fr": "Zone humide émergente/ouverte" },
+        "8": { "en": "Bog", "fr": "Tourbière" },
+        "9": { "en": "Mudflats", "fr": "Vasières" },
+        "10": { "en": "Coastal Marsh", "fr": "Marais côtier" },
+        "11": { "en": "Supralittoral Marine", "fr": "Supralittoral marin" },
+        "12": { "en": "Water", "fr": "Eau" }
+      }
+    }
+  ]
+}
