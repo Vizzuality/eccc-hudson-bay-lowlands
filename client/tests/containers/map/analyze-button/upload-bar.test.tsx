@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
@@ -39,10 +40,15 @@ let capturedOnDrawingStart: (() => void) | undefined;
 
 const renderUploadBar = (mapStatus = MapStatus.upload) => {
   setupHooks(mapStatus);
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
   return render(
-    <NextIntlClientProvider locale="en" messages={messages}>
-      <UploadBar />
-    </NextIntlClientProvider>,
+    <QueryClientProvider client={queryClient}>
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <UploadBar />
+      </NextIntlClientProvider>
+    </QueryClientProvider>,
   );
 };
 
@@ -69,20 +75,17 @@ describe("@containers/map/analyze-button/upload-bar", () => {
     capturedOnDrawingStart = undefined;
   });
 
-  it("renders instructions and upload button when not drawing", () => {
+  it("renders instructions when not drawing", () => {
     renderUploadBar();
 
-    expect(
-      screen.getByText(/click on the map to start drawing/i),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /upload/i })).toBeInTheDocument();
+    expect(screen.getByText(/click on the map/i)).toBeInTheDocument();
   });
 
-  it("renders verify shape and clear/confirm after drawing starts", () => {
+  it("renders drawing instructions and clear/confirm after drawing starts", () => {
     renderUploadBar();
     startDrawing();
 
-    expect(screen.getByText(/verify your shape/i)).toBeInTheDocument();
+    expect(screen.getByText(/to complete your shape/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /clear/i })).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /confirm/i }),
@@ -93,9 +96,7 @@ describe("@containers/map/analyze-button/upload-bar", () => {
     renderUploadBar();
     startDrawing();
 
-    expect(
-      screen.queryByText(/click on the map to start drawing/i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/click on the map/i)).not.toBeInTheDocument();
   });
 
   it("calls redraw and clears analysis geometry when Clear is clicked", async () => {
@@ -113,16 +114,14 @@ describe("@containers/map/analyze-button/upload-bar", () => {
     ).toEqual(expect.objectContaining({ geometry: null }));
   });
 
-  it("returns to instructions after Confirm is clicked", async () => {
+  it("returns to instructions after Clear is clicked", async () => {
     const user = userEvent.setup();
     renderUploadBar();
     startDrawing();
 
-    await user.click(screen.getByRole("button", { name: /confirm/i }));
+    await user.click(screen.getByRole("button", { name: /clear/i }));
 
-    expect(
-      screen.getByText(/click on the map to start drawing/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/click on the map/i)).toBeInTheDocument();
   });
 
   it("runs redraw when map status becomes default", () => {

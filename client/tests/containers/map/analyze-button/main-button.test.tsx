@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import {
   MapStatus,
@@ -7,6 +8,7 @@ import {
   useMapStatus,
 } from "@/app/[locale]/url-store";
 import MainButton from "@/containers/map/analyze-button/main-button";
+import messages from "@/i18n/messages/en.json";
 
 vi.mock("@/app/[locale]/url-store", () => ({
   MapStatus: { default: "default", upload: "upload", analysis: "analysis" },
@@ -49,6 +51,14 @@ function setupHooks(mapStatus: MapStatus, datasets = false) {
   });
 }
 
+const renderMainButton = () => {
+  return render(
+    <NextIntlClientProvider locale="en" messages={messages}>
+      <MainButton />
+    </NextIntlClientProvider>,
+  );
+};
+
 describe("@containers/map/analyze-button/main-button", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -56,7 +66,7 @@ describe("@containers/map/analyze-button/main-button", () => {
 
   it("renders 'Analyze area' when mapStatus is default", () => {
     setupHooks(MapStatus.default);
-    render(<MainButton />);
+    renderMainButton();
 
     expect(
       screen.getByRole("button", { name: /analyze area/i }),
@@ -65,14 +75,14 @@ describe("@containers/map/analyze-button/main-button", () => {
 
   it("renders 'Cancel' when mapStatus is upload", () => {
     setupHooks(MapStatus.upload);
-    render(<MainButton />);
+    renderMainButton();
 
     expect(screen.getByRole("button", { name: /cancel/i })).toBeInTheDocument();
   });
 
   it("renders 'Datasets' when mapStatus is analysis", () => {
     setupHooks(MapStatus.analysis);
-    render(<MainButton />);
+    renderMainButton();
 
     expect(
       screen.getByRole("button", { name: /datasets/i }),
@@ -82,7 +92,7 @@ describe("@containers/map/analyze-button/main-button", () => {
   it("transitions from default to upload on click", async () => {
     setupHooks(MapStatus.default);
     const user = userEvent.setup();
-    render(<MainButton />);
+    renderMainButton();
 
     await user.click(screen.getByRole("button"));
 
@@ -92,7 +102,7 @@ describe("@containers/map/analyze-button/main-button", () => {
   it("transitions from upload to default on click", async () => {
     setupHooks(MapStatus.upload);
     const user = userEvent.setup();
-    render(<MainButton />);
+    renderMainButton();
 
     await user.click(screen.getByRole("button"));
 
@@ -102,7 +112,7 @@ describe("@containers/map/analyze-button/main-button", () => {
   it("toggles datasets on when mapStatus is analysis and datasets is off", async () => {
     setupHooks(MapStatus.analysis, false);
     const user = userEvent.setup();
-    render(<MainButton />);
+    renderMainButton();
 
     await user.click(screen.getByRole("button"));
 
@@ -113,7 +123,7 @@ describe("@containers/map/analyze-button/main-button", () => {
   it("toggles datasets off when mapStatus is analysis and datasets is on", async () => {
     setupHooks(MapStatus.analysis, true);
     const user = userEvent.setup();
-    render(<MainButton />);
+    renderMainButton();
 
     await user.click(screen.getByRole("button"));
 
@@ -123,7 +133,7 @@ describe("@containers/map/analyze-button/main-button", () => {
   it("renders fallback icon and no text for an unrecognized mapStatus", async () => {
     setupHooks("unknown" as MapStatus);
     const user = userEvent.setup();
-    render(<MainButton />);
+    renderMainButton();
 
     const button = screen.getByRole("button");
     expect(button).toBeInTheDocument();
@@ -136,7 +146,7 @@ describe("@containers/map/analyze-button/main-button", () => {
 
   it("shows tooltip when mapStatus is default", () => {
     setupHooks(MapStatus.default);
-    render(<MainButton />);
+    renderMainButton();
 
     expect(
       screen.getByText(/click to select your area of interest/i),
@@ -145,7 +155,7 @@ describe("@containers/map/analyze-button/main-button", () => {
 
   it("hides tooltip when mapStatus is upload", () => {
     setupHooks(MapStatus.upload);
-    render(<MainButton />);
+    renderMainButton();
 
     expect(
       screen.queryByText(/click to select your area of interest/i),
@@ -154,7 +164,7 @@ describe("@containers/map/analyze-button/main-button", () => {
 
   it("hides tooltip when mapStatus is analysis", () => {
     setupHooks(MapStatus.analysis);
-    render(<MainButton />);
+    renderMainButton();
 
     expect(
       screen.queryByText(/click to select your area of interest/i),
