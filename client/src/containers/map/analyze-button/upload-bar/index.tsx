@@ -70,6 +70,7 @@ const UploadBar = () => {
   );
 
   const { redraw } = useMapDraw({
+    enabled: mapStatus !== MapStatus.default,
     geometry: geometry ?? undefined,
     onCreate: onUpdateGeometry,
     onUpdate: onUpdateGeometry,
