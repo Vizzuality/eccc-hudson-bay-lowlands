@@ -236,7 +236,7 @@ describe("getRasterLayerConfig", () => {
       // Parse the colormap from the URL to verify it's an interval array
       const colormapMatch = tile.match(/colormap=([^&]+)/);
       expect(colormapMatch).not.toBeNull();
-      const decoded = JSON.parse(decodeURIComponent(colormapMatch![1]));
+      const decoded = JSON.parse(decodeURIComponent(colormapMatch?.[1] ?? ""));
       expect(decoded).toHaveLength(128);
       // First interval starts at 0, last interval ends at 100
       expect(decoded[0][0][0]).toBe(0);

@@ -12,6 +12,8 @@ import {
 import type { convertFilesToGeojson } from "@/lib/utils/geometry-upload";
 
 export interface UseMapboxDrawProps {
+  /** When false, drawing is disabled (no polygon vertices can be added). */
+  enabled?: boolean;
   geometry?: Awaited<ReturnType<typeof convertFilesToGeojson>>;
   onCreate?: (evt: { features: Feature[] }) => void;
   onUpdate?: (evt: { features: Feature[]; action: string }) => void;
@@ -144,6 +146,9 @@ export default function useMapDraw(props?: UseMapboxDrawProps) {
   const { default: map } = useMap();
   const onDrawingStartRef = useRef(props?.onDrawingStart);
   onDrawingStartRef.current = props?.onDrawingStart;
+  const enabled = props?.enabled ?? true;
+  const enabledRef = useRef(enabled);
+  enabledRef.current = enabled;
 
   const draw = useMemo(
     () =>
@@ -156,6 +161,7 @@ export default function useMapDraw(props?: UseMapboxDrawProps) {
   );
 
   const redraw = useCallback(() => {
+    if (!enabledRef.current) return;
     draw.deleteAll();
     draw.changeMode("draw_polygon");
   }, [draw]);
@@ -177,6 +183,10 @@ export default function useMapDraw(props?: UseMapboxDrawProps) {
       map.on("draw.click", props?.onClick ?? NOOP);
       map.on("draw.update", props?.onUpdate ?? NOOP);
       map.on("draw.delete", props?.onDelete ?? NOOP);
+    }
+
+    if (!enabledRef.current && draw.getMode() !== "simple_select") {
+      draw.changeMode("simple_select");
     }
 
     return () => {
@@ -201,6 +211,7 @@ export default function useMapDraw(props?: UseMapboxDrawProps) {
     }
 
     const onMapClick = () => {
+      if (!enabledRef.current) return;
       if (draw.getMode() === "draw_polygon") {
         onDrawingStartRef.current?.();
       }
@@ -212,6 +223,20 @@ export default function useMapDraw(props?: UseMapboxDrawProps) {
       map.off("click", onMapClick);
     };
   }, [map, draw]);
+
+  useEffect(() => {
+    if (!enabled) {
+      if (draw.getMode() !== "simple_select") {
+        draw.changeMode("simple_select");
+      }
+      return;
+    }
+
+    // If enabled and no geometry is loaded, restore drawing mode.
+    if (!props?.geometry && draw.getMode() !== "draw_polygon") {
+      draw.changeMode("draw_polygon");
+    }
+  }, [draw, props?.geometry, enabled]);
 
   // Pass the geometry to Mapbox Draw when it has changed
   useEffect(() => {
