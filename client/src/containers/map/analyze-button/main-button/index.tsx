@@ -1,5 +1,6 @@
 import { TooltipPortal } from "@radix-ui/react-tooltip";
 import { MousePointerClickIcon, PlusIcon, XIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import {
   MapStatus,
@@ -38,6 +39,7 @@ const getMainButtonText = (mapStatus: MapStatus) => {
 };
 
 const MainButton: FC = () => {
+  const t = useTranslations("analysis");
   const { mapStatus, setMapStatus } = useMapStatus();
   const { datasets, setDatasets } = useMapAnalysis();
   const popoverOpen = mapStatus === MapStatus.upload;
@@ -71,8 +73,7 @@ const MainButton: FC = () => {
       {!popoverOpen && mapStatus === MapStatus.default && (
         <TooltipPortal>
           <TooltipContent side="bottom" align="center">
-            Click to select your area of interest and get detailed insights on
-            it.
+            {t("click-to-select")}
           </TooltipContent>
         </TooltipPortal>
       )}

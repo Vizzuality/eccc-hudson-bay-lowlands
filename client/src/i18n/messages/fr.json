@@ -39,13 +39,14 @@
   "analysis": {
     "title": "My area of interest",
     "description": "<p>You have selected a region of <b>{aoi_size} km²</b> within the HJBL. The following sections summarize its main environmental characteristics based on carbon storage, hydrology, seasonal snow, flood risk, tree cover dynamics, ecosystem composition, and species diversity.</p>",
-    "instructions": "Click on the map to start drawing your custom area or upload your area file and get insights about it.",
-    "verify-shape": "Verify your shape and run the analysis to access the data.",
+    "instructions": "<p><b>Click on the map</b> to start drawing your custom area and to get insights about it.</p>",
+    "verify-shape": "<p>To complete your shape, either click the first point again or double-click anywhere to finish. When you're satisfied, click <b>Confirm</b>. To start over, click <b>Clear</b> to erase your shape.</p>",
     "upload": "Upload",
     "clear": "Clear",
     "confirm": "Confirm",
-    "area-too-big": "The area is too big: the maximum allowed size is {area_sq_km} square kilometers. Please try drawing/uploading a smaller area.",
-    "outside-of-bounds": "The area is at least partially outside of Canada. Please try drawing/uploading an area limited to Canada."
+    "click-to-select": "Click to select your area of interest and get detailed insights on it.",
+    "area-too-big": "<p>The area is too big: the maximum allowed size is <b>{area_sq_km}</b> square kilometers. Please try drawing a smaller area.</p>",
+    "outside-of-bounds": "<p>The area is at least partially outside of Canada. Please try drawing an area limited to Canada.</p>"
   },
   "widgets": {
     "peat_carbon": {
