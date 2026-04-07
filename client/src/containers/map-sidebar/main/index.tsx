@@ -23,9 +23,9 @@ const Main = () => {
   const { layerIds, setLayerIds } = useLayerIds();
 
   return (
-    <ScrollArea className="min-h-0 flex-1 px-6">
+    <ScrollArea className="min-h-0 flex-1">
       <div className="space-y-4">
-        <header className="min-w-0">
+        <header className="min-w-0 px-6">
           <h1 className="text-4xl mb-5">{t("title")}</h1>
           <p className="text-muted-foreground">{t("description")}</p>
         </header>
