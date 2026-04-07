@@ -1,3 +1,4 @@
+import { useMutation } from "@tanstack/react-query";
 import type { Feature } from "geojson";
 import { CheckIcon, CircleAlertIcon, TrashIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -11,12 +12,15 @@ import { MAX_AREA_SIZE_SQUARE_METER } from "@/containers/map/analyze-button/uplo
 import { DESKTOP_MAX_BOUNDS } from "@/containers/map/constants";
 import useAnalysisSettings from "@/hooks/use-analysis-settings";
 import useMapDraw from "@/hooks/use-map-draw";
+import { API } from "@/lib/api";
+import { postAnalysisConfig } from "@/lib/api/config";
 import { format } from "@/lib/utils/format";
 import type { convertFilesToGeojson } from "@/lib/utils/geometry-upload";
 import {
   validateGeoJSONBounds,
   validateGeoJSONSize,
 } from "@/lib/utils/geometry-upload";
+import type { AnalysisResponse } from "@/types";
 
 const UploadBar = () => {
   const { mapStatus } = useMapStatus();
@@ -25,9 +29,22 @@ const UploadBar = () => {
   const t = useTranslations("analysis");
 
   const [drawError, setDrawError] = useState<
-    "area-too-big" | "outside-of-bounds" | null
+    "area-too-big" | "outside-of-bounds" | "generic-error" | null
   >(null);
   const [{ geometry }, setAnalysisSettings] = useAnalysisSettings();
+  const { mutate: postAnalysis, isPending } = useMutation({
+    mutationFn: (geometry: GeoJSON.Feature) =>
+      API<AnalysisResponse>(postAnalysisConfig(geometry)),
+    onSuccess: () => {
+      setAnalysisSettings((settings) => ({
+        ...settings,
+        geometry: null,
+      }));
+    },
+    onError: () => {
+      setDrawError("generic-error");
+    },
+  });
 
   const onUpdateGeometry = useCallback(
     ({ features }: { features: Feature[] }) => {
@@ -152,8 +169,13 @@ const UploadBar = () => {
           </Button>
           <Button
             className="flex-1"
-            onClick={() => setIsDrawing(false)}
-            disabled={!!drawError || !geometry}
+            onClick={() => {
+              if (!geometry) return;
+
+              postAnalysis(geometry);
+              setIsDrawing(false);
+            }}
+            disabled={!!drawError || !geometry || isPending}
           >
             <CheckIcon />
             <span>{t("confirm")}</span>

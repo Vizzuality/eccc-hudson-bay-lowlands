@@ -98,3 +98,7 @@ export interface TileInfoResponse {
   bounds: [number, number, number, number];
   center: number[];
 }
+
+export interface AnalysisResponse {
+  status: "ok";
+}
