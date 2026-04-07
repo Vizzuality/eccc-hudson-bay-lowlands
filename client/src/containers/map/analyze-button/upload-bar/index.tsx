@@ -1,16 +1,12 @@
 import type { Feature } from "geojson";
-import {
-  CheckIcon,
-  CircleAlertIcon,
-  CloudUploadIcon,
-  TrashIcon,
-} from "lucide-react";
+import { CheckIcon, CircleAlertIcon, TrashIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { type ReactNode, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MapStatus, useMapStatus } from "@/app/[locale]/url-store";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";
+import RichText from "@/components/ui/rich-text";
 import { MAX_AREA_SIZE_SQUARE_METER } from "@/containers/map/analyze-button/upload-bar/constants";
 import { DESKTOP_MAX_BOUNDS } from "@/containers/map/constants";
 import useAnalysisSettings from "@/hooks/use-analysis-settings";
@@ -28,7 +24,9 @@ const UploadBar = () => {
   const locale = useLocale();
   const t = useTranslations("analysis");
 
-  const [drawError, setDrawError] = useState<ReactNode | null>(null);
+  const [drawError, setDrawError] = useState<
+    "area-too-big" | "outside-of-bounds" | null
+  >(null);
   const [{ geometry }, setAnalysisSettings] = useAnalysisSettings();
 
   const onUpdateGeometry = useCallback(
@@ -45,10 +43,11 @@ const UploadBar = () => {
 
       if (!isValidSize || !isValidBounds) {
         setDrawError(
-          t.rich(!isValidSize ? "area-too-big" : "outside-of-bounds", {
-            b: (chunk) => <span className="font-semibold">{chunk}</span>,
-            area_sq_km: format(locale, MAX_AREA_SIZE_SQUARE_METER / 1000000),
-          }),
+          !isValidSize
+            ? "area-too-big"
+            : isValidBounds
+              ? "outside-of-bounds"
+              : null,
         );
 
         setAnalysisSettings((settings) => ({
@@ -66,7 +65,7 @@ const UploadBar = () => {
         geometry,
       }));
     },
-    [locale, setAnalysisSettings, t],
+    [setAnalysisSettings],
   );
 
   const { redraw } = useMapDraw({
@@ -98,27 +97,45 @@ const UploadBar = () => {
   }, [mapStatus, isDrawing, onClickRedraw]);
 
   let Component = (
-    <>
-      <p>{t("instructions")}</p>
-      <Button className="w-full" type="button">
-        <CloudUploadIcon />
-        <span>{t("upload")}</span>
-      </Button>
-    </>
+    <RichText>
+      {(tags) =>
+        t.rich("instructions", {
+          ...tags,
+        })
+      }
+    </RichText>
   );
 
   if (isDrawing) {
     Component = (
       <>
-        {drawError ? (
-          <Alert className="right-0" variant="destructive">
+        <RichText>
+          {(tags) =>
+            t.rich("verify-shape", {
+              ...tags,
+            })
+          }
+        </RichText>
+        {drawError && (
+          <Alert
+            className="right-0 bg-red-100 text-red-600"
+            variant="destructive"
+          >
             <CircleAlertIcon aria-hidden />
-            <AlertDescription>
-              <p>{drawError}</p>
+            <AlertDescription className="text-red-600 text-sm font-medium leading-5">
+              <RichText>
+                {(tags) =>
+                  t.rich("area-too-big", {
+                    ...tags,
+                    area_sq_km: format(
+                      locale,
+                      MAX_AREA_SIZE_SQUARE_METER / 1000000,
+                    ),
+                  })
+                }
+              </RichText>
             </AlertDescription>
           </Alert>
-        ) : (
-          <p>{t("verify-shape")}</p>
         )}
         <div className="flex gap-2">
           <Button
@@ -136,7 +153,7 @@ const UploadBar = () => {
           <Button
             className="flex-1"
             onClick={() => setIsDrawing(false)}
-            disabled={!!drawError}
+            disabled={!!drawError || !geometry}
           >
             <CheckIcon />
             <span>{t("confirm")}</span>
@@ -150,7 +167,7 @@ const UploadBar = () => {
     <PopoverContent
       side="bottom"
       align="start"
-      className="flex flex-col gap-4 overflow-hidden max-w-[335px] text-sm"
+      className="flex flex-col gap-4 overflow-hidden w-[335px] text-sm font-medium leading-5"
       onInteractOutside={(e) => e.preventDefault()}
     >
       {Component}
