@@ -14,7 +14,7 @@ from db.database import engine
 from exception_handlers import http_exception_handler, unhandled_exception_handler, validation_exception_handler
 from logging_config import setup_logging
 from models import Category, Dataset, Layer  # noqa: F401  # Register models with Base metadata
-from routers import categories, cog, datasets, health, layers, seed
+from routers import analysis, categories, cog, datasets, health, layers, seed
 
 settings = get_settings()
 
@@ -75,6 +75,10 @@ tags_metadata = [
         "name": "Seed",
         "description": "Database seeding endpoint for populating data from metadata.json.",
     },
+    {
+        "name": "Analysis",
+        "description": "Zonal statistics analysis endpoints.",
+    },
 ]
 
 app = FastAPI(
@@ -116,6 +120,7 @@ app.include_router(layers.router, prefix="/layers", tags=["Layers"])
 app.include_router(categories.router, prefix="/categories", tags=["Categories"])
 app.include_router(datasets.router, prefix="/datasets", tags=["Datasets"])
 app.include_router(seed.router, prefix="/seed", tags=["Seed"])
+app.include_router(analysis.router, prefix="/analysis", tags=["Analysis"])
 
 
 @app.get(
@@ -137,4 +142,5 @@ def root():
         "categories": "/categories",
         "datasets": "/datasets",
         "seed": "/seed",
+        "analysis": "/analysis",
     }
