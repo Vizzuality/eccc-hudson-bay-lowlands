@@ -46,7 +46,8 @@
     "confirm": "Confirm",
     "click-to-select": "Click to select your area of interest and get detailed insights on it.",
     "area-too-big": "<p>The area is too big: the maximum allowed size is <b>{area_sq_km}</b> square kilometers. Please try drawing a smaller area.</p>",
-    "outside-of-bounds": "<p>The area is at least partially outside of Canada. Please try drawing an area limited to Canada.</p>"
+    "outside-of-bounds": "<p>The area is at least partially outside of Canada. Please try drawing an area limited to Canada.</p>",
+    "generic-error": "<p>An error occurred while processing your request. Please try again.</p>"
   },
   "widgets": {
     "peat_carbon": {

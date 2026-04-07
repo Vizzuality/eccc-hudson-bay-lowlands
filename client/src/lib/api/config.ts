@@ -31,3 +31,11 @@ export const getTileJsonConfig = (
 ): AxiosRequestConfig => ({
   url: `/cog/${tileMatrixSetId}/tilejson.json?url=${path}`,
 });
+
+export const postAnalysisConfig = (
+  geometry: GeoJSON.Feature,
+): AxiosRequestConfig => ({
+  url: "/analysis",
+  method: "POST",
+  data: geometry,
+});

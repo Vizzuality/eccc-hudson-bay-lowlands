@@ -146,6 +146,7 @@ export default function useMapDraw(props?: UseMapboxDrawProps) {
   const { default: map } = useMap();
   const onDrawingStartRef = useRef(props?.onDrawingStart);
   onDrawingStartRef.current = props?.onDrawingStart;
+  const hadGeometryRef = useRef(false);
   const enabled = props?.enabled ?? true;
   const enabledRef = useRef(enabled);
   enabledRef.current = enabled;
@@ -240,15 +241,24 @@ export default function useMapDraw(props?: UseMapboxDrawProps) {
 
   // Pass the geometry to Mapbox Draw when it has changed
   useEffect(() => {
-    if (draw) {
-      if (props?.geometry) {
-        const geometryWithId = { ...props.geometry, id: "geometry" };
-        draw.deleteAll();
-        draw.add(geometryWithId);
-        draw.changeMode("direct_select", { featureId: `${geometryWithId.id}` });
-      }
+    if (!draw) return;
+
+    if (props?.geometry) {
+      hadGeometryRef.current = true;
+      const geometryWithId = { ...props.geometry, id: "geometry" };
+      draw.deleteAll();
+      draw.add(geometryWithId);
+      draw.changeMode("direct_select", { featureId: `${geometryWithId.id}` });
+      return;
     }
-  }, [props, draw]);
+
+    // Only clear when geometry was previously set and is now cleared.
+    // This avoids interfering with the "empty" initial state while the user is drawing.
+    if (hadGeometryRef.current) {
+      hadGeometryRef.current = false;
+      draw.deleteAll();
+    }
+  }, [draw, props?.geometry]);
 
   return { redraw };
 }
