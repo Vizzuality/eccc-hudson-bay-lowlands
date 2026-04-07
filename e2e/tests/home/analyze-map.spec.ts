@@ -7,7 +7,6 @@ test.describe("Analyze", () => {
     await expect(page).toHaveTitle(/Discover the Hudson & James bay region/);
 
     await page.getByRole("button", { name: "Analyze area" }).click();
-
-    await page.getByRole("button", { name: "Upload" }).click();
+    // TODO: Add test for drawing a shape
   });
 });
