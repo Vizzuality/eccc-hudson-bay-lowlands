@@ -33,6 +33,9 @@ const MapLegend: FC<MapLegendProps> = ({
     if (!isChildren && open) {
       setOpen(false);
     }
+    if (isChildren && !open) {
+      setOpen(true);
+    }
   }, [isChildren, open]);
 
   return (

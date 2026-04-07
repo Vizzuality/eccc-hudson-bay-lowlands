@@ -22,7 +22,7 @@ const DataLayersList: FC<DataLayersListProps> = ({ datasets, isLoading }) => {
   }
 
   return (
-    <section aria-label="Data layers list">
+    <section aria-label="Data layers list" className="px-6">
       <p className="flex items-center gap-8 text-xs text-[rgba(26,37,61,0.66)] font-medium">
         <span className="shrink-0">
           {t("list.title", { count: datasets.length })}

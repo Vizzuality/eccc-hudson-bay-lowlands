@@ -23,7 +23,10 @@ const CategorySelector: FC<CategorySelectorProps> = ({
   }
 
   return (
-    <fieldset className="grid grid-cols-2 gap-2" aria-label="Category filter">
+    <fieldset
+      className="grid grid-cols-2 gap-2 px-6"
+      aria-label="Category filter"
+    >
       <legend className="sr-only">Select a category</legend>
       {[{ id: 0, name: "All", layerCount: totalLayerCount }, ...items].map(
         (c) => {
