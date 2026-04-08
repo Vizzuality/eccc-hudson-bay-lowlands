@@ -6,6 +6,8 @@ import {
   useMapAnalysis,
   useMapStatus,
 } from "@/app/[locale]/url-store";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import DataLayersList from "@/containers/data-layers/list";
 import Analysis from "@/containers/map-sidebar/analysis";
 import Main from "@/containers/map-sidebar/main";
 import { cn } from "@/lib/utils";
@@ -62,11 +64,13 @@ const MapSidebar = () => {
       </div>
       <div
         className={cn(
-          "shrink-0 overflow-hidden transition-[width,opacity] duration-300 ease-in-out",
-          datasets ? "w-72 opacity-100" : "w-0 opacity-0",
+          "h-full min-h-0 shrink-0 overflow-hidden transition-[width,opacity] duration-300 ease-in-out",
+          datasets ? "w-[350px] opacity-100" : "w-0 opacity-0",
         )}
       >
-        <div className="min-w-72 px-6 pt-4">All data</div>
+        <ScrollArea className="h-full w-full pt-6">
+          <DataLayersList datasets={[]} isLoading={false} className="pb-6" />
+        </ScrollArea>
       </div>
     </aside>
   );
