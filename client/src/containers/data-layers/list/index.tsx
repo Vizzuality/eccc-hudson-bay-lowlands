@@ -4,14 +4,20 @@ import { Accordion } from "@/components/ui/accordion";
 import { Skeleton } from "@/components/ui/skeleton";
 import DataLayersListItem from "@/containers/data-layers/list/item";
 import DataLayersListItemDialog from "@/containers/data-layers/list/item/item-dialog";
+import { cn } from "@/lib/utils";
 import type { NormalizedDataset } from "@/types";
 
 interface DataLayersListProps {
   datasets: NormalizedDataset[];
   isLoading: boolean;
+  className?: string;
 }
 
-const DataLayersList: FC<DataLayersListProps> = ({ datasets, isLoading }) => {
+const DataLayersList: FC<DataLayersListProps> = ({
+  datasets,
+  isLoading,
+  className,
+}) => {
   const [dialogProps, setDialogProps] = useState<NormalizedDataset | null>(
     null,
   );
@@ -22,7 +28,7 @@ const DataLayersList: FC<DataLayersListProps> = ({ datasets, isLoading }) => {
   }
 
   return (
-    <section aria-label="Data layers list" className="px-6">
+    <section aria-label="Data layers list" className={cn("px-6", className)}>
       <p className="flex items-center gap-8 text-xs text-[rgba(26,37,61,0.66)] font-medium">
         <span className="shrink-0">
           {t("list.title", { count: datasets.length })}
