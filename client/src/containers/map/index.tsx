@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import type { MapProps } from "react-map-gl/mapbox";
+import { useEffect, useRef, useState } from "react";
+import type { MapProps, MapRef } from "react-map-gl/mapbox";
 import MapBoxMap from "react-map-gl/mapbox";
 import {
   type LayersSettings,
@@ -10,12 +10,18 @@ import {
   useSyncLayersSettings,
 } from "@/app/[locale]/url-store";
 import AnalyzeButton from "@/containers/map/analyze-button";
-import { BASEMAPS, type BasemapId } from "@/containers/map/constants";
+import {
+  BASEMAPS,
+  type BasemapId,
+  DEFAULT_MIN_ZOOM,
+  HUDSON_BAY_MAX_BOUNDS,
+} from "@/containers/map/constants";
 import { Controls } from "@/containers/map/controls";
 import SettingsControl from "@/containers/map/controls/settings";
 import { BasemapControl } from "@/containers/map/controls/settings/basemap";
 import ZoomControl from "@/containers/map/controls/zoom";
 import { LayerManager } from "@/containers/map/layer-manager";
+import { useLayerZoomConstraints } from "@/containers/map/layer-manager/use-layer-zoom-constraints";
 import MapLegend from "@/containers/map/legend";
 import MapLegendItem from "@/containers/map/legend/item";
 import { env } from "@/env";
@@ -32,13 +38,24 @@ type MapContainerProps = {
 } & MapProps;
 
 const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
+  const mapRef = useRef<MapRef>(null);
   const [loaded, setLoaded] = useState<boolean>(false);
   const { basemap } = useMapBasemap();
   const mapStyle = BASEMAPS[basemap as BasemapId].mapStyle;
   const { layerIds, setLayerIds } = useLayerIds();
   const { layersSettings, setLayersSettings } = useSyncLayersSettings();
+  const { maxZoom } = useLayerZoomConstraints();
 
-  useMemo(() => {
+  // Enforce zoom constraints imperatively to avoid triggering _createProxyTransform
+  // in @vis.gl/react-mapbox. Passing minZoom/maxZoom as props causes it to re-wrap
+  // map.transform in a new Proxy on every change. _calcMatrices is in unproxiedMethods
+  // so it calls both transforms in each proxy layer — exponential recursion → stack overflow.
+  useEffect(() => {
+    if (!loaded) return;
+    mapRef.current?.getMap().setMaxZoom(maxZoom);
+  }, [loaded, maxZoom]);
+
+  useEffect(() => {
     if (!layerIds?.length && !layersSettings) return;
 
     if (!layerIds?.length && layersSettings) {
@@ -66,6 +83,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
   return (
     <div className={cn("relative h-full w-full", className)}>
       <MapBoxMap
+        ref={mapRef}
         mapboxAccessToken={env.NEXT_PUBLIC_MAPBOX_API_TOKEN}
         style={{ width: "100%", height: "100%", borderRadius: "inherit" }}
         mapStyle={mapStyle}
@@ -75,7 +93,15 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
           latitude: defaultLatitude,
           zoom: defaultZoom,
         }}
-        onLoad={() => setLoaded(true)}
+        onLoad={() => {
+          const map = mapRef.current?.getMap();
+          // All constraints set imperatively — never as props — to prevent
+          // @vis.gl/react-mapbox from calling _createProxyTransform on each change,
+          // which stacks proxy layers causing exponential _calcMatrices recursion.
+          map?.setMaxBounds(HUDSON_BAY_MAX_BOUNDS);
+          map?.setMinZoom(DEFAULT_MIN_ZOOM);
+          setLoaded(true);
+        }}
         testMode={
           !!process.env.NEXT_PUBLIC_E2E || process.env.NODE_ENV === "test"
         }

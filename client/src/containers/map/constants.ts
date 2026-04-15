@@ -24,3 +24,11 @@ export const DESKTOP_MAX_BOUNDS: [[number, number], [number, number]] = [
   [-152.88, 31.48],
   [-40.94, 77.43],
 ];
+
+export const HUDSON_BAY_MAX_BOUNDS: [[number, number], [number, number]] = [
+  [-120, 45],
+  [-48, 70],
+];
+
+export const DEFAULT_MIN_ZOOM = 3;
+export const DEFAULT_MAX_ZOOM = 15;
