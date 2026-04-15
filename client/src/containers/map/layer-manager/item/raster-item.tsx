@@ -1,7 +1,7 @@
 "use client";
 
-import type { RasterSourceSpecification } from "mapbox-gl";
 import { useQuery } from "@tanstack/react-query";
+import type { RasterSourceSpecification } from "mapbox-gl";
 import { Layer as RMLayer, Source as RMSource } from "react-map-gl/mapbox";
 import {
   applyHighDpiToRasterSource,
