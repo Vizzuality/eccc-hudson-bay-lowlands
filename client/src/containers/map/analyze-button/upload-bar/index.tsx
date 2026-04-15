@@ -4,6 +4,8 @@ import { CheckIcon, CircleAlertIcon, TrashIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { MapStatus, useMapStatus } from "@/app/[locale]/url-store";
+import QuestionMarkIcon from "@/components/icons/question-mark";
+import TileIcon from "@/components/icons/tile";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";
@@ -189,9 +191,12 @@ const UploadBar = () => {
     <PopoverContent
       side="bottom"
       align="start"
-      className="flex flex-col gap-4 overflow-hidden w-[335px] text-sm font-medium leading-5"
+      className="flex flex-col gap-4 overflow-hidden w-[335px] text-sm font-medium leading-5 p-6"
       onInteractOutside={(e) => e.preventDefault()}
     >
+      <TileIcon state={geometry ? "checked" : "default"}>
+        <QuestionMarkIcon />
+      </TileIcon>
       {Component}
     </PopoverContent>
   );
