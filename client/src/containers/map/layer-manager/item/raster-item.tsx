@@ -1,8 +1,12 @@
 "use client";
 
+import type { RasterSourceSpecification } from "mapbox-gl";
 import { useQuery } from "@tanstack/react-query";
 import { Layer as RMLayer, Source as RMSource } from "react-map-gl/mapbox";
-import { getRasterLayerConfig } from "@/containers/map/layer-manager/item/utils";
+import {
+  applyHighDpiToRasterSource,
+  getRasterLayerConfig,
+} from "@/containers/map/layer-manager/item/utils";
 import { API } from "@/lib/api";
 import { getLayerConfig, getTileJsonConfig } from "@/lib/api/config";
 import { queryKeys } from "@/lib/query-keys";
@@ -34,7 +38,7 @@ const RasterLayerManagerItem = ({
 
   const withColormap = !!layer.config.colormap;
 
-  const { source, styles } = getRasterLayerConfig({
+  const { source: rawSource, styles } = getRasterLayerConfig({
     path,
     settings,
     tileInfo,
@@ -42,6 +46,11 @@ const RasterLayerManagerItem = ({
     withColormap,
     layerType: layer.type,
   });
+
+  const source = applyHighDpiToRasterSource(
+    rawSource as RasterSourceSpecification,
+    typeof window !== "undefined" ? window.devicePixelRatio : 1,
+  );
 
   return (
     <RMSource id={`${id}-source`} key={`${id}-source`} {...source}>

@@ -1,3 +1,4 @@
+import type { RasterSourceSpecification } from "mapbox-gl";
 import type { LayerProps, SourceProps } from "react-map-gl/mapbox";
 import { env } from "@/env";
 import { type Config, parseConfig } from "@/lib/json-converter";
@@ -139,6 +140,32 @@ export const getVectorLayerConfig = ({
     styles: c?.styles as LayerProps[],
   };
 };
+
+/**
+ * Transform a raster source for high-DPI displays by inserting a TiTiler scale suffix
+ * (`@{scale}x`) into tile URLs and setting the corresponding `tileSize`.
+ *
+ * If the source has no `tiles` array (e.g. TileJSON `url`), it is returned unchanged.
+ */
+export function applyHighDpiToRasterSource(
+  source: RasterSourceSpecification,
+  devicePixelRatio: number,
+): RasterSourceSpecification {
+  if (!source.tiles) {
+    return source;
+  }
+
+  // Clamp to the tiler's maximum supported scale (min 1, max 4)
+  const scale = Math.max(1, Math.min(Math.ceil(devicePixelRatio), 4));
+
+  return {
+    ...source,
+    tiles: source.tiles.map((url) =>
+      url.replace(/\.png(\?|$)/, `@${scale}x.png$1`),
+    ),
+    tileSize: scale * 256,
+  };
+}
 
 export const getRasterLayerConfig = ({
   path,
