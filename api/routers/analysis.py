@@ -1,9 +1,14 @@
 """Analysis endpoint router."""
 
 import logging
+from typing import Annotated
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
+from db.database import get_db
+from models.layer import Layer
 from schemas.analysis import AnalysisInput, AnalysisResponse
 from services.analysis import HBL_BBOX, MAX_AREA_KM2, MIN_AREA_KM2, validate_geometry
 
@@ -32,8 +37,15 @@ router = APIRouter(tags=["Analysis"])
         422: {"description": "Geometry failed one or more validation checks"},
     },
 )
-def analyze(body: AnalysisInput) -> AnalysisResponse:
-    """Validate a GeoJSON geometry for zonal statistics analysis."""
+def analyze(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> AnalysisResponse:
+    """Validate geometry then retrieve all raster layer paths for zonal stats computation."""
     logger.info("POST /analysis received")
     validate_geometry(body)
+
+    raster_layers = db.execute(
+        select(Layer.path, Layer.type_, Layer.categories, Layer.unit)
+        .where(Layer.format_ == "raster")
+    ).all()
+    logger.info("Retrieved %d raster layers", len(raster_layers))
+
     return AnalysisResponse()
