@@ -57,7 +57,28 @@ AnalysisInput = Annotated[
 """Discriminated union — parsed as Feature or FeatureCollection based on the ``type`` field."""
 
 
+class HistogramPoint(BaseModel):
+    """A single bin in a histogram — x is the bin midpoint, y is the weighted count."""
+
+    x: float
+    y: float
+
+
+class PeatCarbonStats(BaseModel):
+    peat_depth_avg: float
+    peat_depth_max: float
+    carbon_total: float
+    carbon_density: float
+
+
+class PeatCarbonWidget(BaseModel):
+    unit: str
+    chart: dict[str, list[HistogramPoint]]  # keyed by layer id: peat_cog, carbon_cog
+    stats: PeatCarbonStats
+
+
 class AnalysisResponse(BaseModel):
-    """Returned when the geometry passes all validation checks."""
+    """Full analysis result returned after geometry validation and zonal stats computation."""
 
     status: Literal["ok"] = "ok"
+    peat_carbon: PeatCarbonWidget

@@ -3,14 +3,16 @@
 import logging
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from config import get_settings
 from db.database import get_db
 from models.layer import Layer
 from schemas.analysis import AnalysisInput, AnalysisResponse
 from services.analysis import HBL_BBOX, MAX_AREA_KM2, MIN_AREA_KM2, validate_geometry
+from services.zonal_stats import compute_zonal_stats
 
 logger = logging.getLogger(__name__)
 
@@ -38,14 +40,20 @@ router = APIRouter(tags=["Analysis"])
     },
 )
 def analyze(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> AnalysisResponse:
-    """Validate geometry then retrieve all raster layer paths for zonal stats computation."""
+    """Validate geometry, fetch raster layers, and compute zonal statistics."""
     logger.info("POST /analysis received")
-    validate_geometry(body)
+
+    settings = get_settings()
+    if not settings.s3_bucket_name:
+        raise HTTPException(status_code=503, detail="S3_BUCKET_NAME is not configured")
+
+    geom = validate_geometry(body)
 
     raster_layers = db.execute(
-        select(Layer.path, Layer.type_, Layer.categories, Layer.unit)
+        select(Layer.id, Layer.path)
         .where(Layer.format_ == "raster")
     ).all()
     logger.info("Retrieved %d raster layers", len(raster_layers))
 
-    return AnalysisResponse()
+    result = compute_zonal_stats(geom, raster_layers, settings.s3_bucket_name)
+    return AnalysisResponse(peat_carbon=result["peat_carbon"])
