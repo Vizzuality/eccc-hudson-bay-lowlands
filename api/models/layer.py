@@ -11,7 +11,7 @@ class Layer(Base):
 
     __tablename__ = "layers"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    id: Mapped[str] = mapped_column(String, primary_key=True)
     format_: Mapped[str] = mapped_column("format", String, nullable=False)
     type_: Mapped[str | None] = mapped_column("type", String, nullable=True)
     path: Mapped[str] = mapped_column(String, nullable=False)
