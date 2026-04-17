@@ -80,5 +80,4 @@ class PeatCarbonWidget(BaseModel):
 class AnalysisResponse(BaseModel):
     """Full analysis result returned after geometry validation and zonal stats computation."""
 
-    status: Literal["ok"] = "ok"
     peat_carbon: PeatCarbonWidget

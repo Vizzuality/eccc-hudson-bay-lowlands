@@ -43,11 +43,12 @@ def analyze(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> Ana
     """Validate geometry, fetch raster layers, and compute zonal statistics."""
     logger.info("POST /analysis received")
 
+    # Validate geometry first — returns 422 before checking infra config.
+    geom = validate_geometry(body)
+
     settings = get_settings()
     if not settings.s3_bucket_name:
         raise HTTPException(status_code=503, detail="S3_BUCKET_NAME is not configured")
-
-    geom = validate_geometry(body)
 
     raster_layers = db.execute(
         select(Layer.id, Layer.path)
