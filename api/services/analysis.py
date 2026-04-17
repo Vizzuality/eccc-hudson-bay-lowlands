@@ -116,3 +116,4 @@ def validate_geometry(geojson) -> None:
     logger.info("Step 5 passed — geometry intersects the HBL study area")
 
     logger.info("Geometry validation complete [area=%.2f km²]", area_km2)
+    return geom
