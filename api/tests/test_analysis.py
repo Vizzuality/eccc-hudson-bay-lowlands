@@ -187,11 +187,6 @@ def test_valid_polygon_feature_returns_200(client):
     assert response.status_code == 200
 
 
-def test_valid_polygon_feature_response_body(client):
-    response = client.post("/analysis/", json=VALID_POLYGON_FEATURE)
-    assert response.json() == {"status": "ok"}
-
-
 def test_valid_multipolygon_feature_returns_200(client):
     response = client.post("/analysis/", json=VALID_MULTIPOLYGON_FEATURE)
     assert response.status_code == 200
@@ -332,3 +327,105 @@ def test_polygon_outside_hbl_bounds_returns_422(client):
 def test_polygon_outside_hbl_bounds_error_mentions_hudson_bay(client):
     response = client.post("/analysis/", json=OUTSIDE_HBL_FEATURE)
     assert "hudson bay" in response.json()["detail"].lower()
+
+
+# =============================================================================
+# Integration — peat_carbon widget output
+#
+# Uses the `analysis_client` fixture which:
+#   - Creates two local GeoTIFFs with uniform pixel values
+#       peat_cog:   all pixels = 200.0 cm
+#       carbon_cog: all pixels = 80.0 kg/m²
+#   - Inserts matching Layer records (id=peat_cog / carbon_cog) into the DB
+#   - Patches _s3_uri so rasterio opens local files instead of S3
+# =============================================================================
+
+
+def test_analysis_with_real_rasters_returns_200(analysis_client):
+    response = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE)
+    assert response.status_code == 200
+
+
+def test_analysis_response_contains_peat_carbon_widget(analysis_client):
+    data = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()
+    assert "peat_carbon" in data
+
+
+def test_peat_carbon_unit_is_cm(analysis_client):
+    data = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()
+    assert data["peat_carbon"]["unit"] == "cm"
+
+
+def test_peat_carbon_stats_contains_all_fields(analysis_client):
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["stats"]
+    assert "peat_depth_avg" in stats
+    assert "peat_depth_max" in stats
+    assert "carbon_total" in stats
+    assert "carbon_density" in stats
+
+
+def test_peat_depth_avg_matches_uniform_pixel_value(analysis_client):
+    """Mean of a raster where every pixel = 200.0 must be ≈ 200.0."""
+    import pytest
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["stats"]
+    assert stats["peat_depth_avg"] == pytest.approx(200.0, abs=0.5)
+
+
+def test_peat_depth_max_matches_uniform_pixel_value(analysis_client):
+    """Max of a raster where every pixel = 200.0 must be ≈ 200.0."""
+    import pytest
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["stats"]
+    assert stats["peat_depth_max"] == pytest.approx(200.0, abs=0.5)
+
+
+def test_carbon_density_matches_uniform_pixel_value(analysis_client):
+    """Mean of a raster where every pixel = 80.0 must be ≈ 80.0."""
+    import pytest
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["stats"]
+    assert stats["carbon_density"] == pytest.approx(80.0, abs=0.5)
+
+
+def test_carbon_total_is_positive(analysis_client):
+    """Weighted sum of positive pixel values × 0.9 must be > 0."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["stats"]
+    assert stats["carbon_total"] > 0
+
+
+def test_peat_carbon_chart_has_layer_id_keys(analysis_client):
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["chart"]
+    assert "peat_cog" in chart
+    assert "carbon_cog" in chart
+
+
+def test_peat_cog_chart_is_list_of_histogram_points(analysis_client):
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["chart"]
+    histogram = chart["peat_cog"]
+    assert isinstance(histogram, list)
+    assert len(histogram) == 10
+    assert all("x" in point and "y" in point for point in histogram)
+
+
+def test_carbon_cog_chart_is_list_of_histogram_points(analysis_client):
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["chart"]
+    histogram = chart["carbon_cog"]
+    assert isinstance(histogram, list)
+    assert len(histogram) == 10
+    assert all("x" in point and "y" in point for point in histogram)
+
+
+def test_peat_cog_histogram_weight_concentrated_near_pixel_value(analysis_client):
+    """With uniform 200.0 pixels, ≥ 90 % of histogram weight must be in one bin."""
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["chart"]
+    histogram = chart["peat_cog"]
+    total = sum(p["y"] for p in histogram)
+    assert total > 0
+    assert max(p["y"] for p in histogram) / total >= 0.9
+
+
+def test_carbon_cog_histogram_weight_concentrated_near_pixel_value(analysis_client):
+    """With uniform 80.0 pixels, ≥ 90 % of histogram weight must be in one bin."""
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["chart"]
+    histogram = chart["carbon_cog"]
+    total = sum(p["y"] for p in histogram)
+    assert total > 0
+    assert max(p["y"] for p in histogram) / total >= 0.9

@@ -202,6 +202,7 @@ def test_get_layer_with_config(client, db_session, dataset, sample_layer_metadat
         },
     }
     db_layer = Layer(
+        id="config_test_layer",
         format_="raster",
         type_="choropleth",
         path="/data/config_test.tif",
@@ -245,6 +246,7 @@ def test_get_vector_layer_with_config(client, db_session, dataset, sample_layer_
         },
     }
     db_layer = Layer(
+        id="vector_config_test_layer",
         format_="vector",
         path="ecc-design.5qnlusni",
         config=vector_config,
@@ -288,6 +290,7 @@ def test_get_categorical_layer_with_config_and_categories(client, db_session, da
         },
     }
     db_layer = Layer(
+        id="categorical_config_test_layer",
         format_="raster",
         type_="categorical",
         path="/data/landcover.tif",

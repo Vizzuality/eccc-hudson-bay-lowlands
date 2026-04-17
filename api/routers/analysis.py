@@ -37,6 +37,7 @@ router = APIRouter(tags=["Analysis"])
     responses={
         200: {"description": "Geometry is valid and ready for analysis"},
         422: {"description": "Geometry failed one or more validation checks"},
+        503: {"description": "S3_BUCKET_NAME is not configured"},
     },
 )
 def analyze(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> AnalysisResponse:
