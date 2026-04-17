@@ -4,6 +4,7 @@ import os
 
 os.environ["TESTING"] = "true"
 os.environ.setdefault("SEED_SECRET", "test-seed-secret")
+os.environ.setdefault("S3_BUCKET_NAME", "test-bucket")
 
 import sys
 from pathlib import Path
@@ -157,6 +158,7 @@ def category_with_datasets(db_session, sample_category_metadata, sample_dataset_
     db_session.flush()
 
     db_layer = Layer(
+        id="category_test_layer",
         format_="raster",
         type_="continuous",
         path="/data/test.tif",
@@ -179,6 +181,7 @@ def category_with_datasets(db_session, sample_category_metadata, sample_dataset_
 def layer(db_session, dataset, sample_layer_metadata):
     """Create a single layer belonging to a dataset."""
     db_layer = Layer(
+        id="test_layer",
         format_="raster",
         type_="continuous",
         path="/data/test.tif",
@@ -205,6 +208,7 @@ def multiple_layers(db_session, sample_category_metadata, sample_dataset_metadat
     layers = []
     for i in range(1, 16):
         db_layer = Layer(
+            id=f"layer_{i:02d}",
             format_="raster" if i % 2 == 0 else "vector",
             type_="continuous" if i % 2 == 0 else None,
             path=f"/data/layer_{i:02d}.tif",
@@ -240,6 +244,7 @@ def searchable_layers(db_session, sample_category_metadata, sample_dataset_metad
     layers = []
     for i, md in enumerate(layers_data):
         db_layer = Layer(
+            id=f"search_{i}",
             format_="raster",
             type_="continuous",
             path=f"/data/search_{i}.tif",
@@ -273,6 +278,7 @@ def dataset(db_session, category, sample_dataset_metadata):
 def layer_with_dataset(db_session, dataset, sample_layer_metadata):
     """Create a layer that belongs to a dataset."""
     db_layer = Layer(
+        id="test_layer_with_dataset",
         format_="raster",
         type_="continuous",
         path="/data/test.tif",
@@ -372,3 +378,85 @@ def minimal_cog(tmp_path):
         dst.write(data)
 
     return str(filepath)
+
+
+# =============================================================================
+# Analysis Integration Fixtures
+# =============================================================================
+
+
+@pytest.fixture
+def analysis_client(db_session, tmp_path, monkeypatch):
+    """Test client wired for analysis integration tests.
+
+    Creates two GeoTIFFs with uniform, known pixel values in EPSG:4326 covering
+    the standard test polygon area, inserts matching Layer records (id=peat_cog /
+    carbon_cog) into the DB, and patches _s3_uri so rasterio opens the local
+    files directly instead of reaching out to S3.
+    """
+    import numpy as np
+    import rasterio
+    from rasterio.transform import from_bounds
+
+    import services.zonal_stats
+
+    # Extent covers the test polygon (-84.5→-83.5 lon, 56.5→57.5 lat) with buffer.
+    transform = from_bounds(-85.0, 56.0, -83.0, 58.0, 256, 256)
+
+    peat_path = str(tmp_path / "peat_cog.tif")
+    carbon_path = str(tmp_path / "carbon_cog.tif")
+
+    for path, value in [(peat_path, 200.0), (carbon_path, 80.0)]:
+        data = np.full((1, 256, 256), value, dtype=np.float32)
+        profile = {
+            "driver": "GTiff",
+            "dtype": "float32",
+            "width": 256,
+            "height": 256,
+            "count": 1,
+            "crs": "EPSG:4326",
+            "transform": transform,
+        }
+        with rasterio.open(path, "w", **profile) as dst:
+            dst.write(data)
+
+    db_category = Category(metadata_={"title": {"en": "Test", "fr": "Test"}})
+    db_session.add(db_category)
+    db_session.flush()
+
+    db_dataset = Dataset(
+        metadata_={"title": {"en": "Test", "fr": "Test"}},
+        category_id=db_category.id,
+    )
+    db_session.add(db_dataset)
+    db_session.flush()
+
+    db_session.add_all([
+        Layer(
+            id="peat_cog",
+            format_="raster",
+            path=peat_path,
+            unit="cm",
+            metadata_={"title": {"en": "Peat Depth", "fr": "Profondeur de la Tourbe"}},
+            dataset_id=db_dataset.id,
+        ),
+        Layer(
+            id="carbon_cog",
+            format_="raster",
+            path=carbon_path,
+            unit="kg/m²",
+            metadata_={"title": {"en": "Carbon Storage", "fr": "Stockage de Carbone"}},
+            dataset_id=db_dataset.id,
+        ),
+    ])
+    db_session.flush()
+
+    # Return the local path as-is so rasterio opens it directly.
+    monkeypatch.setattr(services.zonal_stats, "_s3_uri", lambda db_path, bucket: db_path)
+
+    def override_get_db():
+        yield db_session
+
+    app.dependency_overrides[get_db] = override_get_db
+    yield TestClient(app, raise_server_exceptions=False)
+    app.dependency_overrides.clear()

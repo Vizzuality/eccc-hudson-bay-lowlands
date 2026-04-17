@@ -12,7 +12,6 @@ dependencies = [
     "shapely>=2.0",
     "pyproj>=3.6",
     "exactextract>=0.2",
-    "pandas>=3.0",
 ]
 
 [tool.uv]

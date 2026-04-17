@@ -1,6 +1,7 @@
 """Zonal statistics computation service."""
 
 import logging
+import math
 from typing import Any
 
 import numpy as np
@@ -41,29 +42,19 @@ def _s3_uri(db_path: str, bucket: str) -> str:
 
 
 def _optimal_overview_level(src: rasterio.DatasetReader, geom) -> int | None:
-    """Return the 0-based overview level index whose pixel count best matches the polygon extent.
+    """Return the 0-based overview level where polygon pixel count fits within one raster block.
 
-    Targets a pixel count close to one COG block (512×512). Returns None when
-    no overviews exist or native resolution is already close enough.
+    Solves polygon_pixels <= block_pixels / 4^(level+1) for the smallest valid level.
+    Returns None when native resolution is already appropriate or no overviews exist.
+    Block size is read from the file so this works for both COGs and plain GeoTIFFs.
     """
-    overviews = src.overviews(1)
-    if not overviews:
-        return None
-
-    bounds = geom.bounds
-    native_px = ((bounds[2] - bounds[0]) / src.res[0]) * ((bounds[3] - bounds[1]) / src.res[1])
-    target = 512 * 512
-
-    best_level: int | None = None
-    best_diff = abs(native_px - target)
-
-    for i, factor in enumerate(overviews):
-        diff = abs((native_px / factor**2) - target)
-        if diff < best_diff:
-            best_diff = diff
-            best_level = i
-
-    return best_level
+    n_overviews = len(src.overviews(1))
+    raster_res_area = math.prod(src.res)
+    polygon_pixels = geom.area / raster_res_area
+    block_pixels = math.prod(src.block_shapes[0]) if src.block_shapes else 512 * 512
+    level = math.ceil(math.log(max(1, polygon_pixels / block_pixels), 4)) - 1
+    level = min(level, n_overviews - 1 if n_overviews > 0 else -1)
+    return level if level >= 0 else None
 
 
 def _run_exact_extract(path: str, geom_4326, ops: list[str]) -> dict[str, Any]:
@@ -73,8 +64,6 @@ def _run_exact_extract(path: str, geom_4326, ops: list[str]) -> dict[str, Any]:
     native CRS (read from the file) before extraction.
 
     Returns a flat dict of operation results keyed by op name.
-    Scalar ops (mean, max, sum) produce floats; array ops (values, coverage)
-    produce numpy arrays.
     """
     with rasterio.open(path) as src:
         native_crs = src.crs.to_string()
@@ -87,12 +76,12 @@ def _run_exact_extract(path: str, geom_4326, ops: list[str]) -> dict[str, Any]:
 
     with rasterio.open(path, **open_kwargs) as src:
         vec = {"type": "Feature", "geometry": mapping(geom), "properties": {}}
-        df = exact_extract(src, vec, ops, output="pandas")
+        results = exact_extract(src, vec, ops)
 
-    if df.empty:
+    if not results or not results[0].get("properties"):
         return {}
 
-    return df.iloc[0].to_dict()
+    return results[0]["properties"]
 
 
 def _histogram(values: Any, weights: Any, n_bins: int = 10) -> list[dict]:

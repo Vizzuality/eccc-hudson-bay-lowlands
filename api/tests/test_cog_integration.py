@@ -206,6 +206,7 @@ def test_cog_full_flow_with_layer_path(cog_client, db_session, sample_category_m
     db_session.flush()
 
     db_layer = Layer(
+        id="cog_test_layer",
         format_="raster",
         type_="continuous",
         path="temperature/2024.tif",
