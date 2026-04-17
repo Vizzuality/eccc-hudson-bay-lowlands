@@ -12,7 +12,7 @@ class LayerSchema(BaseModel):
         "json_schema_extra": {
             "examples": [
                 {
-                    "id": 1,
+                    "id": "temperature_2024_cog",
                     "format": "raster",
                     "type": "continuous",
                     "path": "temperature/mean_annual_2024_cog.tif",
@@ -46,7 +46,7 @@ class LayerSchema(BaseModel):
         }
     }
 
-    id: int = Field(description="Unique layer identifier")
+    id: str = Field(description="Unique layer identifier")
     format: str = Field(description="Data format (e.g., 'cog', 'geojson', 'pmtiles')")
     type: str | None = Field(default=None, description="Layer type (e.g., 'raster', 'vector')")
     path: str = Field(description="Path or URL to the geospatial data file")
