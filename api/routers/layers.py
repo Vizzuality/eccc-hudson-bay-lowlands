@@ -58,7 +58,7 @@ def list_layers(
     responses={404: {"description": "Layer not found"}},
 )
 def get_layer(
-    layer_id: int,
+    layer_id: str,
     db: Annotated[Session, Depends(get_db)],
 ) -> LayerSchema:
     """Get a single layer by ID."""
