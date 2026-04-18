@@ -3,6 +3,7 @@
 import logging
 from typing import Annotated
 
+import rasterio.errors
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -37,7 +38,7 @@ router = APIRouter(tags=["Analysis"])
     responses={
         200: {"description": "Geometry is valid and ready for analysis"},
         422: {"description": "Geometry failed one or more validation checks"},
-        503: {"description": "S3_BUCKET_NAME is not configured"},
+        500: {"description": "Analysis failed due to an internal error"},
     },
 )
 def analyze(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> AnalysisResponse:
@@ -49,7 +50,8 @@ def analyze(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> Ana
 
     settings = get_settings()
     if not settings.s3_bucket_name:
-        raise HTTPException(status_code=503, detail="S3_BUCKET_NAME is not configured")
+        logger.error("S3_BUCKET_NAME is not configured")
+        raise HTTPException(status_code=500, detail="Analysis is unavailable")
 
     raster_layers = db.execute(
         select(Layer.id, Layer.path)
@@ -57,5 +59,9 @@ def analyze(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> Ana
     ).all()
     logger.info("Retrieved %d raster layers", len(raster_layers))
 
-    result = compute_zonal_stats(geom, raster_layers, settings.s3_bucket_name)
+    try:
+        result = compute_zonal_stats(geom, raster_layers, settings.s3_bucket_name)
+    except rasterio.errors.RasterioIOError as e:
+        logger.error("Failed to read raster data: %s", e)
+        raise HTTPException(status_code=500, detail="Analysis is unavailable")
     return AnalysisResponse(peat_carbon=result["peat_carbon"])
