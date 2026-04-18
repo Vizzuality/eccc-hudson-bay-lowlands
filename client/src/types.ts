@@ -99,6 +99,4 @@ export interface TileInfoResponse {
   center: number[];
 }
 
-export interface AnalysisResponse {
-  status: "ok";
-}
+export type { AnalysisResult as AnalysisResponse } from "@/containers/analysis/types";

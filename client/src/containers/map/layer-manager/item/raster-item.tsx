@@ -13,7 +13,7 @@ import { queryKeys } from "@/lib/query-keys";
 import type { LayerResponse, TileInfoResponse } from "@/types";
 
 interface RasterLayerManagerItemProps {
-  id: number;
+  id: string;
   settings: Record<string, unknown>;
   beforeId?: string;
 }

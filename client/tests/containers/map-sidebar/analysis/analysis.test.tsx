@@ -13,6 +13,10 @@ vi.mock("next/navigation", () => ({
   useRouter: vi.fn(() => ({ push: mockPush })),
 }));
 
+vi.mock("@/hooks/use-analysis-settings", () => ({
+  useAnalysisResult: () => mockAnalysisResult,
+}));
+
 const renderAnalysis = () => {
   return render(
     <NextIntlClientProvider locale="en" messages={messages}>

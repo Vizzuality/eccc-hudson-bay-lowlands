@@ -14,14 +14,17 @@ import AnalysisNavigation from "@/containers/analysis/navigation";
 import type { AnalysisResult } from "@/containers/analysis/types";
 import WidgetSection from "@/containers/analysis/widget-section";
 import CloseDialog from "@/containers/map-sidebar/analysis/close-dialog";
-import { mockAnalysisResult } from "@/containers/map-sidebar/analysis/mockData";
 import ShareButton from "@/containers/share-button";
 import Widget from "@/containers/widgets";
 import ShareWidget from "@/containers/widgets/share";
+import { useAnalysisResult } from "@/hooks/use-analysis-settings";
 
 function AnalysisPanel({ onLeaveRequest }: { onLeaveRequest: () => void }) {
   const t = useTranslations("analysis");
   const viewportRef = useAnalysisViewportRef();
+  const analysisResult = useAnalysisResult();
+
+  if (!analysisResult) return null;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -55,10 +58,10 @@ function AnalysisPanel({ onLeaveRequest }: { onLeaveRequest: () => void }) {
 
       <ScrollArea className="min-h-0 flex-1 px-6" viewportRef={viewportRef}>
         <section className="space-y-4">
-          {(Object.keys(mockAnalysisResult) as (keyof AnalysisResult)[]).map(
+          {(Object.keys(analysisResult) as (keyof AnalysisResult)[]).map(
             (id) => (
               <WidgetSection key={`analysis-widget-section-${id}`} id={id}>
-                <Widget id={id} data={mockAnalysisResult} />
+                <Widget id={id} data={analysisResult} />
               </WidgetSection>
             ),
           )}

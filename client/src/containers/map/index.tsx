@@ -144,9 +144,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
                 });
               }}
               onRemove={(id) => {
-                setLayerIds(
-                  layerIds.filter((layerId) => layerId !== id),
-                );
+                setLayerIds(layerIds.filter((layerId) => layerId !== id));
               }}
             />
           ))}
