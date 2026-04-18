@@ -26,6 +26,7 @@ vi.mock("@/hooks/use-analysis-settings", () => ({
     { locationType: "draw" as const, geometry: null },
     mockSetAnalysisSettings,
   ],
+  useSetAnalysisResult: () => vi.fn(),
 }));
 
 const mockRedraw = vi.fn();

@@ -68,12 +68,12 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
     const lSettingsKeys = Object.keys(layersSettings || {});
 
     lSettingsKeys.forEach((key) => {
-      if (layerIds.includes(Number(key))) return;
+      if (layerIds.includes(key)) return;
 
       setTimeout(() => {
         setLayersSettings((prev) => {
           const current = { ...prev } as LayersSettings<unknown>;
-          delete current[Number(key)];
+          delete current[key];
           return current;
         });
       }, 0);
@@ -123,7 +123,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
         <MapLegend
           sortable={{ enabled: true, handle: true }}
           onChangeOrder={(v) => {
-            setLayerIds(v.map(Number).toReversed());
+            setLayerIds(v.toReversed());
           }}
         >
           {layerIds.toReversed().map((id, index) => (
@@ -144,9 +144,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
                 });
               }}
               onRemove={(id) => {
-                setLayerIds(
-                  layerIds.filter((layerId) => layerId !== Number(id)),
-                );
+                setLayerIds(layerIds.filter((layerId) => layerId !== id));
               }}
             />
           ))}

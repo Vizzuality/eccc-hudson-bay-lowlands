@@ -25,7 +25,7 @@ MINIMAL_METADATA = {
                     },
                     "layers": [
                         {
-                            "id": None,
+                            "id": "layer_a",
                             "format": "raster",
                             "path": "/data/test/layer_a.tif",
                             "type": "choropleth",
@@ -51,7 +51,7 @@ MINIMAL_METADATA = {
                             },
                         },
                         {
-                            "id": None,
+                            "id": "layer_b",
                             "format": "vector",
                             "path": "test.vector_id",
                             "type": "",
@@ -85,7 +85,7 @@ MINIMAL_METADATA = {
                             },
                         },
                         {
-                            "id": None,
+                            "id": "layer_c",
                             "format": "raster",
                             "path": "/data/test/layer_c.tif",
                             "type": "categorical",

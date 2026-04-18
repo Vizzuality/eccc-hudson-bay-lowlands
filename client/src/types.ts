@@ -68,7 +68,7 @@ export interface LayerConfig {
 }
 
 export interface Layer {
-  id: number;
+  id: string;
   format: string;
   type: string;
   path: string;
@@ -99,6 +99,4 @@ export interface TileInfoResponse {
   center: number[];
 }
 
-export interface AnalysisResponse {
-  status: "ok";
-}
+export type { AnalysisResult as AnalysisResponse } from "@/containers/analysis/types";

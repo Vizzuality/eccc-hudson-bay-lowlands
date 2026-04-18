@@ -61,9 +61,10 @@ def upsert_dataset(session: Session, dataset_data: dict, category_id: int) -> tu
 
 
 def upsert_layer(session: Session, layer_data: dict, dataset_id: int) -> tuple[Layer, bool]:
-    """Find or create a layer by path. Returns (layer, is_new)."""
+    """Find or create a layer by id. Returns (layer, is_new)."""
+    layer_id = layer_data["id"]
     path = layer_data["path"].lstrip("/")
-    stmt = select(Layer).where(Layer.path == path)
+    stmt = select(Layer).where(Layer.id == layer_id)
     existing = session.execute(stmt).scalar_one_or_none()
 
     type_value = normalize_empty_string(layer_data.get("type"))
@@ -74,15 +75,17 @@ def upsert_layer(session: Session, layer_data: dict, dataset_id: int) -> tuple[L
     if existing:
         existing.format_ = layer_data["format"]
         existing.type_ = type_value
+        existing.path = path
         existing.unit = unit_value
         existing.categories = categories_value
         existing.config = config_value
         existing.metadata_ = layer_data["metadata"]
         existing.dataset_id = dataset_id
-        logger.info("    Updated layer: %s", path)
+        logger.info("    Updated layer: %s", layer_id)
         return existing, False
 
     new_layer = Layer(
+        id=layer_id,
         format_=layer_data["format"],
         type_=type_value,
         path=path,
@@ -94,7 +97,7 @@ def upsert_layer(session: Session, layer_data: dict, dataset_id: int) -> tuple[L
     )
     session.add(new_layer)
     session.flush()
-    logger.info("    Created layer: %s", path)
+    logger.info("    Created layer: %s", layer_id)
     return new_layer, True
 
 

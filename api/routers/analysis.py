@@ -1,11 +1,19 @@
 """Analysis endpoint router."""
 
 import logging
+from typing import Annotated
 
-from fastapi import APIRouter
+import rasterio.errors
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
+from config import get_settings
+from db.database import get_db
+from models.layer import Layer
 from schemas.analysis import AnalysisInput, AnalysisResponse
 from services.analysis import HBL_BBOX, MAX_AREA_KM2, MIN_AREA_KM2, validate_geometry
+from services.zonal_stats import compute_zonal_stats
 
 logger = logging.getLogger(__name__)
 
@@ -30,10 +38,30 @@ router = APIRouter(tags=["Analysis"])
     responses={
         200: {"description": "Geometry is valid and ready for analysis"},
         422: {"description": "Geometry failed one or more validation checks"},
+        500: {"description": "Analysis failed due to an internal error"},
     },
 )
-def analyze(body: AnalysisInput) -> AnalysisResponse:
-    """Validate a GeoJSON geometry for zonal statistics analysis."""
+def analyze(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> AnalysisResponse:
+    """Validate geometry, fetch raster layers, and compute zonal statistics."""
     logger.info("POST /analysis received")
-    validate_geometry(body)
-    return AnalysisResponse()
+
+    # Validate geometry first — returns 422 before checking infra config.
+    geom = validate_geometry(body)
+
+    settings = get_settings()
+    if not settings.s3_bucket_name:
+        logger.error("S3_BUCKET_NAME is not configured")
+        raise HTTPException(status_code=500, detail="Analysis is unavailable")
+
+    raster_layers = db.execute(
+        select(Layer.id, Layer.path)
+        .where(Layer.format_ == "raster")
+    ).all()
+    logger.info("Retrieved %d raster layers", len(raster_layers))
+
+    try:
+        result = compute_zonal_stats(geom, raster_layers, settings.s3_bucket_name)
+    except rasterio.errors.RasterioIOError as e:
+        logger.error("Failed to read raster data: %s", e)
+        raise HTTPException(status_code=500, detail="Analysis is unavailable")
+    return AnalysisResponse(peat_carbon=result["peat_carbon"])

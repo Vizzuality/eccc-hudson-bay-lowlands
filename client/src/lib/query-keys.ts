@@ -12,7 +12,7 @@ export const queryKeys = createQueryKeyStore({
   },
   layers: {
     all: null,
-    byId: (id: number) => ({
+    byId: (id: string) => ({
       queryKey: [{ id }],
     }),
   },

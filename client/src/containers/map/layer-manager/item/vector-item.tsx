@@ -5,7 +5,7 @@ import { getVectorLayerConfig } from "@/containers/map/layer-manager/item/utils"
 import type { LayerConfig } from "@/types";
 
 interface VectorLayerManagerItemProps {
-  id: number;
+  id: string;
   path: string;
   settings: Record<string, unknown>;
   config: LayerConfig;

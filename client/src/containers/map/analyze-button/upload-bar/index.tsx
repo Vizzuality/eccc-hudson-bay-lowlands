@@ -12,7 +12,9 @@ import { PopoverContent } from "@/components/ui/popover";
 import RichText from "@/components/ui/rich-text";
 import { MAX_AREA_SIZE_SQUARE_METER } from "@/containers/map/analyze-button/upload-bar/constants";
 import { DESKTOP_MAX_BOUNDS } from "@/containers/map/constants";
-import useAnalysisSettings from "@/hooks/use-analysis-settings";
+import useAnalysisSettings, {
+  useSetAnalysisResult,
+} from "@/hooks/use-analysis-settings";
 import useMapDraw from "@/hooks/use-map-draw";
 import { API } from "@/lib/api";
 import { postAnalysisConfig } from "@/lib/api/config";
@@ -25,7 +27,7 @@ import {
 import type { AnalysisResponse } from "@/types";
 
 const UploadBar = () => {
-  const { mapStatus } = useMapStatus();
+  const { mapStatus, setMapStatus } = useMapStatus();
   const [isDrawing, setIsDrawing] = useState(false);
   const locale = useLocale();
   const t = useTranslations("analysis");
@@ -34,14 +36,14 @@ const UploadBar = () => {
     "area-too-big" | "outside-of-bounds" | "generic-error" | null
   >(null);
   const [{ geometry }, setAnalysisSettings] = useAnalysisSettings();
+  const setAnalysisResult = useSetAnalysisResult();
   const { mutate: postAnalysis, isPending } = useMutation({
     mutationFn: (geometry: GeoJSON.Feature) =>
       API<AnalysisResponse>(postAnalysisConfig(geometry)),
-    onSuccess: () => {
-      setAnalysisSettings((settings) => ({
-        ...settings,
-        geometry: null,
-      }));
+    onSuccess: (data) => {
+      setAnalysisResult(data);
+      setAnalysisSettings((settings) => ({ ...settings, geometry: null }));
+      setMapStatus(MapStatus.analysis);
     },
     onError: () => {
       setDrawError("generic-error");

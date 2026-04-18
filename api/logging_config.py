@@ -18,3 +18,6 @@ def setup_logging(level: str = "INFO") -> None:
     root = logging.getLogger()
     root.setLevel(logging.getLevelName(level.upper()))
     root.addHandler(handler)
+
+    # botocore credential discovery is noisy at INFO — suppress below WARNING.
+    logging.getLogger("botocore.credentials").setLevel(logging.CRITICAL)

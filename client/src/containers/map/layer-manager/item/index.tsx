@@ -11,7 +11,7 @@ import { queryKeys } from "@/lib/query-keys";
 import type { LayerResponse } from "@/types";
 
 interface LayerManagerItemProps {
-  id: number;
+  id: string;
   beforeId?: string;
 }
 

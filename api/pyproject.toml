@@ -11,6 +11,7 @@ dependencies = [
     "psycopg[binary]>=3.0",
     "shapely>=2.0",
     "pyproj>=3.6",
+    "exactextract>=0.2",
 ]
 
 [tool.uv]

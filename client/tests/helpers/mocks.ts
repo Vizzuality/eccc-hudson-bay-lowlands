@@ -35,7 +35,7 @@ export const DATA_LAYERS: NormalizedDataset[] = [
 
 export const LAYERS: Layer[] = [
   {
-    id: 10,
+    id: "10",
     format: "geojson",
     type: "vector",
     path: "/path/10",
@@ -57,7 +57,7 @@ export const LAYERS: Layer[] = [
     },
   },
   {
-    id: 20,
+    id: "20",
     format: "geojson",
     type: "vector",
     path: "/path/20",
