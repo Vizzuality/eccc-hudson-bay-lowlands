@@ -3,7 +3,7 @@ import type { AnalysisResult } from "@/containers/analysis/types";
 export const mockAnalysisResult: AnalysisResult = {
   peat_carbon: {
     unit: "cm",
-    chart: [],
+    chart: {},
     stats: {
       peat_depth_avg: 242,
       peat_depth_max: 680,
@@ -13,7 +13,7 @@ export const mockAnalysisResult: AnalysisResult = {
   },
   water_dynamics: {
     unit: "%",
-    chart: [],
+    chart: {},
     stats: {
       water_perm_perc: 8.3,
       water_ephemeral_perc: 23.5,
@@ -26,7 +26,7 @@ export const mockAnalysisResult: AnalysisResult = {
   },
   flood_susceptibility: {
     unit: "cm",
-    chart: [],
+    chart: {},
     stats: {
       fsi_avg: 50,
       fsi_low_perc: 20,
@@ -36,7 +36,7 @@ export const mockAnalysisResult: AnalysisResult = {
   },
   snow_dynamics: {
     unit: "cm",
-    chart: [],
+    chart: {},
     stats: {
       selected_winter: "2020–2021",
       lengthT_mean: 100,
@@ -45,7 +45,7 @@ export const mockAnalysisResult: AnalysisResult = {
   },
   tree_cover_change: {
     unit: "cm",
-    chart: [],
+    chart: {},
     stats: {
       total_treed_area: 100,
       newly_treed_area: 50,
@@ -55,7 +55,7 @@ export const mockAnalysisResult: AnalysisResult = {
   },
   ecosystem_types: {
     unit: "cm",
-    chart: [],
+    chart: {},
     stats: {
       ecosystem_count: 10,
       dominant_ecosystem: "Forest",

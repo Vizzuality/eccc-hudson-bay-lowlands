@@ -1,7 +1,7 @@
 import type { Translatable } from "@/types";
 
 export interface TimeSeriesDataPoint {
-  x: string;
+  x: number;
   y: number;
 }
 
@@ -16,7 +16,7 @@ export interface WidgetData<
   TStats,
 > {
   unit: string;
-  chart: TChart[];
+  chart: Record<string, TChart[]>;
   stats: TStats;
 }
 export interface PeatCarbonStats {
