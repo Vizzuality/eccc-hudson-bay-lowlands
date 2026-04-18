@@ -10,15 +10,15 @@ import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
 import type { WidgetCardBaseProps } from "@/containers/widgets/types";
 
 const mockData = [
-  { x: "2021", y: 10 },
-  { x: "2022", y: 14 },
-  { x: "2023", y: 18 },
-  { x: "2024", y: 22 },
-  { x: "2025", y: 26 },
-  { x: "2027", y: 30 },
-  { x: "2028", y: 34 },
-  { x: "2029", y: 38 },
-  { x: "2030", y: 42 },
+  { x: 2021, y: 10 },
+  { x: 2022, y: 14 },
+  { x: 2023, y: 18 },
+  { x: 2024, y: 22 },
+  { x: 2025, y: 26 },
+  { x: 2027, y: 30 },
+  { x: 2028, y: 34 },
+  { x: 2029, y: 38 },
+  { x: 2030, y: 42 },
 ];
 
 const chartConfig = {

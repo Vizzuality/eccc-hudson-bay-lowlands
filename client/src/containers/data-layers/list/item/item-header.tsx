@@ -4,7 +4,7 @@ import { useLayerIds } from "@/app/[locale]/url-store";
 import { cn } from "@/lib/utils";
 
 interface ItemHeaderProps {
-  id: number;
+  id: string;
   title: string;
   description: string;
 }

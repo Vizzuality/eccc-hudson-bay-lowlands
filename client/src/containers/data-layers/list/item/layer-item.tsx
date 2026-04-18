@@ -3,7 +3,7 @@ import ItemContainer from "@/containers/data-layers/list/item/item-container";
 import ItemHeader from "@/containers/data-layers/list/item/item-header";
 
 interface LayerItemProps {
-  id: number;
+  id: string;
   title: string;
   description: string;
 }

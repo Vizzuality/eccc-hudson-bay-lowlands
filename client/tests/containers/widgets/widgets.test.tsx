@@ -28,6 +28,7 @@ const widgetCardComponents = [
       <CarbonPeatland
         id="peat_carbon"
         stats={mockAnalysisResult.peat_carbon.stats}
+        chart={mockAnalysisResult.peat_carbon.chart}
       />
     ),
   },

@@ -15,7 +15,9 @@ interface WidgetProps {
 const Widget: FC<WidgetProps> = ({ id, data }) => {
   switch (id) {
     case "peat_carbon":
-      return <CarbonPeatland id={id} stats={data[id].stats} />;
+      return (
+        <CarbonPeatland id={id} stats={data[id].stats} chart={data[id].chart} />
+      );
     case "water_dynamics":
       return (
         <WaterDynamics id={id} unit={data[id].unit} stats={data[id].stats} />

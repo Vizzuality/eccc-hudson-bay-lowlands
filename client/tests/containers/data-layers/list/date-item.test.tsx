@@ -17,14 +17,14 @@ vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
 });
 
 describe("@containers/data-layers/list/date-item", () => {
-  let latestLayerIds: number[];
+  let latestLayerIds: string[];
   let setLayerIdsMock: Mock;
 
   beforeEach(() => {
     vi.clearAllMocks();
     latestLayerIds = [];
     setLayerIdsMock = vi.fn(
-      (updater: number[] | ((ids: number[]) => number[])) => {
+      (updater: string[] | ((ids: string[]) => string[])) => {
         if (typeof updater === "function") {
           latestLayerIds = updater(latestLayerIds);
         } else {
@@ -35,7 +35,7 @@ describe("@containers/data-layers/list/date-item", () => {
     );
   });
 
-  const setupHooks = (selectedLayerIds: number[] = []) => {
+  const setupHooks = (selectedLayerIds: string[] = []) => {
     latestLayerIds = selectedLayerIds.slice();
     (useLayerIds as Mock).mockReturnValue({
       layerIds: latestLayerIds,
@@ -51,7 +51,7 @@ describe("@containers/data-layers/list/date-item", () => {
     );
 
   it("renders radio options for each year range", () => {
-    setupHooks([10]);
+    setupHooks(["10"]);
     renderDateItem();
 
     expect(screen.getByText("2018 - 2019")).toBeInTheDocument();
@@ -60,13 +60,13 @@ describe("@containers/data-layers/list/date-item", () => {
 
   it("replaces the selected layer id when a different year is chosen and the current layer is visible", async () => {
     const user = userEvent.setup();
-    setupHooks([10]);
+    setupHooks(["10"]);
     renderDateItem();
 
     await user.click(screen.getByText("2019 - 2020"));
 
     expect(setLayerIdsMock).toHaveBeenCalledTimes(1);
-    expect(latestLayerIds).toEqual([20]);
+    expect(latestLayerIds).toEqual(["20"]);
   });
 
   it("does not update layer ids when the current layer is not visible", async () => {

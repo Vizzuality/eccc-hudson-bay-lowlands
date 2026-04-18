@@ -27,7 +27,7 @@ const defaultProps: DataLayersListItemProps = {
   onLearnMore: vi.fn(),
 };
 
-function setupHooks(selectedLayerIds: number[] = []) {
+function setupHooks(selectedLayerIds: string[] = []) {
   (useLayerIds as Mock).mockReturnValue({
     layerIds: selectedLayerIds,
     setLayerIds: vi.fn(),
@@ -75,7 +75,7 @@ describe("@containers/data-layers/list/item", () => {
   });
 
   it("shows a badge with selected layer count when layers are active", () => {
-    setupHooks([10]);
+    setupHooks(["10"]);
     renderItem();
     expect(screen.getByText("1")).toBeInTheDocument();
   });
@@ -96,7 +96,7 @@ describe("@containers/data-layers/list/item", () => {
   });
 
   it("renders checked checkboxes for selected layers", async () => {
-    setupHooks([10]);
+    setupHooks(["10"]);
     renderItem();
     await expandAccordion();
 
