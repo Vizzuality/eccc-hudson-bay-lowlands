@@ -21,7 +21,7 @@ export const getLayersConfig: AxiosRequestConfig = {
   },
 };
 
-export const getLayerConfig = (id: number): AxiosRequestConfig => ({
+export const getLayerConfig = (id: string): AxiosRequestConfig => ({
   url: `/layers/${id}`,
 });
 

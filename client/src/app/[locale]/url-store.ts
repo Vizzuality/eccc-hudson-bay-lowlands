@@ -34,7 +34,7 @@ export function useCategory() {
 export function useLayerIds() {
   const [layerIds, setLayerIds] = useQueryState(
     "layers",
-    parseAsArrayOf(parseAsInteger).withDefault([]),
+    parseAsArrayOf(parseAsString).withDefault([]),
   );
 
   return { layerIds, setLayerIds };
