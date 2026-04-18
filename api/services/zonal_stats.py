@@ -2,6 +2,7 @@
 
 import logging
 import math
+from functools import lru_cache
 from typing import Any
 
 import numpy as np
@@ -19,21 +20,14 @@ logger = logging.getLogger(__name__)
 # Internal helpers
 # ─────────────────────────────────────────────────────────────────────────────
 
-_TRANSFORMERS: dict[str, Transformer] = {}
-
-
+@lru_cache(maxsize=None)
 def _transformer(src_crs: str, dst_crs: str) -> Transformer:
-    """Return a cached Transformer for the given CRS pair."""
-    key = f"{src_crs}→{dst_crs}"
-    if key not in _TRANSFORMERS:
-        _TRANSFORMERS[key] = Transformer.from_crs(src_crs, dst_crs, always_xy=True)
-    return _TRANSFORMERS[key]
+    # Built once per CRS pair per process; construction is expensive.
+    return Transformer.from_crs(src_crs, dst_crs, always_xy=True)
 
 
 def _reproject(geom, src_crs: str, dst_crs: str):
-    """Reproject a Shapely geometry between two CRS."""
-    t = _transformer(src_crs, dst_crs)
-    return transform(t.transform, geom)
+    return transform(_transformer(src_crs, dst_crs).transform, geom)
 
 
 def _s3_uri(db_path: str, bucket: str) -> str:
