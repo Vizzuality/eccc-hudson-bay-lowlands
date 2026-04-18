@@ -68,7 +68,7 @@ export interface LayerConfig {
 }
 
 export interface Layer {
-  id: number;
+  id: string;
   format: string;
   type: string;
   path: string;

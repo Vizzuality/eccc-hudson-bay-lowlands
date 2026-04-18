@@ -31,8 +31,8 @@ const MapLegendItem: FC<MapLegendItemProps> = ({
   className,
 }) => {
   const { data: layer, isSuccess: isLayerSuccess } = useQuery({
-    queryKey: queryKeys.layers.byId(Number(id)).queryKey,
-    queryFn: () => API<LayerResponse>(getLayerConfig(Number(id))),
+    queryKey: queryKeys.layers.byId(id).queryKey,
+    queryFn: () => API<LayerResponse>(getLayerConfig(id)),
     placeholderData: (prev) => prev,
   });
   const { getTranslation } = useApiTranslation();
