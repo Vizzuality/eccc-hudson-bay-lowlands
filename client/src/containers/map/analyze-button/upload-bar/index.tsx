@@ -42,7 +42,7 @@ const UploadBar = () => {
       API<AnalysisResponse>(postAnalysisConfig(geometry)),
     onSuccess: (data) => {
       setAnalysisResult(data);
-      setAnalysisSettings((settings) => ({ ...settings, geometry: null }));
+      // setAnalysisSettings((settings) => ({ ...settings, geometry: null }));
       setMapStatus(MapStatus.analysis);
     },
     onError: () => {
@@ -91,6 +91,7 @@ const UploadBar = () => {
 
   const { redraw } = useMapDraw({
     enabled: mapStatus === MapStatus.upload,
+    styleVariant: mapStatus === MapStatus.analysis ? "analysis" : "draw",
     geometry: geometry ?? undefined,
     onCreate: onUpdateGeometry,
     onUpdate: onUpdateGeometry,

@@ -11,6 +11,9 @@ import {
 
 import type { convertFilesToGeojson } from "@/lib/utils/geometry-upload";
 
+/** `draw`: green stroke while editing. `analysis`: dark transparent fill + white border + inset glow. */
+export type MapDrawStyleVariant = "draw" | "analysis";
+
 export interface UseMapboxDrawProps {
   /** When false, drawing is disabled (no polygon vertices can be added). */
   enabled?: boolean;
@@ -21,124 +24,169 @@ export interface UseMapboxDrawProps {
   onDelete?: (evt: { features: Feature[] }) => void;
   /** Called when the user clicks the map to draw while in polygon draw mode (first vertex and onward). */
   onDrawingStart?: () => void;
+  /** Polygon appearance when geometry is shown after analysis (vs. while drawing). */
+  styleVariant?: MapDrawStyleVariant;
 }
 
 // See https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/EXAMPLES.md
 // Shape tokens (Mapbox GL layers cannot use CSS box-shadow; inset glow is approximated with line-blur + offset).
 const SHAPE_FILL = "rgba(16, 185, 129, 0.10)";
 const SHAPE_STROKE = "rgb(16, 185, 129)";
+/** Semi-transparent dark overlay on the polygon interior (analysis view). */
+const ANALYSIS_FILL_OVERLAY = "rgba(0, 0, 0, 0.35)";
+const ANALYSIS_BORDER = "#fff";
 const SHAPE_STROKE_WIDTH = 2;
 const SHAPE_INSET_LIGHT = "rgba(255, 255, 255, 0.25)";
 /** Blur radius approximating box-shadow: 0 4px 5.3px inset */
 const SHAPE_INSET_BLUR = 2.65;
 
-export const DRAW_STYLES: (
+export function getDrawStyles(
+  variant: MapDrawStyleVariant = "draw",
+): (
   | Omit<FillLayerSpecification, "source">
   | Omit<LineLayerSpecification, "source">
   | Omit<CircleLayerSpecification, "source">
-)[] = [
-  {
-    id: "gl-draw-line",
-    type: "line",
-    filter: ["all", ["==", "$type", "LineString"], ["!=", "mode", "static"]],
-    layout: {
-      "line-cap": "round",
-      "line-join": "round",
+)[] {
+  const isAnalysis = variant === "analysis";
+  const polygonStroke = isAnalysis ? ANALYSIS_BORDER : SHAPE_STROKE;
+  const polygonFill = isAnalysis ? ANALYSIS_FILL_OVERLAY : SHAPE_FILL;
+
+  // Analysis renders in "static" mode (locked, no handles); draw variants exclude static.
+  const polygonFilter: FillLayerSpecification["filter"] = isAnalysis
+    ? ["all", ["==", "$type", "Polygon"]]
+    : ["all", ["==", "$type", "Polygon"], ["!=", "mode", "static"]];
+  const lineFilter: LineLayerSpecification["filter"] = isAnalysis
+    ? ["all", ["==", "$type", "LineString"]]
+    : ["all", ["==", "$type", "LineString"], ["!=", "mode", "static"]];
+
+  return [
+    {
+      id: "gl-draw-line",
+      type: "line",
+      filter: lineFilter,
+      layout: {
+        "line-cap": "round",
+        "line-join": "round",
+      },
+      paint: {
+        "line-color": polygonStroke,
+        "line-width": SHAPE_STROKE_WIDTH,
+      },
     },
-    paint: {
-      "line-color": SHAPE_STROKE,
-      "line-width": SHAPE_STROKE_WIDTH,
+    {
+      id: "gl-draw-polygon",
+      type: "fill",
+      filter: polygonFilter,
+      paint: {
+        "fill-color": isAnalysis
+          ? polygonFill
+          : [
+              "case",
+              ["==", ["get", "active"], "true"],
+              polygonFill,
+              "rgba(0, 0, 0, 0)",
+            ],
+        "fill-outline-color": "rgba(0, 0, 0, 0)",
+      },
     },
-  },
-  {
-    id: "gl-draw-polygon",
-    type: "fill",
-    filter: ["all", ["==", "$type", "Polygon"], ["!=", "mode", "static"]],
-    paint: {
-      "fill-color": [
-        "case",
-        ["==", ["get", "active"], "true"],
-        SHAPE_FILL,
-        "rgba(0, 0, 0, 0)",
+    {
+      id: "gl-draw-line-active-inset",
+      type: "line",
+      filter: polygonFilter,
+      layout: {
+        "line-cap": "round",
+        "line-join": "round",
+      },
+      paint: {
+        "line-color": SHAPE_INSET_LIGHT,
+        "line-width": SHAPE_STROKE_WIDTH,
+        "line-blur": SHAPE_INSET_BLUR,
+        "line-offset": -1,
+      },
+    },
+    {
+      id: "gl-draw-line-active",
+      type: "line",
+      filter: polygonFilter,
+      layout: {
+        "line-cap": "round",
+        "line-join": "round",
+      },
+      paint: {
+        "line-color": polygonStroke,
+        "line-width": SHAPE_STROKE_WIDTH,
+      },
+    },
+    {
+      id: "gl-draw-midpoints",
+      type: "circle",
+      filter: ["all", ["==", "$type", "Point"], ["==", "meta", "midpoint"]],
+      paint: {
+        "circle-radius": 4,
+        "circle-color": "#000",
+      },
+    },
+    {
+      id: "gl-draw-midpoints-inner",
+      type: "circle",
+      filter: ["all", ["==", "$type", "Point"], ["==", "meta", "midpoint"]],
+      paint: {
+        "circle-radius": 2.5,
+        "circle-color": "#fff",
+      },
+    },
+    {
+      id: "gl-draw-points",
+      type: "circle",
+      filter: [
+        "all",
+        ["!=", "mode", "static"],
+        ["!=", "mode", "simple_select"],
+        ["!=", "meta", "midpoint"],
       ],
-      "fill-outline-color": "rgba(0, 0, 0, 0)",
+      paint: {
+        "circle-radius": 6,
+        "circle-color": "#000",
+      },
     },
+    {
+      id: "gl-draw-points-inner",
+      type: "circle",
+      filter: [
+        "all",
+        ["!=", "mode", "static"],
+        ["!=", "mode", "simple_select"],
+        ["!=", "meta", "midpoint"],
+      ],
+      paint: {
+        "circle-radius": 4,
+        "circle-color": "#fff",
+      },
+    },
+  ];
+}
+
+/** Default draw styles (green stroke while editing). */
+export const DRAW_STYLES = getDrawStyles("draw");
+
+/**
+ * Read-only mode: renders features without any interaction, selection, or handles.
+ * Mapbox GL Draw 1.5.1 doesn't ship a built-in static mode, so we register a minimal one.
+ * See: https://github.com/mapbox/mapbox-gl-draw-static-mode
+ */
+const STATIC_MODE: MapboxDraw.DrawCustomMode = {
+  onSetup() {
+    this.setActionableState({
+      trash: false,
+      combineFeatures: false,
+      uncombineFeatures: false,
+    });
+    return {};
   },
-  {
-    id: "gl-draw-line-active-inset",
-    type: "line",
-    filter: ["all", ["==", "$type", "Polygon"], ["!=", "mode", "static"]],
-    layout: {
-      "line-cap": "round",
-      "line-join": "round",
-    },
-    paint: {
-      "line-color": SHAPE_INSET_LIGHT,
-      "line-width": SHAPE_STROKE_WIDTH,
-      "line-blur": SHAPE_INSET_BLUR,
-      "line-offset": -1,
-    },
+  toDisplayFeatures(_state, geojson, display) {
+    display(geojson);
   },
-  {
-    id: "gl-draw-line-active",
-    type: "line",
-    filter: ["all", ["==", "$type", "Polygon"], ["!=", "mode", "static"]],
-    layout: {
-      "line-cap": "round",
-      "line-join": "round",
-    },
-    paint: {
-      "line-color": SHAPE_STROKE,
-      "line-width": SHAPE_STROKE_WIDTH,
-    },
-  },
-  {
-    id: "gl-draw-midpoints",
-    type: "circle",
-    filter: ["all", ["==", "$type", "Point"], ["==", "meta", "midpoint"]],
-    paint: {
-      "circle-radius": 4,
-      "circle-color": "#000",
-    },
-  },
-  {
-    id: "gl-draw-midpoints-inner",
-    type: "circle",
-    filter: ["all", ["==", "$type", "Point"], ["==", "meta", "midpoint"]],
-    paint: {
-      "circle-radius": 2.5,
-      "circle-color": "#fff",
-    },
-  },
-  {
-    id: "gl-draw-points",
-    type: "circle",
-    filter: [
-      "all",
-      ["!=", "mode", "static"],
-      ["!=", "mode", "simple_select"],
-      ["!=", "meta", "midpoint"],
-    ],
-    paint: {
-      "circle-radius": 6,
-      "circle-color": "#000",
-    },
-  },
-  {
-    id: "gl-draw-points-inner",
-    type: "circle",
-    filter: [
-      "all",
-      ["!=", "mode", "static"],
-      ["!=", "mode", "simple_select"],
-      ["!=", "meta", "midpoint"],
-    ],
-    paint: {
-      "circle-radius": 4,
-      "circle-color": "#fff",
-    },
-  },
-];
+};
 
 const NOOP = () => {};
 
@@ -150,15 +198,17 @@ export default function useMapDraw(props?: UseMapboxDrawProps) {
   const enabled = props?.enabled ?? true;
   const enabledRef = useRef(enabled);
   enabledRef.current = enabled;
+  const styleVariant = props?.styleVariant ?? "draw";
 
   const draw = useMemo(
     () =>
       new MapboxDraw({
-        defaultMode: "draw_polygon",
+        defaultMode: styleVariant === "analysis" ? "static" : "draw_polygon",
         displayControlsDefault: false,
-        styles: DRAW_STYLES,
+        styles: getDrawStyles(styleVariant),
+        modes: { ...MapboxDraw.modes, static: STATIC_MODE },
       }),
-    [],
+    [styleVariant],
   );
 
   const redraw = useCallback(() => {
@@ -186,8 +236,12 @@ export default function useMapDraw(props?: UseMapboxDrawProps) {
       map.on("draw.delete", props?.onDelete ?? NOOP);
     }
 
-    if (!enabledRef.current && draw.getMode() !== "simple_select") {
-      draw.changeMode("simple_select");
+    if (!enabledRef.current) {
+      if (styleVariant === "analysis") {
+        if (draw.getMode() !== "static") draw.changeMode("static");
+      } else if (draw.getMode() !== "simple_select") {
+        draw.changeMode("simple_select");
+      }
     }
 
     return () => {
@@ -227,7 +281,9 @@ export default function useMapDraw(props?: UseMapboxDrawProps) {
 
   useEffect(() => {
     if (!enabled) {
-      if (draw.getMode() !== "simple_select") {
+      if (styleVariant === "analysis") {
+        if (draw.getMode() !== "static") draw.changeMode("static");
+      } else if (draw.getMode() !== "simple_select") {
         draw.changeMode("simple_select");
       }
       return;
@@ -237,7 +293,7 @@ export default function useMapDraw(props?: UseMapboxDrawProps) {
     if (!props?.geometry && draw.getMode() !== "draw_polygon") {
       draw.changeMode("draw_polygon");
     }
-  }, [draw, props?.geometry, enabled]);
+  }, [draw, props?.geometry, enabled, styleVariant]);
 
   // Pass the geometry to Mapbox Draw when it has changed
   useEffect(() => {
@@ -248,7 +304,14 @@ export default function useMapDraw(props?: UseMapboxDrawProps) {
       const geometryWithId = { ...props.geometry, id: "geometry" };
       draw.deleteAll();
       draw.add(geometryWithId);
-      draw.changeMode("direct_select", { featureId: `${geometryWithId.id}` });
+      if (styleVariant === "analysis") {
+        // Locked, no handles, no drag.
+        draw.changeMode("static");
+      } else {
+        draw.changeMode("direct_select", {
+          featureId: `${geometryWithId.id}`,
+        });
+      }
       return;
     }
 
@@ -258,7 +321,7 @@ export default function useMapDraw(props?: UseMapboxDrawProps) {
       hadGeometryRef.current = false;
       draw.deleteAll();
     }
-  }, [draw, props?.geometry]);
+  }, [draw, props?.geometry, styleVariant]);
 
   return { redraw };
 }
