@@ -1,8 +1,9 @@
 "use client";
 
 import { XIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import RichText from "@/components/ui/rich-text";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -23,6 +24,13 @@ function AnalysisPanel({ onLeaveRequest }: { onLeaveRequest: () => void }) {
   const t = useTranslations("analysis");
   const viewportRef = useAnalysisViewportRef();
   const analysisResult = useAnalysisResult();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!analysisResult) {
+      router.push("/");
+    }
+  }, [analysisResult, router]);
 
   if (!analysisResult) return null;
 
