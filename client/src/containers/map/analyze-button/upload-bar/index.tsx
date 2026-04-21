@@ -42,7 +42,6 @@ const UploadBar = () => {
       API<AnalysisResponse>(postAnalysisConfig(geometry)),
     onSuccess: (data) => {
       setAnalysisResult(data);
-      // setAnalysisSettings((settings) => ({ ...settings, geometry: null }));
       setMapStatus(MapStatus.analysis);
     },
     onError: () => {
