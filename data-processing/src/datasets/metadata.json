@@ -2012,7 +2012,7 @@
                       "line-color": "#6e6e6e",
                       "line-width": 1
                     },
-                    "source-layer": "ecozones"
+                    "source-layer": "ecozones-49opvn"
                   }
                 ],
                 "params_config": [
@@ -2068,7 +2068,7 @@
                         2
                       ]
                     },
-                    "source-layer": "ecoprovinces"
+                    "source-layer": "ecoprovinces-dq7frf"
                   }
                 ],
                 "params_config": [
@@ -2124,7 +2124,7 @@
                       "line-color": "#6e6e6e",
                       "line-width": 1
                     },
-                    "source-layer": "ecoregions"
+                    "source-layer": "ecoregions-3tft44"
                   }
                 ],
                 "params_config": [
@@ -2180,7 +2180,7 @@
                         2
                       ]
                     },
-                    "source-layer": "ecodistricts"
+                    "source-layer": "ecodistricts-d4x3uv"
                   }
                 ],
                 "params_config": [
