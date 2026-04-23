@@ -21,7 +21,7 @@ dev-dependencies = [
     "ruff",
     "moto[s3]",
     "boto3",
-    "pillow",
+    "pillow>=12.2.0",
 ]
 
 [tool.ruff]
