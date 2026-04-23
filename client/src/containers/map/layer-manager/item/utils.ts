@@ -26,10 +26,10 @@ const toIntervalColormap = (
     return [[value, upperBound], hexToRgba(color)];
   });
 
-const GRADIENT_STEPS = 128;
+const GRADIENT_STEPS = 24;
 
 /** Linearly interpolate between colormap stops to produce interval entries.
- *  Returns 128 intervals covering the full data range with smoothly graded colors.
+ *  Returns 24 intervals covering the full data range with smoothly graded colors.
  *  Uses TiTiler interval format so no `rescale` param is needed.
  */
 export const interpolateColormap = (
