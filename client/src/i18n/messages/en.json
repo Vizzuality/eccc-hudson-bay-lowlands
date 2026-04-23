@@ -82,6 +82,10 @@
     },
     "peat_carbon": {
       "title": "Carbon and Peatlands",
+      "chart-peat-depth": "Histogram of peat depth",
+      "chart-peat-depth-label": "Frequency",
+      "chart-carbon-density": "Carbon Density",
+      "chart-carbon-density-label": "Carbon Density",
       "description": "<p>Within your selected area, peat depth averages <b>{peat_depth_avg} cm</b>, reaching up to <b>{peat_depth_max} cm</b>, storing about <b>{carbon_total} Mt</b> of carbon at an average density of <b>{carbon_density} kg/m²</b>.</p>",
       "more-info": {
         "title": "Why are Carbon & Peatlands Important?",
@@ -90,6 +94,9 @@
     },
     "water_dynamics": {
       "title": "Water Dynamics",
+      "trend-wetter": "Wetter",
+      "trend-drier": "Dried",
+      "trend-stable": "Stable",
       "description": "<p>Long-term observations (1984-2023) indicate that, on average, <b>{water_perm_perc}%</b> of the area is permanent water, <b>{water_ephemeral_perc}%</b> is ephemeral water, and <b>{land_perm_perc}%</b> is permanently dry land, with a mean inundation frequency of <b>{freq_mean}%</b>.</p>",
       "description-2": "<p>Inter-annual trends highlight areas where wetlands are expanding, contracting, or remaining stable, revealing shifts in hydrological dynamics across the landscape. Across the selected area, <b>{trend_wetter_perc}%</b> shows a tendency toward increased water presence, <b>{trend_drier_perc}%</b> toward decreased water presence, and <b>{trend_stable_perc}%</b> remains largely unchanged.</p>",
       "more-info": {
@@ -107,6 +114,9 @@
     },
     "snow_dynamics": {
       "title": "Snow dynamics",
+      "chart-title": "Mean Snow Duration per Winter (days)",
+      "avg-days": "AVG days",
+      "mean-end-date": "Mean end date",
       "description": "<p>Snow cover shapes seasonal conditions and ecosystem processes. For the winter of <b>{selected_winter}</b>, snow persisted for an average of <b>{lengthT_mean} days</b>, typically ending around <b>{endL_mean_date}</b>.</p>",
       "more-info": {
         "title": "Why are snow dynamics important?",

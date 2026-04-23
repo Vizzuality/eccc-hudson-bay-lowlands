@@ -48,9 +48,12 @@ const CarbonPeatland: FC<CarbonPeatlandProps> = ({ id, stats, chart }) => {
         {t("more-info.description")}
       </MoreInfoTooltip>
       <VerticalBarChart
-        title="Histogram of peat depth"
+        title={t("chart-peat-depth")}
         chartConfig={{
-          y: { label: "Frequency", color: "var(--color-amber-600)" },
+          y: {
+            label: t("chart-peat-depth-label"),
+            color: "var(--color-amber-600)",
+          },
         }}
         data={(chart.peat_cog ?? []).map((p) => ({
           x: String(p.x),
@@ -58,9 +61,12 @@ const CarbonPeatland: FC<CarbonPeatlandProps> = ({ id, stats, chart }) => {
         }))}
       />
       <VerticalBarChart
-        title="Carbon Density"
+        title={t("chart-carbon-density")}
         chartConfig={{
-          y: { label: "Carbon Density", color: "var(--color-yellow-500)" },
+          y: {
+            label: t("chart-carbon-density-label"),
+            color: "var(--color-yellow-500)",
+          },
         }}
         data={(chart.carbon_cog ?? []).map((p) => ({
           x: String(p.x),
