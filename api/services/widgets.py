@@ -37,7 +37,7 @@ WIDGET_CONFIG: dict[str, WidgetDef] = {
                 "ops": ["sum", "mean", "values", "coverage"],
                 "chart": True,
                 "stats": [
-                    {"name": "carbon_total", "op": "sum", "unit": "tonnes", "scale": 0.9, "precision": 2},
+                    {"name": "carbon_total", "op": "sum", "unit": "Mt", "scale": 0.0000009, "precision": 2},
                     {"name": "carbon_density", "op": "mean", "unit": "kg/m²", "precision": 2},
                 ],
             },
