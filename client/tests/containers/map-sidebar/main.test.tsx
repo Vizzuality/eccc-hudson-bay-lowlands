@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
-import { useLayerIds } from "@/app/[locale]/url-store";
+import { DEFAULT_LAYER_IDS, useLayerIds } from "@/app/[locale]/url-store";
 import Main from "@/containers/map-sidebar/main";
 import messages from "@/i18n/messages/en.json";
 import {
@@ -117,7 +117,9 @@ describe("@containers/map-sidebar/main", () => {
     setupHooks([1, 2, 3]);
     renderMain();
 
-    expect(capturedBottomBarProps.activeDataCount).toBe(3);
+    expect(capturedBottomBarProps.activeDataCount).toBe(
+      3 - DEFAULT_LAYER_IDS.length,
+    );
   });
 
   it("clears all layers when onRemoveAll is called", () => {
@@ -127,6 +129,6 @@ describe("@containers/map-sidebar/main", () => {
     const onRemoveAll = capturedBottomBarProps.onRemoveAll as () => void;
     onRemoveAll();
 
-    expect(mockSetLayerIds).toHaveBeenCalledWith([]);
+    expect(mockSetLayerIds).toHaveBeenCalledWith(DEFAULT_LAYER_IDS);
   });
 });
