@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -11,6 +12,7 @@ const DataLayersBottomBar: FC<DataLayersBottomBarProps> = ({
   activeDataCount,
   onRemoveAll,
 }) => {
+  const t = useTranslations("data-layers.bottom-bar");
   return (
     <section
       className={cn({
@@ -19,14 +21,14 @@ const DataLayersBottomBar: FC<DataLayersBottomBarProps> = ({
         hidden: activeDataCount === 0,
       })}
     >
-      <p className="text-xs">Active data ({activeDataCount})</p>
+      <p className="text-xs">{t("active-data", { count: activeDataCount })}</p>
       <Button
         variant="ghost"
         size="sm"
         className="text-2xs text-accent-foreground"
         onClick={onRemoveAll}
       >
-        Remove all
+        {t("remove-all")}
       </Button>
     </section>
   );

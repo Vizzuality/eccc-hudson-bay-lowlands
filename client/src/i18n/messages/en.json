@@ -44,6 +44,10 @@
       "source": "Source",
       "citation": "Citation",
       "ok": "OK"
+    },
+    "bottom-bar": {
+      "active-data": "Active data ({count})",
+      "remove-all": "Remove all"
     }
   },
   "analysis": {
@@ -54,6 +58,9 @@
     "upload": "Upload",
     "clear": "Clear",
     "confirm": "Confirm",
+    "analyze-area": "Analyze area",
+    "cancel": "Cancel",
+    "datasets": "Datasets",
     "click-to-select": "Click to select your area of interest and get detailed insights on it.",
     "area-too-big": "<p>The area is too big: the maximum allowed size is <b>{area_sq_km}</b> square kilometers. Please try drawing a smaller area.</p>",
     "outside-of-bounds": "<p>The area is at least partially outside of Canada. Please try drawing an area limited to Canada.</p>",

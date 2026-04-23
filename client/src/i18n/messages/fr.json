@@ -44,6 +44,10 @@
       "source": "Source",
       "citation": "Citation",
       "ok": "OK"
+    },
+    "bottom-bar": {
+      "active-data": "Données actives ({count})",
+      "remove-all": "Tout supprimer"
     }
   },
   "analysis": {
@@ -54,6 +58,9 @@
     "upload": "Téléverser",
     "clear": "Effacer",
     "confirm": "Confirmer",
+    "analyze-area": "Analyser la zone",
+    "cancel": "Annuler",
+    "datasets": "Jeux de données",
     "click-to-select": "Cliquez pour sélectionner votre zone d'intérêt et obtenir des informations détaillées.",
     "area-too-big": "<p>La zone est trop grande : la taille maximale autorisée est de <b>{area_sq_km}</b> kilomètres carrés. Veuillez essayer de dessiner une zone plus petite.</p>",
     "outside-of-bounds": "<p>La zone se trouve au moins partiellement à l'extérieur du Canada. Veuillez essayer de dessiner une zone limitée au Canada.</p>",
