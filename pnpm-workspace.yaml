@@ -11,6 +11,7 @@ overrides:
   picomatch: "4.0.4"
   undici: "7.24.1"
   "@xmldom/xmldom": "0.9.10"
+  "axios>follow-redirects": "1.16.0"
 
 catalog:
   "@biomejs/biome": "2.2.0"
