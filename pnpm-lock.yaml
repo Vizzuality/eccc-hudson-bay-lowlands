@@ -20,7 +20,7 @@ overrides:
   happy-dom: 20.8.9
   picomatch: 4.0.4
   undici: 7.24.1
-  '@xmldom/xmldom': 0.9.9
+  '@xmldom/xmldom': 0.9.10
 
 importers:
 
@@ -2845,8 +2845,8 @@ packages:
   '@vitest/utils@4.1.2':
     resolution: {integrity: sha512-xw2/TiX82lQHA06cgbqRKFb5lCAy3axQ4H4SoUFhUsg+wztiet+co86IAMDtF6Vm1hc7J6j09oh/rgDn+JdKIQ==}
 
-  '@xmldom/xmldom@0.9.9':
-    resolution: {integrity: sha512-qycIHAucxy/LXAYIjmLmtQ8q9GPnMbnjG1KXhWm9o5sCr6pOYDATkMPiTNa6/v8eELyqOQ2FsEqeoFYmgv/gJg==}
+  '@xmldom/xmldom@0.9.10':
+    resolution: {integrity: sha512-A9gOqLdi6cV4ibazAjcQufGj0B1y/vDqYrcuP6d/6x8P27gRS8643Dj9o1dEKtB6O7fwxb2FgBmJS2mX7gpvdw==}
     engines: {node: '>=14.6'}
 
   agent-base@7.1.4:
@@ -5348,7 +5348,7 @@ snapshots:
       '@loaders.gl/loader-utils': 4.4.1(@loaders.gl/core@4.4.1)
       '@loaders.gl/schema': 4.4.1
       '@tmcw/togeojson': 4.7.0
-      '@xmldom/xmldom': 0.9.9
+      '@xmldom/xmldom': 0.9.10
     transitivePeerDependencies:
       - '@75lb/nature'
 
@@ -8012,7 +8012,7 @@ snapshots:
       convert-source-map: 2.0.0
       tinyrainbow: 3.1.0
 
-  '@xmldom/xmldom@0.9.9': {}
+  '@xmldom/xmldom@0.9.10': {}
 
   agent-base@7.1.4: {}
 
