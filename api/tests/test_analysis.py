@@ -386,7 +386,7 @@ def test_carbon_density_matches_uniform_pixel_value(analysis_client):
 
 
 def test_carbon_total_is_positive(analysis_client):
-    """Weighted sum of positive pixel values × 0.9 must be > 0."""
+    """Weighted sum of positive pixel values × 0.0000009 (tonnes → Mt) must be > 0."""
     stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["stats"]
     assert stats["carbon_total"] > 0
 
