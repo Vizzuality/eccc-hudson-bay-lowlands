@@ -1,7 +1,9 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import CloseDialog from "@/containers/map-sidebar/analysis/close-dialog";
+import messages from "@/i18n/messages/en.json";
 
 const mockPush = vi.fn();
 
@@ -15,7 +17,11 @@ describe("@containers/map-sidebar/analysis/close-dialog", () => {
   });
 
   it("renders dialog content when open", () => {
-    render(<CloseDialog open={true} onOpenChange={vi.fn()} />);
+    render(
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <CloseDialog open={true} onOpenChange={vi.fn()} />
+      </NextIntlClientProvider>,
+    );
 
     expect(
       screen.getByRole("dialog", { name: /leave current analysis/i }),
@@ -26,7 +32,11 @@ describe("@containers/map-sidebar/analysis/close-dialog", () => {
   });
 
   it("does not render dialog content when closed", () => {
-    render(<CloseDialog open={false} onOpenChange={vi.fn()} />);
+    render(
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <CloseDialog open={false} onOpenChange={vi.fn()} />
+      </NextIntlClientProvider>,
+    );
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
@@ -34,7 +44,11 @@ describe("@containers/map-sidebar/analysis/close-dialog", () => {
   it("calls onOpenChange(false) when Cancel is clicked", async () => {
     const user = userEvent.setup();
     const onOpenChange = vi.fn();
-    render(<CloseDialog open={true} onOpenChange={onOpenChange} />);
+    render(
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <CloseDialog open={true} onOpenChange={onOpenChange} />
+      </NextIntlClientProvider>,
+    );
 
     const dialog = screen.getByRole("dialog");
     await user.click(within(dialog).getByRole("button", { name: /cancel/i }));
@@ -45,7 +59,11 @@ describe("@containers/map-sidebar/analysis/close-dialog", () => {
   it("navigates to root and closes dialog when 'Clear & go back' is clicked", async () => {
     const user = userEvent.setup();
     const onOpenChange = vi.fn();
-    render(<CloseDialog open={true} onOpenChange={onOpenChange} />);
+    render(
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <CloseDialog open={true} onOpenChange={onOpenChange} />
+      </NextIntlClientProvider>,
+    );
 
     const dialog = screen.getByRole("dialog");
     await user.click(

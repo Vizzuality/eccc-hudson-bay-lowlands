@@ -64,7 +64,15 @@
     "click-to-select": "Cliquez pour sélectionner votre zone d'intérêt et obtenir des informations détaillées.",
     "area-too-big": "<p>La zone est trop grande : la taille maximale autorisée est de <b>{area_sq_km}</b> kilomètres carrés. Veuillez essayer de dessiner une zone plus petite.</p>",
     "outside-of-bounds": "<p>La zone se trouve au moins partiellement à l'extérieur du Canada. Veuillez essayer de dessiner une zone limitée au Canada.</p>",
-    "generic-error": "<p>Une erreur s'est produite lors du traitement de votre demande. Veuillez réessayer.</p>"
+    "generic-error": "<p>Une erreur s'est produite lors du traitement de votre demande. Veuillez réessayer.</p>",
+    "leave-dialog": {
+      "title": "Quitter l'analyse en cours ?",
+      "description-1": "Revenir en arrière effacera votre analyse en cours et vous ramènera à la vue par défaut.",
+      "description-2": "Si vous souhaitez revenir à cette analyse plus tard, vous pouvez la sauvegarder en copiant l'URL avant de partir.",
+      "cancel": "Annuler",
+      "confirm": "Effacer et revenir"
+    },
+    "leave-aria-label": "Quitter l'analyse"
   },
   "widgets": {
     "peat_carbon": {

@@ -64,7 +64,15 @@
     "click-to-select": "Click to select your area of interest and get detailed insights on it.",
     "area-too-big": "<p>The area is too big: the maximum allowed size is <b>{area_sq_km}</b> square kilometers. Please try drawing a smaller area.</p>",
     "outside-of-bounds": "<p>The area is at least partially outside of Canada. Please try drawing an area limited to Canada.</p>",
-    "generic-error": "<p>An error occurred while processing your request. Please try again.</p>"
+    "generic-error": "<p>An error occurred while processing your request. Please try again.</p>",
+    "leave-dialog": {
+      "title": "Leave current analysis?",
+      "description-1": "Going back will clear your current analysis and return you to the default view.",
+      "description-2": "If you want to come back to this analysis later, you can save it by copying the URL before leaving.",
+      "cancel": "Cancel",
+      "confirm": "Clear & go back"
+    },
+    "leave-aria-label": "Leave analysis"
   },
   "widgets": {
     "peat_carbon": {

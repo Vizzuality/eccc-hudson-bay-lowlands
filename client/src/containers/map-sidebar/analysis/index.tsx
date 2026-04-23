@@ -45,7 +45,7 @@ function AnalysisPanel({ onLeaveRequest }: { onLeaveRequest: () => void }) {
             size="icon"
             className="size-14"
             onClick={onLeaveRequest}
-            aria-label="Leave analysis"
+            aria-label={t("leave-aria-label")}
           >
             <XIcon />
           </Button>
