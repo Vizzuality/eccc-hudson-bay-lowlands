@@ -1,4 +1,3 @@
-import math
 import os
 import subprocess
 from pathlib import Path
@@ -9,7 +8,7 @@ import rasterio
 from rasterio.features import shapes
 from rasterio.mask import mask
 from shapely import union_all
-from shapely.geometry import shape, mapping
+from shapely.geometry import mapping, shape
 
 
 def detect_raster_type(geotiff_path: Path, categorical_threshold: int = 20) -> str:
@@ -36,7 +35,6 @@ def convert_to_cog(
     cog_output_path: Path,
     compression: str = "DEFLATE",
     block_size: int = 512,
-    tile_size: int = 256,
 ) -> None:
     """
     Convert a GeoTIFF file to a COG with appropriate overviews, without reprojecting.
@@ -46,7 +44,6 @@ def convert_to_cog(
         cog_output_path (Path): Path where the COG will be written.
         compression (str): Lossless compression method (DEFLATE, LZW, ZSTD).
         block_size (int): Internal tile size (pixels).
-        tile_size (int): Target tile size for computing overview levels (default 256).
     """
     geotiff_path = geotiff_path.resolve()
     cog_output_path = cog_output_path.resolve()
@@ -71,7 +68,7 @@ def convert_to_cog(
         "create",
         "--overview-resampling", overview_resampling,
         "--co", f"COMPRESS={compression}",
-        "--co", "BIGTIFF=YES",
+        "--co", "BIGTIFF=IF_SAFER",
         "--co", f"BLOCKXSIZE={block_size}",
         "--co", f"BLOCKYSIZE={block_size}",
         str(geotiff_path),
@@ -80,12 +77,23 @@ def convert_to_cog(
 
     try:
         subprocess.run(command, check=True, capture_output=True, text=True)
-        print(f"✔ Converted {geotiff_path.name} to COG ({raster_type}, {overview_resampling}")
+        print(f"✔ Converted {geotiff_path.name} to COG ({raster_type}, {overview_resampling})")
     except subprocess.CalledProcessError as e:
         error_msg = e.stderr.strip() if e.stderr else str(e)
         raise RuntimeError(
             f"COG conversion failed for {geotiff_path.name}: {error_msg}"
         ) from e
+
+
+def _default_nodata(dtype: str) -> int | float:
+    """Return a safe nodata sentinel for the given rasterio dtype string."""
+    defaults = {
+        "uint8": 255,
+        "uint16": 65535,
+        "int16": -32768,
+        "int32": -2147483648,
+    }
+    return defaults.get(dtype, -9999.0)
 
 
 def clip_raster_to_vector(
@@ -133,22 +141,7 @@ def clip_raster_to_vector(
         boundary_geojson = mapping(boundary)
 
         # Determine appropriate nodata value if not set
-        original_nodata = src.nodata
-        if original_nodata is None:
-            # For integer dtypes, use a value outside the data range
-            if src.dtypes[0] in ['uint8']:
-                nodata_value = 255
-            elif src.dtypes[0] in ['uint16']:
-                nodata_value = 65535
-            elif src.dtypes[0] in ['int16']:
-                nodata_value = -32768
-            elif src.dtypes[0] in ['int32']:
-                nodata_value = -2147483648
-            else:
-                # For float dtypes
-                nodata_value = -9999.0
-        else:
-            nodata_value = original_nodata
+        nodata_value = src.nodata if src.nodata is not None else _default_nodata(src.dtypes[0])
 
         # Clip the raster
         clipped_image, clipped_transform = mask(
@@ -185,6 +178,7 @@ def batch_clip_rasters(
     """
     Batch clip multiple rasters to a vector boundary.
     Optionally store outputs in a custom folder name under output_dir.
+    Automatically strips "CAN_" prefix from folder names when processing CAN_* patterns.
 
     Args:
         raster_dir (Path): Directory containing input rasters or folders
@@ -223,7 +217,11 @@ def batch_clip_rasters(
                 output_subdir = output_dir / folder_name
             elif raster_file.parent != raster_dir:
                 relative_folder = raster_file.parent.relative_to(raster_dir)
-                output_subdir = output_dir / relative_folder
+                folder_name_str = str(relative_folder)
+                # Automatically strip "CAN_" prefix when processing CAN_* patterns
+                if folder_name_str.startswith("CAN_"):
+                    folder_name_str = folder_name_str[4:]  # Remove "CAN_"
+                output_subdir = output_dir / folder_name_str
             else:
                 output_subdir = output_dir
 

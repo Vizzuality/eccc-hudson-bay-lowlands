@@ -137,5 +137,7 @@ def download_dataset(dataset_name: str, output_dir: str, extract: bool = None, r
 
 # Load JSON
 
-with open("../src/datasets/datasets.json") as f:
+_DATASETS_PATH = Path(__file__).parent.parent / "datasets" / "datasets.json"
+
+with open(_DATASETS_PATH) as f:
     DATASETS = json.load(f)
