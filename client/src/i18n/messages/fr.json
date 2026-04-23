@@ -75,6 +75,11 @@
     "leave-aria-label": "Quitter l'analyse"
   },
   "widgets": {
+    "card": {
+      "download-image": "Télécharger l'image",
+      "more-info": "Plus d'infos",
+      "add-to-map": "Ajouter à la carte"
+    },
     "peat_carbon": {
       "title": "Carbone et tourbières",
       "description": "<p>Dans votre zone sélectionnée, la profondeur de tourbe est en moyenne de <b>{peat_depth_avg} cm</b>, atteignant jusqu'à <b>{peat_depth_max} cm</b>, stockant environ <b>{carbon_total} Mt</b> de carbone à une densité moyenne de <b>{carbon_density} kg/m²</b>.</p>",

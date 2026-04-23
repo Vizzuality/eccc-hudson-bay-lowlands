@@ -1,24 +1,28 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { NextIntlClientProvider } from "next-intl";
 import { describe, expect, it, vi } from "vitest";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
+import messages from "@/i18n/messages/en.json";
 
 describe("@containers/widgets/card", () => {
   it("renders title, optional description, icon, and children", () => {
     render(
-      <TooltipProvider>
-        <WidgetCard
-          title="Water dynamics"
-          description={<span>Some description</span>}
-          icon={<span data-testid="widget-icon">ICON</span>}
-          onDowloadButtonClick={vi.fn()}
-          onInfoButtonClick={vi.fn()}
-          onAddToMapButtonClick={vi.fn()}
-        >
-          <div>Child content</div>
-        </WidgetCard>
-      </TooltipProvider>,
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <TooltipProvider>
+          <WidgetCard
+            title="Water dynamics"
+            description={<span>Some description</span>}
+            icon={<span data-testid="widget-icon">ICON</span>}
+            onDowloadButtonClick={vi.fn()}
+            onInfoButtonClick={vi.fn()}
+            onAddToMapButtonClick={vi.fn()}
+          >
+            <div>Child content</div>
+          </WidgetCard>
+        </TooltipProvider>
+      </NextIntlClientProvider>,
     );
 
     expect(
@@ -31,15 +35,17 @@ describe("@containers/widgets/card", () => {
 
   it("does not render the description when not provided", () => {
     render(
-      <TooltipProvider>
-        <WidgetCard
-          title="Flood susceptibility"
-          icon={<span />}
-          onDowloadButtonClick={vi.fn()}
-          onInfoButtonClick={vi.fn()}
-          onAddToMapButtonClick={vi.fn()}
-        />
-      </TooltipProvider>,
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <TooltipProvider>
+          <WidgetCard
+            title="Flood susceptibility"
+            icon={<span />}
+            onDowloadButtonClick={vi.fn()}
+            onInfoButtonClick={vi.fn()}
+            onAddToMapButtonClick={vi.fn()}
+          />
+        </TooltipProvider>
+      </NextIntlClientProvider>,
     );
 
     expect(
@@ -59,15 +65,17 @@ describe("@containers/widgets/card", () => {
     const onAddToMapButtonClick = vi.fn();
 
     render(
-      <TooltipProvider>
-        <WidgetCard
-          title="Tree cover change"
-          icon={<span />}
-          onDowloadButtonClick={onDowloadButtonClick}
-          onInfoButtonClick={onInfoButtonClick}
-          onAddToMapButtonClick={onAddToMapButtonClick}
-        />
-      </TooltipProvider>,
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <TooltipProvider>
+          <WidgetCard
+            title="Tree cover change"
+            icon={<span />}
+            onDowloadButtonClick={onDowloadButtonClick}
+            onInfoButtonClick={onInfoButtonClick}
+            onAddToMapButtonClick={onAddToMapButtonClick}
+          />
+        </TooltipProvider>
+      </NextIntlClientProvider>,
     );
 
     await user.click(screen.getByRole("button", { name: /download image/i }));
@@ -81,12 +89,14 @@ describe("@containers/widgets/card", () => {
 
   it("renders WidgetCardIcon with a gradient using the provided backgroundColor", () => {
     render(
-      <TooltipProvider>
-        <WidgetCardIcon
-          icon={<span data-testid="inner-icon" />}
-          backgroundColor="rgb(255, 0, 0)"
-        />
-      </TooltipProvider>,
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <TooltipProvider>
+          <WidgetCardIcon
+            icon={<span data-testid="inner-icon" />}
+            backgroundColor="rgb(255, 0, 0)"
+          />
+        </TooltipProvider>
+      </NextIntlClientProvider>,
     );
 
     const iconEl = screen.getByTestId("inner-icon");
