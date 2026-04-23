@@ -75,6 +75,11 @@
     "leave-aria-label": "Leave analysis"
   },
   "widgets": {
+    "card": {
+      "download-image": "Download image",
+      "more-info": "More info",
+      "add-to-map": "Add to map"
+    },
     "peat_carbon": {
       "title": "Carbon and Peatlands",
       "description": "<p>Within your selected area, peat depth averages <b>{peat_depth_avg} cm</b>, reaching up to <b>{peat_depth_max} cm</b>, storing about <b>{carbon_total} Mt</b> of carbon at an average density of <b>{carbon_density} kg/m²</b>.</p>",

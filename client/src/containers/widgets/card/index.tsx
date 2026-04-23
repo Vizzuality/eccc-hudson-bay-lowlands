@@ -1,4 +1,5 @@
 import { DownloadIcon, InfoIcon, PlusIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +28,7 @@ const WidgetCard: FC<WidgetCardProps> = ({
   onInfoButtonClick,
   onAddToMapButtonClick,
 }) => {
+  const t = useTranslations("widgets.card");
   return (
     <Card id={id} className="gap-2">
       <CardHeader>
@@ -42,12 +44,12 @@ const WidgetCard: FC<WidgetCardProps> = ({
                   variant="ghost"
                   size="icon"
                   onClick={onDowloadButtonClick}
-                  aria-label="Download image"
+                  aria-label={t("download-image")}
                 >
                   <DownloadIcon />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Download image</TooltipContent>
+              <TooltipContent>{t("download-image")}</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -55,12 +57,12 @@ const WidgetCard: FC<WidgetCardProps> = ({
                   variant="ghost"
                   size="icon"
                   onClick={onInfoButtonClick}
-                  aria-label="More info"
+                  aria-label={t("more-info")}
                 >
                   <InfoIcon />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>More info</TooltipContent>
+              <TooltipContent>{t("more-info")}</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -68,12 +70,12 @@ const WidgetCard: FC<WidgetCardProps> = ({
                   variant="ghost"
                   size="icon"
                   onClick={onAddToMapButtonClick}
-                  aria-label="Add to map"
+                  aria-label={t("add-to-map")}
                 >
                   <PlusIcon />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Add to map</TooltipContent>
+              <TooltipContent>{t("add-to-map")}</TooltipContent>
             </Tooltip>
           </div>
         </CardTitle>

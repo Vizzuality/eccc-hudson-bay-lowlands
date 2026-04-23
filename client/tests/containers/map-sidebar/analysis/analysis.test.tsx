@@ -45,7 +45,7 @@ describe("@containers/map-sidebar/analysis", () => {
 
     const widgetNamespaces = (
       Object.keys(messages.widgets) as Array<keyof typeof messages.widgets>
-    ).filter((key) => key !== "share");
+    ).filter((key) => key !== "share" && key !== "card");
 
     expect(widgetNamespaces).toHaveLength(
       Object.keys(mockAnalysisResult).length,
