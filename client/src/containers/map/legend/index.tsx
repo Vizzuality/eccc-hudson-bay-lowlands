@@ -30,13 +30,8 @@ const MapLegend: FC<MapLegendProps> = ({
   }, [children]);
 
   useEffect(() => {
-    if (!isChildren && open) {
-      setOpen(false);
-    }
-    if (isChildren && !open) {
-      setOpen(true);
-    }
-  }, [isChildren, open]);
+    setOpen(isChildren);
+  }, [isChildren]);
 
   return (
     <Collapsible
