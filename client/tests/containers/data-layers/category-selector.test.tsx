@@ -1,7 +1,9 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { NextIntlClientProvider } from "next-intl";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import CategorySelector from "@/containers/data-layers/category-selector";
+import messages from "@/i18n/messages/en.json";
 import { CATEGORIES, TOTAL_LAYER_COUNT } from "@/tests/helpers/mocks";
 
 const { mockSetCategory } = vi.hoisted(() => ({
@@ -28,11 +30,13 @@ describe("@containers/data-layers/category-selector", () => {
 
   it("renders all category options", () => {
     render(
-      <CategorySelector
-        items={CATEGORIES}
-        isLoading={false}
-        totalLayerCount={TOTAL_LAYER_COUNT}
-      />,
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <CategorySelector
+          items={CATEGORIES}
+          isLoading={false}
+          totalLayerCount={TOTAL_LAYER_COUNT}
+        />
+      </NextIntlClientProvider>,
     );
     for (const category of CATEGORIES) {
       expect(screen.getByText(category.name)).toBeInTheDocument();
@@ -41,11 +45,13 @@ describe("@containers/data-layers/category-selector", () => {
 
   it("renders a fieldset with an accessible label", () => {
     render(
-      <CategorySelector
-        items={CATEGORIES}
-        isLoading={false}
-        totalLayerCount={TOTAL_LAYER_COUNT}
-      />,
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <CategorySelector
+          items={CATEGORIES}
+          isLoading={false}
+          totalLayerCount={TOTAL_LAYER_COUNT}
+        />
+      </NextIntlClientProvider>,
     );
     expect(
       screen.getByRole("group", { name: "Category filter" }),
@@ -54,11 +60,13 @@ describe("@containers/data-layers/category-selector", () => {
 
   it("renders radio inputs for each category", () => {
     render(
-      <CategorySelector
-        items={CATEGORIES}
-        isLoading={false}
-        totalLayerCount={TOTAL_LAYER_COUNT}
-      />,
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <CategorySelector
+          items={CATEGORIES}
+          isLoading={false}
+          totalLayerCount={TOTAL_LAYER_COUNT}
+        />
+      </NextIntlClientProvider>,
     );
     const radios = screen.getAllByRole("radio");
     expect(radios).toHaveLength(CATEGORIES.length + 1);
@@ -66,11 +74,13 @@ describe("@containers/data-layers/category-selector", () => {
 
   it("checks the radio that matches the current category", () => {
     render(
-      <CategorySelector
-        items={CATEGORIES}
-        isLoading={false}
-        totalLayerCount={TOTAL_LAYER_COUNT}
-      />,
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <CategorySelector
+          items={CATEGORIES}
+          isLoading={false}
+          totalLayerCount={TOTAL_LAYER_COUNT}
+        />
+      </NextIntlClientProvider>,
     );
     const allRadio = screen.getByRole("radio", { name: /All/ });
     expect(allRadio).toBeChecked();
@@ -86,11 +96,13 @@ describe("@containers/data-layers/category-selector", () => {
   it("calls setCategory when a different category is selected", async () => {
     const user = userEvent.setup();
     render(
-      <CategorySelector
-        items={CATEGORIES}
-        isLoading={false}
-        totalLayerCount={TOTAL_LAYER_COUNT}
-      />,
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <CategorySelector
+          items={CATEGORIES}
+          isLoading={false}
+          totalLayerCount={TOTAL_LAYER_COUNT}
+        />
+      </NextIntlClientProvider>,
     );
 
     const envRadio = screen.getByRole("radio", { name: /Category 1/ });
@@ -102,11 +114,13 @@ describe("@containers/data-layers/category-selector", () => {
 
   it("displays the data layers count for each category", () => {
     render(
-      <CategorySelector
-        items={CATEGORIES}
-        isLoading={false}
-        totalLayerCount={TOTAL_LAYER_COUNT}
-      />,
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <CategorySelector
+          items={CATEGORIES}
+          isLoading={false}
+          totalLayerCount={TOTAL_LAYER_COUNT}
+        />
+      </NextIntlClientProvider>,
     );
 
     expect(screen.getByText("5 data layers")).toBeInTheDocument(); // All
@@ -117,11 +131,13 @@ describe("@containers/data-layers/category-selector", () => {
 
   it("renders skeleton placeholders when loading", () => {
     const { container } = render(
-      <CategorySelector
-        items={CATEGORIES}
-        isLoading={true}
-        totalLayerCount={TOTAL_LAYER_COUNT}
-      />,
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <CategorySelector
+          items={CATEGORIES}
+          isLoading={true}
+          totalLayerCount={TOTAL_LAYER_COUNT}
+        />
+      </NextIntlClientProvider>,
     );
 
     for (const category of CATEGORIES) {

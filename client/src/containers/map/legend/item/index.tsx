@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { GripVerticalIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import BasicLegend from "@/containers/map/legend/item/basic-legend";
@@ -30,6 +31,7 @@ const MapLegendItem: FC<MapLegendItemProps> = ({
   onRemove,
   className,
 }) => {
+  const t = useTranslations("legend");
   const { data: layer, isSuccess: isLayerSuccess } = useQuery({
     queryKey: queryKeys.layers.byId(id).queryKey,
     queryFn: () => API<LayerResponse>(getLayerConfig(id)),
@@ -64,7 +66,7 @@ const MapLegendItem: FC<MapLegendItemProps> = ({
             >
               {sortable?.handle && (
                 <button
-                  aria-label="drag"
+                  aria-label={t("drag")}
                   type="button"
                   className="text-navy-700 hover:text-navy-700/50 mt-0.5 cursor-pointer transition-colors"
                   {...listeners}

@@ -48,6 +48,12 @@
     "bottom-bar": {
       "active-data": "Données actives ({count})",
       "remove-all": "Tout supprimer"
+    },
+    "category-selector": {
+      "aria-label": "Filtre de catégorie",
+      "legend": "Sélectionner une catégorie",
+      "all": "Toutes",
+      "data-layers-count": "{count} couches de données"
     }
   },
   "analysis": {
@@ -142,6 +148,12 @@
     "share": {
       "description": "Ensemble, ces indicateurs fournissent une vue intégrée de l'environnement et de la valeur écologique de votre zone, montrant comment les facteurs physiques et biologiques interagissent pour façonner le fonctionnement et la résilience du paysage. La compréhension de ces schémas peut soutenir la conservation, l'adaptation aux changements climatiques et les décisions d'utilisation des terres."
     }
+  },
+  "legend": {
+    "hide-layer": "Masquer la couche",
+    "show-layer": "Afficher la couche",
+    "remove-layer": "Supprimer la couche",
+    "drag": "déplacer"
   },
   "share": {
     "title": "Partager"

@@ -48,6 +48,12 @@
     "bottom-bar": {
       "active-data": "Active data ({count})",
       "remove-all": "Remove all"
+    },
+    "category-selector": {
+      "aria-label": "Category filter",
+      "legend": "Select a category",
+      "all": "All",
+      "data-layers-count": "{count} data layers"
     }
   },
   "analysis": {
@@ -142,6 +148,12 @@
     "share": {
       "description": "Together, these indicators provide an integrated view of your area’s environment and ecological value, showing how physical and biological factors interact to shape landscape function and resilience. Understanding these patterns might support conservation, climate adaptation, and land use decisions."
     }
+  },
+  "legend": {
+    "hide-layer": "Hide layer",
+    "show-layer": "Show layer",
+    "remove-layer": "Remove layer",
+    "drag": "drag"
   },
   "share": {
     "title": "Share"
