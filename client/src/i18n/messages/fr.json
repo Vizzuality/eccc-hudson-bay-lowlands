@@ -4,31 +4,31 @@
     "fr": "Français"
   },
   "top-bar": {
-    "title": "lowlands spatial data",
+    "title": "données spatiales des basses-terres",
     "navigation": {
-      "map": "Map",
-      "resources": "Resources"
+      "map": "Carte",
+      "resources": "Ressources"
     }
   },
   "map": {
-    "title": "Discover the Hudson & James bay region",
-    "description": "Explore and combine geographical data overlays. Analyze your area of interest and get custom insights.",
+    "title": "Découvrez la région de la baie d'Hudson et de la baie James",
+    "description": "Explorez et combinez des couches de données géographiques. Analysez votre zone d'intérêt et obtenez des informations personnalisées.",
     "controls": {
       "basemap": {
-        "title": "Map style"
+        "title": "Style de carte"
       }
     }
   },
   "data-layers": {
     "search": {
-      "placeholder": "Search...",
-      "clear": "Clear search"
+      "placeholder": "Rechercher...",
+      "clear": "Effacer la recherche"
     },
     "list": {
-      "title": "All data ({count})"
+      "title": "Toutes les données ({count})"
     },
     "item": {
-      "data-sources": "Data sources"
+      "data-sources": "Sources de données"
     },
     "item-dialog": {
       "source": "Source",
@@ -37,79 +37,79 @@
     }
   },
   "analysis": {
-    "title": "My area of interest",
-    "description": "<p>You have selected a region of <b>{aoi_size} km²</b> within the HJBL. The following sections summarize its main environmental characteristics based on carbon storage, hydrology, seasonal snow, flood risk, tree cover dynamics, ecosystem composition, and species diversity.</p>",
-    "instructions": "<p><b>Click on the map</b> to start drawing your custom area and to get insights about it.</p>",
-    "verify-shape": "<p>To complete your shape, either click the first point again or double-click anywhere to finish. When you're satisfied, click <b>Confirm</b>. To start over, click <b>Clear</b> to erase your shape.</p>",
-    "upload": "Upload",
-    "clear": "Clear",
-    "confirm": "Confirm",
-    "click-to-select": "Click to select your area of interest and get detailed insights on it.",
-    "area-too-big": "<p>The area is too big: the maximum allowed size is <b>{area_sq_km}</b> square kilometers. Please try drawing a smaller area.</p>",
-    "outside-of-bounds": "<p>The area is at least partially outside of Canada. Please try drawing an area limited to Canada.</p>",
-    "generic-error": "<p>An error occurred while processing your request. Please try again.</p>"
+    "title": "Ma zone d'intérêt",
+    "description": "<p>Vous avez sélectionné une région de <b>{aoi_size} km²</b> dans les BTBHJ. Les sections suivantes résument ses principales caractéristiques environnementales en fonction du stockage de carbone, de l'hydrologie, de la neige saisonnière, du risque d'inondation, de la dynamique du couvert arboré, de la composition des écosystèmes et de la diversité des espèces.</p>",
+    "instructions": "<p><b>Cliquez sur la carte</b> pour commencer à dessiner votre zone personnalisée et obtenir des informations à son sujet.</p>",
+    "verify-shape": "<p>Pour terminer votre forme, cliquez à nouveau sur le premier point ou double-cliquez n'importe où pour finir. Lorsque vous êtes satisfait, cliquez sur <b>Confirmer</b>. Pour recommencer, cliquez sur <b>Effacer</b> pour supprimer votre forme.</p>",
+    "upload": "Téléverser",
+    "clear": "Effacer",
+    "confirm": "Confirmer",
+    "click-to-select": "Cliquez pour sélectionner votre zone d'intérêt et obtenir des informations détaillées.",
+    "area-too-big": "<p>La zone est trop grande : la taille maximale autorisée est de <b>{area_sq_km}</b> kilomètres carrés. Veuillez essayer de dessiner une zone plus petite.</p>",
+    "outside-of-bounds": "<p>La zone se trouve au moins partiellement à l'extérieur du Canada. Veuillez essayer de dessiner une zone limitée au Canada.</p>",
+    "generic-error": "<p>Une erreur s'est produite lors du traitement de votre demande. Veuillez réessayer.</p>"
   },
   "widgets": {
     "peat_carbon": {
-      "title": "Carbon and Peatlands",
-      "description": "<p>Within your selected area, peat depth averages <b>{peat_depth_avg} cm</b>, reaching up to <b>{peat_depth_max} cm</b>, storing about <b>{carbon_total} Mt</b> of carbon at an average density of <b>{carbon_density} kg/m²</b>.</p>",
+      "title": "Carbone et tourbières",
+      "description": "<p>Dans votre zone sélectionnée, la profondeur de tourbe est en moyenne de <b>{peat_depth_avg} cm</b>, atteignant jusqu'à <b>{peat_depth_max} cm</b>, stockant environ <b>{carbon_total} Mt</b> de carbone à une densité moyenne de <b>{carbon_density} kg/m²</b>.</p>",
       "more-info": {
-        "title": "Why are Carbon & Peatlands Important?",
-        "description": "Peat soils shape the landscape and act as long-term carbon reservoirs, influencing water flow, vegetation, and habitat. Disturbance can release this stored carbon, reducing their capacity to support climate regulation."
+        "title": "Pourquoi le carbone et les tourbières sont-ils importants ?",
+        "description": "Les sols tourbeux façonnent le paysage et agissent comme des réservoirs de carbone à long terme, influençant l'écoulement de l'eau, la végétation et l'habitat. Les perturbations peuvent libérer ce carbone stocké, réduisant leur capacité à soutenir la régulation du climat."
       }
     },
     "water_dynamics": {
-      "title": "Water Dynamics",
-      "description": "<p>Long-term observations (1984-2023) indicate that, on average, <b>{water_perm_perc}%</b> of the area is permanent water, <b>{water_ephemeral_perc}%</b> is ephemeral water, and <b>{land_perm_perc}%</b> is permanently dry land, with a mean inundation frequency of <b>{freq_mean}%</b>.</p>",
-      "description-2": "<p>Inter-annual trends highlight areas where wetlands are expanding, contracting, or remaining stable, revealing shifts in hydrological dynamics across the landscape. Across the selected area, <b>{trend_wetter_perc}%</b> shows a tendency toward increased water presence, <b>{trend_drier_perc}%</b> toward decreased water presence, and <b>{trend_stable_perc}%</b> remains largely unchanged.</p>",
+      "title": "Dynamique de l'eau",
+      "description": "<p>Les observations à long terme (1984-2023) indiquent qu'en moyenne, <b>{water_perm_perc} %</b> de la zone est constituée d'eau permanente, <b>{water_ephemeral_perc} %</b> d'eau éphémère, et <b>{land_perm_perc} %</b> de terres sèches permanentes, avec une fréquence moyenne d'inondation de <b>{freq_mean} %</b>.</p>",
+      "description-2": "<p>Les tendances interannuelles mettent en évidence les zones où les milieux humides s'étendent, se contractent ou demeurent stables, révélant des changements dans la dynamique hydrologique du paysage. Dans la zone sélectionnée, <b>{trend_wetter_perc} %</b> montre une tendance vers une présence accrue d'eau, <b>{trend_drier_perc} %</b> vers une présence réduite d'eau, et <b>{trend_stable_perc} %</b> demeure en grande partie inchangé.</p>",
       "more-info": {
-        "title": "Why are water dynamics important?",
-        "description": "Surface water influences wetlands, rivers, and ponds, shaping habitats, vegetation, and ecosystem processes. Shifts in inundation can signal environmental change and affect carbon storage and biodiversity."
+        "title": "Pourquoi la dynamique de l'eau est-elle importante ?",
+        "description": "Les eaux de surface influencent les milieux humides, les rivières et les étangs, façonnant les habitats, la végétation et les processus écosystémiques. Les changements dans l'inondation peuvent signaler des modifications environnementales et affecter le stockage de carbone et la biodiversité."
       }
     },
     "flood_susceptibility": {
-      "title": "Flood susceptibility",
-      "description": "<p>The flood susceptibility index identifies which parts of the landscape are more vulnerable, with an average value of <b>{fsi_avg}</b> (0–100) and approximately <b>{fsi_low_perc}%</b> of the area at low risk, <b>{fsi_moderate_perc}%</b> at moderate risk, and <b>{fsi_high_perc}%</b> at high risk.</p>",
+      "title": "Susceptibilité aux inondations",
+      "description": "<p>L'indice de susceptibilité aux inondations identifie les parties du paysage les plus vulnérables, avec une valeur moyenne de <b>{fsi_avg}</b> (0-100) et environ <b>{fsi_low_perc} %</b> de la zone à faible risque, <b>{fsi_moderate_perc} %</b> à risque modéré, et <b>{fsi_high_perc} %</b> à risque élevé.</p>",
       "more-info": {
-        "title": "Why is flood susceptibility important?",
-        "description": "Wetlands and rivers in the area also help regulate floods and maintain habitat and landscape resilience. Understanding where flooding is more likely supports climate adaptation and informed land-use planning."
+        "title": "Pourquoi la susceptibilité aux inondations est-elle importante ?",
+        "description": "Les milieux humides et les rivières de la zone contribuent également à réguler les inondations et à maintenir la résilience des habitats et du paysage. Comprendre où les inondations sont plus probables soutient l'adaptation aux changements climatiques et une planification éclairée de l'utilisation des terres."
       }
     },
     "snow_dynamics": {
-      "title": "Snow dynamics",
-      "description": "<p>Snow cover shapes seasonal conditions and ecosystem processes. For the winter of <b>{selected_winter}</b>, snow persisted for an average of <b>{lengthT_mean} days</b>, typically ending around <b>{endL_mean_date}</b>.</p>",
+      "title": "Dynamique de la neige",
+      "description": "<p>Le couvert neigeux façonne les conditions saisonnières et les processus écosystémiques. Pour l'hiver <b>{selected_winter}</b>, la neige a persisté en moyenne pendant <b>{lengthT_mean} jours</b>, se terminant généralement vers le <b>{endL_mean_date}</b>.</p>",
       "more-info": {
-        "title": "Why are snow dynamics important?",
-        "description": "The timing and duration of snow influence spring runoff, soil moisture, and the growing season, affecting vegetation and wetland dynamics."
+        "title": "Pourquoi la dynamique de la neige est-elle importante ?",
+        "description": "Le moment et la durée de l'enneigement influencent la fonte printanière, l'humidité du sol et la saison de croissance, affectant la végétation et la dynamique des milieux humides."
       }
     },
     "tree_cover_change": {
-      "title": "Tree cover change",
-      "description": "<p>Tree cover in the area has changed between 1984 and 2022. Currently, <b>{total_treed_area}</b> km² of the area is treed. Since 1984, <b>{newly_treed_area}</b> km² has gained treed cover while <b>{was_treed_area}</b> km² of tree cover was lost, resulting in a net change of <b>{changed_treed_area}</b> km².</p>",
+      "title": "Changement du couvert arboré",
+      "description": "<p>Le couvert arboré de la zone a changé entre 1984 et 2022. Actuellement, <b>{total_treed_area}</b> km² de la zone sont boisés. Depuis 1984, <b>{newly_treed_area}</b> km² ont gagné un couvert arboré tandis que <b>{was_treed_area}</b> km² de couvert arboré ont été perdus, ce qui donne un changement net de <b>{changed_treed_area}</b> km².</p>",
       "more-info": {
-        "title": "Why is tree cover change important?",
-        "description": "Trees provide important ecosystem services, including carbon storage, habitat, soil stabilization, and water regulation. Changes in tree cover can alter these functions and signal broader environmental shifts."
+        "title": "Pourquoi le changement du couvert arboré est-il important ?",
+        "description": "Les arbres fournissent d'importants services écosystémiques, notamment le stockage de carbone, l'habitat, la stabilisation des sols et la régulation de l'eau. Les changements du couvert arboré peuvent modifier ces fonctions et signaler des changements environnementaux plus larges."
       }
     },
     "ecosystem_types": {
-      "title": "Ecosystem types",
-      "description": "<p>The selected area contains <b>{ecosystem_count}</b> ecosystem types and is predominantly <b>{dominant_ecosystem} ({dominant_ecosystem_perc}%)</b>. This composition reflects the area’s habitat diversity and influences patterns in carbon storage, water dynamics, and vegetation.</p>",
+      "title": "Types d'écosystèmes",
+      "description": "<p>La zone sélectionnée contient <b>{ecosystem_count}</b> types d'écosystèmes et est principalement composée de <b>{dominant_ecosystem} ({dominant_ecosystem_perc} %)</b>. Cette composition reflète la diversité des habitats de la zone et influence les schémas de stockage de carbone, de dynamique de l'eau et de végétation.</p>",
       "more-info": {
-        "title": "Why are ecosystem types important?",
-        "description": "Different ecosystem types support different communities and ecosystem services. Understanding their distribution helps identify areas important for carbon storage, biodiversity, and ecological resilience."
+        "title": "Pourquoi les types d'écosystèmes sont-ils importants ?",
+        "description": "Les différents types d'écosystèmes soutiennent différentes communautés et services écosystémiques. Comprendre leur répartition aide à identifier les zones importantes pour le stockage de carbone, la biodiversité et la résilience écologique."
       }
     },
     "share": {
-      "description": "Together, these indicators provide an integrated view of your area’s environment and ecological value, showing how physical and biological factors interact to shape landscape function and resilience. Understanding these patterns might support conservation, climate adaptation, and land use decisions."
+      "description": "Ensemble, ces indicateurs fournissent une vue intégrée de l'environnement et de la valeur écologique de votre zone, montrant comment les facteurs physiques et biologiques interagissent pour façonner le fonctionnement et la résilience du paysage. La compréhension de ces schémas peut soutenir la conservation, l'adaptation aux changements climatiques et les décisions d'utilisation des terres."
     }
   },
   "share": {
-    "title": "Share"
+    "title": "Partager"
   },
   "metadata": {
     "home": {
-      "title": "Discover the Hudson & James bay region",
-      "description": "Explore and combine geographical data overlays. Analyze your area of interest and get custom insights."
+      "title": "Découvrez la région de la baie d'Hudson et de la baie James",
+      "description": "Explorez et combinez des couches de données géographiques. Analysez votre zone d'intérêt et obtenez des informations personnalisées."
     }
   }
 }
