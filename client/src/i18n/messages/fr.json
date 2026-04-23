@@ -16,6 +16,16 @@
     "controls": {
       "basemap": {
         "title": "Style de carte"
+      },
+      "download": {
+        "aria-label": "Télécharger l'image de la carte"
+      },
+      "zoom": {
+        "in": "Agrandir",
+        "out": "Réduire"
+      },
+      "settings": {
+        "aria-label": "Paramètres de la carte"
       }
     }
   },

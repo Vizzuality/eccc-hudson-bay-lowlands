@@ -1,6 +1,7 @@
 "use client";
 
 import { ZoomInIcon, ZoomOutIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
   type FC,
   type HTMLAttributes,
@@ -22,6 +23,7 @@ export const ZoomControl: FC<ZoomControlProps> = ({
   className,
 }: ZoomControlProps) => {
   const { current: mapRef } = useMap();
+  const t = useTranslations("map.controls.zoom");
   const [zoom, setZoom] = useState<number>(Math.round(mapRef?.getZoom() ?? 0));
   const minZoom = mapRef?.getMinZoom();
   const maxZoom = mapRef?.getMaxZoom();
@@ -70,7 +72,7 @@ export const ZoomControl: FC<ZoomControlProps> = ({
           [CONTROL_BUTTON_STYLES.active]: zoom !== maxZoom,
           [CONTROL_BUTTON_STYLES.disabled]: zoom === maxZoom,
         })}
-        aria-label="Zoom in"
+        aria-label={t("in")}
         type="button"
         disabled={zoom === maxZoom}
         onClick={increaseZoom}
@@ -85,7 +87,7 @@ export const ZoomControl: FC<ZoomControlProps> = ({
           [CONTROL_BUTTON_STYLES.active]: zoom !== minZoom,
           [CONTROL_BUTTON_STYLES.disabled]: zoom === minZoom,
         })}
-        aria-label="Zoom out"
+        aria-label={t("out")}
         type="button"
         disabled={zoom === minZoom}
         onClick={decreaseZoom}

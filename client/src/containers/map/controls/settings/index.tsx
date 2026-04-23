@@ -1,6 +1,7 @@
 "use client";
 
 import { SettingsIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
   type FC,
   type HTMLAttributes,
@@ -26,6 +27,7 @@ export const SettingsControl: FC<PropsWithChildren<SettingsControlProps>> = ({
   children,
 }: PropsWithChildren<SettingsControlProps>) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const t = useTranslations("map.controls.settings");
 
   return (
     <div className={cn("flex flex-col space-y-0.5", className)}>
@@ -39,7 +41,7 @@ export const SettingsControl: FC<PropsWithChildren<SettingsControlProps>> = ({
               [CONTROL_BUTTON_STYLES.active]: true,
               [CONTROL_BUTTON_STYLES.open]: popoverOpen,
             })}
-            aria-label="Map settings"
+            aria-label={t("aria-label")}
             type="button"
           >
             <SettingsIcon className={CONTROL_BUTTON_STYLES.icon} />

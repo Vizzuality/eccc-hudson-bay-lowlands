@@ -1,6 +1,7 @@
 "use client";
 
 import { DownloadIcon, LoaderCircleIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { RefObject } from "react";
 import { useMapDownload } from "@/hooks/use-map-download";
 import { cn } from "@/lib/utils";
@@ -12,6 +13,7 @@ interface MapDownloadProps {
 
 export default function MapDownload({ containerRef }: MapDownloadProps) {
   const { download, loading } = useMapDownload(containerRef);
+  const t = useTranslations("map.controls.download");
 
   return (
     <button
@@ -21,7 +23,7 @@ export default function MapDownload({ containerRef }: MapDownloadProps) {
         [CONTROL_BUTTON_STYLES.active]: !loading,
         [CONTROL_BUTTON_STYLES.disabled]: loading,
       })}
-      aria-label="Download map image"
+      aria-label={t("aria-label")}
       type="button"
       disabled={loading}
       onClick={download}

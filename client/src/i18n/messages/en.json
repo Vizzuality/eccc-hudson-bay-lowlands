@@ -16,6 +16,16 @@
     "controls": {
       "basemap": {
         "title": "Map style"
+      },
+      "download": {
+        "aria-label": "Download map image"
+      },
+      "zoom": {
+        "in": "Zoom in",
+        "out": "Zoom out"
+      },
+      "settings": {
+        "aria-label": "Map settings"
       }
     }
   },
