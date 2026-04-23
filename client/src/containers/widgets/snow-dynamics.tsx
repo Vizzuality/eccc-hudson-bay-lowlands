@@ -21,13 +21,6 @@ const mockData = [
   { x: 2030, y: 42 },
 ];
 
-const chartConfig = {
-  y: {
-    label: "Mean Snow Duration per Winter (days)",
-    color: "var(--color-indigo-700)",
-  },
-};
-
 const Description = ({ stats }: { stats: SnowDynamicsStats }) => {
   const t = useTranslations("widgets.snow_dynamics");
   return (
@@ -49,6 +42,13 @@ interface SnowDynamicsProps extends WidgetCardBaseProps {
 const SnowDynamics: FC<SnowDynamicsProps> = ({ id, stats }) => {
   const t = useTranslations("widgets.snow_dynamics");
 
+  const chartConfig = {
+    y: {
+      label: t("chart-title"),
+      color: "var(--color-indigo-700)",
+    },
+  };
+
   return (
     <WidgetCard
       id={id}
@@ -68,14 +68,18 @@ const SnowDynamics: FC<SnowDynamicsProps> = ({ id, stats }) => {
         {t("more-info.description")}
       </MoreInfoTooltip>
       <LineChart
-        title="Mean Snow Duration per Winter (days)"
+        title={t("chart-title")}
         data={mockData}
         chartConfig={chartConfig}
       />
       <div className="flex gap-3">
-        <Highlight label="AVG days" value="187" className="text-indigo-600" />
         <Highlight
-          label="Mean end date"
+          label={t("avg-days")}
+          value="187"
+          className="text-indigo-600"
+        />
+        <Highlight
+          label={t("mean-end-date")}
           value="April 15"
           className="text-indigo-600"
         />

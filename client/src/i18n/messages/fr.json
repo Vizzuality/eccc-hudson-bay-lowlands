@@ -82,6 +82,10 @@
     },
     "peat_carbon": {
       "title": "Carbone et tourbières",
+      "chart-peat-depth": "Histogramme de la profondeur de tourbe",
+      "chart-peat-depth-label": "Fréquence",
+      "chart-carbon-density": "Densité de carbone",
+      "chart-carbon-density-label": "Densité de carbone",
       "description": "<p>Dans votre zone sélectionnée, la profondeur de tourbe est en moyenne de <b>{peat_depth_avg} cm</b>, atteignant jusqu'à <b>{peat_depth_max} cm</b>, stockant environ <b>{carbon_total} Mt</b> de carbone à une densité moyenne de <b>{carbon_density} kg/m²</b>.</p>",
       "more-info": {
         "title": "Pourquoi le carbone et les tourbières sont-ils importants ?",
@@ -90,6 +94,9 @@
     },
     "water_dynamics": {
       "title": "Dynamique de l'eau",
+      "trend-wetter": "Plus humide",
+      "trend-drier": "Plus sec",
+      "trend-stable": "Stable",
       "description": "<p>Les observations à long terme (1984-2023) indiquent qu'en moyenne, <b>{water_perm_perc} %</b> de la zone est constituée d'eau permanente, <b>{water_ephemeral_perc} %</b> d'eau éphémère, et <b>{land_perm_perc} %</b> de terres sèches permanentes, avec une fréquence moyenne d'inondation de <b>{freq_mean} %</b>.</p>",
       "description-2": "<p>Les tendances interannuelles mettent en évidence les zones où les milieux humides s'étendent, se contractent ou demeurent stables, révélant des changements dans la dynamique hydrologique du paysage. Dans la zone sélectionnée, <b>{trend_wetter_perc} %</b> montre une tendance vers une présence accrue d'eau, <b>{trend_drier_perc} %</b> vers une présence réduite d'eau, et <b>{trend_stable_perc} %</b> demeure en grande partie inchangé.</p>",
       "more-info": {
@@ -107,6 +114,9 @@
     },
     "snow_dynamics": {
       "title": "Dynamique de la neige",
+      "chart-title": "Durée moyenne de la neige par hiver (jours)",
+      "avg-days": "Jours MOY",
+      "mean-end-date": "Date de fin moyenne",
       "description": "<p>Le couvert neigeux façonne les conditions saisonnières et les processus écosystémiques. Pour l'hiver <b>{selected_winter}</b>, la neige a persisté en moyenne pendant <b>{lengthT_mean} jours</b>, se terminant généralement vers le <b>{endL_mean_date}</b>.</p>",
       "more-info": {
         "title": "Pourquoi la dynamique de la neige est-elle importante ?",
