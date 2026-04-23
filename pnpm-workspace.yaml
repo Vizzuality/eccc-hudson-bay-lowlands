@@ -12,6 +12,7 @@ overrides:
   undici: "7.24.1"
   "@xmldom/xmldom": "0.9.10"
   "axios>follow-redirects": "1.16.0"
+  "resolve-protobuf-schema>protocol-buffers-schema": "3.6.1"
 
 catalog:
   "@biomejs/biome": "2.2.0"
