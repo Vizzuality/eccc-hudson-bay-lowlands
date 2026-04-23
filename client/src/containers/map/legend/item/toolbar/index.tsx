@@ -1,4 +1,5 @@
 import { EyeClosedIcon, EyeIcon, XIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
   Tooltip,
   TooltipArrow,
@@ -15,6 +16,7 @@ export const LegendItemToolbar: React.FC<LegendItemToolbarProps> = ({
   onRemove,
   onChangeVisibility,
 }: LegendItemToolbarProps) => {
+  const t = useTranslations("legend");
   const { visibility = true } = settings || {};
 
   return (
@@ -26,7 +28,7 @@ export const LegendItemToolbar: React.FC<LegendItemToolbarProps> = ({
               <TooltipTrigger
                 type="button"
                 className="cursor-pointer"
-                aria-label={visibility ? "Hide layer" : "Show layer"}
+                aria-label={visibility ? t("hide-layer") : t("show-layer")}
                 onClick={() => {
                   if (onChangeVisibility) onChangeVisibility(!visibility);
                 }}
@@ -36,7 +38,7 @@ export const LegendItemToolbar: React.FC<LegendItemToolbarProps> = ({
 
               <TooltipContent side="top" align="end" alignOffset={-10}>
                 <div className="text-xxs">
-                  {visibility ? "Hide layer" : "Show layer"}
+                  {visibility ? t("hide-layer") : t("show-layer")}
                 </div>
 
                 <TooltipArrow className="fill-white" width={10} height={5} />
@@ -51,7 +53,7 @@ export const LegendItemToolbar: React.FC<LegendItemToolbarProps> = ({
               <TooltipTrigger
                 type="button"
                 className="cursor-pointer"
-                aria-label="Show info"
+                aria-label={t("remove-layer")}
                 onClick={() => {
                   if (onRemove) onRemove(id);
                 }}
@@ -60,7 +62,7 @@ export const LegendItemToolbar: React.FC<LegendItemToolbarProps> = ({
               </TooltipTrigger>
 
               <TooltipContent side="top" align="end" alignOffset={-10}>
-                <div className="text-xxs">Remove layer</div>
+                <div className="text-xxs">{t("remove-layer")}</div>
 
                 <TooltipArrow className="fill-white" width={10} height={5} />
               </TooltipContent>

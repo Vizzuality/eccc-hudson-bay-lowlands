@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import { useCategory } from "@/app/[locale]/url-store";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -16,6 +17,7 @@ const CategorySelector: FC<CategorySelectorProps> = ({
   isLoading,
   totalLayerCount,
 }) => {
+  const t = useTranslations("data-layers.category-selector");
   const { category, setCategory } = useCategory();
 
   if (isLoading) {
@@ -25,10 +27,10 @@ const CategorySelector: FC<CategorySelectorProps> = ({
   return (
     <fieldset
       className="grid grid-cols-2 gap-2 px-6"
-      aria-label="Category filter"
+      aria-label={t("aria-label")}
     >
-      <legend className="sr-only">Select a category</legend>
-      {[{ id: 0, name: "All", layerCount: totalLayerCount }, ...items].map(
+      <legend className="sr-only">{t("legend")}</legend>
+      {[{ id: 0, name: t("all"), layerCount: totalLayerCount }, ...items].map(
         (c) => {
           const isActive =
             category === c.id || (category === null && c.id === 0);
@@ -68,7 +70,7 @@ const CategorySelector: FC<CategorySelectorProps> = ({
                 {c.name}
               </span>
               <span className="relative text-xs text-muted-foreground font-semibold">
-                {c.layerCount} data layers
+                {t("data-layers-count", { count: c.layerCount })}
               </span>
             </label>
           );
