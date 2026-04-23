@@ -1,0 +1,28 @@
+#:schema https://www.schemastore.org/prek.json
+
+[[repos]]
+repo = "local"
+
+[[repos.hooks]]
+id = "client-lint"
+name = "client lint"
+entry = "pnpm --filter client lint"
+language = "system"
+pass_filenames = false
+types_or = ["javascript", "jsx", "ts", "tsx", "json", "css"]
+
+[[repos.hooks]]
+id = "e2e-lint"
+name = "e2e lint"
+entry = "pnpm --filter e2e lint"
+language = "system"
+pass_filenames = false
+types_or = ["ts", "tsx"]
+
+[[repos.hooks]]
+id = "client-test"
+name = "client test"
+entry = "pnpm --filter client test:coverage -- --coverage.reporter=none"
+language = "system"
+pass_filenames = false
+types_or = ["javascript", "jsx", "ts", "tsx"]
