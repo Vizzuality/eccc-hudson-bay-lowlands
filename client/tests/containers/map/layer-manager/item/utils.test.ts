@@ -211,7 +211,7 @@ describe("getRasterLayerConfig", () => {
       expect(tile).toContain(`colormap=${encoded}`);
     });
 
-    it("encodes a continuous colormap as a 128-entry interpolated gradient in interval format", () => {
+    it("encodes a continuous colormap as a 24-entry interpolated gradient in interval format", () => {
       const config: LayerConfig = {
         ...baseConfig,
         colormap: [
@@ -237,13 +237,13 @@ describe("getRasterLayerConfig", () => {
       const colormapMatch = tile.match(/colormap=([^&]+)/);
       expect(colormapMatch).not.toBeNull();
       const decoded = JSON.parse(decodeURIComponent(colormapMatch?.[1] ?? ""));
-      expect(decoded).toHaveLength(128);
+      expect(decoded).toHaveLength(24);
       // First interval starts at 0, last interval ends at 100
       expect(decoded[0][0][0]).toBe(0);
-      expect(decoded[127][0][1]).toBe(100);
+      expect(decoded[23][0][1]).toBe(100);
       // First color is black, last color is white
       expect(decoded[0][1]).toEqual([0, 0, 0, 255]);
-      expect(decoded[127][1]).toEqual([255, 255, 255, 255]);
+      expect(decoded[23][1]).toEqual([255, 255, 255, 255]);
     });
   });
 
@@ -340,25 +340,25 @@ describe("hexToRgba", () => {
 });
 
 describe("interpolateColormap", () => {
-  it("interpolates two stops into 128 interval entries", () => {
+  it("interpolates two stops into 24 interval entries", () => {
     const stops: [number, string][] = [
       [0, "#000000"],
       [100, "#ffffff"],
     ];
     const result = interpolateColormap(stops);
 
-    expect(result).toHaveLength(128);
+    expect(result).toHaveLength(24);
     // First interval starts at 0
     expect(result[0][0][0]).toBe(0);
     // Last interval ends at 100
-    expect(result[127][0][1]).toBe(100);
+    expect(result[23][0][1]).toBe(100);
     // First color is black
     expect(result[0][1]).toEqual([0, 0, 0, 255]);
     // Last color is white
-    expect(result[127][1]).toEqual([255, 255, 255, 255]);
+    expect(result[23][1]).toEqual([255, 255, 255, 255]);
     // Midpoint should be roughly gray
-    expect(result[64][1][0]).toBeGreaterThanOrEqual(126);
-    expect(result[64][1][0]).toBeLessThanOrEqual(130);
+    expect(result[12][1][0]).toBeGreaterThanOrEqual(126);
+    expect(result[12][1][0]).toBeLessThanOrEqual(130);
   });
 
   it("interpolates three stops correctly", () => {
@@ -369,13 +369,13 @@ describe("interpolateColormap", () => {
     ];
     const result = interpolateColormap(stops);
 
-    expect(result).toHaveLength(128);
+    expect(result).toHaveLength(24);
     // First color is red
     expect(result[0][1]).toEqual([255, 0, 0, 255]);
     // Last color is blue
-    expect(result[127][1]).toEqual([0, 0, 255, 255]);
-    // Midpoint (~index 64) should be near green
-    expect(result[64][1][1]).toBeGreaterThanOrEqual(250);
+    expect(result[23][1]).toEqual([0, 0, 255, 255]);
+    // Midpoint (~index 12) should be near green
+    expect(result[12][1][1]).toBeGreaterThanOrEqual(250);
   });
 
   it("handles single stop by returning one interval", () => {
