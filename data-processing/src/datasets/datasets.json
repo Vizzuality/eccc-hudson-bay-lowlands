@@ -5,11 +5,11 @@
     "layers": [
       {
         "url": "https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/water/dynamic-surface-water/dynamic-surface-water-compilation/dsw-1984-2023-trends.tif",
-        "filename": "dsw-1984-2023-trends.tif"
+        "filename": "inundation_trends.tif"
       },
       {
         "url": "https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/water/dynamic-surface-water/dynamic-surface-water-compilation/dsw-1984-2023-frequency.tif",
-        "filename": "dsw-1984-2023-frequency.tif"
+        "filename": "inundation_frequency.tif"
       }
     ]
   },
@@ -30,7 +30,11 @@
     "layers": [
       {
         "url": "https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/water/flood-susceptibility/FS-national-2015-index.tif",
-        "filename": "FSI.tif"
+        "filename": "flood_susceptibility.tif"
+      },
+      {
+        "url": "https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/water/flood-susceptibility/FS-national-2015-class.tif",
+        "filename": "flood_susceptibility_class.tif"
       }
     ]
   },
@@ -40,5 +44,55 @@
     "base_url": "https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/land/snow-dynamics-yearly/HLS_Fmask_v1_1_snow_{type}_winterYear{wy}_Canada.tif",
     "types": ["endL", "lengthT"],
     "winter_years": ["1819", "1920", "2021", "2122", "2223", "2324"]
+  },
+  "ecological_framework": {
+    "type": "vector",
+    "format": "Shapefile",
+    "extract": true,
+    "layers": [
+      {
+        "url": "https://sis.agr.gc.ca/cansis/nsdb/ecostrat/zone/ecozone_shp.zip",
+        "filename": "ecozones.zip"
+      },
+      {
+        "url": "https://sis.agr.gc.ca/cansis/nsdb/ecostrat/province/ecoprovince_shp.zip",
+        "filename": "ecoprovinces.zip"
+      },
+      {
+        "url": "https://sis.agr.gc.ca/cansis/nsdb/ecostrat/region/ecoregion_shp.zip",
+        "filename": "ecoregions.zip"
+      },
+      {
+        "url": "https://sis.agr.gc.ca/cansis/nsdb/ecostrat/district/ecodistrict_shp.zip",
+        "filename": "ecodistricts.zip"
+      },
+      {
+        "url": "https://sis.agr.gc.ca/cansis/nsdb/ecostrat/zone/zn_names.dbf",
+        "filename": "zn_names.dbf"
+      },
+      {
+        "url": "https://sis.agr.gc.ca/cansis/nsdb/ecostrat/region/rg_names.dbf",
+        "filename": "rg_names.dbf"
+      },
+      {
+        "url": "https://sis.agr.gc.ca/cansis/nsdb/ecostrat/province/pr_names.dbf",
+        "filename": "pr_names.dbf"
+      },
+      {
+        "url": "https://sis.agr.gc.ca/cansis/nsdb/ecostrat/district/dt_names.dbf",
+        "filename": "dt_names.dbf"
+      }
+    ]
+  },
+  "mining_claims": {
+    "type": "vector",
+    "format": "Shapefile",
+    "layers": [
+      {
+        "url": "https://www.geologyontario.mndm.gov.on.ca/mines/documents/claimaps/mlas_operational_gis_data.zip",
+        "filename": "mlas_operational_gis_data.zip",
+        "extract": true
+      }
+    ]
   }
 }
