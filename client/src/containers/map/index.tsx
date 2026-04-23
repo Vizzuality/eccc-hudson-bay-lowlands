@@ -17,6 +17,7 @@ import {
   HUDSON_BAY_MAX_BOUNDS,
 } from "@/containers/map/constants";
 import { Controls } from "@/containers/map/controls";
+import MapDownload from "@/containers/map/controls/download";
 import SettingsControl from "@/containers/map/controls/settings";
 import { BasemapControl } from "@/containers/map/controls/settings/basemap";
 import ZoomControl from "@/containers/map/controls/zoom";
@@ -39,6 +40,7 @@ type MapContainerProps = {
 
 const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
   const mapRef = useRef<MapRef>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState<boolean>(false);
   const { basemap } = useMapBasemap();
   const mapStyle = BASEMAPS[basemap as BasemapId].mapStyle;
@@ -81,7 +83,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
   }, [layerIds, layersSettings, setLayersSettings]);
 
   return (
-    <div className={cn("relative h-full w-full", className)}>
+    <div ref={containerRef} className={cn("relative h-full w-full", className)}>
       <MapBoxMap
         ref={mapRef}
         mapboxAccessToken={env.NEXT_PUBLIC_MAPBOX_API_TOKEN}
@@ -102,6 +104,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
           map?.setMinZoom(DEFAULT_MIN_ZOOM);
           setLoaded(true);
         }}
+        preserveDrawingBuffer
         testMode={
           !!process.env.NEXT_PUBLIC_E2E || process.env.NODE_ENV === "test"
         }
@@ -119,6 +122,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
           <SettingsControl>
             <BasemapControl />
           </SettingsControl>
+          <MapDownload containerRef={containerRef} />
         </Controls>
         <MapLegend
           sortable={{ enabled: true, handle: true }}

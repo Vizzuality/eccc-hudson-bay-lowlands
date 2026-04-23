@@ -58,7 +58,9 @@ export default defineConfig(({ mode }) => ({
         "src/lib/query-keys.ts",
 
         // Map-coupled components (better covered by E2E)
+        "src/hooks/use-map-download.ts",
         "src/hooks/use-map-draw.ts",
+        "src/containers/map/controls/download/**",
         "src/containers/map/index.tsx",
         "src/containers/map/controls/index.tsx",
         "src/containers/map/controls/zoom/**",

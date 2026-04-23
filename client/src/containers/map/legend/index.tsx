@@ -1,8 +1,8 @@
 import { ArrowDownIcon } from "lucide-react";
 import {
   Children,
-  type FC,
   isValidElement,
+  type Ref,
   useEffect,
   useMemo,
   useState,
@@ -17,11 +17,12 @@ import SortableList from "@/containers/map/legend/sortable/list";
 import type { MapLegendProps } from "@/containers/map/legend/types";
 import { cn } from "@/lib/utils";
 
-const MapLegend: FC<MapLegendProps> = ({
+function MapLegend({
   children,
   sortable,
   onChangeOrder,
-}) => {
+  ref,
+}: MapLegendProps & { ref?: Ref<HTMLDivElement> }) {
   const [open, setOpen] = useState(false);
   const isChildren = useMemo(() => {
     return !!Children.count(
@@ -35,6 +36,7 @@ const MapLegend: FC<MapLegendProps> = ({
 
   return (
     <Collapsible
+      ref={ref}
       open={open}
       onOpenChange={setOpen}
       className={cn("absolute left-0 bottom-0", {
@@ -72,6 +74,6 @@ const MapLegend: FC<MapLegendProps> = ({
       </CollapsibleContent>
     </Collapsible>
   );
-};
+}
 
 export default MapLegend;

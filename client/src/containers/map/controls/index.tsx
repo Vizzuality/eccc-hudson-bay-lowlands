@@ -19,6 +19,7 @@ export const Controls: FC<ControlsProps> = ({
 }: ControlsProps) => (
   <PopoverProvider>
     <div
+      data-download-exclude
       className={cn({
         "flex flex-col items-center justify-center space-y-3": true,
         [className]: !!className,
