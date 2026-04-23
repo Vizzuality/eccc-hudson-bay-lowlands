@@ -27,14 +27,17 @@ const MainButtonIcon: FC<{ mapStatus: MapStatus; datasets: boolean }> = ({
   }
 };
 
-const getMainButtonText = (mapStatus: MapStatus) => {
+const getMainButtonText = (
+  mapStatus: MapStatus,
+  t: (key: string) => string,
+) => {
   switch (mapStatus) {
     case MapStatus.default:
-      return "Analyze area";
+      return t("analyze-area");
     case MapStatus.upload:
-      return "Cancel";
+      return t("cancel");
     case MapStatus.analysis:
-      return "Datasets";
+      return t("datasets");
   }
 };
 
@@ -65,7 +68,7 @@ const MainButton: FC = () => {
         <TooltipTrigger asChild autoFocus={false}>
           <Button type="button" size="xl" onClick={handleButtonClick}>
             <MainButtonIcon mapStatus={mapStatus} datasets={datasets} />
-            {getMainButtonText(mapStatus)}
+            {getMainButtonText(mapStatus, t)}
           </Button>
         </TooltipTrigger>
       </PopoverTrigger>
