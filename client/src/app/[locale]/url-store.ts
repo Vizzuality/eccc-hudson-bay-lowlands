@@ -31,10 +31,12 @@ export function useCategory() {
   return { category, setCategory };
 }
 
+export const DEFAULT_LAYER_IDS = ["nativeland.4pgB_next_nld_terr_prod_layer"];
+
 export function useLayerIds() {
   const [layerIds, setLayerIds] = useQueryState(
     "layers",
-    parseAsArrayOf(parseAsString).withDefault([]),
+    parseAsArrayOf(parseAsString).withDefault(DEFAULT_LAYER_IDS),
   );
 
   return { layerIds, setLayerIds };
