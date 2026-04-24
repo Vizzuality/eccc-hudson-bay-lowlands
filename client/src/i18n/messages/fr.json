@@ -18,14 +18,16 @@
         "title": "Style de carte"
       },
       "download": {
-        "aria-label": "Télécharger l'image de la carte"
+        "aria-label": "Télécharger l'image de la carte",
+        "tooltip": "Télécharger la carte en image"
       },
       "zoom": {
         "in": "Agrandir",
         "out": "Réduire"
       },
       "settings": {
-        "aria-label": "Paramètres de la carte"
+        "aria-label": "Paramètres de la carte",
+        "tooltip": "Paramètres de la carte"
       }
     }
   },
