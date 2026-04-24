@@ -18,14 +18,16 @@
         "title": "Map style"
       },
       "download": {
-        "aria-label": "Download map image"
+        "aria-label": "Download map image",
+        "tooltip": "Download map as image"
       },
       "zoom": {
         "in": "Zoom in",
         "out": "Zoom out"
       },
       "settings": {
-        "aria-label": "Map settings"
+        "aria-label": "Map settings",
+        "tooltip": "Map settings"
       }
     }
   },

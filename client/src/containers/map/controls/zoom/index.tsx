@@ -12,6 +12,11 @@ import {
 } from "react";
 import { useMap } from "react-map-gl/mapbox";
 import { useDebounceCallback } from "usehooks-ts";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { CONTROL_BUTTON_STYLES } from "../constants";
 
@@ -64,36 +69,46 @@ export const ZoomControl: FC<ZoomControlProps> = ({
 
   return (
     <div className={cn("flex flex-col", className)}>
-      <button
-        className={cn({
-          [CONTROL_BUTTON_STYLES.default]: true,
-          "rounded-none rounded-t-full border-b-0": true,
-          [CONTROL_BUTTON_STYLES.hover]: zoom !== maxZoom,
-          [CONTROL_BUTTON_STYLES.active]: zoom !== maxZoom,
-          [CONTROL_BUTTON_STYLES.disabled]: zoom === maxZoom,
-        })}
-        aria-label={t("in")}
-        type="button"
-        disabled={zoom === maxZoom}
-        onClick={increaseZoom}
-      >
-        <ZoomInIcon className={CONTROL_BUTTON_STYLES.icon} />
-      </button>
-      <button
-        className={cn({
-          [CONTROL_BUTTON_STYLES.default]: true,
-          "rounded-none rounded-b-full border-t-0": true,
-          [CONTROL_BUTTON_STYLES.hover]: zoom !== minZoom,
-          [CONTROL_BUTTON_STYLES.active]: zoom !== minZoom,
-          [CONTROL_BUTTON_STYLES.disabled]: zoom === minZoom,
-        })}
-        aria-label={t("out")}
-        type="button"
-        disabled={zoom === minZoom}
-        onClick={decreaseZoom}
-      >
-        <ZoomOutIcon className={CONTROL_BUTTON_STYLES.icon} />
-      </button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            className={cn({
+              [CONTROL_BUTTON_STYLES.default]: true,
+              "rounded-none rounded-t-full border-b-0": true,
+              [CONTROL_BUTTON_STYLES.hover]: zoom !== maxZoom,
+              [CONTROL_BUTTON_STYLES.active]: zoom !== maxZoom,
+              [CONTROL_BUTTON_STYLES.disabled]: zoom === maxZoom,
+            })}
+            aria-label={t("in")}
+            type="button"
+            disabled={zoom === maxZoom}
+            onClick={increaseZoom}
+          >
+            <ZoomInIcon className={CONTROL_BUTTON_STYLES.icon} />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="left">{t("in")}</TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            className={cn({
+              [CONTROL_BUTTON_STYLES.default]: true,
+              "rounded-none rounded-b-full border-t-0": true,
+              [CONTROL_BUTTON_STYLES.hover]: zoom !== minZoom,
+              [CONTROL_BUTTON_STYLES.active]: zoom !== minZoom,
+              [CONTROL_BUTTON_STYLES.disabled]: zoom === minZoom,
+            })}
+            aria-label={t("out")}
+            type="button"
+            disabled={zoom === minZoom}
+            onClick={decreaseZoom}
+          >
+            <ZoomOutIcon className={CONTROL_BUTTON_STYLES.icon} />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="left">{t("out")}</TooltipContent>
+      </Tooltip>
     </div>
   );
 };
