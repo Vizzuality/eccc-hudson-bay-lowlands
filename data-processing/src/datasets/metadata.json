@@ -99,38 +99,14 @@
                   ]
                 },
                 "colormap": [
-                  [
-                    0,
-                    "#0E2780"
-                  ],
-                  [
-                    100,
-                    "#0E2780"
-                  ],
-                  [
-                    101,
-                    "#01CB2A"
-                  ],
-                  [
-                    200,
-                    "#01CB2A"
-                  ],
-                  [
-                    201,
-                    "#F9DF08"
-                  ],
-                  [
-                    300,
-                    "#F9DF08"
-                  ],
-                  [
-                    301,
-                    "#CA4935"
-                  ],
-                  [
-                    600,
-                    "#CA4935"
-                  ]
+                  [0, "#0E2780"],
+                  [100, "#0E2780"],
+                  [101, "#01CB2A"],
+                  [200, "#01CB2A"],
+                  [201, "#F9DF08"],
+                  [300, "#F9DF08"],
+                  [301, "#CA4935"],
+                  [600, "#CA4935"]
                 ]
               }
             },
@@ -210,46 +186,16 @@
                   ]
                 },
                 "colormap": [
-                  [
-                    33,
-                    "#FFEA01"
-                  ],
-                  [
-                    69,
-                    "#FFEA01"
-                  ],
-                  [
-                    70,
-                    "#31CF53"
-                  ],
-                  [
-                    82,
-                    "#31CF53"
-                  ],
-                  [
-                    83,
-                    "#00948E"
-                  ],
-                  [
-                    91,
-                    "#00948E"
-                  ],
-                  [
-                    92,
-                    "#3E5591"
-                  ],
-                  [
-                    102,
-                    "#3E5591"
-                  ],
-                  [
-                    103,
-                    "#4A0057"
-                  ],
-                  [
-                    242,
-                    "#4A0057"
-                  ]
+                  [33, "#FFEA01"],
+                  [69, "#FFEA01"],
+                  [70, "#31CF53"],
+                  [82, "#31CF53"],
+                  [83, "#00948E"],
+                  [91, "#00948E"],
+                  [92, "#3E5591"],
+                  [102, "#3E5591"],
+                  [103, "#4A0057"],
+                  [242, "#4A0057"]
                 ]
               }
             }
@@ -461,20 +407,7 @@
                     }
                   ]
                 },
-                "colormap": [
-                  [
-                    0,
-                    "#f7fbff"
-                  ],
-                  [
-                    50,
-                    "#6baed6"
-                  ],
-                  [
-                    100,
-                    "#08306b"
-                  ]
-                ]
+                "colormap": [[0, "#f7fbff"], [50, "#6baed6"], [100, "#08306b"]]
               }
             }
           ]
@@ -581,26 +514,11 @@
                   ]
                 },
                 "colormap": [
-                  [
-                    0,
-                    "#ffffcc"
-                  ],
-                  [
-                    25,
-                    "#a1dab4"
-                  ],
-                  [
-                    50,
-                    "#41b6c4"
-                  ],
-                  [
-                    75,
-                    "#2c7fb8"
-                  ],
-                  [
-                    100,
-                    "#253494"
-                  ]
+                  [0, "#ffffcc"],
+                  [25, "#a1dab4"],
+                  [50, "#41b6c4"],
+                  [75, "#2c7fb8"],
+                  [100, "#253494"]
                 ]
               }
             }
@@ -692,18 +610,9 @@
                   ]
                 },
                 "colormap": [
-                  [
-                    -47,
-                    "#357ca3"
-                  ],
-                  [
-                    94,
-                    "#0b0405"
-                  ],
-                  [
-                    235,
-                    "#def5e5"
-                  ]
+                  [-47, "#357ca3"],
+                  [94, "#0b0405"],
+                  [235, "#def5e5"]
                 ]
               }
             },
@@ -772,18 +681,9 @@
                   ]
                 },
                 "colormap": [
-                  [
-                    -47,
-                    "#357ca3"
-                  ],
-                  [
-                    94,
-                    "#0b0405"
-                  ],
-                  [
-                    235,
-                    "#def5e5"
-                  ]
+                  [-47, "#357ca3"],
+                  [94, "#0b0405"],
+                  [235, "#def5e5"]
                 ]
               }
             },
@@ -852,18 +752,9 @@
                   ]
                 },
                 "colormap": [
-                  [
-                    -47,
-                    "#357ca3"
-                  ],
-                  [
-                    94,
-                    "#0b0405"
-                  ],
-                  [
-                    235,
-                    "#def5e5"
-                  ]
+                  [-47, "#357ca3"],
+                  [94, "#0b0405"],
+                  [235, "#def5e5"]
                 ]
               }
             },
@@ -932,18 +823,9 @@
                   ]
                 },
                 "colormap": [
-                  [
-                    -47,
-                    "#357ca3"
-                  ],
-                  [
-                    94,
-                    "#0b0405"
-                  ],
-                  [
-                    235,
-                    "#def5e5"
-                  ]
+                  [-47, "#357ca3"],
+                  [94, "#0b0405"],
+                  [235, "#def5e5"]
                 ]
               }
             },
@@ -1012,18 +894,9 @@
                   ]
                 },
                 "colormap": [
-                  [
-                    -47,
-                    "#357ca3"
-                  ],
-                  [
-                    94,
-                    "#0b0405"
-                  ],
-                  [
-                    235,
-                    "#def5e5"
-                  ]
+                  [-47, "#357ca3"],
+                  [94, "#0b0405"],
+                  [235, "#def5e5"]
                 ]
               }
             },
@@ -1092,18 +965,9 @@
                   ]
                 },
                 "colormap": [
-                  [
-                    -47,
-                    "#357ca3"
-                  ],
-                  [
-                    94,
-                    "#0b0405"
-                  ],
-                  [
-                    235,
-                    "#def5e5"
-                  ]
+                  [-47, "#357ca3"],
+                  [94, "#0b0405"],
+                  [235, "#def5e5"]
                 ]
               }
             },
@@ -1171,20 +1035,7 @@
                     }
                   ]
                 },
-                "colormap": [
-                  [
-                    0,
-                    "#357ca3"
-                  ],
-                  [
-                    217,
-                    "#0b0405"
-                  ],
-                  [
-                    435,
-                    "#def5e5"
-                  ]
-                ]
+                "colormap": [[0, "#357ca3"], [217, "#0b0405"], [435, "#def5e5"]]
               }
             },
             {
@@ -1251,20 +1102,7 @@
                     }
                   ]
                 },
-                "colormap": [
-                  [
-                    0,
-                    "#357ca3"
-                  ],
-                  [
-                    217,
-                    "#0b0405"
-                  ],
-                  [
-                    435,
-                    "#def5e5"
-                  ]
-                ]
+                "colormap": [[0, "#357ca3"], [217, "#0b0405"], [435, "#def5e5"]]
               }
             },
             {
@@ -1331,20 +1169,7 @@
                     }
                   ]
                 },
-                "colormap": [
-                  [
-                    0,
-                    "#357ca3"
-                  ],
-                  [
-                    217,
-                    "#0b0405"
-                  ],
-                  [
-                    435,
-                    "#def5e5"
-                  ]
-                ]
+                "colormap": [[0, "#357ca3"], [217, "#0b0405"], [435, "#def5e5"]]
               }
             },
             {
@@ -1411,20 +1236,7 @@
                     }
                   ]
                 },
-                "colormap": [
-                  [
-                    0,
-                    "#357ca3"
-                  ],
-                  [
-                    217,
-                    "#0b0405"
-                  ],
-                  [
-                    435,
-                    "#def5e5"
-                  ]
-                ]
+                "colormap": [[0, "#357ca3"], [217, "#0b0405"], [435, "#def5e5"]]
               }
             },
             {
@@ -1491,20 +1303,7 @@
                     }
                   ]
                 },
-                "colormap": [
-                  [
-                    0,
-                    "#357ca3"
-                  ],
-                  [
-                    217,
-                    "#0b0405"
-                  ],
-                  [
-                    435,
-                    "#def5e5"
-                  ]
-                ]
+                "colormap": [[0, "#357ca3"], [217, "#0b0405"], [435, "#def5e5"]]
               }
             },
             {
@@ -1571,20 +1370,7 @@
                     }
                   ]
                 },
-                "colormap": [
-                  [
-                    0,
-                    "#357ca3"
-                  ],
-                  [
-                    217,
-                    "#0b0405"
-                  ],
-                  [
-                    435,
-                    "#def5e5"
-                  ]
-                ]
+                "colormap": [[0, "#357ca3"], [217, "#0b0405"], [435, "#def5e5"]]
               }
             }
           ]
@@ -2037,6 +1823,11 @@
                       }
                     }
                   ]
+                },
+                "interaction_config": {
+                  "keys": ["NAME_EN", "NAME_FR"],
+                  "type": "feature-value",
+                  "event": "click"
                 }
               }
             },
@@ -2063,10 +1854,7 @@
                     "paint": {
                       "line-color": "#6e6e6e",
                       "line-width": 1,
-                      "line-dasharray": [
-                        1,
-                        2
-                      ]
+                      "line-dasharray": [1, 2]
                     },
                     "source-layer": "ecoprovinces-dq7frf"
                   }
@@ -2087,16 +1875,18 @@
                     {
                       "color": "#6e6e6e",
                       "line-width": 1,
-                      "line-dasharray": [
-                        1,
-                        2
-                      ],
+                      "line-dasharray": [1, 2],
                       "label": {
                         "en": "Ecoprovinces",
                         "fr": "Écoprovinces"
                       }
                     }
                   ]
+                },
+                "interaction_config": {
+                  "keys": ["NAME_EN", "NAME_FR"],
+                  "type": "feature-value",
+                  "event": "click"
                 }
               }
             },
@@ -2149,6 +1939,11 @@
                       }
                     }
                   ]
+                },
+                "interaction_config": {
+                  "keys": ["NAME_EN", "NAME_FR"],
+                  "type": "feature-value",
+                  "event": "click"
                 }
               }
             },
@@ -2175,10 +1970,7 @@
                     "paint": {
                       "line-color": "#535445",
                       "line-width": 1,
-                      "line-dasharray": [
-                        1,
-                        2
-                      ]
+                      "line-dasharray": [1, 2]
                     },
                     "source-layer": "ecodistricts-d4x3uv"
                   }
@@ -2199,16 +1991,18 @@
                     {
                       "color": "#535445",
                       "line-width": 1,
-                      "line-dasharray": [
-                        1,
-                        2
-                      ],
+                      "line-dasharray": [1, 2],
                       "label": {
                         "en": "Ecodistricts",
                         "fr": "Écodistricts"
                       }
                     }
                   ]
+                },
+                "interaction_config": {
+                  "keys": ["NAME_EN", "NAME_FR"],
+                  "type": "feature-value",
+                  "event": "click"
                 }
               }
             }
@@ -2271,76 +2065,67 @@
                     "filter": [
                       "in",
                       ["get", "Name"],
-                      ["literal", [
-                        "Cree",
-                        "Michif Piyii (Métis)",
-                        "Denendeh (Dënësųłinë́ Nëné)",
-                        "Anishinabewaki ᐊᓂᔑᓈᐯᐗᑭ",
-                        "Anishininiimowin (Oji-Cree)",
-                        "Eeyou Istchee",
-                        "ᐃᓕᓕᐗᔅᑭᔾ | Ililiwaskiy (Moose Cree)",
-                        "Abitibiwinni Aki",
-                        "Dënéndeh"
-                      ]]
+                      [
+                        "literal",
+                        [
+                          "Cree",
+                          "Michif Piyii (Métis)",
+                          "Denendeh (Dënësųłinë́ Nëné)",
+                          "Anishinabewaki ᐊᓂᔑᓈᐯᐗᑭ",
+                          "Anishininiimowin (Oji-Cree)",
+                          "Eeyou Istchee",
+                          "ᐃᓕᓕᐗᔅᑭᔾ | Ililiwaskiy (Moose Cree)",
+                          "Abitibiwinni Aki",
+                          "Dënéndeh"
+                        ]
+                      ]
                     ],
                     "layout": {
                       "fill-sort-key": [
                         "match",
                         ["get", "Name"],
-                        ["Cree"], 1,
-                        ["Denendeh (Dënësųłinë́ Nëné)"], 2,
-                        ["Michif Piyii (Métis)"], 3,
-                        ["Dënéndeh"], 4,
-                        ["Anishinabewaki ᐊᓂᔑᓈᐯᐗᑭ"], 5,
-                        ["Anishininiimowin (Oji-Cree)"], 6,
-                        ["Eeyou Istchee"], 7,
-                        ["ᐃᓕᓕᐗᔅᑭᔾ | Ililiwaskiy (Moose Cree)"], 8,
-                        ["Abitibiwinni Aki"], 9,
+                        ["Cree"],
+                        1,
+                        ["Denendeh (Dënësųłinë́ Nëné)"],
+                        2,
+                        ["Michif Piyii (Métis)"],
+                        3,
+                        ["Dënéndeh"],
+                        4,
+                        ["Anishinabewaki ᐊᓂᔑᓈᐯᐗᑭ"],
+                        5,
+                        ["Anishininiimowin (Oji-Cree)"],
+                        6,
+                        ["Eeyou Istchee"],
+                        7,
+                        ["ᐃᓕᓕᐗᔅᑭᔾ | Ililiwaskiy (Moose Cree)"],
+                        8,
+                        ["Abitibiwinni Aki"],
+                        9,
                         0
                       ]
                     },
                     "paint": {
                       "fill-color": [
                         "match",
-                        [
-                          "get",
-                          "Name"
-                        ],
-                        [
-                          "Cree"
-                        ],
+                        ["get", "Name"],
+                        ["Cree"],
                         "rgba(161, 69, 23, 0.85)",
-                        [
-                          "Michif Piyii (Métis)"
-                        ],
+                        ["Michif Piyii (Métis)"],
                         "rgba(139, 94, 60, 0.8)",
-                        [
-                          "Denendeh (Dënësųłinë́ Nëné)"
-                        ],
+                        ["Denendeh (Dënësųłinë́ Nëné)"],
                         "rgba(61, 64, 32, 0.85)",
-                        [
-                          "Anishinabewaki ᐊᓂᔑᓈᐯᐗᑭ"
-                        ],
+                        ["Anishinabewaki ᐊᓂᔑᓈᐯᐗᑭ"],
                         "rgba(123, 144, 90, 0.85)",
-                        [
-                          "Anishininiimowin (Oji-Cree)"
-                        ],
+                        ["Anishininiimowin (Oji-Cree)"],
                         "rgba(139, 94, 60, 0.85)",
-                        [
-                          "Eeyou Istchee"
-                        ],
+                        ["Eeyou Istchee"],
                         "rgba(94, 111, 115, 0.85)",
-                        [
-                          "ᐃᓕᓕᐗᔅᑭᔾ | Ililiwaskiy (Moose Cree)"
-                        ],
+                        ["ᐃᓕᓕᐗᔅᑭᔾ | Ililiwaskiy (Moose Cree)"],
                         "rgba(176, 121, 105, 0.85)",
-                        [
-                          "Abitibiwinni Aki"
-                        ],
+                        ["Abitibiwinni Aki"],
                         "rgba(107, 78, 61, 0.85)",
-                        [
-                          "Dënéndeh"
-                        ],
+                        ["Dënéndeh"],
                         "rgba(155, 153, 105, 0.85)",
                         "rgba(0, 0, 0, 0)"
                       ],
@@ -2432,6 +2217,11 @@
                       }
                     }
                   ]
+                },
+                "interaction_config": {
+                  "keys": ["Name"],
+                  "type": "feature-value",
+                  "event": "click"
                 }
               }
             }
@@ -2518,6 +2308,17 @@
                       }
                     }
                   ]
+                },
+                "interaction_config": {
+                  "keys": [
+                    "TITLE_TY_1",
+                    "DISPOSIT_1",
+                    "AREA_IN_HE",
+                    "STATUS",
+                    "HOLDER"
+                  ],
+                  "type": "feature-properties",
+                  "event": "click"
                 }
               }
             },
@@ -2570,6 +2371,11 @@
                       }
                     }
                   ]
+                },
+                "interaction_config": {
+                  "keys": ["TITLE_TYPE", "DISPOSITIO", "UPDATE_TIM"],
+                  "type": "feature-detail",
+                  "event": "click"
                 }
               }
             },
@@ -2597,12 +2403,8 @@
                       "line-color": "#f4984e",
                       "line-width": [
                         "interpolate",
-                        [
-                          "linear"
-                        ],
-                        [
-                          "zoom"
-                        ],
+                        ["linear"],
+                        ["zoom"],
                         0,
                         0.1,
                         7.88,
@@ -2636,6 +2438,11 @@
                       }
                     }
                   ]
+                },
+                "interaction_config": {
+                  "keys": ["TITLE_TY_1", "TENURE_S_1", "CLAIM_DUE_", "HOLDER"],
+                  "type": "feature-detail",
+                  "event": "click"
                 }
               }
             },
@@ -2688,6 +2495,11 @@
                       }
                     }
                   ]
+                },
+                "interaction_config": {
+                  "keys": ["ALIENATION", "ALIENATI_1"],
+                  "type": "feature-detail",
+                  "event": "click"
                 }
               }
             },
@@ -2740,6 +2552,11 @@
                       }
                     }
                   ]
+                },
+                "interaction_config": {
+                  "keys": ["EARLY_EX_2", "EARLY_EX_3", "PROJECT_NA", "HOLDER"],
+                  "type": "feature-properties",
+                  "event": "click"
                 }
               }
             }
