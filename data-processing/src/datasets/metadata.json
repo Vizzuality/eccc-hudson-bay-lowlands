@@ -2000,7 +2000,7 @@
                   ]
                 },
                 "interaction_config": {
-                  "keys": ["NAME_EN", "NAME_FR"],
+                  "keys": ["NAME_EN"],
                   "type": "feature-value",
                   "event": "click"
                 }
