@@ -389,17 +389,18 @@ def minimal_cog(tmp_path):
 def analysis_client(db_session, tmp_path, monkeypatch):
     """Test client wired for analysis integration tests.
 
-    Creates four GeoTIFFs with uniform, known pixel values in EPSG:4326 covering
+    Creates five GeoTIFFs with uniform, known pixel values in EPSG:4326 covering
     the standard test polygon area, inserts matching Layer records into the DB
-    (peat_cog, carbon_cog, inundation_frequency_cog, inundation_trends_cog),
-    and patches _s3_uri so rasterio opens the local files directly instead of
-    reaching out to S3.
+    (peat_cog, carbon_cog, inundation_frequency_cog, inundation_trends_cog,
+    flood_susceptibility_cog), and patches _s3_uri so rasterio opens the local
+    files directly instead of reaching out to S3.
 
     Pixel-value choices and what they exercise:
       - peat_cog:                  uniform 200.0 (float32) — mean/max/histogram path
       - carbon_cog:                uniform 80.0  (float32) — sum scale/precision path
       - inundation_frequency_cog:  uniform 100   (uint8)   — frac_sum [100] = 100%, mean = 100
       - inundation_trends_cog:     uniform 4     (uint8)   — frac_sum [4]   = 100%
+      - flood_susceptibility_cog:  uniform 50    (uint8)   — mean = 50, frac_range [31,80] = 100% (moderate)
     """
     import numpy as np
     import rasterio
@@ -414,12 +415,14 @@ def analysis_client(db_session, tmp_path, monkeypatch):
     carbon_path = str(tmp_path / "carbon_cog.tif")
     inundation_freq_path = str(tmp_path / "inundation_frequency_cog.tif")
     inundation_trends_path = str(tmp_path / "inundation_trends_cog.tif")
+    flood_susc_path = str(tmp_path / "flood_susceptibility_cog.tif")
 
     raster_specs = [
         (peat_path, 200.0, "float32"),
         (carbon_path, 80.0, "float32"),
         (inundation_freq_path, 100, "uint8"),
         (inundation_trends_path, 4, "uint8"),
+        (flood_susc_path, 50, "uint8"),
     ]
 
     for path, value, dtype in raster_specs:
@@ -478,6 +481,14 @@ def analysis_client(db_session, tmp_path, monkeypatch):
             path=inundation_trends_path,
             unit="category",
             metadata_={"title": {"en": "Inundation Trends", "fr": "Tendances des Inondations"}},
+            dataset_id=db_dataset.id,
+        ),
+        Layer(
+            id="flood_susceptibility_cog",
+            format_="raster",
+            path=flood_susc_path,
+            unit="%",
+            metadata_={"title": {"en": "Flood Susceptibility Index", "fr": "Indice de vulnérabilité aux inondations"}},
             dataset_id=db_dataset.id,
         ),
     ])

@@ -575,3 +575,95 @@ def test_water_dynamics_layer_entries_have_id_title_path(analysis_client):
         "fr": "Tendances des Inondations",
     }
     assert by_id["inundation_trends_cog"]["path"].endswith("inundation_trends_cog.tif")
+
+
+# =============================================================================
+# Integration — flood_susceptibility widget output
+#
+# The fixture creates a uint8 GeoTIFF (`flood_susceptibility_cog`) where every
+# pixel = 50. That value sits in the moderate band (31–80), so:
+#   - fsi_avg          ≈ 50
+#   - fsi_low_perc     = 0    (no pixels in 0–30)
+#   - fsi_moderate_perc = 100 (all pixels in 31–80)
+#   - fsi_high_perc    = 0    (no pixels in 81–100)
+# =============================================================================
+
+
+def test_analysis_response_contains_flood_susceptibility_widget(analysis_client):
+    data = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()
+    assert "flood_susceptibility" in data
+
+
+def test_flood_susceptibility_unit_inherited_from_layer(analysis_client):
+    """Widget unit is read from flood_susceptibility_cog.unit ('%')."""
+    data = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()
+    assert data["flood_susceptibility"]["unit"] == "%"
+
+
+def test_flood_susceptibility_stats_contains_all_fields(analysis_client):
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["flood_susceptibility"]["stats"]
+    assert set(stats.keys()) == {"fsi_avg", "fsi_low_perc", "fsi_moderate_perc", "fsi_high_perc"}
+
+
+def test_fsi_avg_matches_uniform_pixel_value(analysis_client):
+    """Mean of a raster where every pixel = 50 must be ≈ 50."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["flood_susceptibility"]["stats"]
+    assert stats["fsi_avg"] == pytest.approx(50.0, abs=0.5)
+
+
+def test_fsi_low_perc_is_zero_when_no_pixels_in_range(analysis_client):
+    """All pixels = 50 → frac_range [0, 30] = 0%."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["flood_susceptibility"]["stats"]
+    assert stats["fsi_low_perc"] == pytest.approx(0.0, abs=0.01)
+
+
+def test_fsi_moderate_perc_is_100_for_uniform_value_50(analysis_client):
+    """All pixels = 50 → frac_range [31, 80] × 100 = 100%."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["flood_susceptibility"]["stats"]
+    assert stats["fsi_moderate_perc"] == pytest.approx(100.0, abs=0.5)
+
+
+def test_fsi_high_perc_is_zero_when_no_pixels_in_range(analysis_client):
+    """All pixels = 50 → frac_range [81, 100] = 0%."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["flood_susceptibility"]["stats"]
+    assert stats["fsi_high_perc"] == pytest.approx(0.0, abs=0.01)
+
+
+def test_flood_susceptibility_chart_keyed_by_layer_id(analysis_client):
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["flood_susceptibility"]["chart"]
+    assert "flood_susceptibility_cog" in chart
+
+
+def test_flood_susceptibility_chart_has_three_categorical_slices(analysis_client):
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["flood_susceptibility"]["chart"]
+    slices = chart["flood_susceptibility_cog"]
+    assert isinstance(slices, list)
+    assert len(slices) == 3
+    keys = [s["key"] for s in slices]
+    assert keys == ["fsi_low_perc", "fsi_moderate_perc", "fsi_high_perc"]
+
+
+def test_flood_susceptibility_slice_values_match_corresponding_stats(analysis_client):
+    """Slice values are sourced from the already-computed stats dict."""
+    data = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["flood_susceptibility"]
+    stats, slices = data["stats"], data["chart"]["flood_susceptibility_cog"]
+    by_key = {s["key"]: s["value"] for s in slices}
+    assert by_key["fsi_low_perc"] == stats["fsi_low_perc"]
+    assert by_key["fsi_moderate_perc"] == stats["fsi_moderate_perc"]
+    assert by_key["fsi_high_perc"] == stats["fsi_high_perc"]
+
+
+def test_flood_susceptibility_layers_in_widget_config_order(analysis_client):
+    layers = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["flood_susceptibility"]["layers"]
+    assert [entry["id"] for entry in layers] == ["flood_susceptibility_cog"]
+
+
+def test_flood_susceptibility_layer_entry_has_id_title_path(analysis_client):
+    layers = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["flood_susceptibility"]["layers"]
+    entry = layers[0]
+    assert entry["id"] == "flood_susceptibility_cog"
+    assert entry["title"] == {
+        "en": "Flood Susceptibility Index",
+        "fr": "Indice de vulnérabilité aux inondations",
+    }
+    assert entry["path"].endswith("flood_susceptibility_cog.tif")
