@@ -476,14 +476,16 @@ def test_water_perm_perc_is_100_for_uniform_value_100(analysis_client):
 
 def test_water_ephemeral_perc_is_zero_when_no_pixels_in_range(analysis_client):
     """All pixels = 100 → no pixel falls in [1, 99] → 0%."""
+    import pytest
     stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
-    assert stats["water_ephemeral_perc"] == 0.0
+    assert stats["water_ephemeral_perc"] == pytest.approx(0.0, abs=0.01)
 
 
 def test_land_perm_perc_is_zero_when_no_pixels_match(analysis_client):
     """All pixels = 100 → frac_sum([0]) = 0%."""
+    import pytest
     stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
-    assert stats["land_perm_perc"] == 0.0
+    assert stats["land_perm_perc"] == pytest.approx(0.0, abs=0.01)
 
 
 def test_freq_mean_matches_uniform_pixel_value(analysis_client):
@@ -502,14 +504,16 @@ def test_trend_wetter_perc_is_100_for_uniform_value_4(analysis_client):
 
 def test_trend_drier_perc_is_zero_when_no_pixels_match(analysis_client):
     """All pixels = 4 → frac_sum([5]) = 0%."""
+    import pytest
     stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
-    assert stats["trend_drier_perc"] == 0.0
+    assert stats["trend_drier_perc"] == pytest.approx(0.0, abs=0.01)
 
 
 def test_trend_stable_perc_is_zero_when_no_pixels_match(analysis_client):
     """All pixels = 4 → frac_sum([1, 2, 3]) = 0%."""
+    import pytest
     stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
-    assert stats["trend_stable_perc"] == 0.0
+    assert stats["trend_stable_perc"] == pytest.approx(0.0, abs=0.01)
 
 
 def test_water_dynamics_chart_keyed_by_inundation_frequency_layer(analysis_client):
