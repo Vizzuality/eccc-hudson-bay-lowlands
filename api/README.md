@@ -1,6 +1,6 @@
 # ECCC Hudson Bay Lowlands API
 
-FastAPI backend for the Hudson Bay Lowlands geospatial application. Provides COG tile serving via TiTiler, layer and dataset management with multilingual JSONB metadata, and a health check endpoint with database connectivity verification.
+FastAPI backend for the Hudson Bay Lowlands geospatial application. Provides COG tile serving via TiTiler, layer/dataset/category catalogue with multilingual JSONB metadata, geometry-driven zonal-statistics analysis (POST /analysis), authenticated seeding, and a health check.
 
 ## Requirements
 
@@ -71,6 +71,14 @@ uv run fastapi run main.py
 | Endpoint | Description |
 |----------|-------------|
 | (Coming soon) | Create, list, and manage datasets that group related layers |
+
+### Analysis (Geometry Validation + Zonal Statistics)
+
+| Endpoint | Description |
+|----------|-------------|
+| `POST /analysis` | Validate a GeoJSON `Feature` / `FeatureCollection` (EPSG:4326, Polygon/MultiPolygon) and compute pixel-coverage-weighted statistics for the configured raster layers. Returns one widget object per key (currently `peat_carbon`, `water_dynamics`); each widget has `unit`, `layers` (list of `{id, title, path}`), `chart` (keyed by layer id), and a typed `stats` object. Returns 422 for invalid geometry, 500 if `S3_BUCKET_NAME` is unset. |
+
+Widgets and the layers/ops/stats they consume are declared in `api/services/widgets.py` (`WIDGET_CONFIG`); the builder in `api/services/zonal_stats.py` is generic, so adding a new raster or widget does not require new branching code.
 
 For full request/response schemas, see the interactive docs at `/docs`.
 
