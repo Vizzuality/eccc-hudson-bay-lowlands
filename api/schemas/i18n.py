@@ -79,6 +79,14 @@ class ParamsConfigEntry(BaseModel):
     default: bool | int | float = Field(description="Default value for the parameter")
 
 
+class InteractionConfig(BaseModel):
+    """Click/hover interaction configuration for vector layers."""
+
+    keys: list[str] = Field(description="Feature property keys to surface on interaction (e.g. ['NAME_EN', 'NAME_FR'])")
+    type: str = Field(description="Interaction type (e.g. 'feature-value')")
+    event: str = Field(description="Event that triggers the interaction (e.g. 'click')")
+
+
 class LayerConfig(BaseModel):
     """Visualization configuration for a map layer.
 
@@ -92,6 +100,7 @@ class LayerConfig(BaseModel):
     """
 
     model_config = {
+        "extra": "allow",
         "json_schema_extra": {
             "examples": [
                 {
@@ -121,7 +130,7 @@ class LayerConfig(BaseModel):
                     },
                 },
             ]
-        }
+        },
     }
 
     colormap: list | dict | None = Field(
@@ -132,3 +141,7 @@ class LayerConfig(BaseModel):
     styles: list[dict] = Field(description="Mapbox GL style layers (paint, layout, source-layer)")
     params_config: list[ParamsConfigEntry] = Field(description="Configurable UI parameters (opacity, visibility)")
     legend_config: LegendConfig = Field(description="Legend display configuration")
+    interaction_config: InteractionConfig | None = Field(
+        default=None,
+        description="Click/hover interaction config for vector layers (which feature properties to surface).",
+    )
