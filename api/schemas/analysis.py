@@ -4,6 +4,8 @@ from typing import Annotated, Literal, Union
 
 from pydantic import BaseModel, Field
 
+from schemas.i18n import I18nText
+
 
 class PolygonGeometry(BaseModel):
     """GeoJSON Polygon geometry."""
@@ -74,6 +76,18 @@ class CategoricalDataPoint(BaseModel):
     value: float
 
 
+class WidgetLayer(BaseModel):
+    """Reference to a layer that contributed to a widget's stats and chart.
+
+    The ``id`` matches both ``Layer.id`` in the DB and the keys in the widget's
+    ``chart`` dict, so the FE can render layer-aware sections without an extra fetch.
+    """
+
+    id: str = Field(description="Layer id (matches Layer.id in DB and chart keys)")
+    title: I18nText = Field(description="Bilingual layer title")
+    path: str = Field(description="Layer storage path as stored in the DB")
+
+
 class PeatCarbonStats(BaseModel):
     peat_depth_avg: float
     peat_depth_max: float
@@ -83,6 +97,7 @@ class PeatCarbonStats(BaseModel):
 
 class PeatCarbonWidget(BaseModel):
     unit: str
+    layers: list[WidgetLayer]
     chart: dict[str, list[HistogramPoint]]  # keyed by layer id: peat_cog, carbon_cog
     stats: PeatCarbonStats
 
@@ -99,6 +114,7 @@ class WaterDynamicsStats(BaseModel):
 
 class WaterDynamicsWidget(BaseModel):
     unit: str
+    layers: list[WidgetLayer]
     chart: dict[str, list[CategoricalDataPoint]]  # keyed by layer id: inundation_frequency_cog
     stats: WaterDynamicsStats
 
