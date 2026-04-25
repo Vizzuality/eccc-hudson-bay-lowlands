@@ -529,12 +529,10 @@ def test_water_dynamics_chart_has_three_categorical_slices(analysis_client):
 
 
 def test_water_dynamics_chart_slice_has_categorical_shape(analysis_client):
-    """Each slice must match CategoricalDataPoint = { key, label: { en, fr }, value }."""
+    """Each slice must match CategoricalDataPoint = { key, value } — labels live in FE i18n."""
     chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["chart"]
     for s in chart["inundation_frequency_cog"]:
-        assert set(s.keys()) == {"key", "label", "value"}
-        assert "en" in s["label"]
-        assert "fr" in s["label"]
+        assert set(s.keys()) == {"key", "value"}
 
 
 def test_water_dynamics_slice_values_match_corresponding_stats(analysis_client):

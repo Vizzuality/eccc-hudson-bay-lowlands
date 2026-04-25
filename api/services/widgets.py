@@ -18,8 +18,10 @@ Each widget entry defines:
                    {"type": "histogram"}
                        Coverage-weighted histogram from ``values`` + ``coverage`` ops.
                    {"type": "categorical",
-                    "slices": [{"stat": <stat name>, "label": {<lang>: <label>}}, ...]}
+                    "slices": [{"stat": <stat name>}, ...]}
                        Categorical points (donut/pie) sourced from already-computed stats.
+                       Slice labels live in the FE i18n bundle, not here — the API only
+                       ships ``{key, value}`` per slice.
 
 Stat definition fields:
   - name:       key in the response stats dict
@@ -72,18 +74,9 @@ WIDGET_CONFIG: dict[str, WidgetDef] = {
                 "chart": {
                     "type": "categorical",
                     "slices": [
-                        {
-                            "stat": "water_perm_perc",
-                            "label": {"en": "Permanent water", "fr": "Eau permanente"},
-                        },
-                        {
-                            "stat": "water_ephemeral_perc",
-                            "label": {"en": "Ephemeral water", "fr": "Eau éphémère"},
-                        },
-                        {
-                            "stat": "land_perm_perc",
-                            "label": {"en": "Permanent land", "fr": "Terre permanente"},
-                        },
+                        {"stat": "water_perm_perc"},
+                        {"stat": "water_ephemeral_perc"},
+                        {"stat": "land_perm_perc"},
                     ],
                 },
                 "stats": [

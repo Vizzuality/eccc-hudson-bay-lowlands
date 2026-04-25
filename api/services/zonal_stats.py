@@ -156,7 +156,7 @@ def _build_chart(layer_id: str, chart_cfg: dict, result: dict, stats: dict[str, 
 
     if chart_type == "categorical":
         return [
-            {"key": s["stat"], "label": s["label"], "value": stats[s["stat"]]}
+            {"key": s["stat"], "value": stats[s["stat"]]}
             for s in chart_cfg["slices"]
         ]
 
