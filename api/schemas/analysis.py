@@ -65,10 +65,12 @@ class HistogramPoint(BaseModel):
 
 
 class CategoricalDataPoint(BaseModel):
-    """A single slice in a categorical chart (e.g. donut, pie)."""
+    """A single slice in a categorical chart (e.g. donut, pie).
+
+    Labels are not shipped from the API — the FE looks them up by ``key`` in its i18n bundle.
+    """
 
     key: str
-    label: dict[str, str]  # bilingual label, e.g. {"en": "...", "fr": "..."}
     value: float
 
 
