@@ -430,6 +430,21 @@ def test_carbon_cog_histogram_weight_concentrated_near_pixel_value(analysis_clie
     assert max(p["y"] for p in histogram) / total >= 0.9
 
 
+def test_peat_carbon_layers_in_widget_config_order(analysis_client):
+    """``layers`` lists layer ids in the order declared by WIDGET_CONFIG (peat, then carbon)."""
+    layers = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["layers"]
+    assert [entry["id"] for entry in layers] == ["peat_cog", "carbon_cog"]
+
+
+def test_peat_carbon_layer_entries_have_id_title_path(analysis_client):
+    layers = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["layers"]
+    by_id = {entry["id"]: entry for entry in layers}
+    assert by_id["peat_cog"]["title"] == {"en": "Peat Depth", "fr": "Profondeur de la Tourbe"}
+    assert by_id["peat_cog"]["path"].endswith("peat_cog.tif")
+    assert by_id["carbon_cog"]["title"] == {"en": "Carbon Storage", "fr": "Stockage de Carbone"}
+    assert by_id["carbon_cog"]["path"].endswith("carbon_cog.tif")
+
+
 # =============================================================================
 # Integration — water_dynamics widget output
 #
@@ -539,3 +554,24 @@ def test_water_dynamics_slice_values_match_corresponding_stats(analysis_client):
     assert by_key["water_perm_perc"] == stats["water_perm_perc"]
     assert by_key["water_ephemeral_perc"] == stats["water_ephemeral_perc"]
     assert by_key["land_perm_perc"] == stats["land_perm_perc"]
+
+
+def test_water_dynamics_layers_in_widget_config_order(analysis_client):
+    """``layers`` lists both inundation layers in declared order, even though only one drives a chart."""
+    layers = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["layers"]
+    assert [entry["id"] for entry in layers] == ["inundation_frequency_cog", "inundation_trends_cog"]
+
+
+def test_water_dynamics_layer_entries_have_id_title_path(analysis_client):
+    layers = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["layers"]
+    by_id = {entry["id"]: entry for entry in layers}
+    assert by_id["inundation_frequency_cog"]["title"] == {
+        "en": "Inundation Frequency",
+        "fr": "Fréquence des Inondations",
+    }
+    assert by_id["inundation_frequency_cog"]["path"].endswith("inundation_frequency_cog.tif")
+    assert by_id["inundation_trends_cog"]["title"] == {
+        "en": "Inundation Trends",
+        "fr": "Tendances des Inondations",
+    }
+    assert by_id["inundation_trends_cog"]["path"].endswith("inundation_trends_cog.tif")
