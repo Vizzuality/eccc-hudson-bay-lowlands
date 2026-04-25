@@ -1,5 +1,7 @@
 """Integration tests for POST /analysis endpoint."""
 
+import pytest
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Test geometry constants
 # ─────────────────────────────────────────────────────────────────────────────
@@ -366,21 +368,18 @@ def test_peat_carbon_stats_contains_all_fields(analysis_client):
 
 def test_peat_depth_avg_matches_uniform_pixel_value(analysis_client):
     """Mean of a raster where every pixel = 200.0 must be ≈ 200.0."""
-    import pytest
     stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["stats"]
     assert stats["peat_depth_avg"] == pytest.approx(200.0, abs=0.5)
 
 
 def test_peat_depth_max_matches_uniform_pixel_value(analysis_client):
     """Max of a raster where every pixel = 200.0 must be ≈ 200.0."""
-    import pytest
     stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["stats"]
     assert stats["peat_depth_max"] == pytest.approx(200.0, abs=0.5)
 
 
 def test_carbon_density_matches_uniform_pixel_value(analysis_client):
     """Mean of a raster where every pixel = 80.0 must be ≈ 80.0."""
-    import pytest
     stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["stats"]
     assert stats["carbon_density"] == pytest.approx(80.0, abs=0.5)
 
@@ -469,49 +468,42 @@ def test_water_dynamics_stats_contains_all_fields(analysis_client):
 
 def test_water_perm_perc_is_100_for_uniform_value_100(analysis_client):
     """All pixels = 100 → frac_sum([100]) × 100 = 100%."""
-    import pytest
     stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
     assert stats["water_perm_perc"] == pytest.approx(100.0, abs=0.5)
 
 
 def test_water_ephemeral_perc_is_zero_when_no_pixels_in_range(analysis_client):
     """All pixels = 100 → no pixel falls in [1, 99] → 0%."""
-    import pytest
     stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
     assert stats["water_ephemeral_perc"] == pytest.approx(0.0, abs=0.01)
 
 
 def test_land_perm_perc_is_zero_when_no_pixels_match(analysis_client):
     """All pixels = 100 → frac_sum([0]) = 0%."""
-    import pytest
     stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
     assert stats["land_perm_perc"] == pytest.approx(0.0, abs=0.01)
 
 
 def test_freq_mean_matches_uniform_pixel_value(analysis_client):
     """Mean of an all-100 raster ≈ 100."""
-    import pytest
     stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
     assert stats["freq_mean"] == pytest.approx(100.0, abs=0.5)
 
 
 def test_trend_wetter_perc_is_100_for_uniform_value_4(analysis_client):
     """All pixels = 4 → frac_sum([4]) × 100 = 100%."""
-    import pytest
     stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
     assert stats["trend_wetter_perc"] == pytest.approx(100.0, abs=0.5)
 
 
 def test_trend_drier_perc_is_zero_when_no_pixels_match(analysis_client):
     """All pixels = 4 → frac_sum([5]) = 0%."""
-    import pytest
     stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
     assert stats["trend_drier_perc"] == pytest.approx(0.0, abs=0.01)
 
 
 def test_trend_stable_perc_is_zero_when_no_pixels_match(analysis_client):
     """All pixels = 4 → frac_sum([1, 2, 3]) = 0%."""
-    import pytest
     stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
     assert stats["trend_stable_perc"] == pytest.approx(0.0, abs=0.01)
 
