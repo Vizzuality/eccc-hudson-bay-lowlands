@@ -67,4 +67,5 @@ def analyze(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> Ana
     return AnalysisResponse(
         peat_carbon=result["peat_carbon"],
         water_dynamics=result["water_dynamics"],
+        flood_susceptibility=result["flood_susceptibility"],
     )
