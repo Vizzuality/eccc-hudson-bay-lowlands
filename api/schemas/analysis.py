@@ -64,6 +64,14 @@ class HistogramPoint(BaseModel):
     y: float
 
 
+class CategoricalDataPoint(BaseModel):
+    """A single slice in a categorical chart (e.g. donut, pie)."""
+
+    key: str
+    label: dict[str, str]  # bilingual label, e.g. {"en": "...", "fr": "..."}
+    value: float
+
+
 class PeatCarbonStats(BaseModel):
     peat_depth_avg: float
     peat_depth_max: float
@@ -77,7 +85,24 @@ class PeatCarbonWidget(BaseModel):
     stats: PeatCarbonStats
 
 
+class WaterDynamicsStats(BaseModel):
+    water_perm_perc: float
+    water_ephemeral_perc: float
+    land_perm_perc: float
+    freq_mean: float
+    trend_wetter_perc: float
+    trend_drier_perc: float
+    trend_stable_perc: float
+
+
+class WaterDynamicsWidget(BaseModel):
+    unit: str
+    chart: dict[str, list[CategoricalDataPoint]]  # keyed by layer id: inundation_frequency_cog
+    stats: WaterDynamicsStats
+
+
 class AnalysisResponse(BaseModel):
     """Full analysis result returned after geometry validation and zonal stats computation."""
 
     peat_carbon: PeatCarbonWidget
+    water_dynamics: WaterDynamicsWidget

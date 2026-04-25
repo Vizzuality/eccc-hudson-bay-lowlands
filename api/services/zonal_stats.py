@@ -107,24 +107,74 @@ def _histogram(values: Any, weights: Any, n_bins: int = 10) -> list[dict]:
     ]
 
 
-def _compute_stat(raw_value: Any, stat_def: dict) -> float:
-    """Apply scale and precision from a stat definition to a raw exactextract result."""
+def _build_frac_dict(result: dict) -> dict[float, float]:
+    """Build {pixel_value: coverage_fraction} from exactextract ``unique`` + ``frac`` arrays."""
+    unique = np.asarray(result.get("unique", [])).tolist()
+    frac = np.asarray(result.get("frac", [])).tolist()
+    return dict(zip(unique, frac))
+
+
+def _compute_stat(result: dict, stat_def: dict) -> float:
+    """Compute a single stat value from exactextract output, applying scale and precision.
+
+    Supported ``op`` values:
+      - any exactextract op key present in ``result`` ("mean", "max", "sum", ...) — read directly
+      - ``frac_sum``  + ``values: [v1, v2, ...]``  — sum coverage fractions for those pixel values
+      - ``frac_range`` + ``range: [lo, hi]``       — sum coverage fractions for closed range [lo, hi]
+    """
+    op = stat_def["op"]
+
+    if op == "frac_sum":
+        fracs = _build_frac_dict(result)
+        raw = sum(fracs.get(v, 0.0) for v in stat_def["values"])
+    elif op == "frac_range":
+        fracs = _build_frac_dict(result)
+        lo, hi = stat_def["range"]
+        raw = sum(fracs.get(v, 0.0) for v in range(lo, hi + 1))
+    else:
+        raw = result.get(op, 0)
+
     scale = stat_def.get("scale", 1.0)
     precision = stat_def.get("precision", 2)
-    return round(float(raw_value or 0) * scale, precision)
+    return round(float(raw or 0) * scale, precision)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Generic widget builder
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _build_widget(widget_id: str, layer_results: dict[str, dict]) -> dict:
+def _build_chart(layer_id: str, chart_cfg: dict, result: dict, stats: dict[str, float]) -> list:
+    """Build a chart payload for one layer based on its chart config.
+
+    ``histogram``: coverage-weighted histogram of pixel values (returns ``HistogramPoint[]``).
+    ``categorical``: donut/pie slices sourced from already-computed stats (returns ``CategoricalDataPoint[]``).
+    """
+    chart_type = chart_cfg["type"]
+
+    if chart_type == "histogram":
+        return _histogram(result.get("values", []), result.get("coverage", []))
+
+    if chart_type == "categorical":
+        return [
+            {"key": s["stat"], "label": s["label"], "value": stats[s["stat"]]}
+            for s in chart_cfg["slices"]
+        ]
+
+    raise ValueError(f"Unknown chart type '{chart_type}' for layer '{layer_id}'")
+
+
+def _build_widget(
+    widget_id: str,
+    layer_results: dict[str, dict],
+    layer_units: dict[str, str | None],
+) -> dict:
     """Build a widget response dict driven entirely by WIDGET_CONFIG.
 
     Parameters
     ----------
     widget_id:      key in WIDGET_CONFIG (e.g. "peat_carbon")
     layer_results:  exactextract outputs keyed by layer id
+    layer_units:    DB ``unit`` for each known layer id; used to resolve the widget's display unit
 
     Returns
     -------
@@ -138,12 +188,14 @@ def _build_widget(widget_id: str, layer_results: dict[str, dict]) -> dict:
         result = layer_results.get(layer_id, {})
 
         for stat_def in layer_cfg["stats"]:
-            stats[stat_def["name"]] = _compute_stat(result.get(stat_def["op"]), stat_def)
+            stats[stat_def["name"]] = _compute_stat(result, stat_def)
 
-        if layer_cfg.get("chart"):
-            chart[layer_id] = _histogram(result.get("values", []), result.get("coverage", []))
+        chart_cfg = layer_cfg.get("chart")
+        if chart_cfg:
+            chart[layer_id] = _build_chart(layer_id, chart_cfg, result, stats)
 
-    return {"unit": config["unit"], "chart": chart, "stats": stats}
+    unit = layer_units.get(config["unit_layer"]) or ""
+    return {"unit": unit, "chart": chart, "stats": stats}
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -156,7 +208,7 @@ def compute_zonal_stats(geom_4326, raster_rows, bucket: str) -> dict:
     Parameters
     ----------
     geom_4326:   Shapely geometry in EPSG:4326 (returned by validate_geometry)
-    raster_rows: Sequence of DB rows with .id and .path attributes
+    raster_rows: Sequence of DB rows with .id, .path, and .unit attributes
     bucket:      S3 bucket name used to resolve full raster URIs
 
     Returns
@@ -164,6 +216,7 @@ def compute_zonal_stats(geom_4326, raster_rows, bucket: str) -> dict:
     dict matching the AnalysisResult shape expected by the FE, keyed by widget id.
     """
     layer_paths: dict[str, str] = {row.id: row.path for row in raster_rows}
+    layer_units: dict[str, str | None] = {row.id: row.unit for row in raster_rows}
 
     results: dict[str, dict] = {}
     for widget_id, widget_cfg in WIDGET_CONFIG.items():
@@ -179,6 +232,6 @@ def compute_zonal_stats(geom_4326, raster_rows, bucket: str) -> dict:
             logger.info("Processing layer '%s' for widget '%s'", layer_id, widget_id)
             layer_results[layer_id] = _run_exact_extract(uri, geom_4326, layer_cfg["ops"])
 
-        results[widget_id] = _build_widget(widget_id, layer_results)
+        results[widget_id] = _build_widget(widget_id, layer_results, layer_units)
 
     return results
