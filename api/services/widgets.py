@@ -1,7 +1,16 @@
 """Widget configuration for zonal statistics analysis.
 
 Each widget entry defines:
-  - unit_layer:  layer id whose DB ``unit`` becomes the widget's display unit
+  - unit:        explicit display unit for the widget. Use this for widgets whose
+                 stats have mixed units and no single layer's DB unit reflects the
+                 "primary" widget metric (e.g. peat_carbon mixes cm, Mt, kg/m²).
+  - unit_layer:  alternative — layer id whose DB ``unit`` becomes the widget's unit.
+                 Use this when every stat in the widget shares a single unit that
+                 already lives on a layer in the DB (e.g. water_dynamics stats are all "%").
+
+  Exactly one of ``unit`` / ``unit_layer`` must be set. If both are present,
+  ``unit`` wins.
+
   - layers:      dict keyed by layer id (matches ``Layer.id`` in DB)
       - ops:     exactextract operations to run on that raster
       - stats:   list of stat definitions to derive from op results
@@ -33,7 +42,9 @@ WidgetDef = dict[str, Any]
 
 WIDGET_CONFIG: dict[str, WidgetDef] = {
     "peat_carbon": {
-        "unit_layer": "peat_cog",
+        # Mixed-unit widget: peat depth (cm), carbon total (Mt), carbon density (kg/m²).
+        # Widget-level unit is the primary metric — peat depth in cm.
+        "unit": "cm",
         "layers": {
             "peat_cog": {
                 "ops": ["mean", "max", "values", "coverage"],
