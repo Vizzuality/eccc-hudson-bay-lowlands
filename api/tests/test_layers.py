@@ -269,6 +269,50 @@ def test_get_vector_layer_with_config(client, db_session, dataset, sample_layer_
     assert data["config"]["legend_config"]["items"][0]["line-width"] == 1
 
 
+def test_get_vector_layer_with_interaction_config(client, db_session, dataset, sample_layer_metadata):
+    """interaction_config on a vector layer survives Pydantic response serialization."""
+    from models import Layer
+
+    vector_config = {
+        "styles": [
+            {
+                "type": "line",
+                "paint": {"line-color": "#6e6e6e", "line-width": 1},
+                "source-layer": "ecozones",
+            }
+        ],
+        "params_config": [{"key": "opacity", "default": 1}, {"key": "visibility", "default": True}],
+        "legend_config": {
+            "type": "basic",
+            "items": [{"color": "#6e6e6e", "line-width": 1, "label": {"en": "Ecozones", "fr": "Écozones"}}],
+        },
+        "interaction_config": {
+            "keys": ["NAME_EN", "NAME_FR"],
+            "type": "feature-value",
+            "event": "click",
+        },
+    }
+    db_layer = Layer(
+        id="vector_interaction_layer",
+        format_="vector",
+        path="ecc-design.interaction",
+        config=vector_config,
+        metadata_=sample_layer_metadata,
+        dataset_id=dataset.id,
+    )
+    db_session.add(db_layer)
+    db_session.flush()
+    db_session.refresh(db_layer)
+
+    response = client.get(f"/layers/{db_layer.id}")
+    assert response.status_code == 200
+    assert response.json()["config"]["interaction_config"] == {
+        "keys": ["NAME_EN", "NAME_FR"],
+        "type": "feature-value",
+        "event": "click",
+    }
+
+
 def test_get_categorical_layer_with_config_and_categories(client, db_session, dataset, sample_layer_metadata):
     """Categorical layers return both categories and config together."""
     from models import Layer

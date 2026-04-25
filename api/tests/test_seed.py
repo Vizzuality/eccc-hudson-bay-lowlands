@@ -78,6 +78,11 @@ MINIMAL_METADATA = {
                                         }
                                     ],
                                 },
+                                "interaction_config": {
+                                    "keys": ["NAME_EN", "NAME_FR"],
+                                    "type": "feature-value",
+                                    "event": "click",
+                                },
                             },
                             "metadata": {
                                 "title": {"en": "Layer B Vector", "fr": "Couche B Vecteur"},
@@ -363,6 +368,11 @@ def test_seed_stores_vector_config(db_session):
     assert layer.config["styles"][0]["source-layer"] == "boundaries"
     assert layer.config["styles"][0]["paint"]["line-color"] == "#6e6e6e"
     assert layer.config["legend_config"]["items"][0]["line-width"] == 1
+    assert layer.config["interaction_config"] == {
+        "keys": ["NAME_EN", "NAME_FR"],
+        "type": "feature-value",
+        "event": "click",
+    }
 
 
 def test_seed_layer_without_config(db_session):
