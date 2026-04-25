@@ -194,7 +194,7 @@ def _build_widget(
         if chart_cfg:
             chart[layer_id] = _build_chart(layer_id, chart_cfg, result, stats)
 
-    unit = layer_units.get(config["unit_layer"]) or ""
+    unit = config.get("unit") or layer_units.get(config.get("unit_layer", "")) or ""
     return {"unit": unit, "chart": chart, "stats": stats}
 
 
