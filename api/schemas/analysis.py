@@ -119,8 +119,23 @@ class WaterDynamicsWidget(BaseModel):
     stats: WaterDynamicsStats
 
 
+class FloodSusceptibilityStats(BaseModel):
+    fsi_avg: float
+    fsi_low_perc: float
+    fsi_moderate_perc: float
+    fsi_high_perc: float
+
+
+class FloodSusceptibilityWidget(BaseModel):
+    unit: str
+    layers: list[WidgetLayer]
+    chart: dict[str, list[CategoricalDataPoint]]  # keyed by layer id: flood_susceptibility_cog
+    stats: FloodSusceptibilityStats
+
+
 class AnalysisResponse(BaseModel):
     """Full analysis result returned after geometry validation and zonal stats computation."""
 
     peat_carbon: PeatCarbonWidget
     water_dynamics: WaterDynamicsWidget
+    flood_susceptibility: FloodSusceptibilityWidget

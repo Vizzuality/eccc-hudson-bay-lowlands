@@ -96,4 +96,26 @@ WIDGET_CONFIG: dict[str, WidgetDef] = {
             },
         },
     },
+    "flood_susceptibility": {
+        "unit_layer": "flood_susceptibility_cog",
+        "layers": {
+            "flood_susceptibility_cog": {
+                "ops": ["frac", "unique", "mean"],
+                "chart": {
+                    "type": "categorical",
+                    "slices": [
+                        {"stat": "fsi_low_perc"},
+                        {"stat": "fsi_moderate_perc"},
+                        {"stat": "fsi_high_perc"},
+                    ],
+                },
+                "stats": [
+                    {"name": "fsi_avg", "op": "mean", "precision": 2},
+                    {"name": "fsi_low_perc", "op": "frac_range", "range": [0, 30], "scale": 100, "precision": 2},
+                    {"name": "fsi_moderate_perc", "op": "frac_range", "range": [31, 80], "scale": 100, "precision": 2},
+                    {"name": "fsi_high_perc", "op": "frac_range", "range": [81, 100], "scale": 100, "precision": 2},
+                ],
+            },
+        },
+    },
 }
