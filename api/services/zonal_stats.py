@@ -167,6 +167,7 @@ def _build_widget(
     widget_id: str,
     layer_results: dict[str, dict],
     layer_units: dict[str, str | None],
+    layer_info: dict[str, dict],
 ) -> dict:
     """Build a widget response dict driven entirely by WIDGET_CONFIG.
 
@@ -175,14 +176,17 @@ def _build_widget(
     widget_id:      key in WIDGET_CONFIG (e.g. "peat_carbon")
     layer_results:  exactextract outputs keyed by layer id
     layer_units:    DB ``unit`` for each known layer id; used to resolve the widget's display unit
+    layer_info:     ``{layer_id: {"title": <i18n dict>, "path": <db path>}}`` for every layer
+                    known to the DB; used to populate the widget's ``layers`` list
 
     Returns
     -------
-    dict with keys: unit, chart, stats
+    dict with keys: unit, layers, chart, stats
     """
     config = WIDGET_CONFIG[widget_id]
     stats: dict[str, float] = {}
     chart: dict[str, list] = {}
+    layers: list[dict] = []
 
     for layer_id, layer_cfg in config["layers"].items():
         result = layer_results.get(layer_id, {})
@@ -194,8 +198,12 @@ def _build_widget(
         if chart_cfg:
             chart[layer_id] = _build_chart(layer_id, chart_cfg, result, stats)
 
+        info = layer_info.get(layer_id)
+        if info is not None:
+            layers.append({"id": layer_id, "title": info["title"], "path": info["path"]})
+
     unit = config.get("unit") or layer_units.get(config.get("unit_layer", "")) or ""
-    return {"unit": unit, "chart": chart, "stats": stats}
+    return {"unit": unit, "layers": layers, "chart": chart, "stats": stats}
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -208,7 +216,7 @@ def compute_zonal_stats(geom_4326, raster_rows, bucket: str) -> dict:
     Parameters
     ----------
     geom_4326:   Shapely geometry in EPSG:4326 (returned by validate_geometry)
-    raster_rows: Sequence of DB rows with .id, .path, and .unit attributes
+    raster_rows: Sequence of DB rows with .id, .path, .unit, and .metadata_ attributes
     bucket:      S3 bucket name used to resolve full raster URIs
 
     Returns
@@ -217,6 +225,10 @@ def compute_zonal_stats(geom_4326, raster_rows, bucket: str) -> dict:
     """
     layer_paths: dict[str, str] = {row.id: row.path for row in raster_rows}
     layer_units: dict[str, str | None] = {row.id: row.unit for row in raster_rows}
+    layer_info: dict[str, dict] = {
+        row.id: {"title": row.metadata_["title"], "path": row.path}
+        for row in raster_rows
+    }
 
     results: dict[str, dict] = {}
     for widget_id, widget_cfg in WIDGET_CONFIG.items():
@@ -232,6 +244,6 @@ def compute_zonal_stats(geom_4326, raster_rows, bucket: str) -> dict:
             logger.info("Processing layer '%s' for widget '%s'", layer_id, widget_id)
             layer_results[layer_id] = _run_exact_extract(uri, geom_4326, layer_cfg["ops"])
 
-        results[widget_id] = _build_widget(widget_id, layer_results, layer_units)
+        results[widget_id] = _build_widget(widget_id, layer_results, layer_units, layer_info)
 
     return results

@@ -54,7 +54,7 @@ def analyze(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> Ana
         raise HTTPException(status_code=500, detail="Analysis is unavailable")
 
     raster_layers = db.execute(
-        select(Layer.id, Layer.path, Layer.unit)
+        select(Layer.id, Layer.path, Layer.unit, Layer.metadata_)
         .where(Layer.format_ == "raster")
     ).all()
     logger.info("Retrieved %d raster layers", len(raster_layers))
