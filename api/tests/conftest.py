@@ -389,10 +389,17 @@ def minimal_cog(tmp_path):
 def analysis_client(db_session, tmp_path, monkeypatch):
     """Test client wired for analysis integration tests.
 
-    Creates two GeoTIFFs with uniform, known pixel values in EPSG:4326 covering
-    the standard test polygon area, inserts matching Layer records (id=peat_cog /
-    carbon_cog) into the DB, and patches _s3_uri so rasterio opens the local
-    files directly instead of reaching out to S3.
+    Creates four GeoTIFFs with uniform, known pixel values in EPSG:4326 covering
+    the standard test polygon area, inserts matching Layer records into the DB
+    (peat_cog, carbon_cog, inundation_frequency_cog, inundation_trends_cog),
+    and patches _s3_uri so rasterio opens the local files directly instead of
+    reaching out to S3.
+
+    Pixel-value choices and what they exercise:
+      - peat_cog:                  uniform 200.0 (float32) — mean/max/histogram path
+      - carbon_cog:                uniform 80.0  (float32) — sum scale/precision path
+      - inundation_frequency_cog:  uniform 100   (uint8)   — frac_sum [100] = 100%, mean = 100
+      - inundation_trends_cog:     uniform 4     (uint8)   — frac_sum [4]   = 100%
     """
     import numpy as np
     import rasterio
@@ -405,12 +412,21 @@ def analysis_client(db_session, tmp_path, monkeypatch):
 
     peat_path = str(tmp_path / "peat_cog.tif")
     carbon_path = str(tmp_path / "carbon_cog.tif")
+    inundation_freq_path = str(tmp_path / "inundation_frequency_cog.tif")
+    inundation_trends_path = str(tmp_path / "inundation_trends_cog.tif")
 
-    for path, value in [(peat_path, 200.0), (carbon_path, 80.0)]:
-        data = np.full((1, 256, 256), value, dtype=np.float32)
+    raster_specs = [
+        (peat_path, 200.0, "float32"),
+        (carbon_path, 80.0, "float32"),
+        (inundation_freq_path, 100, "uint8"),
+        (inundation_trends_path, 4, "uint8"),
+    ]
+
+    for path, value, dtype in raster_specs:
+        data = np.full((1, 256, 256), value, dtype=dtype)
         profile = {
             "driver": "GTiff",
-            "dtype": "float32",
+            "dtype": dtype,
             "width": 256,
             "height": 256,
             "count": 1,
@@ -446,6 +462,22 @@ def analysis_client(db_session, tmp_path, monkeypatch):
             path=carbon_path,
             unit="kg/m²",
             metadata_={"title": {"en": "Carbon Storage", "fr": "Stockage de Carbone"}},
+            dataset_id=db_dataset.id,
+        ),
+        Layer(
+            id="inundation_frequency_cog",
+            format_="raster",
+            path=inundation_freq_path,
+            unit="%",
+            metadata_={"title": {"en": "Inundation Frequency", "fr": "Fréquence des Inondations"}},
+            dataset_id=db_dataset.id,
+        ),
+        Layer(
+            id="inundation_trends_cog",
+            format_="raster",
+            path=inundation_trends_path,
+            unit="category",
+            metadata_={"title": {"en": "Inundation Trends", "fr": "Tendances des Inondations"}},
             dataset_id=db_dataset.id,
         ),
     ])

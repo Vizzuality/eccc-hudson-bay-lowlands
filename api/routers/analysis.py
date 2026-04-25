@@ -54,7 +54,7 @@ def analyze(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> Ana
         raise HTTPException(status_code=500, detail="Analysis is unavailable")
 
     raster_layers = db.execute(
-        select(Layer.id, Layer.path)
+        select(Layer.id, Layer.path, Layer.unit)
         .where(Layer.format_ == "raster")
     ).all()
     logger.info("Retrieved %d raster layers", len(raster_layers))
@@ -64,4 +64,7 @@ def analyze(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> Ana
     except rasterio.errors.RasterioIOError as e:
         logger.error("Failed to read raster data: %s", e)
         raise HTTPException(status_code=500, detail="Analysis is unavailable")
-    return AnalysisResponse(peat_carbon=result["peat_carbon"])
+    return AnalysisResponse(
+        peat_carbon=result["peat_carbon"],
+        water_dynamics=result["water_dynamics"],
+    )

@@ -429,3 +429,119 @@ def test_carbon_cog_histogram_weight_concentrated_near_pixel_value(analysis_clie
     total = sum(p["y"] for p in histogram)
     assert total > 0
     assert max(p["y"] for p in histogram) / total >= 0.9
+
+
+# =============================================================================
+# Integration — water_dynamics widget output
+#
+# Uses the `analysis_client` fixture which:
+#   - Creates two local uint8 GeoTIFFs
+#       inundation_frequency_cog: all pixels = 100 (permanent water)
+#       inundation_trends_cog:    all pixels = 4   (wetter)
+#   - Inserts matching Layer records with unit="%" / "category"
+# =============================================================================
+
+
+def test_analysis_response_contains_water_dynamics_widget(analysis_client):
+    data = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()
+    assert "water_dynamics" in data
+
+
+def test_water_dynamics_unit_inherited_from_inundation_frequency_layer(analysis_client):
+    """Widget unit is read from inundation_frequency_cog.unit ('%')."""
+    data = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()
+    assert data["water_dynamics"]["unit"] == "%"
+
+
+def test_water_dynamics_stats_contains_all_fields(analysis_client):
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
+    expected = {
+        "water_perm_perc",
+        "water_ephemeral_perc",
+        "land_perm_perc",
+        "freq_mean",
+        "trend_wetter_perc",
+        "trend_drier_perc",
+        "trend_stable_perc",
+    }
+    assert expected <= set(stats.keys())
+
+
+def test_water_perm_perc_is_100_for_uniform_value_100(analysis_client):
+    """All pixels = 100 → frac_sum([100]) × 100 = 100%."""
+    import pytest
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
+    assert stats["water_perm_perc"] == pytest.approx(100.0, abs=0.5)
+
+
+def test_water_ephemeral_perc_is_zero_when_no_pixels_in_range(analysis_client):
+    """All pixels = 100 → no pixel falls in [1, 99] → 0%."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
+    assert stats["water_ephemeral_perc"] == 0.0
+
+
+def test_land_perm_perc_is_zero_when_no_pixels_match(analysis_client):
+    """All pixels = 100 → frac_sum([0]) = 0%."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
+    assert stats["land_perm_perc"] == 0.0
+
+
+def test_freq_mean_matches_uniform_pixel_value(analysis_client):
+    """Mean of an all-100 raster ≈ 100."""
+    import pytest
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
+    assert stats["freq_mean"] == pytest.approx(100.0, abs=0.5)
+
+
+def test_trend_wetter_perc_is_100_for_uniform_value_4(analysis_client):
+    """All pixels = 4 → frac_sum([4]) × 100 = 100%."""
+    import pytest
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
+    assert stats["trend_wetter_perc"] == pytest.approx(100.0, abs=0.5)
+
+
+def test_trend_drier_perc_is_zero_when_no_pixels_match(analysis_client):
+    """All pixels = 4 → frac_sum([5]) = 0%."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
+    assert stats["trend_drier_perc"] == 0.0
+
+
+def test_trend_stable_perc_is_zero_when_no_pixels_match(analysis_client):
+    """All pixels = 4 → frac_sum([1, 2, 3]) = 0%."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["stats"]
+    assert stats["trend_stable_perc"] == 0.0
+
+
+def test_water_dynamics_chart_keyed_by_inundation_frequency_layer(analysis_client):
+    """Only inundation_frequency_cog produces chart slices; trends layer has no chart entry."""
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["chart"]
+    assert "inundation_frequency_cog" in chart
+    assert "inundation_trends_cog" not in chart
+
+
+def test_water_dynamics_chart_has_three_categorical_slices(analysis_client):
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["chart"]
+    slices = chart["inundation_frequency_cog"]
+    assert isinstance(slices, list)
+    assert len(slices) == 3
+    keys = {s["key"] for s in slices}
+    assert keys == {"water_perm_perc", "water_ephemeral_perc", "land_perm_perc"}
+
+
+def test_water_dynamics_chart_slice_has_categorical_shape(analysis_client):
+    """Each slice must match CategoricalDataPoint = { key, label: { en, fr }, value }."""
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["chart"]
+    for s in chart["inundation_frequency_cog"]:
+        assert set(s.keys()) == {"key", "label", "value"}
+        assert "en" in s["label"]
+        assert "fr" in s["label"]
+
+
+def test_water_dynamics_slice_values_match_corresponding_stats(analysis_client):
+    """Slice values are sourced from the already-computed stats dict."""
+    data = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]
+    stats, slices = data["stats"], data["chart"]["inundation_frequency_cog"]
+    by_key = {s["key"]: s["value"] for s in slices}
+    assert by_key["water_perm_perc"] == stats["water_perm_perc"]
+    assert by_key["water_ephemeral_perc"] == stats["water_ephemeral_perc"]
+    assert by_key["land_perm_perc"] == stats["land_perm_perc"]
