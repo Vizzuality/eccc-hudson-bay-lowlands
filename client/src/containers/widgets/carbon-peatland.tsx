@@ -5,6 +5,7 @@ import RichText from "@/components/ui/rich-text";
 import type {
   PeatCarbonStats,
   TimeSeriesDataPoint,
+  WidgetLayer,
 } from "@/containers/analysis/types";
 import VerticalBarChart from "@/containers/charts/vertical-bar-chart";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
@@ -14,9 +15,15 @@ import type { WidgetCardBaseProps } from "@/containers/widgets/types";
 interface CarbonPeatlandProps extends WidgetCardBaseProps {
   stats: PeatCarbonStats;
   chart: Record<string, TimeSeriesDataPoint[]>;
+  layers: WidgetLayer[];
 }
 
-const CarbonPeatland: FC<CarbonPeatlandProps> = ({ id, stats, chart }) => {
+const CarbonPeatland: FC<CarbonPeatlandProps> = ({
+  id,
+  stats,
+  chart,
+  layers,
+}) => {
   const t = useTranslations("widgets.peat_carbon");
 
   return (
@@ -40,6 +47,7 @@ const CarbonPeatland: FC<CarbonPeatlandProps> = ({ id, stats, chart }) => {
           backgroundColor="#CA8A04"
         />
       }
+      layers={layers}
       onDowloadButtonClick={() => {}}
       onInfoButtonClick={() => {}}
       onAddToMapButtonClick={() => {}}
