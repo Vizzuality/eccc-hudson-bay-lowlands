@@ -2,7 +2,10 @@ import { TreesIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
-import type { TreeCoverChangeStats } from "@/containers/analysis/types";
+import type {
+  TreeCoverChangeStats,
+  WidgetLayer,
+} from "@/containers/analysis/types";
 import DonutChart from "@/containers/charts/donut-chart";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
@@ -34,9 +37,10 @@ const mockData = [
 
 interface TreeCoverChangeProps extends WidgetCardBaseProps {
   stats: TreeCoverChangeStats;
+  layers: WidgetLayer[];
 }
 
-const TreeCoverChange: FC<TreeCoverChangeProps> = ({ id, stats }) => {
+const TreeCoverChange: FC<TreeCoverChangeProps> = ({ id, stats, layers }) => {
   const t = useTranslations("widgets.tree_cover_change");
   const { getTranslation } = useApiTranslation();
   const data = mockData.map((item) => ({
@@ -55,6 +59,7 @@ const TreeCoverChange: FC<TreeCoverChangeProps> = ({ id, stats }) => {
           backgroundColor="#16A34A"
         />
       }
+      layers={layers}
       onDowloadButtonClick={() => {}}
       onInfoButtonClick={() => {}}
       onAddToMapButtonClick={() => {}}

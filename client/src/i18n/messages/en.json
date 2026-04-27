@@ -86,7 +86,8 @@
     "card": {
       "download-image": "Download image",
       "more-info": "More info",
-      "add-to-map": "Add to map"
+      "add-to-map": "Add to map",
+      "remove-from-map": "Remove from map"
     },
     "peat_carbon": {
       "title": "Carbon and Peatlands",

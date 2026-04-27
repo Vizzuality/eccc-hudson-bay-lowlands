@@ -1,7 +1,9 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
+import type { Mock } from "vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { useLayerIds } from "@/app/[locale]/url-store";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Analysis from "@/containers/map-sidebar/analysis";
 import { mockAnalysisResult } from "@/containers/map-sidebar/analysis/mockData";
@@ -12,6 +14,15 @@ const mockPush = vi.fn();
 vi.mock("next/navigation", () => ({
   useRouter: vi.fn(() => ({ push: mockPush })),
 }));
+
+vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("@/app/[locale]/url-store")>();
+  return {
+    ...actual,
+    useLayerIds: vi.fn(),
+  };
+});
 
 vi.mock("@/hooks/use-analysis-settings", () => ({
   useAnalysisResult: () => mockAnalysisResult,
@@ -30,6 +41,10 @@ const renderAnalysis = () => {
 describe("@containers/map-sidebar/analysis", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    (useLayerIds as Mock).mockReturnValue({
+      layerIds: [],
+      setLayerIds: vi.fn(),
+    });
   });
 
   it("renders the heading", () => {

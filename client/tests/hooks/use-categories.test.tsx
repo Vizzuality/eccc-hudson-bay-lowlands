@@ -41,7 +41,7 @@ const makeDataset = (
     citation: { en: "" },
   },
   layers: Array.from({ length: layerCount }, (_, i) => ({
-    id: id * 100 + i,
+    id: String(id * 100 + i),
     format: "geojson",
     type: "vector",
     path: "/p",

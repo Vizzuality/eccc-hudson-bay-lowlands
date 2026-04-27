@@ -16,7 +16,7 @@ vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
 describe("@containers/data-layers/list/item/item-header", () => {
   let setLayerIdsMock: Mock;
 
-  const setupHooks = (selectedLayerIds: number[] = []) => {
+  const setupHooks = (selectedLayerIds: string[] = []) => {
     setLayerIdsMock = vi.fn();
     (useLayerIds as Mock).mockReturnValue({
       layerIds: selectedLayerIds,
@@ -26,7 +26,7 @@ describe("@containers/data-layers/list/item/item-header", () => {
 
   const renderHeader = () =>
     render(
-      <ItemHeader id={10} title="Layer A" description="Layer A description" />,
+      <ItemHeader id="10" title="Layer A" description="Layer A description" />,
     );
 
   beforeEach(() => {
@@ -50,7 +50,7 @@ describe("@containers/data-layers/list/item/item-header", () => {
   });
 
   it("renders a checked checkbox when the layer is selected", () => {
-    setupHooks([10]);
+    setupHooks(["10"]);
     renderHeader();
 
     const checkbox = screen.getByRole("checkbox", { name: "Layer A" });
@@ -65,12 +65,12 @@ describe("@containers/data-layers/list/item/item-header", () => {
     const checkbox = screen.getByRole("checkbox", { name: "Layer A" });
     await user.click(checkbox);
 
-    expect(setLayerIdsMock).toHaveBeenCalledWith([10]);
+    expect(setLayerIdsMock).toHaveBeenCalledWith(["10"]);
   });
 
   it("removes the layer id when toggled off", async () => {
     const user = userEvent.setup();
-    setupHooks([10]);
+    setupHooks(["10"]);
     renderHeader();
 
     const checkbox = screen.getByRole("checkbox", { name: "Layer A" });
