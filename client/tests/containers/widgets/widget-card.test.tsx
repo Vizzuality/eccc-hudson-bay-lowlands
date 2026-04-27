@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
+import type { ComponentProps } from "react";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { useLayerIds } from "@/app/[locale]/url-store";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,6 +18,31 @@ vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
   };
 });
 
+const defaultCardProps: ComponentProps<typeof WidgetCard> = {
+  id: "test_widget",
+  title: "Test widget",
+  icon: <span />,
+  onDowloadButtonClick: vi.fn(),
+  onInfoButtonClick: vi.fn(),
+  onAddToMapButtonClick: vi.fn(),
+};
+
+const renderWidgetCard = (
+  overrides?: Partial<ComponentProps<typeof WidgetCard>>,
+) =>
+  render(
+    <NextIntlClientProvider locale="en" messages={messages}>
+      <TooltipProvider>
+        <WidgetCard {...defaultCardProps} {...overrides} />
+      </TooltipProvider>
+    </NextIntlClientProvider>,
+  );
+
+const testLayers: WidgetLayer[] = [
+  { id: "new-layer-a", path: "/a", title: { en: "A", fr: "A" } },
+  { id: "new-layer-b", path: "/b", title: { en: "B", fr: "B" } },
+];
+
 describe("@containers/widgets/card", () => {
   let setLayerIdsMock: ReturnType<typeof vi.fn>;
 
@@ -29,23 +55,12 @@ describe("@containers/widgets/card", () => {
   });
 
   it("renders title, optional description, icon, and children", () => {
-    render(
-      <NextIntlClientProvider locale="en" messages={messages}>
-        <TooltipProvider>
-          <WidgetCard
-            id="water_dynamics"
-            title="Water dynamics"
-            description={<span>Some description</span>}
-            icon={<span data-testid="widget-icon">ICON</span>}
-            onDowloadButtonClick={vi.fn()}
-            onInfoButtonClick={vi.fn()}
-            onAddToMapButtonClick={vi.fn()}
-          >
-            <div>Child content</div>
-          </WidgetCard>
-        </TooltipProvider>
-      </NextIntlClientProvider>,
-    );
+    renderWidgetCard({
+      title: "Water dynamics",
+      description: <span>Some description</span>,
+      icon: <span data-testid="widget-icon">ICON</span>,
+      children: <div>Child content</div>,
+    });
 
     expect(
       screen.getByRole("heading", { name: /water dynamics/i }),
@@ -56,20 +71,7 @@ describe("@containers/widgets/card", () => {
   });
 
   it("does not render the description when not provided", () => {
-    render(
-      <NextIntlClientProvider locale="en" messages={messages}>
-        <TooltipProvider>
-          <WidgetCard
-            id="flood_susceptibility"
-            title="Flood susceptibility"
-            icon={<span />}
-            onDowloadButtonClick={vi.fn()}
-            onInfoButtonClick={vi.fn()}
-            onAddToMapButtonClick={vi.fn()}
-          />
-        </TooltipProvider>
-      </NextIntlClientProvider>,
-    );
+    renderWidgetCard({ title: "Flood susceptibility" });
 
     expect(
       screen.getByRole("heading", { name: /flood susceptibility/i }),
@@ -87,20 +89,11 @@ describe("@containers/widgets/card", () => {
     const onInfoButtonClick = vi.fn();
     const onAddToMapButtonClick = vi.fn();
 
-    render(
-      <NextIntlClientProvider locale="en" messages={messages}>
-        <TooltipProvider>
-          <WidgetCard
-            id="tree_cover_change"
-            title="Tree cover change"
-            icon={<span />}
-            onDowloadButtonClick={onDowloadButtonClick}
-            onInfoButtonClick={onInfoButtonClick}
-            onAddToMapButtonClick={onAddToMapButtonClick}
-          />
-        </TooltipProvider>
-      </NextIntlClientProvider>,
-    );
+    renderWidgetCard({
+      onDowloadButtonClick,
+      onInfoButtonClick,
+      onAddToMapButtonClick,
+    });
 
     await user.click(screen.getByRole("button", { name: /download image/i }));
     await user.click(screen.getByRole("button", { name: /more info/i }));
@@ -114,30 +107,8 @@ describe("@containers/widgets/card", () => {
   it("merges widget layer ids into the map layer stack when none of them are active", async () => {
     const user = userEvent.setup();
     const onAddToMapButtonClick = vi.fn();
-    const layers: WidgetLayer[] = [
-      { id: "new-layer-a", path: "/a", title: { en: "A", fr: "A" } },
-      { id: "new-layer-b", path: "/b", title: { en: "B", fr: "B" } },
-    ];
-    (useLayerIds as Mock).mockReturnValue({
-      layerIds: ["base-layer"],
-      setLayerIds: setLayerIdsMock,
-    });
 
-    render(
-      <NextIntlClientProvider locale="en" messages={messages}>
-        <TooltipProvider>
-          <WidgetCard
-            id="peat_carbon"
-            title="Peat"
-            icon={<span />}
-            layers={layers}
-            onDowloadButtonClick={vi.fn()}
-            onInfoButtonClick={vi.fn()}
-            onAddToMapButtonClick={onAddToMapButtonClick}
-          />
-        </TooltipProvider>
-      </NextIntlClientProvider>,
-    );
+    renderWidgetCard({ layers: testLayers, onAddToMapButtonClick });
 
     await user.click(screen.getByRole("button", { name: /add to map/i }));
 
@@ -152,30 +123,12 @@ describe("@containers/widgets/card", () => {
   it("removes widget layer ids from the map when any of them are active", async () => {
     const user = userEvent.setup();
     const onAddToMapButtonClick = vi.fn();
-    const layers: WidgetLayer[] = [
-      { id: "new-layer-a", path: "/a", title: { en: "A", fr: "A" } },
-      { id: "new-layer-b", path: "/b", title: { en: "B", fr: "B" } },
-    ];
     (useLayerIds as Mock).mockReturnValue({
       layerIds: ["base-layer", "new-layer-a", "new-layer-b", "other"],
       setLayerIds: setLayerIdsMock,
     });
 
-    render(
-      <NextIntlClientProvider locale="en" messages={messages}>
-        <TooltipProvider>
-          <WidgetCard
-            id="peat_carbon"
-            title="Peat"
-            icon={<span />}
-            layers={layers}
-            onDowloadButtonClick={vi.fn()}
-            onInfoButtonClick={vi.fn()}
-            onAddToMapButtonClick={onAddToMapButtonClick}
-          />
-        </TooltipProvider>
-      </NextIntlClientProvider>,
-    );
+    renderWidgetCard({ layers: testLayers, onAddToMapButtonClick });
 
     await user.click(screen.getByRole("button", { name: /add to map/i }));
 
@@ -184,21 +137,7 @@ describe("@containers/widgets/card", () => {
   });
 
   it("disables add to map when layers is an empty array", () => {
-    render(
-      <NextIntlClientProvider locale="en" messages={messages}>
-        <TooltipProvider>
-          <WidgetCard
-            id="empty_layers"
-            title="Empty"
-            icon={<span />}
-            layers={[]}
-            onDowloadButtonClick={vi.fn()}
-            onInfoButtonClick={vi.fn()}
-            onAddToMapButtonClick={vi.fn()}
-          />
-        </TooltipProvider>
-      </NextIntlClientProvider>,
-    );
+    renderWidgetCard({ layers: [] });
 
     expect(screen.getByRole("button", { name: /add to map/i })).toBeDisabled();
   });
