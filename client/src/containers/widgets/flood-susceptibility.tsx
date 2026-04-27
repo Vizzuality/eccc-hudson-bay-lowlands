@@ -2,7 +2,10 @@ import { WavesIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
-import type { FloodSusceptibilityStats } from "@/containers/analysis/types";
+import type {
+  FloodSusceptibilityStats,
+  WidgetLayer,
+} from "@/containers/analysis/types";
 import DonutChart from "@/containers/charts/donut-chart";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
@@ -29,9 +32,14 @@ const mockData = [
 
 interface FloodSusceptibilityProps extends WidgetCardBaseProps {
   stats: FloodSusceptibilityStats;
+  layers: WidgetLayer[];
 }
 
-const FloodSusceptibility: FC<FloodSusceptibilityProps> = ({ id, stats }) => {
+const FloodSusceptibility: FC<FloodSusceptibilityProps> = ({
+  id,
+  stats,
+  layers,
+}) => {
   const t = useTranslations("widgets.flood_susceptibility");
   const { getTranslation } = useApiTranslation();
   const data = mockData.map((item) => ({
@@ -51,6 +59,7 @@ const FloodSusceptibility: FC<FloodSusceptibilityProps> = ({ id, stats }) => {
           backgroundColor="#EF4444"
         />
       }
+      layers={layers}
       onDowloadButtonClick={() => {}}
       onInfoButtonClick={() => {}}
       onAddToMapButtonClick={() => {}}

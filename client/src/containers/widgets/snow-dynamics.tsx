@@ -2,7 +2,10 @@ import { SnowflakeIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
-import type { SnowDynamicsStats } from "@/containers/analysis/types";
+import type {
+  SnowDynamicsStats,
+  WidgetLayer,
+} from "@/containers/analysis/types";
 import LineChart from "@/containers/charts/line-chart";
 import Highlight from "@/containers/highlight";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
@@ -37,9 +40,10 @@ const Description = ({ stats }: { stats: SnowDynamicsStats }) => {
 
 interface SnowDynamicsProps extends WidgetCardBaseProps {
   stats: SnowDynamicsStats;
+  layers: WidgetLayer[];
 }
 
-const SnowDynamics: FC<SnowDynamicsProps> = ({ id, stats }) => {
+const SnowDynamics: FC<SnowDynamicsProps> = ({ id, stats, layers }) => {
   const t = useTranslations("widgets.snow_dynamics");
 
   const chartConfig = {
@@ -60,6 +64,7 @@ const SnowDynamics: FC<SnowDynamicsProps> = ({ id, stats }) => {
           backgroundColor="#4F46E5"
         />
       }
+      layers={layers}
       onDowloadButtonClick={() => {}}
       onInfoButtonClick={() => {}}
       onAddToMapButtonClick={() => {}}

@@ -2,7 +2,10 @@ import { GlobeIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
-import type { EcosystemTypesStats } from "@/containers/analysis/types";
+import type {
+  EcosystemTypesStats,
+  WidgetLayer,
+} from "@/containers/analysis/types";
 import TreeMap from "@/containers/charts/tree-map";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
@@ -48,9 +51,10 @@ const chartConfig = {
 
 interface EcosystemTypesProps extends WidgetCardBaseProps {
   stats: EcosystemTypesStats;
+  layers: WidgetLayer[];
 }
 
-const EcosystemTypes: FC<EcosystemTypesProps> = ({ id, stats }) => {
+const EcosystemTypes: FC<EcosystemTypesProps> = ({ id, stats, layers }) => {
   const t = useTranslations("widgets.ecosystem_types");
   const { getTranslation } = useApiTranslation();
   const data = mockData.map((item) => ({
@@ -80,6 +84,7 @@ const EcosystemTypes: FC<EcosystemTypesProps> = ({ id, stats }) => {
           backgroundColor="#F59E0B"
         />
       }
+      layers={layers}
       onDowloadButtonClick={() => {}}
       onInfoButtonClick={() => {}}
       onAddToMapButtonClick={() => {}}

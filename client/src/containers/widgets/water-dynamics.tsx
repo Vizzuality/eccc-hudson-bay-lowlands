@@ -2,7 +2,10 @@ import { DropletsIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
-import type { WaterDynamicsStats } from "@/containers/analysis/types";
+import type {
+  WaterDynamicsStats,
+  WidgetLayer,
+} from "@/containers/analysis/types";
 import DonutChart from "@/containers/charts/donut-chart";
 import Highlight from "@/containers/highlight";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
@@ -30,9 +33,10 @@ const mockData = [
 interface WaterDynamicsProps extends WidgetCardBaseProps {
   unit: string;
   stats: WaterDynamicsStats;
+  layers: WidgetLayer[];
 }
 
-const WaterDynamics: FC<WaterDynamicsProps> = ({ id, unit, stats }) => {
+const WaterDynamics: FC<WaterDynamicsProps> = ({ id, unit, stats, layers }) => {
   const t = useTranslations("widgets.water_dynamics");
   const { getTranslation } = useApiTranslation();
   const data = Object.entries(mockData[0]).map(([key, value]) => ({
@@ -65,6 +69,7 @@ const WaterDynamics: FC<WaterDynamicsProps> = ({ id, unit, stats }) => {
           backgroundColor="#0EA5E9"
         />
       }
+      layers={layers}
       onDowloadButtonClick={() => {}}
       onInfoButtonClick={() => {}}
       onAddToMapButtonClick={() => {}}

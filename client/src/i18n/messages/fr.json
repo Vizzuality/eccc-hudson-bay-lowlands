@@ -86,7 +86,8 @@
     "card": {
       "download-image": "Télécharger l'image",
       "more-info": "Plus d'infos",
-      "add-to-map": "Ajouter à la carte"
+      "add-to-map": "Ajouter à la carte",
+      "remove-from-map": "Retirer de la carte"
     },
     "peat_carbon": {
       "title": "Carbone et tourbières",
