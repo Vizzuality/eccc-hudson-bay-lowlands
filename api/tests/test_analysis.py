@@ -2,6 +2,12 @@
 
 import pytest
 
+from tests.conftest import (
+    FLOOD_SUSCEPTIBILITY_DATASET_METADATA,
+    PEAT_CARBON_DATASET_METADATA,
+    WATER_DYNAMICS_DATASET_METADATA,
+)
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Test geometry constants
 # ─────────────────────────────────────────────────────────────────────────────
@@ -144,19 +150,21 @@ OUTSIDE_HBL_FEATURE = {
     "properties": {},
 }
 
-# A ~27,000 km² polygon that crosses the HBL bbox western edge at lon=-117.
-# Extends from -119 to -115 (partly outside, partly inside) — should pass because
-# the bbox check uses intersection, not containment.
+# A narrow polygon that crosses the HBL bbox western edge at lon=-117 (so it is
+# partly outside, partly inside HBL) and also overlaps the analysis_client raster
+# extent at lon=[-85, -83]. Should pass because the bbox check uses intersection,
+# not containment. Latitude is intentionally narrow to keep the area below
+# MAX_AREA_KM2 (50,000 km²) given the wide longitude span.
 PARTIALLY_OUTSIDE_HBL_FEATURE = {
     "type": "Feature",
     "geometry": {
         "type": "Polygon",
         "coordinates": [[
-            [-119.0, 56.5],
-            [-115.0, 56.5],
-            [-115.0, 57.5],
-            [-119.0, 57.5],
-            [-119.0, 56.5],
+            [-118.0, 57.00],
+            [-83.5, 57.00],
+            [-83.5, 57.05],
+            [-118.0, 57.05],
+            [-118.0, 57.00],
         ]],
     },
     "properties": {},
@@ -184,29 +192,29 @@ SELF_INTERSECTING_FEATURE = {
 # =============================================================================
 
 
-def test_valid_polygon_feature_returns_200(client):
-    response = client.post("/analysis/", json=VALID_POLYGON_FEATURE)
+def test_valid_polygon_feature_returns_200(analysis_client):
+    response = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE)
     assert response.status_code == 200
 
 
-def test_valid_multipolygon_feature_returns_200(client):
-    response = client.post("/analysis/", json=VALID_MULTIPOLYGON_FEATURE)
+def test_valid_multipolygon_feature_returns_200(analysis_client):
+    response = analysis_client.post("/analysis/", json=VALID_MULTIPOLYGON_FEATURE)
     assert response.status_code == 200
 
 
-def test_valid_feature_collection_single_feature_returns_200(client):
-    response = client.post("/analysis/", json=VALID_FEATURE_COLLECTION)
+def test_valid_feature_collection_single_feature_returns_200(analysis_client):
+    response = analysis_client.post("/analysis/", json=VALID_FEATURE_COLLECTION)
     assert response.status_code == 200
 
 
-def test_valid_feature_collection_multiple_features_returns_200(client):
-    response = client.post("/analysis/", json=FEATURE_COLLECTION_MULTIPLE_FEATURES)
+def test_valid_feature_collection_multiple_features_returns_200(analysis_client):
+    response = analysis_client.post("/analysis/", json=FEATURE_COLLECTION_MULTIPLE_FEATURES)
     assert response.status_code == 200
 
 
-def test_polygon_partially_outside_hbl_bbox_still_returns_200(client):
+def test_polygon_partially_outside_hbl_bbox_still_returns_200(analysis_client):
     """Geometry that extends beyond the HBL bbox passes as long as it intersects it."""
-    response = client.post("/analysis/", json=PARTIALLY_OUTSIDE_HBL_FEATURE)
+    response = analysis_client.post("/analysis/", json=PARTIALLY_OUTSIDE_HBL_FEATURE)
     assert response.status_code == 200
 
 
@@ -430,19 +438,47 @@ def test_carbon_cog_histogram_weight_concentrated_near_pixel_value(analysis_clie
     assert max(p["y"] for p in histogram) / total >= 0.9
 
 
-def test_peat_carbon_layers_in_widget_config_order(analysis_client):
-    """``layers`` lists layer ids in the order declared by WIDGET_CONFIG (peat, then carbon)."""
-    layers = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["layers"]
-    assert [entry["id"] for entry in layers] == ["peat_cog", "carbon_cog"]
+def test_peat_carbon_dataset_id_matches_widget_config(analysis_client):
+    """``dataset.id`` matches the WIDGET_CONFIG dataset_id for peat_carbon (1)."""
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["dataset"]
+    assert dataset["id"] == 1
 
 
-def test_peat_carbon_layer_entries_have_id_title_path(analysis_client):
-    layers = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["layers"]
-    by_id = {entry["id"]: entry for entry in layers}
-    assert by_id["peat_cog"]["title"] == {"en": "Peat Depth", "fr": "Profondeur de la Tourbe"}
-    assert by_id["peat_cog"]["path"].endswith("peat_cog.tif")
-    assert by_id["carbon_cog"]["title"] == {"en": "Carbon Storage", "fr": "Stockage de Carbone"}
-    assert by_id["carbon_cog"]["path"].endswith("carbon_cog.tif")
+def test_peat_carbon_dataset_metadata_round_trips(analysis_client):
+    """Full bilingual dataset metadata (title, description, source, citation) is returned."""
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["dataset"]
+    assert dataset["metadata"] == PEAT_CARBON_DATASET_METADATA
+
+
+def test_peat_carbon_dataset_has_category_id(analysis_client):
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["dataset"]
+    assert isinstance(dataset["category_id"], int)
+
+
+def test_peat_carbon_dataset_layers_in_relationship_order(analysis_client):
+    """``dataset.layers`` includes every layer belonging to the dataset (peat_cog, carbon_cog)."""
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["dataset"]
+    assert {entry["id"] for entry in dataset["layers"]} == {"peat_cog", "carbon_cog"}
+
+
+def test_peat_carbon_dataset_layers_full_schema(analysis_client):
+    """Embedded layers carry the full LayerSchema fields (format, path, unit, metadata, dataset_id)."""
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["peat_carbon"]["dataset"]
+    by_id = {entry["id"]: entry for entry in dataset["layers"]}
+
+    peat = by_id["peat_cog"]
+    assert peat["format"] == "raster"
+    assert peat["unit"] == "cm"
+    assert peat["dataset_id"] == dataset["id"]
+    assert peat["metadata"]["title"] == {"en": "Peat Depth", "fr": "Profondeur de la Tourbe"}
+    assert peat["path"].endswith("peat_cog.tif")
+
+    carbon = by_id["carbon_cog"]
+    assert carbon["format"] == "raster"
+    assert carbon["unit"] == "kg/m²"
+    assert carbon["dataset_id"] == dataset["id"]
+    assert carbon["metadata"]["title"] == {"en": "Carbon Storage", "fr": "Stockage de Carbone"}
+    assert carbon["path"].endswith("carbon_cog.tif")
 
 
 # =============================================================================
@@ -556,25 +592,43 @@ def test_water_dynamics_slice_values_match_corresponding_stats(analysis_client):
     assert by_key["land_perm_perc"] == stats["land_perm_perc"]
 
 
-def test_water_dynamics_layers_in_widget_config_order(analysis_client):
-    """``layers`` lists both inundation layers in declared order, even though only one drives a chart."""
-    layers = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["layers"]
-    assert [entry["id"] for entry in layers] == ["inundation_frequency_cog", "inundation_trends_cog"]
+def test_water_dynamics_dataset_id_matches_widget_config(analysis_client):
+    """``dataset.id`` matches the WIDGET_CONFIG dataset_id for water_dynamics (2)."""
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["dataset"]
+    assert dataset["id"] == 2
 
 
-def test_water_dynamics_layer_entries_have_id_title_path(analysis_client):
-    layers = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["layers"]
-    by_id = {entry["id"]: entry for entry in layers}
-    assert by_id["inundation_frequency_cog"]["title"] == {
-        "en": "Inundation Frequency",
-        "fr": "Fréquence des Inondations",
+def test_water_dynamics_dataset_metadata_round_trips(analysis_client):
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["dataset"]
+    assert dataset["metadata"] == WATER_DYNAMICS_DATASET_METADATA
+
+
+def test_water_dynamics_dataset_layers_include_both_inundation_layers(analysis_client):
+    """``dataset.layers`` lists every layer belonging to the Dynamic Surface Water dataset."""
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["dataset"]
+    assert {entry["id"] for entry in dataset["layers"]} == {
+        "inundation_frequency_cog",
+        "inundation_trends_cog",
     }
-    assert by_id["inundation_frequency_cog"]["path"].endswith("inundation_frequency_cog.tif")
-    assert by_id["inundation_trends_cog"]["title"] == {
-        "en": "Inundation Trends",
-        "fr": "Tendances des Inondations",
-    }
-    assert by_id["inundation_trends_cog"]["path"].endswith("inundation_trends_cog.tif")
+
+
+def test_water_dynamics_dataset_layers_full_schema(analysis_client):
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["water_dynamics"]["dataset"]
+    by_id = {entry["id"]: entry for entry in dataset["layers"]}
+
+    freq = by_id["inundation_frequency_cog"]
+    assert freq["format"] == "raster"
+    assert freq["unit"] == "%"
+    assert freq["dataset_id"] == dataset["id"]
+    assert freq["metadata"]["title"] == {"en": "Inundation Frequency", "fr": "Fréquence des Inondations"}
+    assert freq["path"].endswith("inundation_frequency_cog.tif")
+
+    trends = by_id["inundation_trends_cog"]
+    assert trends["format"] == "raster"
+    assert trends["unit"] == "category"
+    assert trends["dataset_id"] == dataset["id"]
+    assert trends["metadata"]["title"] == {"en": "Inundation Trends", "fr": "Tendances des Inondations"}
+    assert trends["path"].endswith("inundation_trends_cog.tif")
 
 
 # =============================================================================
@@ -653,16 +707,30 @@ def test_flood_susceptibility_slice_values_match_corresponding_stats(analysis_cl
     assert by_key["fsi_high_perc"] == stats["fsi_high_perc"]
 
 
-def test_flood_susceptibility_layers_in_widget_config_order(analysis_client):
-    layers = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["flood_susceptibility"]["layers"]
-    assert [entry["id"] for entry in layers] == ["flood_susceptibility_cog"]
+def test_flood_susceptibility_dataset_id_matches_widget_config(analysis_client):
+    """``dataset.id`` matches the WIDGET_CONFIG dataset_id for flood_susceptibility (3)."""
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["flood_susceptibility"]["dataset"]
+    assert dataset["id"] == 3
 
 
-def test_flood_susceptibility_layer_entry_has_id_title_path(analysis_client):
-    layers = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["flood_susceptibility"]["layers"]
-    entry = layers[0]
+def test_flood_susceptibility_dataset_metadata_round_trips(analysis_client):
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["flood_susceptibility"]["dataset"]
+    assert dataset["metadata"] == FLOOD_SUSCEPTIBILITY_DATASET_METADATA
+
+
+def test_flood_susceptibility_dataset_has_one_layer(analysis_client):
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["flood_susceptibility"]["dataset"]
+    assert [entry["id"] for entry in dataset["layers"]] == ["flood_susceptibility_cog"]
+
+
+def test_flood_susceptibility_dataset_layer_full_schema(analysis_client):
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["flood_susceptibility"]["dataset"]
+    entry = dataset["layers"][0]
     assert entry["id"] == "flood_susceptibility_cog"
-    assert entry["title"] == {
+    assert entry["format"] == "raster"
+    assert entry["unit"] == "%"
+    assert entry["dataset_id"] == dataset["id"]
+    assert entry["metadata"]["title"] == {
         "en": "Flood Susceptibility Index",
         "fr": "Indice de vulnérabilité aux inondations",
     }

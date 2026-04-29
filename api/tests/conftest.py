@@ -385,15 +385,52 @@ def minimal_cog(tmp_path):
 # =============================================================================
 
 
+# Dataset metadata used by the analysis fixture and the corresponding tests.
+# IDs are explicit (1, 2, 3) to match the dataset_id values declared in WIDGET_CONFIG.
+PEAT_CARBON_DATASET_METADATA = {
+    "title": {"en": "Peat & Carbon", "fr": "Tourbe et Carbone"},
+    "description": {
+        "en": "Ground-measured peat depth and carbon storage in the Hudson Bay Lowlands.",
+        "fr": "Profondeur de tourbe mesurée sur le terrain et stockage de carbone dans les basses terres de la baie d'Hudson.",
+    },
+    "source": {"en": "Borealis", "fr": "Borealis"},
+    "citation": {"en": "Li et al., 2024.", "fr": "Li et al., 2024."},
+}
+
+WATER_DYNAMICS_DATASET_METADATA = {
+    "title": {"en": "Dynamic Surface Water", "fr": "Eaux de Surface Dynamiques"},
+    "description": {
+        "en": "Inundation frequency and trends across the Hudson Bay Lowlands.",
+        "fr": "Fréquence et tendances d'inondation dans les basses terres de la baie d'Hudson.",
+    },
+    "source": {"en": "ECCC", "fr": "ECCC"},
+    "citation": {"en": "ECCC, 2024.", "fr": "ECCC, 2024."},
+}
+
+FLOOD_SUSCEPTIBILITY_DATASET_METADATA = {
+    "title": {"en": "Flood Susceptibility", "fr": "Vulnérabilité aux Inondations"},
+    "description": {
+        "en": "Flood susceptibility index for the Hudson Bay Lowlands.",
+        "fr": "Indice de vulnérabilité aux inondations pour les basses terres de la baie d'Hudson.",
+    },
+    "source": {"en": "ECCC", "fr": "ECCC"},
+    "citation": {"en": "ECCC, 2024.", "fr": "ECCC, 2024."},
+}
+
+
 @pytest.fixture
 def analysis_client(db_session, tmp_path, monkeypatch):
     """Test client wired for analysis integration tests.
 
     Creates five GeoTIFFs with uniform, known pixel values in EPSG:4326 covering
-    the standard test polygon area, inserts matching Layer records into the DB
-    (peat_cog, carbon_cog, inundation_frequency_cog, inundation_trends_cog,
-    flood_susceptibility_cog), and patches _s3_uri so rasterio opens the local
-    files directly instead of reaching out to S3.
+    the standard test polygon area, inserts three Datasets (with explicit IDs 1/2/3
+    matching WIDGET_CONFIG) and matching Layer records, and patches _s3_uri so
+    rasterio opens the local files directly instead of reaching out to S3.
+
+    Dataset → layer wiring:
+      - dataset 1 (Peat & Carbon):         peat_cog, carbon_cog
+      - dataset 2 (Dynamic Surface Water): inundation_frequency_cog, inundation_trends_cog
+      - dataset 3 (Flood Susceptibility):  flood_susceptibility_cog
 
     Pixel-value choices and what they exercise:
       - peat_cog:                  uniform 200.0 (float32) — mean/max/histogram path
@@ -439,15 +476,15 @@ def analysis_client(db_session, tmp_path, monkeypatch):
         with rasterio.open(path, "w", **profile) as dst:
             dst.write(data)
 
-    db_category = Category(metadata_={"title": {"en": "Test", "fr": "Test"}})
+    db_category = Category(metadata_={"title": {"en": "Environment", "fr": "Environnement"}})
     db_session.add(db_category)
     db_session.flush()
 
-    db_dataset = Dataset(
-        metadata_={"title": {"en": "Test", "fr": "Test"}},
-        category_id=db_category.id,
-    )
-    db_session.add(db_dataset)
+    # Explicit IDs match WIDGET_CONFIG: peat_carbon→1, water_dynamics→2, flood_susceptibility→3.
+    peat_carbon_ds = Dataset(id=1, metadata_=PEAT_CARBON_DATASET_METADATA, category_id=db_category.id)
+    water_dynamics_ds = Dataset(id=2, metadata_=WATER_DYNAMICS_DATASET_METADATA, category_id=db_category.id)
+    flood_susc_ds = Dataset(id=3, metadata_=FLOOD_SUSCEPTIBILITY_DATASET_METADATA, category_id=db_category.id)
+    db_session.add_all([peat_carbon_ds, water_dynamics_ds, flood_susc_ds])
     db_session.flush()
 
     db_session.add_all([
@@ -457,7 +494,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
             path=peat_path,
             unit="cm",
             metadata_={"title": {"en": "Peat Depth", "fr": "Profondeur de la Tourbe"}},
-            dataset_id=db_dataset.id,
+            dataset_id=peat_carbon_ds.id,
         ),
         Layer(
             id="carbon_cog",
@@ -465,7 +502,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
             path=carbon_path,
             unit="kg/m²",
             metadata_={"title": {"en": "Carbon Storage", "fr": "Stockage de Carbone"}},
-            dataset_id=db_dataset.id,
+            dataset_id=peat_carbon_ds.id,
         ),
         Layer(
             id="inundation_frequency_cog",
@@ -473,7 +510,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
             path=inundation_freq_path,
             unit="%",
             metadata_={"title": {"en": "Inundation Frequency", "fr": "Fréquence des Inondations"}},
-            dataset_id=db_dataset.id,
+            dataset_id=water_dynamics_ds.id,
         ),
         Layer(
             id="inundation_trends_cog",
@@ -481,7 +518,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
             path=inundation_trends_path,
             unit="category",
             metadata_={"title": {"en": "Inundation Trends", "fr": "Tendances des Inondations"}},
-            dataset_id=db_dataset.id,
+            dataset_id=water_dynamics_ds.id,
         ),
         Layer(
             id="flood_susceptibility_cog",
@@ -489,7 +526,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
             path=flood_susc_path,
             unit="%",
             metadata_={"title": {"en": "Flood Susceptibility Index", "fr": "Indice de vulnérabilité aux inondations"}},
-            dataset_id=db_dataset.id,
+            dataset_id=flood_susc_ds.id,
         ),
     ])
     db_session.flush()
