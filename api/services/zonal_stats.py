@@ -12,6 +12,7 @@ from pyproj import Transformer
 from shapely.geometry import mapping
 from shapely.ops import transform
 
+from schemas.dataset import DatasetWithLayersSchema
 from services.widgets import WIDGET_CONFIG
 
 logger = logging.getLogger(__name__)
@@ -166,8 +167,8 @@ def _build_chart(layer_id: str, chart_cfg: dict, result: dict, stats: dict[str, 
 def _build_widget(
     widget_id: str,
     layer_results: dict[str, dict],
-    layer_units: dict[str, str | None],
-    layer_info: dict[str, dict],
+    dataset,
+    layers_by_id: dict[str, Any],
 ) -> dict:
     """Build a widget response dict driven entirely by WIDGET_CONFIG.
 
@@ -175,18 +176,17 @@ def _build_widget(
     ----------
     widget_id:      key in WIDGET_CONFIG (e.g. "peat_carbon")
     layer_results:  exactextract outputs keyed by layer id
-    layer_units:    DB ``unit`` for each known layer id; used to resolve the widget's display unit
-    layer_info:     ``{layer_id: {"title": <i18n dict>, "path": <db path>}}`` for every layer
-                    known to the DB; used to populate the widget's ``layers`` list
+    dataset:        ORM Dataset (with ``layers`` eager-loaded) referenced by the widget
+    layers_by_id:   flat ``{layer_id: Layer}`` lookup across all datasets; used to
+                    resolve the widget's display unit when ``unit_layer`` is set
 
     Returns
     -------
-    dict with keys: unit, layers, chart, stats
+    dict with keys: unit, dataset, chart, stats
     """
     config = WIDGET_CONFIG[widget_id]
     stats: dict[str, float] = {}
     chart: dict[str, list] = {}
-    layers: list[dict] = []
 
     for layer_id, layer_cfg in config["layers"].items():
         result = layer_results.get(layer_id, {})
@@ -198,52 +198,59 @@ def _build_widget(
         if chart_cfg:
             chart[layer_id] = _build_chart(layer_id, chart_cfg, result, stats)
 
-        info = layer_info.get(layer_id)
-        if info is not None:
-            layers.append({"id": layer_id, "title": info["title"], "path": info["path"]})
+    unit_layer_id = config.get("unit_layer", "")
+    unit_layer = layers_by_id.get(unit_layer_id) if unit_layer_id else None
+    unit = config.get("unit") or (unit_layer.unit if unit_layer else None) or ""
 
-    unit = config.get("unit") or layer_units.get(config.get("unit_layer", "")) or ""
-    return {"unit": unit, "layers": layers, "chart": chart, "stats": stats}
+    return {
+        "unit": unit,
+        "dataset": DatasetWithLayersSchema.from_orm_dataset(dataset),
+        "chart": chart,
+        "stats": stats,
+    }
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Public entry point
 # ─────────────────────────────────────────────────────────────────────────────
 
-def compute_zonal_stats(geom_4326, raster_rows, bucket: str) -> dict:
+def compute_zonal_stats(geom_4326, datasets, bucket: str) -> dict:
     """Compute all widget statistics for a validated polygon.
 
     Parameters
     ----------
     geom_4326:   Shapely geometry in EPSG:4326 (returned by validate_geometry)
-    raster_rows: Sequence of DB rows with .id, .path, .unit, and .metadata_ attributes
+    datasets:    Sequence of ORM Dataset rows with ``layers`` eager-loaded
     bucket:      S3 bucket name used to resolve full raster URIs
 
     Returns
     -------
     dict matching the AnalysisResult shape expected by the FE, keyed by widget id.
     """
-    layer_paths: dict[str, str] = {row.id: row.path for row in raster_rows}
-    layer_units: dict[str, str | None] = {row.id: row.unit for row in raster_rows}
-    layer_info: dict[str, dict] = {
-        row.id: {"title": row.metadata_["title"], "path": row.path}
-        for row in raster_rows
-    }
+    datasets_by_id = {ds.id: ds for ds in datasets}
+    layers_by_id = {layer.id: layer for ds in datasets for layer in ds.layers}
 
     results: dict[str, dict] = {}
     for widget_id, widget_cfg in WIDGET_CONFIG.items():
-        layer_results: dict[str, dict] = {}
+        dataset = datasets_by_id.get(widget_cfg["dataset_id"])
+        if dataset is None:
+            logger.warning(
+                "Dataset id=%s not found in DB — skipping widget '%s'",
+                widget_cfg["dataset_id"], widget_id,
+            )
+            continue
 
+        layer_results: dict[str, dict] = {}
         for layer_id, layer_cfg in widget_cfg["layers"].items():
-            path = layer_paths.get(layer_id)
-            if path is None:
+            layer = layers_by_id.get(layer_id)
+            if layer is None:
                 logger.warning("Layer '%s' not found in DB — skipping widget '%s'", layer_id, widget_id)
                 continue
 
-            uri = _s3_uri(path, bucket)
+            uri = _s3_uri(layer.path, bucket)
             logger.info("Processing layer '%s' for widget '%s'", layer_id, widget_id)
             layer_results[layer_id] = _run_exact_extract(uri, geom_4326, layer_cfg["ops"])
 
-        results[widget_id] = _build_widget(widget_id, layer_results, layer_units, layer_info)
+        results[widget_id] = _build_widget(widget_id, layer_results, dataset, layers_by_id)
 
     return results

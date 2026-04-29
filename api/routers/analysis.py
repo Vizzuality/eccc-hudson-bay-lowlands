@@ -6,11 +6,11 @@ from typing import Annotated
 import rasterio.errors
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from config import get_settings
 from db.database import get_db
-from models.layer import Layer
+from models.dataset import Dataset
 from schemas.analysis import AnalysisInput, AnalysisResponse
 from services.analysis import HBL_BBOX, MAX_AREA_KM2, MIN_AREA_KM2, validate_geometry
 from services.zonal_stats import compute_zonal_stats
@@ -53,14 +53,13 @@ def analyze(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> Ana
         logger.error("S3_BUCKET_NAME is not configured")
         raise HTTPException(status_code=500, detail="Analysis is unavailable")
 
-    raster_layers = db.execute(
-        select(Layer.id, Layer.path, Layer.unit, Layer.metadata_)
-        .where(Layer.format_ == "raster")
-    ).all()
-    logger.info("Retrieved %d raster layers", len(raster_layers))
+    datasets = db.execute(
+        select(Dataset).options(selectinload(Dataset.layers))
+    ).scalars().all()
+    logger.info("Retrieved %d datasets", len(datasets))
 
     try:
-        result = compute_zonal_stats(geom, raster_layers, settings.s3_bucket_name)
+        result = compute_zonal_stats(geom, datasets, settings.s3_bucket_name)
     except rasterio.errors.RasterioIOError as e:
         logger.error("Failed to read raster data: %s", e)
         raise HTTPException(status_code=500, detail="Analysis is unavailable")
