@@ -1,6 +1,10 @@
 """Widget configuration for zonal statistics analysis.
 
 Each widget entry defines:
+  - dataset_id:  ``Dataset.id`` of the dataset this widget belongs to. The widget
+                 response embeds the full dataset (with all its layers) under the
+                 ``dataset`` key. Each widget belongs to exactly one dataset; all
+                 layers declared under ``layers`` must belong to that dataset.
   - unit:        explicit display unit for the widget. Use this for widgets whose
                  stats have mixed units and no single layer's DB unit reflects the
                  "primary" widget metric (e.g. peat_carbon mixes cm, Mt, kg/m²).
@@ -46,6 +50,7 @@ WIDGET_CONFIG: dict[str, WidgetDef] = {
     "peat_carbon": {
         # Mixed-unit widget: peat depth (cm), carbon total (Mt), carbon density (kg/m²).
         # Widget-level unit is the primary metric — peat depth in cm.
+        "dataset_id": 1,
         "unit": "cm",
         "layers": {
             "peat_cog": {
@@ -67,6 +72,7 @@ WIDGET_CONFIG: dict[str, WidgetDef] = {
         },
     },
     "water_dynamics": {
+        "dataset_id": 2,
         "unit_layer": "inundation_frequency_cog",
         "layers": {
             "inundation_frequency_cog": {
@@ -97,6 +103,7 @@ WIDGET_CONFIG: dict[str, WidgetDef] = {
         },
     },
     "flood_susceptibility": {
+        "dataset_id": 3,
         "unit_layer": "flood_susceptibility_cog",
         "layers": {
             "flood_susceptibility_cog": {
