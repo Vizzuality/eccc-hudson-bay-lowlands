@@ -417,6 +417,39 @@ FLOOD_SUSCEPTIBILITY_DATASET_METADATA = {
     "citation": {"en": "ECCC, 2024.", "fr": "ECCC, 2024."},
 }
 
+SNOW_DYNAMICS_DATASET_METADATA = {
+    "title": {"en": "Snow Dynamics", "fr": "Dynamique de la Neige"},
+    "description": {
+        "en": "Annual 30 m snow cover dynamics for winters 2018–2019 to 2023–2024.",
+        "fr": "Dynamique annuelle de la couverture neigeuse à 30 m pour les hivers 2018–2019 à 2023–2024.",
+    },
+    "source": {"en": "NRCan", "fr": "RNCan"},
+    "citation": {"en": "NRCan, 2025.", "fr": "RNCan, 2025."},
+}
+
+# Per-winter pixel values used by the snow_dynamics test fixture.
+# - lengthT means vary per winter so the chart series exercises distinct values.
+# - endL pixel value is fixed at 100 across all winters; the date_offset op then
+#   anchors each result to Dec 31 of the prior calendar year (base_year).
+SNOW_LENGTHT_VALUES = {
+    "1819": 100,
+    "1920": 110,
+    "2021": 120,
+    "2122": 130,
+    "2223": 140,
+    "2324": 150,
+}
+SNOW_ENDL_PIXEL_VALUE = 100
+# Expected ISO dates for endL_mean_date_*: Dec 31 of base_year + 100 days.
+SNOW_ENDL_EXPECTED_DATES = {
+    "1819": "2019-04-10",  # Dec 31, 2018 + 100
+    "1920": "2020-04-09",  # leap year 2020
+    "2021": "2021-04-10",
+    "2122": "2022-04-10",
+    "2223": "2023-04-10",
+    "2324": "2024-04-09",  # leap year 2024
+}
+
 
 @pytest.fixture
 def analysis_client(db_session, tmp_path, monkeypatch):
@@ -431,6 +464,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
       - dataset 1 (Peat & Carbon):         peat_cog, carbon_cog
       - dataset 2 (Dynamic Surface Water): inundation_frequency_cog, inundation_trends_cog
       - dataset 3 (Flood Susceptibility):  flood_susceptibility_cog
+      - dataset 4 (Snow Dynamics):         endL_winter_*_cog (×6), lengthT_winter_*_cog (×6)
 
     Pixel-value choices and what they exercise:
       - peat_cog:                  uniform 200.0 (float32) — mean/max/histogram path
@@ -438,6 +472,10 @@ def analysis_client(db_session, tmp_path, monkeypatch):
       - inundation_frequency_cog:  uniform 100   (uint8)   — frac_sum [100] = 100%, mean = 100
       - inundation_trends_cog:     uniform 4     (uint8)   — frac_sum [4]   = 100%
       - flood_susceptibility_cog:  uniform 50    (uint8)   — mean = 50, frac_range [31,80] = 100% (moderate)
+      - lengthT_winter_*_cog:      uniform values per winter (100/110/120/130/140/150) — exercises
+                                   the time_series chart with distinct y values per winter
+      - endL_winter_*_cog:         uniform 100  (uint8)   — exercises ``date_offset`` op
+                                   (Dec 31 of base_year + 100 days)
     """
     import numpy as np
     import rasterio
@@ -453,6 +491,14 @@ def analysis_client(db_session, tmp_path, monkeypatch):
     inundation_freq_path = str(tmp_path / "inundation_frequency_cog.tif")
     inundation_trends_path = str(tmp_path / "inundation_trends_cog.tif")
     flood_susc_path = str(tmp_path / "flood_susceptibility_cog.tif")
+    snow_lengtht_paths = {
+        suffix: str(tmp_path / f"lengthT_winter_{suffix}_cog.tif")
+        for suffix in SNOW_LENGTHT_VALUES
+    }
+    snow_endl_paths = {
+        suffix: str(tmp_path / f"endL_winter_{suffix}_cog.tif")
+        for suffix in SNOW_LENGTHT_VALUES
+    }
 
     raster_specs = [
         (peat_path, 200.0, "float32"),
@@ -461,6 +507,10 @@ def analysis_client(db_session, tmp_path, monkeypatch):
         (inundation_trends_path, 4, "uint8"),
         (flood_susc_path, 50, "uint8"),
     ]
+    for suffix, value in SNOW_LENGTHT_VALUES.items():
+        raster_specs.append((snow_lengtht_paths[suffix], value, "uint16"))
+    for suffix in SNOW_LENGTHT_VALUES:
+        raster_specs.append((snow_endl_paths[suffix], SNOW_ENDL_PIXEL_VALUE, "int16"))
 
     for path, value, dtype in raster_specs:
         data = np.full((1, 256, 256), value, dtype=dtype)
@@ -480,12 +530,43 @@ def analysis_client(db_session, tmp_path, monkeypatch):
     db_session.add(db_category)
     db_session.flush()
 
-    # Explicit IDs match WIDGET_CONFIG: peat_carbon→1, water_dynamics→2, flood_susceptibility→3.
+    # Explicit IDs match WIDGET_CONFIG: peat_carbon→1, water_dynamics→2,
+    # flood_susceptibility→3, snow_dynamics→4.
     peat_carbon_ds = Dataset(id=1, metadata_=PEAT_CARBON_DATASET_METADATA, category_id=db_category.id)
     water_dynamics_ds = Dataset(id=2, metadata_=WATER_DYNAMICS_DATASET_METADATA, category_id=db_category.id)
     flood_susc_ds = Dataset(id=3, metadata_=FLOOD_SUSCEPTIBILITY_DATASET_METADATA, category_id=db_category.id)
-    db_session.add_all([peat_carbon_ds, water_dynamics_ds, flood_susc_ds])
+    snow_dynamics_ds = Dataset(id=4, metadata_=SNOW_DYNAMICS_DATASET_METADATA, category_id=db_category.id)
+    db_session.add_all([peat_carbon_ds, water_dynamics_ds, flood_susc_ds, snow_dynamics_ds])
     db_session.flush()
+
+    snow_layers = []
+    for suffix in SNOW_LENGTHT_VALUES:
+        snow_layers.append(Layer(
+            id=f"endL_winter_{suffix}_cog",
+            format_="raster",
+            path=snow_endl_paths[suffix],
+            unit="date",
+            metadata_={
+                "title": {
+                    "en": f"End of Snow Period for Winter 20{suffix[:2]}-20{suffix[2:]}",
+                    "fr": f"Fin de la Période de Neige pour l'Hiver 20{suffix[:2]}-20{suffix[2:]}",
+                },
+            },
+            dataset_id=snow_dynamics_ds.id,
+        ))
+        snow_layers.append(Layer(
+            id=f"lengthT_winter_{suffix}_cog",
+            format_="raster",
+            path=snow_lengtht_paths[suffix],
+            unit="days",
+            metadata_={
+                "title": {
+                    "en": f"Total Snow Length for Winter 20{suffix[:2]}-20{suffix[2:]}",
+                    "fr": f"Durée Totale de la Neige pour l'Hiver 20{suffix[:2]}-20{suffix[2:]}",
+                },
+            },
+            dataset_id=snow_dynamics_ds.id,
+        ))
 
     db_session.add_all([
         Layer(
@@ -528,6 +609,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
             metadata_={"title": {"en": "Flood Susceptibility Index", "fr": "Indice de vulnérabilité aux inondations"}},
             dataset_id=flood_susc_ds.id,
         ),
+        *snow_layers,
     ])
     db_session.flush()
 
