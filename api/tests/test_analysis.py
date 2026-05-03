@@ -5,6 +5,9 @@ import pytest
 from tests.conftest import (
     FLOOD_SUSCEPTIBILITY_DATASET_METADATA,
     PEAT_CARBON_DATASET_METADATA,
+    SNOW_DYNAMICS_DATASET_METADATA,
+    SNOW_ENDL_EXPECTED_DATES,
+    SNOW_LENGTHT_VALUES,
     WATER_DYNAMICS_DATASET_METADATA,
 )
 
@@ -735,3 +738,105 @@ def test_flood_susceptibility_dataset_layer_full_schema(analysis_client):
         "fr": "Indice de vulnérabilité aux inondations",
     }
     assert entry["path"].endswith("flood_susceptibility_cog.tif")
+
+
+# =============================================================================
+# Integration — snow_dynamics widget output
+#
+# Uses the `analysis_client` fixture which creates 12 GeoTIFFs:
+#   - lengthT_winter_<suffix>_cog: per-winter uniform values from SNOW_LENGTHT_VALUES
+#   - endL_winter_<suffix>_cog:    uniform 100 for every winter; combined with each
+#                                  layer's base_year via the date_offset op the result
+#                                  must match SNOW_ENDL_EXPECTED_DATES.
+# =============================================================================
+
+
+def test_analysis_response_contains_snow_dynamics_widget(analysis_client):
+    data = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()
+    assert "snow_dynamics" in data
+
+
+def test_snow_dynamics_unit_is_days(analysis_client):
+    data = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()
+    assert data["snow_dynamics"]["unit"] == "days"
+
+
+def test_snow_dynamics_stats_has_all_lengtht_and_endl_fields(analysis_client):
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["snow_dynamics"]["stats"]
+    for suffix in SNOW_LENGTHT_VALUES:
+        assert f"lengthT_mean_{suffix}" in stats
+        assert f"endL_mean_date_{suffix}" in stats
+
+
+def test_snow_dynamics_lengtht_means_match_uniform_pixel_values(analysis_client):
+    """Each lengthT_mean_<winter> equals the uniform pixel value of its raster."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["snow_dynamics"]["stats"]
+    for suffix, value in SNOW_LENGTHT_VALUES.items():
+        assert stats[f"lengthT_mean_{suffix}"] == pytest.approx(value, abs=0.5)
+
+
+def test_snow_dynamics_endl_dates_are_iso_format(analysis_client):
+    """Each endL_mean_date_<winter> matches the expected ISO YYYY-MM-DD date."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["snow_dynamics"]["stats"]
+    for suffix, expected in SNOW_ENDL_EXPECTED_DATES.items():
+        assert stats[f"endL_mean_date_{suffix}"] == expected
+
+
+def test_snow_dynamics_chart_keyed_by_synthetic_lengtht_mean(analysis_client):
+    """Chart uses the synthetic key ``lengthT_mean`` (not a Layer.id)."""
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["snow_dynamics"]["chart"]
+    assert "lengthT_mean" in chart
+    # No layer-id keys leak into the chart for this widget — the time series is the only entry.
+    assert list(chart.keys()) == ["lengthT_mean"]
+
+
+def test_snow_dynamics_chart_has_six_time_series_points(analysis_client):
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["snow_dynamics"]["chart"]
+    series = chart["lengthT_mean"]
+    assert isinstance(series, list)
+    assert len(series) == 6
+    assert all("x" in p and "y" in p for p in series)
+
+
+def test_snow_dynamics_chart_x_values_are_start_years(analysis_client):
+    """X values use the winter's start year (2018→2023)."""
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["snow_dynamics"]["chart"]
+    xs = [p["x"] for p in chart["lengthT_mean"]]
+    assert xs == [2018, 2019, 2020, 2021, 2022, 2023]
+
+
+def test_snow_dynamics_chart_y_values_match_lengtht_means(analysis_client):
+    """Each chart point's y value equals the corresponding ``lengthT_mean_<suffix>`` stat."""
+    data = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["snow_dynamics"]
+    series = data["chart"]["lengthT_mean"]
+    stats = data["stats"]
+    expected_pairs = [
+        (2018, stats["lengthT_mean_1819"]),
+        (2019, stats["lengthT_mean_1920"]),
+        (2020, stats["lengthT_mean_2021"]),
+        (2021, stats["lengthT_mean_2122"]),
+        (2022, stats["lengthT_mean_2223"]),
+        (2023, stats["lengthT_mean_2324"]),
+    ]
+    assert [(p["x"], p["y"]) for p in series] == expected_pairs
+
+
+def test_snow_dynamics_dataset_id_matches_widget_config(analysis_client):
+    """``dataset.id`` matches the WIDGET_CONFIG dataset_id for snow_dynamics (4)."""
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["snow_dynamics"]["dataset"]
+    assert dataset["id"] == 4
+
+
+def test_snow_dynamics_dataset_metadata_round_trips(analysis_client):
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["snow_dynamics"]["dataset"]
+    assert dataset["metadata"] == SNOW_DYNAMICS_DATASET_METADATA
+
+
+def test_snow_dynamics_dataset_has_twelve_layers(analysis_client):
+    """All 12 snow rasters (6 endL + 6 lengthT) are embedded under ``dataset.layers``."""
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["snow_dynamics"]["dataset"]
+    layer_ids = {entry["id"] for entry in dataset["layers"]}
+    expected = {f"endL_winter_{s}_cog" for s in SNOW_LENGTHT_VALUES} | {
+        f"lengthT_winter_{s}_cog" for s in SNOW_LENGTHT_VALUES
+    }
+    assert layer_ids == expected
