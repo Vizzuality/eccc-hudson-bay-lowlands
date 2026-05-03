@@ -26,6 +26,15 @@ Each widget entry defines:
                        Categorical points (donut/pie) sourced from already-computed stats.
                        Slice labels live in the FE i18n bundle, not here — the API only
                        ships ``{key, value}`` per slice.
+  - chart:       optional widget-level chart spec, used when a single chart spans
+                 multiple layers' stats (instead of one chart per layer):
+                   {"type": "time_series",
+                    "key": <synthetic chart key>,
+                    "points": [{"stat": <stat name>, "x": <number>}, ...]}
+                       Produces a single ``[{x, y}]`` series under ``chart[key]``. The
+                       ``key`` is a synthetic id (NOT a Layer.id) — it deviates from the
+                       per-layer convention because the series is sourced from many
+                       layers. Document the choice of ``key`` so the FE can read it.
 
 Stat definition fields:
   - name:       key in the response stats dict
@@ -33,10 +42,14 @@ Stat definition fields:
                   - any exactextract op ("mean", "max", "sum", ...) — read directly
                   - "frac_sum"  + ``values: [v1, v2, ...]``  — sum coverage fractions for those pixel values
                   - "frac_range" + ``range: [lo, hi]``       — sum coverage fractions for closed range [lo, hi]
+                  - "date_offset" + ``base_year: int``       — interpret ``mean`` op result as
+                                                               days from Dec 31 of base_year and
+                                                               return an ISO ``YYYY-MM-DD`` string
   - values:     list of pixel values (frac_sum only)
   - range:      [lo, hi] inclusive (frac_range only)
-  - scale:      multiplier applied to the op result (default 1.0)
-  - precision:  decimal places to round to (default 2)
+  - base_year:  Dec 31 anchor year (date_offset only)
+  - scale:      multiplier applied to the op result (default 1.0; numeric ops only)
+  - precision:  decimal places to round to (default 2; numeric ops only)
   - unit:       documentation only — the runtime unit comes from the widget's ``unit_layer``
 """
 
@@ -99,6 +112,83 @@ WIDGET_CONFIG: dict[str, WidgetDef] = {
                     {"name": "trend_drier_perc", "op": "frac_sum", "values": [5], "scale": 100, "precision": 2},
                     {"name": "trend_stable_perc", "op": "frac_sum", "values": [1, 2, 3], "scale": 100, "precision": 2},
                 ],
+            },
+        },
+    },
+    "snow_dynamics": {
+        # Six winters of snow-cover rasters at 30 m / EPSG:3979. For each winter:
+        #   - lengthT_*_cog: pixel value = number of days with snow cover. We take the mean.
+        #   - endL_*_cog:    pixel value = days from Dec 31 of the prior calendar year. We
+        #                    take the mean and convert to an ISO date via ``date_offset``.
+        # Stats are flat per-winter (e.g. ``lengthT_mean_1819``, ``endL_mean_date_1819``) so
+        # all six winters round-trip in a single response.
+        # The widget-level ``chart`` aggregates the six lengthT means into one time series.
+        # The chart key ``"lengthT_mean"`` is synthetic (not a Layer.id) because the series
+        # spans multiple layers.
+        # TODO: confirm with design whether the X axis should be the start year (used here),
+        # the end year, or a "20YY/YY" string. Currently uses start year as a number.
+        "dataset_id": 4,
+        "unit": "days",
+        "chart": {
+            "type": "time_series",
+            "key": "lengthT_mean",
+            "points": [
+                {"stat": "lengthT_mean_1819", "x": 2018},
+                {"stat": "lengthT_mean_1920", "x": 2019},
+                {"stat": "lengthT_mean_2021", "x": 2020},
+                {"stat": "lengthT_mean_2122", "x": 2021},
+                {"stat": "lengthT_mean_2223", "x": 2022},
+                {"stat": "lengthT_mean_2324", "x": 2023},
+            ],
+        },
+        "layers": {
+            "endL_winter_1819_cog": {
+                "ops": ["mean"],
+                "stats": [{"name": "endL_mean_date_1819", "op": "date_offset", "base_year": 2018}],
+            },
+            "endL_winter_1920_cog": {
+                "ops": ["mean"],
+                "stats": [{"name": "endL_mean_date_1920", "op": "date_offset", "base_year": 2019}],
+            },
+            "endL_winter_2021_cog": {
+                "ops": ["mean"],
+                "stats": [{"name": "endL_mean_date_2021", "op": "date_offset", "base_year": 2020}],
+            },
+            "endL_winter_2122_cog": {
+                "ops": ["mean"],
+                "stats": [{"name": "endL_mean_date_2122", "op": "date_offset", "base_year": 2021}],
+            },
+            "endL_winter_2223_cog": {
+                "ops": ["mean"],
+                "stats": [{"name": "endL_mean_date_2223", "op": "date_offset", "base_year": 2022}],
+            },
+            "endL_winter_2324_cog": {
+                "ops": ["mean"],
+                "stats": [{"name": "endL_mean_date_2324", "op": "date_offset", "base_year": 2023}],
+            },
+            "lengthT_winter_1819_cog": {
+                "ops": ["mean"],
+                "stats": [{"name": "lengthT_mean_1819", "op": "mean", "unit": "days", "precision": 1}],
+            },
+            "lengthT_winter_1920_cog": {
+                "ops": ["mean"],
+                "stats": [{"name": "lengthT_mean_1920", "op": "mean", "unit": "days", "precision": 1}],
+            },
+            "lengthT_winter_2021_cog": {
+                "ops": ["mean"],
+                "stats": [{"name": "lengthT_mean_2021", "op": "mean", "unit": "days", "precision": 1}],
+            },
+            "lengthT_winter_2122_cog": {
+                "ops": ["mean"],
+                "stats": [{"name": "lengthT_mean_2122", "op": "mean", "unit": "days", "precision": 1}],
+            },
+            "lengthT_winter_2223_cog": {
+                "ops": ["mean"],
+                "stats": [{"name": "lengthT_mean_2223", "op": "mean", "unit": "days", "precision": 1}],
+            },
+            "lengthT_winter_2324_cog": {
+                "ops": ["mean"],
+                "stats": [{"name": "lengthT_mean_2324", "op": "mean", "unit": "days", "precision": 1}],
             },
         },
     },

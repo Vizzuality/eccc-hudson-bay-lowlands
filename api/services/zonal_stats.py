@@ -2,6 +2,7 @@
 
 import logging
 import math
+from datetime import date, timedelta
 from functools import lru_cache
 from typing import Any
 
@@ -115,15 +116,25 @@ def _build_frac_dict(result: dict) -> dict[float, float]:
     return dict(zip(unique, frac))
 
 
-def _compute_stat(result: dict, stat_def: dict) -> float:
+def _compute_stat(result: dict, stat_def: dict) -> float | str:
     """Compute a single stat value from exactextract output, applying scale and precision.
 
     Supported ``op`` values:
       - any exactextract op key present in ``result`` ("mean", "max", "sum", ...) — read directly
       - ``frac_sum``  + ``values: [v1, v2, ...]``  — sum coverage fractions for those pixel values
       - ``frac_range`` + ``range: [lo, hi]``       — sum coverage fractions for closed range [lo, hi]
+      - ``date_offset`` + ``base_year: int``        — interpret the ``mean`` op result as a
+        day offset from Dec 31 of ``base_year`` and return an ISO ``YYYY-MM-DD`` string.
+        Returns ``""`` when the mean is missing or non-finite.
     """
     op = stat_def["op"]
+
+    if op == "date_offset":
+        days = result.get("mean")
+        if days is None or not math.isfinite(float(days)):
+            return ""
+        base = date(stat_def["base_year"], 12, 31)
+        return (base + timedelta(days=round(float(days)))).isoformat()
 
     if op == "frac_sum":
         fracs = _build_frac_dict(result)
@@ -144,7 +155,7 @@ def _compute_stat(result: dict, stat_def: dict) -> float:
 # Generic widget builder
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _build_chart(layer_id: str, chart_cfg: dict, result: dict, stats: dict[str, float]) -> list:
+def _build_chart(layer_id: str, chart_cfg: dict, result: dict, stats: dict[str, float | str]) -> list:
     """Build a chart payload for one layer based on its chart config.
 
     ``histogram``: coverage-weighted histogram of pixel values (returns ``HistogramPoint[]``).
@@ -162,6 +173,20 @@ def _build_chart(layer_id: str, chart_cfg: dict, result: dict, stats: dict[str, 
         ]
 
     raise ValueError(f"Unknown chart type '{chart_type}' for layer '{layer_id}'")
+
+
+def _build_widget_chart(chart_cfg: dict, stats: dict[str, float | str]) -> list:
+    """Build a widget-level chart payload that aggregates across layers' computed stats.
+
+    ``time_series``: list of ``{x, y}`` points sourced from already-computed stats.
+        Used when a single chart spans multiple layers (e.g. one mean per winter raster).
+    """
+    chart_type = chart_cfg["type"]
+
+    if chart_type == "time_series":
+        return [{"x": p["x"], "y": stats[p["stat"]]} for p in chart_cfg["points"]]
+
+    raise ValueError(f"Unknown widget-level chart type '{chart_type}'")
 
 
 def _build_widget(
@@ -185,7 +210,7 @@ def _build_widget(
     dict with keys: unit, dataset, chart, stats
     """
     config = WIDGET_CONFIG[widget_id]
-    stats: dict[str, float] = {}
+    stats: dict[str, float | str] = {}
     chart: dict[str, list] = {}
 
     for layer_id, layer_cfg in config["layers"].items():
@@ -197,6 +222,12 @@ def _build_widget(
         chart_cfg = layer_cfg.get("chart")
         if chart_cfg:
             chart[layer_id] = _build_chart(layer_id, chart_cfg, result, stats)
+
+    # Widget-level chart aggregates across layers (e.g. time_series). Keyed by the
+    # synthetic ``key`` declared in the chart config — this key is NOT a Layer.id.
+    widget_chart_cfg = config.get("chart")
+    if widget_chart_cfg:
+        chart[widget_chart_cfg["key"]] = _build_widget_chart(widget_chart_cfg, stats)
 
     unit_layer_id = config.get("unit_layer", "")
     unit_layer = layers_by_id.get(unit_layer_id) if unit_layer_id else None
