@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from config import get_settings
 from db.database import get_db
+from schemas import SeedPayload
 from services.seed import seed_database
 
 logger = logging.getLogger(__name__)
@@ -34,13 +35,13 @@ def verify_seed_secret(x_seed_secret: Annotated[str, Header(description="Secret 
     },
 )
 def run_seed(
-    payload: dict,
+    payload: SeedPayload,
     db: Annotated[Session, Depends(get_db)],
     _secret: Annotated[str, Depends(verify_seed_secret)],
 ):
     """Seed the database with the provided metadata payload."""
     try:
-        counts = seed_database(db, payload=payload)
+        counts = seed_database(db, payload=payload.to_dict())
         db.commit()
         return {"status": "success", "counts": counts}
     except Exception:
