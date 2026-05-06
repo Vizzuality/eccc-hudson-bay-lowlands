@@ -33,7 +33,19 @@ const DataLayersListItemDialog = ({
           <div>
             <h3 className="text-2xs font-bold uppercase">{t("source")}</h3>
             <p className="text-xs text-muted-foreground">
-              {dataset?.metadata.source}
+              {dataset?.metadata.source &&
+              /^https?:\/\//.test(dataset.metadata.source) ? (
+                <a
+                  href={dataset.metadata.source}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-foreground"
+                >
+                  {dataset.metadata.source}
+                </a>
+              ) : (
+                dataset?.metadata.source
+              )}
             </p>
           </div>
           <div>
