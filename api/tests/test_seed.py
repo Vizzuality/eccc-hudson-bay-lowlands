@@ -490,3 +490,129 @@ def test_seed_endpoint_null_dataset_id_returns_422(client):
     assert response.status_code == 422
 
 
+# =============================================================================
+# delete_first flag
+# =============================================================================
+
+
+def _seed_stray_rows(db_session) -> None:
+    """Insert a stray category/dataset/layer that is NOT in MINIMAL_METADATA."""
+    stray_category = Category(id=999, metadata_={"title": {"en": "Stray", "fr": "Vagabond"}})
+    db_session.add(stray_category)
+    db_session.flush()
+
+    stray_dataset = Dataset(
+        id=999,
+        metadata_={"title": {"en": "Stray Dataset", "fr": "Jeu Vagabond"}},
+        category_id=stray_category.id,
+    )
+    db_session.add(stray_dataset)
+    db_session.flush()
+
+    stray_layer = Layer(
+        id="stray_layer",
+        format_="raster",
+        path="/data/stray.tif",
+        metadata_={"title": {"en": "Stray Layer", "fr": "Couche Vagabonde"}},
+        dataset_id=stray_dataset.id,
+    )
+    db_session.add(stray_layer)
+    db_session.flush()
+
+
+def test_seed_default_does_not_wipe(db_session):
+    """Without delete_first, pre-existing rows that are not in the payload are preserved."""
+    _seed_stray_rows(db_session)
+
+    counts = seed_database(db_session, payload=MINIMAL_METADATA)
+    db_session.flush()
+
+    # Stray rows still present.
+    assert db_session.execute(select(Category).where(Category.id == 999)).scalar_one_or_none() is not None
+    assert db_session.execute(select(Dataset).where(Dataset.id == 999)).scalar_one_or_none() is not None
+    assert db_session.execute(select(Layer).where(Layer.id == "stray_layer")).scalar_one_or_none() is not None
+
+    # Payload rows applied on top.
+    assert db_session.execute(select(Category).where(Category.id == 1)).scalar_one_or_none() is not None
+    assert counts["deleted"] is False
+
+
+def test_seed_delete_first_removes_existing_rows(db_session):
+    """delete_first=True removes rows not present in the payload before upserting."""
+    _seed_stray_rows(db_session)
+
+    counts = seed_database(db_session, payload=MINIMAL_METADATA, delete_first=True)
+    db_session.flush()
+
+    # Stray rows are gone.
+    assert db_session.execute(select(Category).where(Category.id == 999)).scalar_one_or_none() is None
+    assert db_session.execute(select(Dataset).where(Dataset.id == 999)).scalar_one_or_none() is None
+    assert db_session.execute(select(Layer).where(Layer.id == "stray_layer")).scalar_one_or_none() is None
+
+    # Payload rows are fully present.
+    assert db_session.execute(select(func.count(Category.id))).scalar() == 1
+    assert db_session.execute(select(func.count(Dataset.id))).scalar() == 1
+    assert db_session.execute(select(func.count(Layer.id))).scalar() == 3
+
+    # Counts reflect a fresh insert (no updates) and surface the deleted flag.
+    assert counts["deleted"] is True
+    assert counts["categories"]["created"] == 1
+    assert counts["categories"]["updated"] == 0
+    assert counts["datasets"]["created"] == 1
+    assert counts["datasets"]["updated"] == 0
+    assert counts["layers"]["created"] == 3
+    assert counts["layers"]["updated"] == 0
+
+
+def test_seed_delete_first_on_empty_db(db_session):
+    """delete_first=True against an empty DB seeds normally."""
+    counts = seed_database(db_session, payload=MINIMAL_METADATA, delete_first=True)
+    db_session.flush()
+
+    assert counts["deleted"] is True
+    assert counts["categories"]["created"] == 1
+    assert counts["datasets"]["created"] == 1
+    assert counts["layers"]["created"] == 3
+    assert db_session.execute(select(func.count(Category.id))).scalar() == 1
+    assert db_session.execute(select(func.count(Dataset.id))).scalar() == 1
+    assert db_session.execute(select(func.count(Layer.id))).scalar() == 3
+
+
+def test_seed_delete_first_false_matches_default(db_session):
+    """Explicitly passing delete_first=False behaves identically to omitting it."""
+    _seed_stray_rows(db_session)
+
+    counts = seed_database(db_session, payload=MINIMAL_METADATA, delete_first=False)
+    db_session.flush()
+
+    # Stray rows still present (same as default behaviour).
+    assert db_session.execute(select(Category).where(Category.id == 999)).scalar_one_or_none() is not None
+    assert db_session.execute(select(Dataset).where(Dataset.id == 999)).scalar_one_or_none() is not None
+    assert db_session.execute(select(Layer).where(Layer.id == "stray_layer")).scalar_one_or_none() is not None
+    assert counts["deleted"] is False
+
+
+def test_seed_endpoint_delete_first_query_param(client, db_session):
+    """POST /seed?delete_first=true wipes existing rows then applies the payload."""
+    import os
+
+    _seed_stray_rows(db_session)
+
+    seed_secret = os.environ["SEED_SECRET"]
+    response = client.post(
+        "/seed?delete_first=true",
+        json=MINIMAL_METADATA,
+        headers={"X-Seed-Secret": seed_secret},
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "success"
+    assert data["counts"]["deleted"] is True
+    assert data["counts"]["categories"]["created"] == 1
+    assert data["counts"]["datasets"]["created"] == 1
+    assert data["counts"]["layers"]["created"] == 3
+
+    # Stray rows are gone after the endpoint commits.
+    assert db_session.execute(select(Category).where(Category.id == 999)).scalar_one_or_none() is None
+    assert db_session.execute(select(Dataset).where(Dataset.id == 999)).scalar_one_or_none() is None
+    assert db_session.execute(select(Layer).where(Layer.id == "stray_layer")).scalar_one_or_none() is None
