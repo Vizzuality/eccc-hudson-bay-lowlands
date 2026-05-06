@@ -12,11 +12,11 @@ from services.seed import seed_database
 MINIMAL_METADATA = {
     "categories": [
         {
-            "id": None,
+            "id": 1,
             "metadata": {"title": {"en": "Test Category", "fr": "Categorie Test"}},
             "datasets": [
                 {
-                    "id": None,
+                    "id": 1,
                     "metadata": {
                         "title": {"en": "Test Dataset", "fr": "Jeu de donnees Test"},
                         "description": {"en": "Desc en", "fr": "Desc fr"},
@@ -383,3 +383,110 @@ def test_seed_layer_without_config(db_session):
 
     cat_layer = db_session.execute(select(Layer).where(Layer.path == "data/test/layer_c.tif")).scalar_one()
     assert cat_layer.config is None
+
+
+# =============================================================================
+# Explicit ID Honoring
+# =============================================================================
+
+
+def test_seed_honors_explicit_category_id(db_session):
+    """The explicit integer id in the payload is used as the category PK on create."""
+    seed_database(db_session, payload=MINIMAL_METADATA)
+    db_session.flush()
+
+    category = db_session.execute(select(Category)).scalar_one()
+    assert category.id == 1
+
+
+def test_seed_honors_explicit_dataset_id(db_session):
+    """The explicit integer id in the payload is used as the dataset PK on create."""
+    seed_database(db_session, payload=MINIMAL_METADATA)
+    db_session.flush()
+
+    dataset = db_session.execute(select(Dataset)).scalar_one()
+    assert dataset.id == 1
+
+
+def test_seed_endpoint_missing_category_id_returns_422(client):
+    """POST /seed with a category payload missing `id` returns 422."""
+    import os
+
+    seed_secret = os.environ["SEED_SECRET"]
+    payload = {
+        "categories": [
+            {
+                "metadata": {"title": {"en": "No ID Category", "fr": "Categorie Sans ID"}},
+                "datasets": [],
+            }
+        ]
+    }
+    response = client.post("/seed", json=payload, headers={"X-Seed-Secret": seed_secret})
+    assert response.status_code == 422
+
+
+def test_seed_endpoint_null_category_id_returns_422(client):
+    """POST /seed with a null category id returns 422."""
+    import os
+
+    seed_secret = os.environ["SEED_SECRET"]
+    payload = {
+        "categories": [
+            {
+                "id": None,
+                "metadata": {"title": {"en": "Null ID Category", "fr": "Categorie ID Null"}},
+                "datasets": [],
+            }
+        ]
+    }
+    response = client.post("/seed", json=payload, headers={"X-Seed-Secret": seed_secret})
+    assert response.status_code == 422
+
+
+def test_seed_endpoint_missing_dataset_id_returns_422(client):
+    """POST /seed with a dataset payload missing `id` returns 422."""
+    import os
+
+    seed_secret = os.environ["SEED_SECRET"]
+    payload = {
+        "categories": [
+            {
+                "id": 99,
+                "metadata": {"title": {"en": "Cat", "fr": "Cat"}},
+                "datasets": [
+                    {
+                        "metadata": {"title": {"en": "Dataset", "fr": "Jeu"}},
+                        "layers": [],
+                    }
+                ],
+            }
+        ]
+    }
+    response = client.post("/seed", json=payload, headers={"X-Seed-Secret": seed_secret})
+    assert response.status_code == 422
+
+
+def test_seed_endpoint_null_dataset_id_returns_422(client):
+    """POST /seed with a null dataset id returns 422."""
+    import os
+
+    seed_secret = os.environ["SEED_SECRET"]
+    payload = {
+        "categories": [
+            {
+                "id": 99,
+                "metadata": {"title": {"en": "Cat", "fr": "Cat"}},
+                "datasets": [
+                    {
+                        "id": None,
+                        "metadata": {"title": {"en": "Dataset", "fr": "Jeu"}},
+                        "layers": [],
+                    }
+                ],
+            }
+        ]
+    }
+    response = client.post("/seed", json=payload, headers={"X-Seed-Secret": seed_secret})
+    assert response.status_code == 422
+
+
