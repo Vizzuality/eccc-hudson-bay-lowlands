@@ -20,7 +20,11 @@ export const LegendItemToolbar: React.FC<LegendItemToolbarProps> = ({
   const { visibility = true } = settings || {};
 
   return (
-    <div id="legend-toolbar" className="mt-0.5 flex divide-x">
+    <div
+      id="legend-toolbar"
+      data-download-exclude
+      className="mt-0.5 flex divide-x"
+    >
       <div className="flex gap-2">
         {settingsManager?.visibility && (
           <div className="flex items-start">

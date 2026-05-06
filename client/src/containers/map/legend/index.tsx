@@ -39,11 +39,12 @@ function MapLegend({
       ref={ref}
       open={open}
       onOpenChange={setOpen}
+      data-map-legend
       className={cn("absolute left-0 bottom-0", {
         hidden: !isChildren,
       })}
     >
-      <CollapsibleTrigger asChild>
+      <CollapsibleTrigger asChild data-download-exclude>
         <Button
           type="button"
           variant="secondary"
@@ -57,8 +58,11 @@ function MapLegend({
           <span className="block group-data-[state=open]:hidden">legend</span>
         </Button>
       </CollapsibleTrigger>
-      <CollapsibleContent className="w-[280px] rounded-tr-4xl bg-background text-foreground">
-        {isChildren && open && (
+      <CollapsibleContent
+        forceMount
+        className="w-[280px] rounded-tr-4xl bg-background text-foreground data-[state=closed]:h-0 data-[state=closed]:opacity-0"
+      >
+        {isChildren && (
           <div className="max-h-[500px] overflow-y-auto">
             <div className="bg-popover text-popover-foreground flex h-full flex-col">
               {!!sortable.enabled && !!onChangeOrder && (
