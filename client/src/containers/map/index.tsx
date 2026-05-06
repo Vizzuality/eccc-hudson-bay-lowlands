@@ -18,6 +18,7 @@ import {
 } from "@/containers/map/constants";
 import { Controls } from "@/containers/map/controls";
 import MapDownload from "@/containers/map/controls/download";
+import DownloadWatermark from "@/containers/map/controls/download/watermark";
 import SettingsControl from "@/containers/map/controls/settings";
 import { BasemapControl } from "@/containers/map/controls/settings/basemap";
 import ZoomControl from "@/containers/map/controls/zoom";
@@ -84,6 +85,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
 
   return (
     <div ref={containerRef} className={cn("relative h-full w-full", className)}>
+      <DownloadWatermark />
       <MapBoxMap
         ref={mapRef}
         mapboxAccessToken={env.NEXT_PUBLIC_MAPBOX_API_TOKEN}

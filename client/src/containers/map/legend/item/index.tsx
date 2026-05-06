@@ -66,6 +66,7 @@ const MapLegendItem: FC<MapLegendItemProps> = ({
             >
               {sortable?.handle && (
                 <button
+                  data-download-exclude
                   aria-label={t("drag")}
                   type="button"
                   className="text-navy-700 hover:text-navy-700/50 mt-0.5 cursor-pointer transition-colors"
