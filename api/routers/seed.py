@@ -4,7 +4,7 @@ import hmac
 import logging
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Header, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from config import get_settings
@@ -28,7 +28,11 @@ def verify_seed_secret(x_seed_secret: Annotated[str, Header(description="Secret 
 @router.post(
     "",
     summary="Seed the database",
-    description="Populate the database from a JSON payload. Requires X-Seed-Secret header. Idempotent.",
+    description=(
+        "Populate the database from a JSON payload. Requires X-Seed-Secret header. "
+        "Idempotent by default (upserts categories/datasets/layers). Pass "
+        "`delete_first=true` to wipe categories/datasets/layers before applying the payload."
+    ),
     responses={
         200: {"description": "Database seeded successfully"},
         500: {"description": "Seed failed"},
@@ -38,10 +42,16 @@ def run_seed(
     payload: SeedPayload,
     db: Annotated[Session, Depends(get_db)],
     _secret: Annotated[str, Depends(verify_seed_secret)],
+    delete_first: Annotated[
+        bool,
+        Query(
+            description=("If true, wipe categories/datasets/layers before applying the metadata. Use to reset state."),
+        ),
+    ] = False,
 ):
     """Seed the database with the provided metadata payload."""
     try:
-        counts = seed_database(db, payload=payload.to_dict())
+        counts = seed_database(db, payload=payload.to_dict(), delete_first=delete_first)
         db.commit()
         return {"status": "success", "counts": counts}
     except Exception:
