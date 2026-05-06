@@ -4,7 +4,7 @@ import json
 import logging
 from pathlib import Path
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from models import Category, Dataset, Layer
@@ -128,24 +128,44 @@ def _seed_dataset(session: Session, ds_data: dict, category_id: int, counts: dic
         _record_upsert(counts, "layers", is_new)
 
 
+def _wipe_seeded_tables(session: Session) -> None:
+    """Delete all rows from layers, datasets, and categories.
+
+    Order matters because of FK constraints: layers → datasets → categories.
+    """
+    session.execute(delete(Layer))
+    session.execute(delete(Dataset))
+    session.execute(delete(Category))
+    session.flush()
+    logger.info("Wiped categories/datasets/layers before seeding")
+
+
 def seed_database(
     session: Session,
     metadata_path: Path | str | None = None,
     payload: dict | None = None,
+    delete_first: bool = False,
 ) -> dict:
     """Seed the database from metadata.json or a provided payload dict.
 
     Provide either metadata_path (file) or payload (dict). If both are given,
     payload takes precedence. If neither is given, the default file path is used.
 
+    When ``delete_first`` is True, all rows in ``layers``, ``datasets``, and
+    ``categories`` are deleted before the upsert loop runs.
+
     Does NOT commit — the caller is responsible for committing or rolling back.
 
     Returns:
-        Summary dict with counts of created/updated records.
+        Summary dict with counts of created/updated records and a ``deleted`` flag.
     """
     data = _load_seed_data(metadata_path, payload)
 
+    if delete_first:
+        _wipe_seeded_tables(session)
+
     counts = {
+        "deleted": delete_first,
         "categories": {"created": 0, "updated": 0},
         "datasets": {"created": 0, "updated": 0},
         "layers": {"created": 0, "updated": 0},
