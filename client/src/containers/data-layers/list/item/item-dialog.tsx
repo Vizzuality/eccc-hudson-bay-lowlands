@@ -30,30 +30,33 @@ const DataLayersListItemDialog = ({
           <DialogDescription>{dataset?.metadata.description}</DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
-          <div>
-            <h3 className="text-2xs font-bold uppercase">{t("source")}</h3>
-            <p className="text-xs text-muted-foreground">
-              {dataset?.metadata.source &&
-              /^https?:\/\//.test(dataset.metadata.source) ? (
-                <a
-                  href={dataset.metadata.source}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline hover:text-foreground"
-                >
-                  {dataset.metadata.source}
-                </a>
-              ) : (
-                dataset?.metadata.source
-              )}
-            </p>
-          </div>
-          <div>
-            <h3 className="text-2xs font-bold uppercase">{t("citation")}</h3>
-            <p className="text-xs text-muted-foreground">
-              {dataset?.metadata.citation}
-            </p>
-          </div>
+          {dataset?.metadata.source && (
+            <div>
+              <h3 className="text-2xs font-bold uppercase">{t("source")}</h3>
+              <p className="text-xs text-muted-foreground">
+                {/^https?:\/\//.test(dataset.metadata.source) ? (
+                  <a
+                    href={dataset.metadata.source}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-foreground"
+                  >
+                    {dataset.metadata.source}
+                  </a>
+                ) : (
+                  dataset.metadata.source
+                )}
+              </p>
+            </div>
+          )}
+          {dataset?.metadata.citation && (
+            <div>
+              <h3 className="text-2xs font-bold uppercase">{t("citation")}</h3>
+              <p className="text-xs text-muted-foreground">
+                {dataset.metadata.citation}
+              </p>
+            </div>
+          )}
         </div>
         <DialogFooter className="sm:justify-center">
           <Button onClick={() => onOpenChange(false)}>{t("ok")}</Button>
