@@ -1,7 +1,7 @@
 {
   "categories": [
     {
-      "id": null,
+      "id": 1,
       "metadata": {
         "title": {
           "en": "Environment",
@@ -10,7 +10,7 @@
       },
       "datasets": [
         {
-          "id": null,
+          "id": 1,
           "metadata": {
             "title": {
               "en": "Peat & Carbon",
@@ -202,7 +202,7 @@
           ]
         },
         {
-          "id": null,
+          "id": 2,
           "metadata": {
             "title": {
               "en": "Dynamic Surface Water",
@@ -413,7 +413,7 @@
           ]
         },
         {
-          "id": null,
+          "id": 3,
           "metadata": {
             "title": {
               "en": "Flood Susceptibility Index",
@@ -525,7 +525,7 @@
           ]
         },
         {
-          "id": null,
+          "id": 4,
           "metadata": {
             "title": {
               "en": "Annual 30 m snow dynamics (2018-2019 to 2023-2024)",
@@ -1376,7 +1376,7 @@
           ]
         },
         {
-          "id": null,
+          "id": 5,
           "metadata": {
             "title": {
               "en": "Treed Area (1984-2022)",
@@ -1505,7 +1505,7 @@
           ]
         },
         {
-          "id": null,
+          "id": 6,
           "metadata": {
             "title": {
               "en": "Ecosystem Classification",
@@ -1754,7 +1754,7 @@
           ]
         },
         {
-          "id": null,
+          "id": 7,
           "metadata": {
             "title": {
               "en": "Ecological Framework",
@@ -2011,7 +2011,7 @@
       ]
     },
     {
-      "id": null,
+      "id": 2,
       "metadata": {
         "title": {
           "en": "Indigenous Value",
@@ -2020,7 +2020,7 @@
       },
       "datasets": [
         {
-          "id": null,
+          "id": 8,
           "metadata": {
             "title": {
               "en": "Indigenous Territories",
@@ -2230,7 +2230,7 @@
       ]
     },
     {
-      "id": null,
+      "id": 3,
       "metadata": {
         "title": {
           "en": "Human Pressures",
@@ -2239,7 +2239,7 @@
       },
       "datasets": [
         {
-          "id": null,
+          "id": 9,
           "metadata": {
             "title": {
               "en": "Mining Claims",
