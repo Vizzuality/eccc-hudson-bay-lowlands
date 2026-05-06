@@ -2,15 +2,13 @@ import { TreesIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
-import type {
-  TreeCoverChangeStats,
-  WidgetLayer,
-} from "@/containers/analysis/types";
+import type { TreeCoverChangeStats } from "@/containers/analysis/types";
 import DonutChart from "@/containers/charts/donut-chart";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
 import type { WidgetCardBaseProps } from "@/containers/widgets/types";
 import { useApiTranslation } from "@/i18n/api-translation";
+import type { Layer } from "@/types";
 
 const mockData = [
   {
@@ -37,7 +35,7 @@ const mockData = [
 
 interface TreeCoverChangeProps extends WidgetCardBaseProps {
   stats: TreeCoverChangeStats;
-  layers: WidgetLayer[];
+  layers: Layer[];
 }
 
 const TreeCoverChange: FC<TreeCoverChangeProps> = ({ id, stats, layers }) => {

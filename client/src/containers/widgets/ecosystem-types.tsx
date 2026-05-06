@@ -2,15 +2,13 @@ import { GlobeIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
-import type {
-  EcosystemTypesStats,
-  WidgetLayer,
-} from "@/containers/analysis/types";
+import type { EcosystemTypesStats } from "@/containers/analysis/types";
 import TreeMap from "@/containers/charts/tree-map";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
 import type { WidgetCardBaseProps } from "@/containers/widgets/types";
 import { useApiTranslation } from "@/i18n/api-translation";
+import type { Layer } from "@/types";
 
 const mockData = [
   {
@@ -51,7 +49,7 @@ const chartConfig = {
 
 interface EcosystemTypesProps extends WidgetCardBaseProps {
   stats: EcosystemTypesStats;
-  layers: WidgetLayer[];
+  layers: Layer[];
 }
 
 const EcosystemTypes: FC<EcosystemTypesProps> = ({ id, stats, layers }) => {

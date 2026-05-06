@@ -101,8 +101,8 @@ const WidgetCard: FC<WidgetCardProps> = ({
                   className={cn(
                     "shrink-0 outline-none transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50",
                     {
-                      "size-8 rounded-full flex items-center justify-center hover:bg-secondary group-hover:text-accent cursor-pointer": true,
-                      "bg-primary text-primary-foreground group-hover:bg-primary hover:bg-primary":
+                      "size-8 rounded-full flex items-center justify-center hover:bg-secondary hover:text-accent cursor-pointer": true,
+                      "bg-primary text-primary-foreground hover:bg-primary":
                         isLayerSelected,
                     },
                   )}

@@ -20,7 +20,7 @@ const Widget: FC<WidgetProps> = ({ id, data }) => {
           id={id}
           stats={data[id].stats}
           chart={data[id].chart}
-          layers={data[id].layers}
+          layers={data[id].dataset.layers ?? []}
         />
       );
     case "water_dynamics":
@@ -29,7 +29,7 @@ const Widget: FC<WidgetProps> = ({ id, data }) => {
           id={id}
           unit={data[id].unit}
           stats={data[id].stats}
-          layers={data[id].layers}
+          layers={data[id].dataset.layers ?? []}
         />
       );
     case "flood_susceptibility":
@@ -37,19 +37,23 @@ const Widget: FC<WidgetProps> = ({ id, data }) => {
         <FloodSusceptibility
           id={id}
           stats={data[id].stats}
-          layers={data[id].layers}
+          layers={data[id].dataset.layers ?? []}
         />
       );
     case "snow_dynamics":
       return (
-        <SnowDynamics id={id} stats={data[id].stats} layers={data[id].layers} />
+        <SnowDynamics
+          id={id}
+          stats={data[id].stats}
+          layers={data[id].dataset.layers ?? []}
+        />
       );
     case "tree_cover_change":
       return (
         <TreeCoverChange
           id={id}
           stats={data[id].stats}
-          layers={data[id].layers}
+          layers={data[id].dataset.layers ?? []}
         />
       );
     case "ecosystem_types":
@@ -57,7 +61,7 @@ const Widget: FC<WidgetProps> = ({ id, data }) => {
         <EcosystemTypes
           id={id}
           stats={data[id].stats}
-          layers={data[id].layers}
+          layers={data[id].dataset.layers ?? []}
         />
       );
     default:

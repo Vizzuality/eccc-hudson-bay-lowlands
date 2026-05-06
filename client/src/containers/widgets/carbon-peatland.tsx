@@ -5,17 +5,17 @@ import RichText from "@/components/ui/rich-text";
 import type {
   PeatCarbonStats,
   TimeSeriesDataPoint,
-  WidgetLayer,
 } from "@/containers/analysis/types";
 import VerticalBarChart from "@/containers/charts/vertical-bar-chart";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
 import type { WidgetCardBaseProps } from "@/containers/widgets/types";
+import type { Layer } from "@/types";
 
 interface CarbonPeatlandProps extends WidgetCardBaseProps {
   stats: PeatCarbonStats;
   chart: Record<string, TimeSeriesDataPoint[]>;
-  layers: WidgetLayer[];
+  layers: Layer[];
 }
 
 const CarbonPeatland: FC<CarbonPeatlandProps> = ({

@@ -2,15 +2,13 @@ import { SnowflakeIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
-import type {
-  SnowDynamicsStats,
-  WidgetLayer,
-} from "@/containers/analysis/types";
+import type { SnowDynamicsStats } from "@/containers/analysis/types";
 import LineChart from "@/containers/charts/line-chart";
 import Highlight from "@/containers/highlight";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
 import type { WidgetCardBaseProps } from "@/containers/widgets/types";
+import type { Layer } from "@/types";
 
 const mockData = [
   { x: 2021, y: 10 },
@@ -40,7 +38,7 @@ const Description = ({ stats }: { stats: SnowDynamicsStats }) => {
 
 interface SnowDynamicsProps extends WidgetCardBaseProps {
   stats: SnowDynamicsStats;
-  layers: WidgetLayer[];
+  layers: Layer[];
 }
 
 const SnowDynamics: FC<SnowDynamicsProps> = ({ id, stats, layers }) => {
