@@ -2,12 +2,15 @@
 
 from schemas.category import (
     CategorySchema,
+    CategorySeedInput,
     CategoryWithDatasetsAndLayersSchema,
     CategoryWithDatasetsSchema,
     PaginatedCategoryResponse,
+    SeedPayload,
 )
 from schemas.dataset import (
     DatasetSchema,
+    DatasetSeedInput,
     DatasetWithLayersSchema,
     PaginatedDatasetResponse,
     PaginatedDatasetWithLayersResponse,
@@ -18,10 +21,12 @@ from schemas.layer import LayerSchema, PaginatedLayerResponse
 __all__ = [
     "CategoryMetadata",
     "CategorySchema",
+    "CategorySeedInput",
     "CategoryWithDatasetsAndLayersSchema",
     "CategoryWithDatasetsSchema",
     "DatasetMetadata",
     "DatasetSchema",
+    "DatasetSeedInput",
     "DatasetWithLayersSchema",
     "I18nText",
     "LayerCategory",
@@ -31,4 +36,5 @@ __all__ = [
     "PaginatedDatasetResponse",
     "PaginatedDatasetWithLayersResponse",
     "PaginatedLayerResponse",
+    "SeedPayload",
 ]

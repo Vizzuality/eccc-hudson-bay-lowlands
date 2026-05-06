@@ -1,8 +1,10 @@
 """Pydantic schemas for Category responses."""
 
-from pydantic import BaseModel, Field
+from typing import Any
 
-from schemas.dataset import DatasetSchema, DatasetWithLayersSchema
+from pydantic import BaseModel, ConfigDict, Field
+
+from schemas.dataset import DatasetSchema, DatasetSeedInput, DatasetWithLayersSchema
 from schemas.i18n import CategoryMetadata
 
 _CATEGORY_ID_DESC = "Unique category identifier"
@@ -71,3 +73,25 @@ class PaginatedCategoryResponse(BaseModel):
 
     data: list[CategorySchema] = Field(description="List of categories for the current page")
     total: int = Field(description="Total number of categories matching the query")
+
+
+class CategorySeedInput(BaseModel):
+    """Seed payload schema for a single category. Requires an explicit integer id."""
+
+    model_config = ConfigDict(extra="allow")
+
+    id: int = Field(description="Explicit integer id for the category (required, deterministic across re-seeds)")
+    metadata: CategoryMetadata = Field(description=_CATEGORY_METADATA_DESC)
+    datasets: list[DatasetSeedInput] = Field(default_factory=list, description="Datasets belonging to this category")
+
+
+class SeedPayload(BaseModel):
+    """Top-level payload schema for the /seed endpoint."""
+
+    model_config = ConfigDict(extra="allow")
+
+    categories: list[CategorySeedInput] = Field(description="Categories with their datasets and layers")
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to a dict that the seed service consumes (preserves unknown fields like layers)."""
+        return self.model_dump(mode="python", by_alias=True)

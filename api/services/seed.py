@@ -22,41 +22,39 @@ def normalize_empty_string(value: str | None) -> str | None:
 
 
 def upsert_category(session: Session, category_data: dict) -> tuple[Category, bool]:
-    """Find or create a category by English title. Returns (category, is_new)."""
-    en_title = category_data["metadata"]["title"]["en"]
-    stmt = select(Category).where(Category.metadata_["title"]["en"].as_string() == en_title)
+    """Find or create a category by explicit id. Returns (category, is_new)."""
+    category_id = category_data["id"]
+    stmt = select(Category).where(Category.id == category_id)
     existing = session.execute(stmt).scalar_one_or_none()
 
     if existing:
         existing.metadata_ = category_data["metadata"]
-        logger.info("Updated category: %s", en_title)
+        logger.info("Updated category: %s", category_id)
         return existing, False
 
-    new_category = Category(metadata_=category_data["metadata"])
+    new_category = Category(id=category_id, metadata_=category_data["metadata"])
     session.add(new_category)
     session.flush()
-    logger.info("Created category: %s", en_title)
+    logger.info("Created category: %s", category_id)
     return new_category, True
 
 
 def upsert_dataset(session: Session, dataset_data: dict, category_id: int) -> tuple[Dataset, bool]:
-    """Find or create a dataset by English title within a category. Returns (dataset, is_new)."""
-    en_title = dataset_data["metadata"]["title"]["en"]
-    stmt = select(Dataset).where(
-        Dataset.metadata_["title"]["en"].as_string() == en_title,
-        Dataset.category_id == category_id,
-    )
+    """Find or create a dataset by explicit id. Returns (dataset, is_new)."""
+    dataset_id = dataset_data["id"]
+    stmt = select(Dataset).where(Dataset.id == dataset_id)
     existing = session.execute(stmt).scalar_one_or_none()
 
     if existing:
         existing.metadata_ = dataset_data["metadata"]
-        logger.info("  Updated dataset: %s", en_title)
+        existing.category_id = category_id
+        logger.info("  Updated dataset: %s", dataset_id)
         return existing, False
 
-    new_dataset = Dataset(metadata_=dataset_data["metadata"], category_id=category_id)
+    new_dataset = Dataset(id=dataset_id, metadata_=dataset_data["metadata"], category_id=category_id)
     session.add(new_dataset)
     session.flush()
-    logger.info("  Created dataset: %s", en_title)
+    logger.info("  Created dataset: %s", dataset_id)
     return new_dataset, True
 
 

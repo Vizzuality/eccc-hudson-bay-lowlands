@@ -1,6 +1,6 @@
 """Pydantic schemas for Dataset responses."""
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from schemas.i18n import DatasetMetadata
 from schemas.layer import LayerSchema
@@ -78,3 +78,16 @@ class PaginatedDatasetWithLayersResponse(BaseModel):
 
     data: list[DatasetWithLayersSchema] = Field(description="List of datasets with their layers")
     total: int = Field(description="Total number of datasets matching the query")
+
+
+class DatasetSeedInput(BaseModel):
+    """Seed payload schema for a single dataset. Requires an explicit integer id.
+
+    Layers (and other fields) are passed through as-is via ``extra="allow"`` and
+    consumed downstream by the seed service as raw dicts.
+    """
+
+    model_config = ConfigDict(extra="allow")
+
+    id: int = Field(description="Explicit integer id for the dataset (required, deterministic across re-seeds)")
+    metadata: DatasetMetadata = Field(description=_DATASET_METADATA_DESC)
