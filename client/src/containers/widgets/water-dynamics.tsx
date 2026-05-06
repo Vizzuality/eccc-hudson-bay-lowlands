@@ -2,16 +2,14 @@ import { DropletsIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
-import type {
-  WaterDynamicsStats,
-  WidgetLayer,
-} from "@/containers/analysis/types";
+import type { WaterDynamicsStats } from "@/containers/analysis/types";
 import DonutChart from "@/containers/charts/donut-chart";
 import Highlight from "@/containers/highlight";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
 import type { WidgetCardBaseProps } from "@/containers/widgets/types";
 import { useApiTranslation } from "@/i18n/api-translation";
+import type { Layer } from "@/types";
 
 const mockData = [
   {
@@ -33,7 +31,7 @@ const mockData = [
 interface WaterDynamicsProps extends WidgetCardBaseProps {
   unit: string;
   stats: WaterDynamicsStats;
-  layers: WidgetLayer[];
+  layers: Layer[];
 }
 
 const WaterDynamics: FC<WaterDynamicsProps> = ({ id, unit, stats, layers }) => {

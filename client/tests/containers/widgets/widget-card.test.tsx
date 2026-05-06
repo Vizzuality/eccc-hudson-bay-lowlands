@@ -5,9 +5,9 @@ import type { ComponentProps } from "react";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { useLayerIds } from "@/app/[locale]/url-store";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import type { WidgetLayer } from "@/containers/analysis/types";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
 import messages from "@/i18n/messages/en.json";
+import { LAYERS } from "@/tests/helpers/mocks";
 
 vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
   const actual =
@@ -37,11 +37,6 @@ const renderWidgetCard = (
       </TooltipProvider>
     </NextIntlClientProvider>,
   );
-
-const testLayers: WidgetLayer[] = [
-  { id: "new-layer-a", path: "/a", title: { en: "A", fr: "A" } },
-  { id: "new-layer-b", path: "/b", title: { en: "B", fr: "B" } },
-];
 
 describe("@containers/widgets/card", () => {
   let setLayerIdsMock: ReturnType<typeof vi.fn>;
@@ -108,27 +103,23 @@ describe("@containers/widgets/card", () => {
     const user = userEvent.setup();
     const onAddToMapButtonClick = vi.fn();
 
-    renderWidgetCard({ layers: testLayers, onAddToMapButtonClick });
+    renderWidgetCard({ layers: LAYERS, onAddToMapButtonClick });
 
     await user.click(screen.getByRole("button", { name: /add to map/i }));
 
     expect(onAddToMapButtonClick).not.toHaveBeenCalled();
-    expect(setLayerIdsMock).toHaveBeenCalledWith([
-      "base-layer",
-      "new-layer-a",
-      "new-layer-b",
-    ]);
+    expect(setLayerIdsMock).toHaveBeenCalledWith(["base-layer", "10", "20"]);
   });
 
   it("removes widget layer ids from the map when any of them are active", async () => {
     const user = userEvent.setup();
     const onAddToMapButtonClick = vi.fn();
     (useLayerIds as Mock).mockReturnValue({
-      layerIds: ["base-layer", "new-layer-a", "new-layer-b", "other"],
+      layerIds: ["base-layer", "10", "20", "other"],
       setLayerIds: setLayerIdsMock,
     });
 
-    renderWidgetCard({ layers: testLayers, onAddToMapButtonClick });
+    renderWidgetCard({ layers: LAYERS, onAddToMapButtonClick });
 
     await user.click(screen.getByRole("button", { name: /add to map/i }));
 

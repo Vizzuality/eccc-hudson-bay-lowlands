@@ -1,4 +1,4 @@
-import type { Translatable } from "@/types";
+import type { Dataset, Translatable } from "@/types";
 
 export interface TimeSeriesDataPoint {
   x: number;
@@ -11,12 +11,6 @@ export interface CategoricalDataPoint {
   value: number;
 }
 
-export interface WidgetLayer {
-  id: string;
-  path: string;
-  title: Translatable;
-}
-
 export interface WidgetData<
   TChart extends TimeSeriesDataPoint | CategoricalDataPoint,
   TStats,
@@ -24,7 +18,7 @@ export interface WidgetData<
   unit: string;
   chart: Record<string, TChart[]>;
   stats: TStats;
-  layers: WidgetLayer[];
+  dataset: Dataset;
 }
 export interface PeatCarbonStats {
   peat_depth_avg: number;
