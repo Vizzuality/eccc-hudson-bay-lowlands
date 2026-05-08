@@ -26,6 +26,7 @@ import { LayerManager } from "@/containers/map/layer-manager";
 import { useLayerZoomConstraints } from "@/containers/map/layer-manager/use-layer-zoom-constraints";
 import MapLegend from "@/containers/map/legend";
 import MapLegendItem from "@/containers/map/legend/item";
+import MapTooltip from "@/containers/map/tooltip";
 import { env } from "@/env";
 import { cn } from "@/lib/utils";
 
@@ -116,6 +117,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
         {loaded && (
           <>
             <LayerManager />
+            <MapTooltip />
             {children}
           </>
         )}
