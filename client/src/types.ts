@@ -54,6 +54,12 @@ export interface LegendItem {
   color: string;
   label: Translatable;
 }
+export interface InteractionConfig {
+  keys: string[];
+  type: "feature-value" | "feature-detail" | "feature-properties";
+  event: "click";
+}
+
 export interface LayerConfig {
   colormap: [number, string][] | Record<string, string>;
   styles: LayerProps[];
@@ -65,6 +71,7 @@ export interface LayerConfig {
     type: "gradient" | "basic";
     items: LegendItem[];
   };
+  interaction_config?: InteractionConfig;
 }
 
 export interface Layer {

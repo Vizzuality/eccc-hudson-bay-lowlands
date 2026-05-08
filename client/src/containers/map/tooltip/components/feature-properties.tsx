@@ -1,9 +1,15 @@
 import type { FC } from "react";
 
-const FeaturePropertiesTooltip: FC = () => {
+interface FeaturePropertiesTooltipProps {
+  properties: Record<string, unknown>;
+}
+
+const FeaturePropertiesTooltip: FC<FeaturePropertiesTooltipProps> = ({
+  properties,
+}) => {
   return (
     <div>
-      <h3>Feature Properties</h3>
+      <pre>{JSON.stringify(properties, null, 2)}</pre>
     </div>
   );
 };
