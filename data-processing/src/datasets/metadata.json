@@ -1793,6 +1793,16 @@
               "config": {
                 "styles": [
                   {
+                    "id": "ecozones-fill",
+                    "type": "fill",
+                    "paint": {
+                      "fill-color": "#000000",
+                      "fill-opacity": 0.01
+                    },
+                    "source-layer": "ecozones-49opvn"
+                  },
+                  {
+                    "id": "ecozones-line",
                     "type": "line",
                     "paint": {
                       "line-color": "#6e6e6e",
@@ -1850,6 +1860,16 @@
               "config": {
                 "styles": [
                   {
+                    "id": "ecoprovinces-fill",
+                    "type": "fill",
+                    "paint": {
+                      "fill-color": "#000000",
+                      "fill-opacity": 0.01
+                    },
+                    "source-layer": "ecoprovinces-dq7frf"
+                  },
+                  {
+                    "id": "ecoprovinces-line",
                     "type": "line",
                     "paint": {
                       "line-color": "#6e6e6e",
@@ -1909,6 +1929,16 @@
               "config": {
                 "styles": [
                   {
+                    "id": "ecoregions-fill",
+                    "type": "fill",
+                    "paint": {
+                      "fill-color": "#000000",
+                      "fill-opacity": 0.01
+                    },
+                    "source-layer": "ecoregions-3tft44"
+                  },
+                  {
+                    "id": "ecoregions-line",
                     "type": "line",
                     "paint": {
                       "line-color": "#6e6e6e",
@@ -1966,6 +1996,16 @@
               "config": {
                 "styles": [
                   {
+                    "id": "ecodistricts-fill",
+                    "type": "fill",
+                    "paint": {
+                      "fill-color": "#000000",
+                      "fill-opacity": 0.01
+                    },
+                    "source-layer": "ecodistricts-d4x3uv"
+                  },
+                  {
+                    "id": "ecodistricts-line",
                     "type": "line",
                     "paint": {
                       "line-color": "#535445",
@@ -2060,6 +2100,7 @@
                 "colormap": null,
                 "styles": [
                   {
+                    "id": "indigenous-territories-fill",
                     "type": "fill",
                     "source-layer": "4pgB_next_nld_terr_prod_source_layer",
                     "filter": [
@@ -2278,6 +2319,7 @@
               "config": {
                 "styles": [
                   {
+                    "id": "mining-land-tenure-fill",
                     "type": "fill",
                     "paint": {
                       "fill-color": "rgba(8, 95, 217, 0.5)",
@@ -2341,6 +2383,7 @@
               "config": {
                 "styles": [
                   {
+                    "id": "non-mining-land-tenure-fill",
                     "type": "fill",
                     "paint": {
                       "fill-color": "#8c8c8c",
@@ -2398,6 +2441,16 @@
               "config": {
                 "styles": [
                   {
+                    "id": "operational-cell-claims-fill",
+                    "type": "fill",
+                    "paint": {
+                      "fill-color": "#000000",
+                      "fill-opacity": 0.01
+                    },
+                    "source-layer": "Operational_Cell_Claims"
+                  },
+                  {
+                    "id": "operational-cell-claims-line",
                     "type": "line",
                     "paint": {
                       "line-color": "#f4984e",
@@ -2465,6 +2518,7 @@
               "config": {
                 "styles": [
                   {
+                    "id": "operational-alienations-fill",
                     "type": "fill",
                     "paint": {
                       "fill-color": "rgba(225, 14, 78, 0.52)",
@@ -2522,6 +2576,7 @@
               "config": {
                 "styles": [
                   {
+                    "id": "plans-permits-fill",
                     "type": "fill",
                     "paint": {
                       "fill-color": "rgba(116, 163, 36, 0.5)",
