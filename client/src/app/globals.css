@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "mapbox-gl/dist/mapbox-gl.css";
+@import "mapbox-gl/dist/mapbox-gl.css" layer(mapbox);
 
 @custom-variant dark (&:is(.dark *));
 
@@ -140,5 +140,10 @@
 
   .mapboxgl-ctrl-bottom-left {
     transform: translateX(40vw);
+  }
+
+  .mapboxgl-popup-content {
+    border-radius: var(--radius-2xl);
+    padding: 0;
   }
 }
