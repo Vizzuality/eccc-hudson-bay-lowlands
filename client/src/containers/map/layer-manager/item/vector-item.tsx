@@ -23,14 +23,12 @@ const VectorLayerManagerItem = ({
 
   return (
     <RMSource id={`${id}-source`} key={`${id}-source`} {...source}>
-      {styles.map((style) => (
-        <RMLayer
-          key={`${id}-layer`}
-          id={id.toString()}
-          beforeId={beforeId}
-          {...style}
-        />
-      ))}
+      {styles.map((style, i) => {
+        const styleId = style.id ?? (i === 0 ? id.toString() : `${id}-${i}`);
+        return (
+          <RMLayer {...style} key={styleId} id={styleId} beforeId={beforeId} />
+        );
+      })}
     </RMSource>
   );
 };
