@@ -439,6 +439,16 @@ TREED_AREA_DATASET_METADATA = {
     "citation": {"en": "Hermosilla et al., 2025.", "fr": "Hermosilla et al., 2025."},
 }
 
+ECOSYSTEM_CLASSIFICATION_DATASET_METADATA = {
+    "title": {"en": "Ecosystem Classification", "fr": "Classification des Écosystèmes"},
+    "description": {
+        "en": "Twelve-class ecosystem classification across the Hudson Bay Lowlands.",
+        "fr": "Classification des écosystèmes en douze classes dans les basses terres de la baie d'Hudson.",
+    },
+    "source": {"en": "ECCC", "fr": "ECCC"},
+    "citation": {"en": "ECCC, 2025.", "fr": "ECCC, 2025."},
+}
+
 # Per-winter pixel values used by the snow_dynamics test fixture.
 # - lengthT means vary per winter so the chart series exercises distinct values.
 # - endL pixel value is fixed at 100 across all winters; the date_offset op then
@@ -478,6 +488,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
       - dataset 3 (Flood Susceptibility):  flood_susceptibility_cog
       - dataset 4 (Snow Dynamics):         endL_winter_*_cog (×6), lengthT_winter_*_cog (×6)
       - dataset 5 (Treed Area):            treed_area_1984-2022_cog
+      - dataset 6 (Ecosystem Classification): ecosystem_classification_cog
 
     Pixel-value choices and what they exercise:
       - peat_cog:                  uniform 200.0 (float32) — mean/max/histogram path
@@ -492,6 +503,10 @@ def analysis_client(db_session, tmp_path, monkeypatch):
       - treed_area_1984-2022_cog:  four equal-sized quadrants with pixel values 0/1/2/3 — the
                                    test polygon is centred so each quadrant covers exactly ¼
                                    of it, exercising frac_area + stat_sum + stat_diff ops.
+      - ecosystem_classification_cog: four quadrants with pixel values 2 / 8 / 8 / 12 — the
+                                   centred polygon gets 25% treed, 50% bog, 25% water, so the
+                                   variety op returns 3 distinct classes, the majority op
+                                   returns class 8 (bog), and frac_of_stat resolves to 50%.
     """
     import numpy as np
     import rasterio
@@ -508,6 +523,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
     inundation_trends_path = str(tmp_path / "inundation_trends_cog.tif")
     flood_susc_path = str(tmp_path / "flood_susceptibility_cog.tif")
     treed_area_path = str(tmp_path / "treed_area_1984-2022_cog.tif")
+    ecosystem_path = str(tmp_path / "ecosystem_classification_cog.tif")
     snow_lengtht_paths = {
         suffix: str(tmp_path / f"lengthT_winter_{suffix}_cog.tif")
         for suffix in SNOW_LENGTHT_VALUES
@@ -568,18 +584,35 @@ def analysis_client(db_session, tmp_path, monkeypatch):
     with rasterio.open(treed_area_path, "w", **treed_profile) as dst:
         dst.write(treed_data)
 
+    # ecosystem_classification uses the same quadrant layout as treed_area, but with three
+    # class ids (2, 8, 12) arranged so the centred polygon picks up:
+    #   25% class 2  (treed)
+    #   50% class 8  (bog)     — dominant
+    #   25% class 12 (water)
+    # This exercises variety = 3, majority = 8, and frac_of_stat[majority] = 0.5.
+    ecosystem_data = np.zeros((1, 256, 256), dtype="uint8")
+    ecosystem_data[0, :128, :128] = 2
+    ecosystem_data[0, :128, 128:] = 8
+    ecosystem_data[0, 128:, :128] = 8
+    ecosystem_data[0, 128:, 128:] = 12
+    with rasterio.open(ecosystem_path, "w", **treed_profile) as dst:
+        dst.write(ecosystem_data)
+
     db_category = Category(metadata_={"title": {"en": "Environment", "fr": "Environnement"}})
     db_session.add(db_category)
     db_session.flush()
 
     # Explicit IDs match WIDGET_CONFIG: peat_carbon→1, water_dynamics→2,
-    # flood_susceptibility→3, snow_dynamics→4, treed_area→5.
+    # flood_susceptibility→3, snow_dynamics→4, treed_area→5, ecosystem_classification→6.
     peat_carbon_ds = Dataset(id=1, metadata_=PEAT_CARBON_DATASET_METADATA, category_id=db_category.id)
     water_dynamics_ds = Dataset(id=2, metadata_=WATER_DYNAMICS_DATASET_METADATA, category_id=db_category.id)
     flood_susc_ds = Dataset(id=3, metadata_=FLOOD_SUSCEPTIBILITY_DATASET_METADATA, category_id=db_category.id)
     snow_dynamics_ds = Dataset(id=4, metadata_=SNOW_DYNAMICS_DATASET_METADATA, category_id=db_category.id)
     treed_area_ds = Dataset(id=5, metadata_=TREED_AREA_DATASET_METADATA, category_id=db_category.id)
-    db_session.add_all([peat_carbon_ds, water_dynamics_ds, flood_susc_ds, snow_dynamics_ds, treed_area_ds])
+    ecosystem_ds = Dataset(id=6, metadata_=ECOSYSTEM_CLASSIFICATION_DATASET_METADATA, category_id=db_category.id)
+    db_session.add_all([
+        peat_carbon_ds, water_dynamics_ds, flood_susc_ds, snow_dynamics_ds, treed_area_ds, ecosystem_ds,
+    ])
     db_session.flush()
 
     snow_layers = []
@@ -659,6 +692,14 @@ def analysis_client(db_session, tmp_path, monkeypatch):
             unit="category",
             metadata_={"title": {"en": "Treed Area (1984–2022)", "fr": "Zone Arborée (1984–2022)"}},
             dataset_id=treed_area_ds.id,
+        ),
+        Layer(
+            id="ecosystem_classification_cog",
+            format_="raster",
+            path=ecosystem_path,
+            unit="category",
+            metadata_={"title": {"en": "Ecosystem Classification", "fr": "Classification des Écosystèmes"}},
+            dataset_id=ecosystem_ds.id,
         ),
         *snow_layers,
     ])

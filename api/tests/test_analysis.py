@@ -3,6 +3,7 @@
 import pytest
 
 from tests.conftest import (
+    ECOSYSTEM_CLASSIFICATION_DATASET_METADATA,
     FLOOD_SUSCEPTIBILITY_DATASET_METADATA,
     PEAT_CARBON_DATASET_METADATA,
     SNOW_DYNAMICS_DATASET_METADATA,
@@ -1003,3 +1004,156 @@ def test_treed_area_dataset_layer_full_schema(analysis_client):
     assert entry["dataset_id"] == dataset["id"]
     assert entry["metadata"]["title"] == {"en": "Treed Area (1984–2022)", "fr": "Zone Arborée (1984–2022)"}
     assert entry["path"].endswith("treed_area_1984-2022_cog.tif")
+
+
+# =============================================================================
+# Integration — ecosystem_classification widget output
+#
+# The fixture creates a uint8 GeoTIFF (``ecosystem_classification_cog``) with
+# four equal-area quadrants holding pixel values 2 / 8 / 8 / 12. The standard
+# test polygon is centred on the raster, so:
+#   - frac(2)  = 0.25  → eco_treed_perc       = 25 %
+#   - frac(8)  = 0.50  → eco_bog_perc         = 50 %   (dominant)
+#   - frac(12) = 0.25  → eco_water_perc       = 25 %
+#   - variety              = 3                → ecosystem_count
+#   - majority             = 8                → dominant_ecosystem
+#   - frac_of_stat[majority] = 0.5 × 100      = 50 %   → dominant_ecosystem_perc
+# All other ``eco_<class>_perc`` stats are 0 because no other class is present.
+# =============================================================================
+
+ECO_PRESENT_CLASSES = {"eco_treed_perc": 25.0, "eco_bog_perc": 50.0, "eco_water_perc": 25.0}
+ECO_ALL_PERC_KEYS = [
+    "eco_temperate_perc",
+    "eco_treed_perc",
+    "eco_grassland_perc",
+    "eco_fire_perc",
+    "eco_graminoid_perc",
+    "eco_shrub_perc",
+    "eco_emergent_perc",
+    "eco_bog_perc",
+    "eco_mudflats_perc",
+    "eco_coastal_perc",
+    "eco_marine_perc",
+    "eco_water_perc",
+]
+
+
+def test_analysis_response_contains_ecosystem_classification_widget(analysis_client):
+    data = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()
+    assert "ecosystem_classification" in data
+
+
+def test_ecosystem_classification_unit_is_percent(analysis_client):
+    data = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()
+    assert data["ecosystem_classification"]["unit"] == "%"
+
+
+def test_ecosystem_classification_stats_contains_all_fields(analysis_client):
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["ecosystem_classification"]["stats"]
+    expected = set(ECO_ALL_PERC_KEYS) | {"ecosystem_count", "dominant_ecosystem", "dominant_ecosystem_perc"}
+    assert set(stats.keys()) == expected
+
+
+def test_ecosystem_classification_present_percentages_match_quadrant_layout(analysis_client):
+    """The three classes present in the polygon get the expected coverage percentages."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["ecosystem_classification"]["stats"]
+    for key, expected in ECO_PRESENT_CLASSES.items():
+        assert stats[key] == pytest.approx(expected, abs=0.5)
+
+
+def test_ecosystem_classification_absent_classes_are_zero(analysis_client):
+    """Classes not present in the raster all return 0 %."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["ecosystem_classification"]["stats"]
+    for key in ECO_ALL_PERC_KEYS:
+        if key not in ECO_PRESENT_CLASSES:
+            assert stats[key] == pytest.approx(0.0, abs=0.01)
+
+
+def test_ecosystem_classification_percentages_sum_to_100(analysis_client):
+    """The twelve class percentages partition the polygon — they must sum to 100 %."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["ecosystem_classification"]["stats"]
+    total = sum(stats[k] for k in ECO_ALL_PERC_KEYS)
+    assert total == pytest.approx(100.0, abs=0.01)
+
+
+def test_ecosystem_count_matches_distinct_class_count(analysis_client):
+    """The polygon hits three distinct classes (2, 8, 12) → variety = 3."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["ecosystem_classification"]["stats"]
+    assert stats["ecosystem_count"] == 3
+
+
+def test_dominant_ecosystem_is_class_eight(analysis_client):
+    """Class 8 (bog) covers 50 % of the polygon → majority op returns 8."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["ecosystem_classification"]["stats"]
+    assert stats["dominant_ecosystem"] == 8
+
+
+def test_dominant_ecosystem_perc_matches_majority_class(analysis_client):
+    """frac_of_stat resolves the dominant class id back to its coverage fraction."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["ecosystem_classification"]["stats"]
+    assert stats["dominant_ecosystem_perc"] == pytest.approx(50.0, abs=0.5)
+
+
+def test_dominant_ecosystem_perc_equals_corresponding_class_perc(analysis_client):
+    """The dominant-class percentage must equal the per-class percentage for that class."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["ecosystem_classification"]["stats"]
+    assert stats["dominant_ecosystem_perc"] == pytest.approx(stats["eco_bog_perc"], abs=0.01)
+
+
+def test_ecosystem_classification_chart_keyed_by_layer_id(analysis_client):
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["ecosystem_classification"]["chart"]
+    assert "ecosystem_classification_cog" in chart
+
+
+def test_ecosystem_classification_chart_has_twelve_categorical_slices(analysis_client):
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["ecosystem_classification"]["chart"]
+    slices = chart["ecosystem_classification_cog"]
+    assert isinstance(slices, list)
+    assert len(slices) == 12
+    assert [s["key"] for s in slices] == ECO_ALL_PERC_KEYS
+
+
+def test_ecosystem_classification_chart_slice_has_categorical_shape(analysis_client):
+    """Each slice must match CategoricalDataPoint = { key, value }."""
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["ecosystem_classification"]["chart"]
+    for s in chart["ecosystem_classification_cog"]:
+        assert set(s.keys()) == {"key", "value"}
+
+
+def test_ecosystem_classification_chart_slice_values_match_stats(analysis_client):
+    """Slice values are sourced from the already-computed stats dict."""
+    data = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["ecosystem_classification"]
+    stats, slices = data["stats"], data["chart"]["ecosystem_classification_cog"]
+    by_key = {s["key"]: s["value"] for s in slices}
+    for key in ECO_ALL_PERC_KEYS:
+        assert by_key[key] == stats[key]
+
+
+def test_ecosystem_classification_dataset_id_matches_widget_config(analysis_client):
+    """``dataset.id`` matches the WIDGET_CONFIG dataset_id for ecosystem_classification (6)."""
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["ecosystem_classification"]["dataset"]
+    assert dataset["id"] == 6
+
+
+def test_ecosystem_classification_dataset_metadata_round_trips(analysis_client):
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["ecosystem_classification"]["dataset"]
+    assert dataset["metadata"] == ECOSYSTEM_CLASSIFICATION_DATASET_METADATA
+
+
+def test_ecosystem_classification_dataset_has_one_layer(analysis_client):
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["ecosystem_classification"]["dataset"]
+    assert [entry["id"] for entry in dataset["layers"]] == ["ecosystem_classification_cog"]
+
+
+def test_ecosystem_classification_dataset_layer_full_schema(analysis_client):
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["ecosystem_classification"]["dataset"]
+    entry = dataset["layers"][0]
+    assert entry["id"] == "ecosystem_classification_cog"
+    assert entry["format"] == "raster"
+    assert entry["unit"] == "category"
+    assert entry["dataset_id"] == dataset["id"]
+    assert entry["metadata"]["title"] == {
+        "en": "Ecosystem Classification",
+        "fr": "Classification des Écosystèmes",
+    }
+    assert entry["path"].endswith("ecosystem_classification_cog.tif")
