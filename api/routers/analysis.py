@@ -60,8 +60,8 @@ def analyze(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> Ana
 
     try:
         result = compute_zonal_stats(geom, datasets, settings.s3_bucket_name, polygon_area_km2)
-    except rasterio.errors.RasterioIOError as e:
-        logger.error("Failed to read raster data: %s", e)
+    except rasterio.errors.RasterioIOError:
+        logger.exception("Failed to read raster data")
         raise HTTPException(status_code=500, detail="Analysis is unavailable")
     return AnalysisResponse(
         peat_carbon=result["peat_carbon"],
