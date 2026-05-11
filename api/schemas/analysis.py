@@ -186,6 +186,40 @@ class TreedAreaWidget(BaseModel):
     stats: TreedAreaStats
 
 
+class EcosystemClassificationStats(BaseModel):
+    """Ecosystem classification mix.
+
+    Twelve ``eco_<class>_perc`` fields hold per-class coverage percentages.
+    ``ecosystem_count`` is the number of distinct classes present in the polygon
+    (``variety`` op). ``dominant_ecosystem`` is the class id of the most-covered
+    class (``majority`` op), and ``dominant_ecosystem_perc`` is that class's
+    coverage percentage (derived from ``frac_of_stat``).
+    """
+
+    eco_temperate_perc: float
+    eco_treed_perc: float
+    eco_grassland_perc: float
+    eco_fire_perc: float
+    eco_graminoid_perc: float
+    eco_shrub_perc: float
+    eco_emergent_perc: float
+    eco_bog_perc: float
+    eco_mudflats_perc: float
+    eco_coastal_perc: float
+    eco_marine_perc: float
+    eco_water_perc: float
+    ecosystem_count: float
+    dominant_ecosystem: float
+    dominant_ecosystem_perc: float
+
+
+class EcosystemClassificationWidget(BaseModel):
+    unit: str
+    dataset: DatasetWithLayersSchema
+    chart: dict[str, list[CategoricalDataPoint]]  # keyed by layer id: ecosystem_classification_cog
+    stats: EcosystemClassificationStats
+
+
 class AnalysisResponse(BaseModel):
     """Full analysis result returned after geometry validation and zonal stats computation."""
 
@@ -194,3 +228,4 @@ class AnalysisResponse(BaseModel):
     flood_susceptibility: FloodSusceptibilityWidget
     snow_dynamics: SnowDynamicsWidget
     treed_area: TreedAreaWidget
+    ecosystem_classification: EcosystemClassificationWidget
