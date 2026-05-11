@@ -2483,8 +2483,8 @@
                   "type": "basic",
                   "items": [
                     {
-                      "fill-color": "rgba(8, 95, 217, 0.5)",
-                      "fill-outline-color": "#085FD9",
+                      "fill-color": "rgba(0, 0, 0, 0.01)",
+                      "fill-outline-color": "#f4984e",
                       "label": {
                         "en": "Operational Cell Claims",
                         "fr": "Concessions Cellules Opérationnelles"
