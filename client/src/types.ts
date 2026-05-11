@@ -51,7 +51,11 @@ export interface LayerCategory {
 
 export interface LegendItem {
   value: number;
-  color: string;
+  color: string | null;
+  "fill-color"?: string;
+  "fill-outline-color"?: string;
+  "line-dasharray"?: [number, number];
+  "line-width"?: number;
   label: Translatable;
 }
 export interface InteractionConfig {
