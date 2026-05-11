@@ -33,6 +33,8 @@ test_engine = create_engine(
 
 TestingSessionLocal = sessionmaker(bind=test_engine, autocommit=False, autoflush=False)
 
+RASTER_CRS = "EPSG:4326"
+
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_test_database():
@@ -366,7 +368,7 @@ def minimal_cog(tmp_path):
         "width": 256,
         "height": 256,
         "count": 1,
-        "crs": "EPSG:4326",
+        "crs": RASTER_CRS,
         "transform": transform,
         "tiled": True,
         "blockxsize": 256,
@@ -535,7 +537,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
             "width": 256,
             "height": 256,
             "count": 1,
-            "crs": "EPSG:4326",
+            "crs": RASTER_CRS,
             "transform": transform,
         }
         with rasterio.open(path, "w", **profile) as dst:
@@ -560,7 +562,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
         "width": 256,
         "height": 256,
         "count": 1,
-        "crs": "EPSG:4326",
+        "crs": RASTER_CRS,
         "transform": transform,
     }
     with rasterio.open(treed_area_path, "w", **treed_profile) as dst:
