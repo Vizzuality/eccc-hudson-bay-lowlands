@@ -40,14 +40,21 @@ Stat definition fields:
   - name:       key in the response stats dict
   - op:         operation driving this stat. Built-ins:
                   - any exactextract op ("mean", "max", "sum", ...) — read directly
-                  - "frac_sum"  + ``values: [v1, v2, ...]``  — sum coverage fractions for those pixel values
+                  - "frac_sum"   + ``values: [v1, v2, ...]`` — sum coverage fractions for those pixel values
                   - "frac_range" + ``range: [lo, hi]``       — sum coverage fractions for closed range [lo, hi]
+                  - "frac_area"  + ``values: [v1, v2, ...]`` — area (km²) = ``frac_sum × polygon_area_km2``.
+                                                                Overview-safe (uses the polygon's projected
+                                                                area, not a per-pixel constant).
                   - "date_offset" + ``base_year: int``       — interpret ``mean`` op result as
-                                                               days from Dec 31 of base_year and
-                                                               return an ISO ``YYYY-MM-DD`` string
-  - values:     list of pixel values (frac_sum only)
+                                                                days from Dec 31 of base_year and
+                                                                return an ISO ``YYYY-MM-DD`` string
+                  - "stat_sum"   + ``terms: [name, ...]``    — sum of already-computed stats. Referenced
+                                                                stats must appear earlier in ``stats``.
+                  - "stat_diff"  + ``terms: [a, b, ...]``    — first term minus the sum of the rest.
+  - values:     list of pixel values (frac_sum, frac_area)
   - range:      [lo, hi] inclusive (frac_range only)
   - base_year:  Dec 31 anchor year (date_offset only)
+  - terms:      list of already-computed stat names (stat_sum, stat_diff)
   - scale:      multiplier applied to the op result (default 1.0; numeric ops only)
   - precision:  decimal places to round to (default 2; numeric ops only)
   - unit:       documentation only — the runtime unit comes from the widget's ``unit_layer``
@@ -189,6 +196,52 @@ WIDGET_CONFIG: dict[str, WidgetDef] = {
             "lengthT_winter_2324_cog": {
                 "ops": ["mean"],
                 "stats": [{"name": "lengthT_mean_2324", "op": "mean", "unit": "days", "precision": 1}],
+            },
+        },
+    },
+    "treed_area": {
+        # Categorical raster (0=non-treed, 1=always-treed, 2=newly-treed, 3=was-treed)
+        # at 30 m / EPSG:3978. Stats are a mix of areas (km²) and percentages.
+        # Widget-level unit is "km²" because the four primary stats are areas; the
+        # four percentage stats document their unit on the stat definition itself.
+        "dataset_id": 5,
+        "unit": "km²",
+        "layers": {
+            "treed_area_1984-2022_cog": {
+                "ops": ["frac", "unique"],
+                "chart": {
+                    "type": "categorical",
+                    "slices": [
+                        {"stat": "non_treed_perc"},
+                        {"stat": "always_treed_perc"},
+                        {"stat": "newly_treed_perc"},
+                        {"stat": "was_treed_perc"},
+                    ],
+                },
+                # Order matters: the stat_sum / stat_diff compositions below reference the
+                # four ``*_area`` stats above, so those must be computed first.
+                "stats": [
+                    {"name": "non_treed_area", "op": "frac_area", "values": [0], "precision": 2},
+                    {"name": "always_treed_area", "op": "frac_area", "values": [1], "precision": 2},
+                    {"name": "newly_treed_area", "op": "frac_area", "values": [2], "precision": 2},
+                    {"name": "was_treed_area", "op": "frac_area", "values": [3], "precision": 2},
+                    {
+                        "name": "total_treed_area",
+                        "op": "stat_sum",
+                        "terms": ["always_treed_area", "newly_treed_area"],
+                        "precision": 2,
+                    },
+                    {
+                        "name": "changed_treed_area",
+                        "op": "stat_diff",
+                        "terms": ["newly_treed_area", "was_treed_area"],
+                        "precision": 2,
+                    },
+                    {"name": "non_treed_perc", "op": "frac_sum", "values": [0], "scale": 100, "precision": 2},
+                    {"name": "always_treed_perc", "op": "frac_sum", "values": [1], "scale": 100, "precision": 2},
+                    {"name": "newly_treed_perc", "op": "frac_sum", "values": [2], "scale": 100, "precision": 2},
+                    {"name": "was_treed_perc", "op": "frac_sum", "values": [3], "scale": 100, "precision": 2},
+                ],
             },
         },
     },

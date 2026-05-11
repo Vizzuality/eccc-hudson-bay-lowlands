@@ -159,6 +159,33 @@ class SnowDynamicsWidget(BaseModel):
     stats: SnowDynamicsStats
 
 
+class TreedAreaStats(BaseModel):
+    """Treed-area dynamics over 1984–2022.
+
+    The four ``*_area`` fields are km² values derived from coverage fractions × polygon
+    area; the four ``*_perc`` fields are percentages of polygon coverage per class.
+    ``total_treed_area`` and ``changed_treed_area`` are derived compositions.
+    """
+
+    non_treed_area: float
+    always_treed_area: float
+    newly_treed_area: float
+    was_treed_area: float
+    total_treed_area: float
+    changed_treed_area: float
+    non_treed_perc: float
+    always_treed_perc: float
+    newly_treed_perc: float
+    was_treed_perc: float
+
+
+class TreedAreaWidget(BaseModel):
+    unit: str
+    dataset: DatasetWithLayersSchema
+    chart: dict[str, list[CategoricalDataPoint]]  # keyed by layer id: treed_area_1984-2022_cog
+    stats: TreedAreaStats
+
+
 class AnalysisResponse(BaseModel):
     """Full analysis result returned after geometry validation and zonal stats computation."""
 
@@ -166,3 +193,4 @@ class AnalysisResponse(BaseModel):
     water_dynamics: WaterDynamicsWidget
     flood_susceptibility: FloodSusceptibilityWidget
     snow_dynamics: SnowDynamicsWidget
+    treed_area: TreedAreaWidget

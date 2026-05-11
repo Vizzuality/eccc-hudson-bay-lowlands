@@ -40,7 +40,7 @@ def _extract_geometry(geojson):
     return shape(geojson.geometry.model_dump())
 
 
-def validate_geometry(geojson) -> None:
+def validate_geometry(geojson) -> tuple:
     """Run the full five-step validation pipeline for an analysis geometry.
 
     Steps
@@ -50,6 +50,11 @@ def validate_geometry(geojson) -> None:
     3. Minimum area — projected area must be ≥ MIN_AREA_KM2.
     4. Maximum area — projected area must be ≤ MAX_AREA_KM2.
     5. Geographic scope — geometry must intersect HBL_BBOX.
+
+    Returns a ``(geom, area_km2)`` tuple where ``geom`` is the EPSG:4326 Shapely
+    geometry and ``area_km2`` is its area projected to EPSG:6933 (Cylindrical
+    Equal Area). Downstream zonal-stats code reuses ``area_km2`` to derive
+    per-class areas from coverage fractions without recomputing the projection.
 
     Raises ``HTTPException(422)`` at the first failing step.
     All steps are logged; failures are logged at WARNING level.
@@ -116,4 +121,4 @@ def validate_geometry(geojson) -> None:
     logger.info("Step 5 passed — geometry intersects the HBL study area")
 
     logger.info("Geometry validation complete [area=%.2f km²]", area_km2)
-    return geom
+    return geom, area_km2

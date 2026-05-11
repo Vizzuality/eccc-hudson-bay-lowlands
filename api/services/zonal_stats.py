@@ -116,16 +116,28 @@ def _build_frac_dict(result: dict) -> dict[float, float]:
     return dict(zip(unique, frac))
 
 
-def _compute_stat(result: dict, stat_def: dict) -> float | str:
+def _compute_stat(
+    result: dict,
+    stat_def: dict,
+    polygon_area_km2: float,
+    stats: dict[str, float | str],
+) -> float | str:
     """Compute a single stat value from exactextract output, applying scale and precision.
 
     Supported ``op`` values:
       - any exactextract op key present in ``result`` ("mean", "max", "sum", ...) — read directly
       - ``frac_sum``  + ``values: [v1, v2, ...]``  — sum coverage fractions for those pixel values
       - ``frac_range`` + ``range: [lo, hi]``       — sum coverage fractions for closed range [lo, hi]
+      - ``frac_area`` + ``values: [v1, v2, ...]``  — area (km²) covered by those pixel values,
+        computed as ``frac_sum × polygon_area_km2``. Overview-safe because it scales the
+        coverage fraction by the polygon's projected area rather than a per-pixel constant.
       - ``date_offset`` + ``base_year: int``        — interpret the ``mean`` op result as a
         day offset from Dec 31 of ``base_year`` and return an ISO ``YYYY-MM-DD`` string.
         Returns ``""`` when the mean is missing or non-finite.
+      - ``stat_sum``  + ``terms: [name, ...]``      — sum of already-computed stats.
+      - ``stat_diff`` + ``terms: [a, b, ...]``      — first term minus the sum of the rest.
+        Both composition ops depend on their referenced stats appearing earlier in the
+        layer's ``stats`` list so they're already in ``stats``.
     """
     op = stat_def["op"]
 
@@ -143,6 +155,14 @@ def _compute_stat(result: dict, stat_def: dict) -> float | str:
         fracs = _build_frac_dict(result)
         lo, hi = stat_def["range"]
         raw = sum(fracs.get(v, 0.0) for v in range(lo, hi + 1))
+    elif op == "frac_area":
+        fracs = _build_frac_dict(result)
+        raw = sum(fracs.get(v, 0.0) for v in stat_def["values"]) * polygon_area_km2
+    elif op == "stat_sum":
+        raw = sum(float(stats[t]) for t in stat_def["terms"])
+    elif op == "stat_diff":
+        first, *rest = stat_def["terms"]
+        raw = float(stats[first]) - sum(float(stats[t]) for t in rest)
     else:
         raw = result.get(op, 0)
 
@@ -194,16 +214,18 @@ def _build_widget(
     layer_results: dict[str, dict],
     dataset,
     layers_by_id: dict[str, Any],
+    polygon_area_km2: float,
 ) -> dict:
     """Build a widget response dict driven entirely by WIDGET_CONFIG.
 
     Parameters
     ----------
-    widget_id:      key in WIDGET_CONFIG (e.g. "peat_carbon")
-    layer_results:  exactextract outputs keyed by layer id
-    dataset:        ORM Dataset (with ``layers`` eager-loaded) referenced by the widget
-    layers_by_id:   flat ``{layer_id: Layer}`` lookup across all datasets; used to
-                    resolve the widget's display unit when ``unit_layer`` is set
+    widget_id:         key in WIDGET_CONFIG (e.g. "peat_carbon")
+    layer_results:     exactextract outputs keyed by layer id
+    dataset:           ORM Dataset (with ``layers`` eager-loaded) referenced by the widget
+    layers_by_id:      flat ``{layer_id: Layer}`` lookup across all datasets; used to
+                       resolve the widget's display unit when ``unit_layer`` is set
+    polygon_area_km2:  polygon area in km² (EPSG:6933), needed by ``frac_area`` stats
 
     Returns
     -------
@@ -217,7 +239,7 @@ def _build_widget(
         result = layer_results.get(layer_id, {})
 
         for stat_def in layer_cfg["stats"]:
-            stats[stat_def["name"]] = _compute_stat(result, stat_def)
+            stats[stat_def["name"]] = _compute_stat(result, stat_def, polygon_area_km2, stats)
 
         chart_cfg = layer_cfg.get("chart")
         if chart_cfg:
@@ -245,14 +267,16 @@ def _build_widget(
 # Public entry point
 # ─────────────────────────────────────────────────────────────────────────────
 
-def compute_zonal_stats(geom_4326, datasets, bucket: str) -> dict:
+def compute_zonal_stats(geom_4326, datasets, bucket: str, polygon_area_km2: float) -> dict:
     """Compute all widget statistics for a validated polygon.
 
     Parameters
     ----------
-    geom_4326:   Shapely geometry in EPSG:4326 (returned by validate_geometry)
-    datasets:    Sequence of ORM Dataset rows with ``layers`` eager-loaded
-    bucket:      S3 bucket name used to resolve full raster URIs
+    geom_4326:         Shapely geometry in EPSG:4326 (returned by validate_geometry)
+    datasets:          Sequence of ORM Dataset rows with ``layers`` eager-loaded
+    bucket:            S3 bucket name used to resolve full raster URIs
+    polygon_area_km2:  Polygon area in km² (EPSG:6933, returned by validate_geometry).
+                       Used by ``frac_area`` stats to convert coverage fractions to areas.
 
     Returns
     -------
@@ -282,6 +306,6 @@ def compute_zonal_stats(geom_4326, datasets, bucket: str) -> dict:
             logger.info("Processing layer '%s' for widget '%s'", layer_id, widget_id)
             layer_results[layer_id] = _run_exact_extract(uri, geom_4326, layer_cfg["ops"])
 
-        results[widget_id] = _build_widget(widget_id, layer_results, dataset, layers_by_id)
+        results[widget_id] = _build_widget(widget_id, layer_results, dataset, layers_by_id, polygon_area_km2)
 
     return results

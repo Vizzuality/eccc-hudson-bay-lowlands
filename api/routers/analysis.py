@@ -46,7 +46,7 @@ def analyze(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> Ana
     logger.info("POST /analysis received")
 
     # Validate geometry first — returns 422 before checking infra config.
-    geom = validate_geometry(body)
+    geom, polygon_area_km2 = validate_geometry(body)
 
     settings = get_settings()
     if not settings.s3_bucket_name:
@@ -59,7 +59,7 @@ def analyze(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> Ana
     logger.info("Retrieved %d datasets", len(datasets))
 
     try:
-        result = compute_zonal_stats(geom, datasets, settings.s3_bucket_name)
+        result = compute_zonal_stats(geom, datasets, settings.s3_bucket_name, polygon_area_km2)
     except rasterio.errors.RasterioIOError as e:
         logger.error("Failed to read raster data: %s", e)
         raise HTTPException(status_code=500, detail="Analysis is unavailable")
@@ -68,4 +68,5 @@ def analyze(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> Ana
         water_dynamics=result["water_dynamics"],
         flood_susceptibility=result["flood_susceptibility"],
         snow_dynamics=result["snow_dynamics"],
+        treed_area=result["treed_area"],
     )
