@@ -156,6 +156,8 @@ def _compute_stat(
         lo, hi = stat_def["range"]
         raw = sum(fracs.get(v, 0.0) for v in range(lo, hi + 1))
     elif op == "frac_area":
+        # polygon_area_km2 is EPSG:6933 but frac is in the raster's CRS — only exact when
+        # the raster is equal-area. ~1% off in EPSG:3978 (HBL); don't use with Web Mercator.
         fracs = _build_frac_dict(result)
         raw = sum(fracs.get(v, 0.0) for v in stat_def["values"]) * polygon_area_km2
     elif op == "stat_sum":
