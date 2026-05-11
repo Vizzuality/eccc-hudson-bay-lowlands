@@ -138,6 +138,9 @@ def _compute_stat(
       - ``stat_diff`` + ``terms: [a, b, ...]``      — first term minus the sum of the rest.
         Both composition ops depend on their referenced stats appearing earlier in the
         layer's ``stats`` list so they're already in ``stats``.
+      - ``frac_of_stat`` + ``stat: name``           — coverage fraction of the pixel value
+        held in the named, already-computed stat (e.g. the ``majority`` stat). Used to derive
+        "% of the dominant class" without hardcoding the class id.
     """
     op = stat_def["op"]
 
@@ -160,6 +163,9 @@ def _compute_stat(
         # the raster is equal-area. ~1% off in EPSG:3978 (HBL); don't use with Web Mercator.
         fracs = _build_frac_dict(result)
         raw = sum(fracs.get(v, 0.0) for v in stat_def["values"]) * polygon_area_km2
+    elif op == "frac_of_stat":
+        fracs = _build_frac_dict(result)
+        raw = fracs.get(stats[stat_def["stat"]], 0.0)
     elif op == "stat_sum":
         raw = sum(float(stats[t]) for t in stat_def["terms"])
     elif op == "stat_diff":

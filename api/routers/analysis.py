@@ -69,4 +69,5 @@ def analyze(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> Ana
         flood_susceptibility=result["flood_susceptibility"],
         snow_dynamics=result["snow_dynamics"],
         treed_area=result["treed_area"],
+        ecosystem_classification=result["ecosystem_classification"],
     )

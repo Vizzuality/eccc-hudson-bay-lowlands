@@ -51,10 +51,16 @@ Stat definition fields:
                   - "stat_sum"   + ``terms: [name, ...]``    — sum of already-computed stats. Referenced
                                                                 stats must appear earlier in ``stats``.
                   - "stat_diff"  + ``terms: [a, b, ...]``    — first term minus the sum of the rest.
+                  - "frac_of_stat" + ``stat: name``          — coverage fraction of the pixel value held
+                                                                in the named, already-computed stat (e.g.
+                                                                the ``majority`` stat). Used to derive
+                                                                "% of dominant class" without hardcoding
+                                                                the class id.
   - values:     list of pixel values (frac_sum, frac_area)
   - range:      [lo, hi] inclusive (frac_range only)
   - base_year:  Dec 31 anchor year (date_offset only)
   - terms:      list of already-computed stat names (stat_sum, stat_diff)
+  - stat:       name of an already-computed stat (frac_of_stat only)
   - scale:      multiplier applied to the op result (default 1.0; numeric ops only)
   - precision:  decimal places to round to (default 2; numeric ops only)
   - unit:       documentation only — the runtime unit comes from the widget's ``unit_layer``
@@ -241,6 +247,65 @@ WIDGET_CONFIG: dict[str, WidgetDef] = {
                     {"name": "always_treed_perc", "op": "frac_sum", "values": [1], "scale": 100, "precision": 2},
                     {"name": "newly_treed_perc", "op": "frac_sum", "values": [2], "scale": 100, "precision": 2},
                     {"name": "was_treed_perc", "op": "frac_sum", "values": [3], "scale": 100, "precision": 2},
+                ],
+            },
+        },
+    },
+    "ecosystem_classification": {
+        # Categorical raster at 30 m / EPSG:3979 with twelve ecosystem classes (1–12).
+        # Class id → label (display labels live in the FE i18n bundle):
+        #   1 temperate · 2 treed · 3 grassland · 4 fire · 5 graminoid · 6 shrub
+        #   7 emergent · 8 bog · 9 mudflats · 10 coastal · 11 marine · 12 water
+        # Stats: 12 per-class percentages, plus the number of distinct classes in the
+        # polygon (``ecosystem_count`` via the ``variety`` op), the dominant class id
+        # (``dominant_ecosystem`` via the ``majority`` op), and its coverage percentage
+        # (``dominant_ecosystem_perc`` via ``frac_of_stat`` referencing ``dominant_ecosystem``).
+        # Order matters: ``dominant_ecosystem_perc`` depends on ``dominant_ecosystem``
+        # being computed first.
+        "dataset_id": 6,
+        "unit": "%",
+        "layers": {
+            "ecosystem_classification_cog": {
+                "ops": ["frac", "unique", "majority", "variety"],
+                "chart": {
+                    "type": "categorical",
+                    "slices": [
+                        {"stat": "eco_temperate_perc"},
+                        {"stat": "eco_treed_perc"},
+                        {"stat": "eco_grassland_perc"},
+                        {"stat": "eco_fire_perc"},
+                        {"stat": "eco_graminoid_perc"},
+                        {"stat": "eco_shrub_perc"},
+                        {"stat": "eco_emergent_perc"},
+                        {"stat": "eco_bog_perc"},
+                        {"stat": "eco_mudflats_perc"},
+                        {"stat": "eco_coastal_perc"},
+                        {"stat": "eco_marine_perc"},
+                        {"stat": "eco_water_perc"},
+                    ],
+                },
+                "stats": [
+                    {"name": "eco_temperate_perc", "op": "frac_sum", "values": [1], "scale": 100, "precision": 2},
+                    {"name": "eco_treed_perc", "op": "frac_sum", "values": [2], "scale": 100, "precision": 2},
+                    {"name": "eco_grassland_perc", "op": "frac_sum", "values": [3], "scale": 100, "precision": 2},
+                    {"name": "eco_fire_perc", "op": "frac_sum", "values": [4], "scale": 100, "precision": 2},
+                    {"name": "eco_graminoid_perc", "op": "frac_sum", "values": [5], "scale": 100, "precision": 2},
+                    {"name": "eco_shrub_perc", "op": "frac_sum", "values": [6], "scale": 100, "precision": 2},
+                    {"name": "eco_emergent_perc", "op": "frac_sum", "values": [7], "scale": 100, "precision": 2},
+                    {"name": "eco_bog_perc", "op": "frac_sum", "values": [8], "scale": 100, "precision": 2},
+                    {"name": "eco_mudflats_perc", "op": "frac_sum", "values": [9], "scale": 100, "precision": 2},
+                    {"name": "eco_coastal_perc", "op": "frac_sum", "values": [10], "scale": 100, "precision": 2},
+                    {"name": "eco_marine_perc", "op": "frac_sum", "values": [11], "scale": 100, "precision": 2},
+                    {"name": "eco_water_perc", "op": "frac_sum", "values": [12], "scale": 100, "precision": 2},
+                    {"name": "ecosystem_count", "op": "variety", "precision": 0},
+                    {"name": "dominant_ecosystem", "op": "majority", "precision": 0},
+                    {
+                        "name": "dominant_ecosystem_perc",
+                        "op": "frac_of_stat",
+                        "stat": "dominant_ecosystem",
+                        "scale": 100,
+                        "precision": 2,
+                    },
                 ],
             },
         },
