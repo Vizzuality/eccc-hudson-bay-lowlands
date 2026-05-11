@@ -8,6 +8,7 @@ from tests.conftest import (
     SNOW_DYNAMICS_DATASET_METADATA,
     SNOW_ENDL_EXPECTED_DATES,
     SNOW_LENGTHT_VALUES,
+    TREED_AREA_DATASET_METADATA,
     WATER_DYNAMICS_DATASET_METADATA,
 )
 
@@ -840,3 +841,165 @@ def test_snow_dynamics_dataset_has_twelve_layers(analysis_client):
         f"lengthT_winter_{s}_cog" for s in SNOW_LENGTHT_VALUES
     }
     assert layer_ids == expected
+
+
+# =============================================================================
+# Integration — treed_area widget output
+#
+# The fixture creates a uint8 GeoTIFF (``treed_area_1984-2022_cog``) with four
+# equal-area quadrants holding values 0/1/2/3. The standard test polygon is
+# centred on the raster, so each quadrant contributes exactly ¼ of the polygon's
+# coverage — frac(v) = 0.25 for every v ∈ {0, 1, 2, 3}.
+#
+# Expected (polygon area ≈ 6,737 km² in EPSG:6933):
+#   - each *_area  ≈ polygon_area / 4 ≈ 1,684 km²
+#   - each *_perc  ≈ 25 %
+#   - total_treed_area   = always_treed_area + newly_treed_area
+#   - changed_treed_area = newly_treed_area − was_treed_area ≈ 0
+# =============================================================================
+
+
+# Approximate polygon area in EPSG:6933 for the VALID_POLYGON_FEATURE 1°×1° box at lat ≈ 57.
+# Used as a coarse expected value for the quadrant-area assertions.
+EXPECTED_POLYGON_AREA_KM2 = 6_737.0
+EXPECTED_QUADRANT_AREA_KM2 = EXPECTED_POLYGON_AREA_KM2 / 4
+
+
+def test_analysis_response_contains_treed_area_widget(analysis_client):
+    data = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()
+    assert "treed_area" in data
+
+
+def test_treed_area_unit_is_km2(analysis_client):
+    data = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()
+    assert data["treed_area"]["unit"] == "km²"
+
+
+def test_treed_area_stats_contains_all_fields(analysis_client):
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["treed_area"]["stats"]
+    assert set(stats.keys()) == {
+        "non_treed_area",
+        "always_treed_area",
+        "newly_treed_area",
+        "was_treed_area",
+        "total_treed_area",
+        "changed_treed_area",
+        "non_treed_perc",
+        "always_treed_perc",
+        "newly_treed_perc",
+        "was_treed_perc",
+    }
+
+
+def test_treed_area_quadrant_areas_are_approximately_quarter_polygon(analysis_client):
+    """Each quadrant covers ¼ of the polygon → area ≈ polygon_area / 4."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["treed_area"]["stats"]
+    for key in ("non_treed_area", "always_treed_area", "newly_treed_area", "was_treed_area"):
+        assert stats[key] == pytest.approx(EXPECTED_QUADRANT_AREA_KM2, rel=0.01)
+
+
+def test_treed_area_quadrant_areas_sum_close_to_polygon_area(analysis_client):
+    """The four class areas partition the polygon, so they must sum to its area."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["treed_area"]["stats"]
+    total = (
+        stats["non_treed_area"]
+        + stats["always_treed_area"]
+        + stats["newly_treed_area"]
+        + stats["was_treed_area"]
+    )
+    assert total == pytest.approx(EXPECTED_POLYGON_AREA_KM2, rel=0.01)
+
+
+def test_treed_area_total_treed_is_sum_of_always_and_newly(analysis_client):
+    """stat_sum op: total_treed_area = always_treed_area + newly_treed_area."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["treed_area"]["stats"]
+    expected = round(stats["always_treed_area"] + stats["newly_treed_area"], 2)
+    assert stats["total_treed_area"] == pytest.approx(expected, abs=0.02)
+
+
+def test_treed_area_changed_treed_is_newly_minus_was(analysis_client):
+    """stat_diff op: changed_treed_area = newly_treed_area − was_treed_area."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["treed_area"]["stats"]
+    expected = round(stats["newly_treed_area"] - stats["was_treed_area"], 2)
+    assert stats["changed_treed_area"] == pytest.approx(expected, abs=0.02)
+
+
+def test_treed_area_percentages_are_approximately_25(analysis_client):
+    """frac(v) = 0.25 for each class → each *_perc ≈ 25 %."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["treed_area"]["stats"]
+    for key in ("non_treed_perc", "always_treed_perc", "newly_treed_perc", "was_treed_perc"):
+        assert stats[key] == pytest.approx(25.0, abs=0.5)
+
+
+def test_treed_area_percentages_sum_to_100(analysis_client):
+    """The four class percentages partition the polygon → they must sum to 100 %."""
+    stats = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["treed_area"]["stats"]
+    total = (
+        stats["non_treed_perc"]
+        + stats["always_treed_perc"]
+        + stats["newly_treed_perc"]
+        + stats["was_treed_perc"]
+    )
+    assert total == pytest.approx(100.0, abs=0.01)
+
+
+def test_treed_area_chart_keyed_by_layer_id(analysis_client):
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["treed_area"]["chart"]
+    assert "treed_area_1984-2022_cog" in chart
+
+
+def test_treed_area_chart_has_four_categorical_slices(analysis_client):
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["treed_area"]["chart"]
+    slices = chart["treed_area_1984-2022_cog"]
+    assert isinstance(slices, list)
+    assert len(slices) == 4
+    keys = [s["key"] for s in slices]
+    assert keys == [
+        "non_treed_perc",
+        "always_treed_perc",
+        "newly_treed_perc",
+        "was_treed_perc",
+    ]
+
+
+def test_treed_area_chart_slice_values_match_stats(analysis_client):
+    """Slice values are sourced from the already-computed stats dict."""
+    data = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["treed_area"]
+    stats, slices = data["stats"], data["chart"]["treed_area_1984-2022_cog"]
+    by_key = {s["key"]: s["value"] for s in slices}
+    for key in ("non_treed_perc", "always_treed_perc", "newly_treed_perc", "was_treed_perc"):
+        assert by_key[key] == stats[key]
+
+
+def test_treed_area_chart_slice_has_categorical_shape(analysis_client):
+    """Each slice must match CategoricalDataPoint = { key, value }."""
+    chart = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["treed_area"]["chart"]
+    for s in chart["treed_area_1984-2022_cog"]:
+        assert set(s.keys()) == {"key", "value"}
+
+
+def test_treed_area_dataset_id_matches_widget_config(analysis_client):
+    """``dataset.id`` matches the WIDGET_CONFIG dataset_id for treed_area (5)."""
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["treed_area"]["dataset"]
+    assert dataset["id"] == 5
+
+
+def test_treed_area_dataset_metadata_round_trips(analysis_client):
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["treed_area"]["dataset"]
+    assert dataset["metadata"] == TREED_AREA_DATASET_METADATA
+
+
+def test_treed_area_dataset_has_one_layer(analysis_client):
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["treed_area"]["dataset"]
+    assert [entry["id"] for entry in dataset["layers"]] == ["treed_area_1984-2022_cog"]
+
+
+def test_treed_area_dataset_layer_full_schema(analysis_client):
+    dataset = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()["treed_area"]["dataset"]
+    entry = dataset["layers"][0]
+    assert entry["id"] == "treed_area_1984-2022_cog"
+    assert entry["format"] == "raster"
+    assert entry["unit"] == "category"
+    assert entry["dataset_id"] == dataset["id"]
+    assert entry["metadata"]["title"] == {"en": "Treed Area (1984–2022)", "fr": "Zone Arborée (1984–2022)"}
+    assert entry["path"].endswith("treed_area_1984-2022_cog.tif")
