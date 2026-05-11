@@ -141,9 +141,9 @@
   .mapboxgl-ctrl-bottom-left {
     transform: translateX(40vw);
   }
+}
 
-  .mapboxgl-popup-content {
-    border-radius: var(--radius-2xl);
-    padding: 0;
-  }
+.mapboxgl-popup-content {
+  border-radius: var(--radius-2xl);
+  padding: 0;
 }

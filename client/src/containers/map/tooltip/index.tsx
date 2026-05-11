@@ -105,13 +105,30 @@ const MapTooltip = () => {
     [map, mapboxLayerIds, mapboxIdToMeta, setInteractiveLayer],
   );
 
+  const handleMouseEnter = useCallback(() => {
+    if (map) map.getCanvas().style.cursor = "pointer";
+  }, [map]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (map) map.getCanvas().style.cursor = "";
+  }, [map]);
+
   useEffect(() => {
-    if (!map) return;
+    if (!map || mapboxLayerIds.length === 0) return;
+
     map.on("click", handleClick);
+    for (const id of mapboxLayerIds) {
+      map.on("mouseenter", id, handleMouseEnter);
+      map.on("mouseleave", id, handleMouseLeave);
+    }
     return () => {
       map.off("click", handleClick);
+      for (const id of mapboxLayerIds) {
+        map.off("mouseenter", id, handleMouseEnter);
+        map.off("mouseleave", id, handleMouseLeave);
+      }
     };
-  }, [map, handleClick]);
+  }, [map, mapboxLayerIds, handleClick, handleMouseEnter, handleMouseLeave]);
 
   useEffect(() => {
     if (
