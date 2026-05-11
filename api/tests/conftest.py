@@ -427,6 +427,16 @@ SNOW_DYNAMICS_DATASET_METADATA = {
     "citation": {"en": "NRCan, 2025.", "fr": "RNCan, 2025."},
 }
 
+TREED_AREA_DATASET_METADATA = {
+    "title": {"en": "Treed Area (1984-2022)", "fr": "Zone Arborée (1984-2022)"},
+    "description": {
+        "en": "Annual treed area dynamics across Canada from 1984 to 2022.",
+        "fr": "Dynamique annuelle des zones arborées au Canada de 1984 à 2022.",
+    },
+    "source": {"en": "NFIS", "fr": "NFIS"},
+    "citation": {"en": "Hermosilla et al., 2025.", "fr": "Hermosilla et al., 2025."},
+}
+
 # Per-winter pixel values used by the snow_dynamics test fixture.
 # - lengthT means vary per winter so the chart series exercises distinct values.
 # - endL pixel value is fixed at 100 across all winters; the date_offset op then
@@ -465,6 +475,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
       - dataset 2 (Dynamic Surface Water): inundation_frequency_cog, inundation_trends_cog
       - dataset 3 (Flood Susceptibility):  flood_susceptibility_cog
       - dataset 4 (Snow Dynamics):         endL_winter_*_cog (×6), lengthT_winter_*_cog (×6)
+      - dataset 5 (Treed Area):            treed_area_1984-2022_cog
 
     Pixel-value choices and what they exercise:
       - peat_cog:                  uniform 200.0 (float32) — mean/max/histogram path
@@ -476,6 +487,9 @@ def analysis_client(db_session, tmp_path, monkeypatch):
                                    the time_series chart with distinct y values per winter
       - endL_winter_*_cog:         uniform 100  (uint8)   — exercises ``date_offset`` op
                                    (Dec 31 of base_year + 100 days)
+      - treed_area_1984-2022_cog:  four equal-sized quadrants with pixel values 0/1/2/3 — the
+                                   test polygon is centred so each quadrant covers exactly ¼
+                                   of it, exercising frac_area + stat_sum + stat_diff ops.
     """
     import numpy as np
     import rasterio
@@ -491,6 +505,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
     inundation_freq_path = str(tmp_path / "inundation_frequency_cog.tif")
     inundation_trends_path = str(tmp_path / "inundation_trends_cog.tif")
     flood_susc_path = str(tmp_path / "flood_susceptibility_cog.tif")
+    treed_area_path = str(tmp_path / "treed_area_1984-2022_cog.tif")
     snow_lengtht_paths = {
         suffix: str(tmp_path / f"lengthT_winter_{suffix}_cog.tif")
         for suffix in SNOW_LENGTHT_VALUES
@@ -526,17 +541,43 @@ def analysis_client(db_session, tmp_path, monkeypatch):
         with rasterio.open(path, "w", **profile) as dst:
             dst.write(data)
 
+    # treed_area uses a non-uniform raster: four equal quadrants with values 0/1/2/3.
+    # The raster extent is (-85, 56) → (-83, 58); rows go top-to-bottom (high → low lat).
+    #   data[0, :128, :128] = 0  top-left      (lon[-85,-84], lat[57,58])  non_treed
+    #   data[0, :128, 128:] = 1  top-right     (lon[-84,-83], lat[57,58])  always_treed
+    #   data[0, 128:, :128] = 2  bottom-left   (lon[-85,-84], lat[56,57])  newly_treed
+    #   data[0, 128:, 128:] = 3  bottom-right  (lon[-84,-83], lat[56,57])  was_treed
+    # The test polygon (lon[-84.5,-83.5], lat[56.5,57.5]) is centred on the raster, so
+    # each quadrant contributes ¼ of the polygon's coverage — frac(v) = 0.25 for each v.
+    treed_data = np.zeros((1, 256, 256), dtype="uint8")
+    treed_data[0, :128, :128] = 0
+    treed_data[0, :128, 128:] = 1
+    treed_data[0, 128:, :128] = 2
+    treed_data[0, 128:, 128:] = 3
+    treed_profile = {
+        "driver": "GTiff",
+        "dtype": "uint8",
+        "width": 256,
+        "height": 256,
+        "count": 1,
+        "crs": "EPSG:4326",
+        "transform": transform,
+    }
+    with rasterio.open(treed_area_path, "w", **treed_profile) as dst:
+        dst.write(treed_data)
+
     db_category = Category(metadata_={"title": {"en": "Environment", "fr": "Environnement"}})
     db_session.add(db_category)
     db_session.flush()
 
     # Explicit IDs match WIDGET_CONFIG: peat_carbon→1, water_dynamics→2,
-    # flood_susceptibility→3, snow_dynamics→4.
+    # flood_susceptibility→3, snow_dynamics→4, treed_area→5.
     peat_carbon_ds = Dataset(id=1, metadata_=PEAT_CARBON_DATASET_METADATA, category_id=db_category.id)
     water_dynamics_ds = Dataset(id=2, metadata_=WATER_DYNAMICS_DATASET_METADATA, category_id=db_category.id)
     flood_susc_ds = Dataset(id=3, metadata_=FLOOD_SUSCEPTIBILITY_DATASET_METADATA, category_id=db_category.id)
     snow_dynamics_ds = Dataset(id=4, metadata_=SNOW_DYNAMICS_DATASET_METADATA, category_id=db_category.id)
-    db_session.add_all([peat_carbon_ds, water_dynamics_ds, flood_susc_ds, snow_dynamics_ds])
+    treed_area_ds = Dataset(id=5, metadata_=TREED_AREA_DATASET_METADATA, category_id=db_category.id)
+    db_session.add_all([peat_carbon_ds, water_dynamics_ds, flood_susc_ds, snow_dynamics_ds, treed_area_ds])
     db_session.flush()
 
     snow_layers = []
@@ -608,6 +649,14 @@ def analysis_client(db_session, tmp_path, monkeypatch):
             unit="%",
             metadata_={"title": {"en": "Flood Susceptibility Index", "fr": "Indice de vulnérabilité aux inondations"}},
             dataset_id=flood_susc_ds.id,
+        ),
+        Layer(
+            id="treed_area_1984-2022_cog",
+            format_="raster",
+            path=treed_area_path,
+            unit="category",
+            metadata_={"title": {"en": "Treed Area (1984–2022)", "fr": "Zone Arborée (1984–2022)"}},
+            dataset_id=treed_area_ds.id,
         ),
         *snow_layers,
     ])
