@@ -29,6 +29,95 @@
         "aria-label": "Map settings",
         "tooltip": "Map settings"
       }
+    },
+    "popup-properties": {
+      "TITLE_TY_1": "Type",
+      "TITLE_TYPE": "Type",
+      "TITLE_DISP_1": "Disposition",
+      "AREA_IN_HE": "Area (ha)",
+      "STATUS": "Status",
+      "HOLDER": "Holder",
+      "EARLY_EX_2": "Type",
+      "EARLY_EX_3": "Status",
+      "TENURE_S_1": "Status",
+      "CLAIM_DUE_": "Due date",
+      "PROJECT_NA": "Project Name",
+      "DISPOSITIO": "Disposition",
+      "ALIENATION": "Alienation type",
+      "ALIENATI_1": "Alienation class",
+      "UPDATE_TIM": "Update date"
+    },
+    "detail-values": {
+      "ALIENATION": {
+        "1": {
+          "label": "Withdrawals",
+          "description": "Areas withdrawn from the mining lands inventory, preventing mining claims or activities, or accessible underground only unless permission is granted."
+        },
+        "2": {
+          "label": "Notices",
+          "description": "Areas requiring permission before mining activities can be established, or where special conditions apply."
+        }
+      },
+      "ALIENATI_1": {
+        "Wm": {
+          "label": "Wm",
+          "description": "Mining rights withdrawn from mining claim registry."
+        },
+        "Ws": {
+          "label": "Ws",
+          "description": "Surface rights withdrawn from mining claim registry."
+        },
+        "Wsm": {
+          "label": "Wsm",
+          "description": "Mining and surface rights withdrawn from mining claim registry."
+        },
+        "Nmc": {
+          "label": "Nmc",
+          "description": "Area that may require ministerial consent prior to registration."
+        },
+        "Nara": {
+          "label": "Nara",
+          "description": "Area subject to Aggregate Permits (Cat. 11 & 12) under the Aggregate Resources Act."
+        },
+        "Nh": {
+          "label": "Nh",
+          "description": "Disturbing rehabilitated mining lands requires the Director's consent."
+        },
+        "Nns": {
+          "label": "Nns",
+          "description": "Area subject to a licence under the Federal Nuclear Safety and Control Act."
+        },
+        "Npla": {
+          "label": "Npla",
+          "description": "Application for Surface Rights Only under the Public Lands Act."
+        },
+        "Nwpla": {
+          "label": "Nwpla",
+          "description": "Waterpower lease agreements."
+        }
+      },
+      "TITLE_TY_1": {
+        "Boundary Cell Mining Claim": {
+          "label": "Boundary Cell Mining Claim",
+          "description": "Part of a legacy claim (pre-MLAS) partially within a Provincial Grid cell. Cannot be registered in MLAS."
+        },
+        "Multi-Cell Mining Claim": {
+          "label": "Multi-Cell Mining Claim",
+          "description": "MLAS claim comprising up to 25 abutting cells on the Provincial Grid."
+        },
+        "Single Cell Mining Claim": {
+          "label": "Single Cell Mining Claim",
+          "description": "MLAS claim comprising one unique cell on the Provincial Grid."
+        }
+      },
+      "TITLE_TYPE": {
+        "LEAS": {
+          "label": "Lease"
+        },
+        "PATN": {
+          "label": "Non-mining patents"
+        }
+      }
     }
   },
   "data-layers": {

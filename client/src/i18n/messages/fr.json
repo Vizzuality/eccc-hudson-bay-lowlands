@@ -29,6 +29,95 @@
         "aria-label": "Paramètres de la carte",
         "tooltip": "Paramètres de la carte"
       }
+    },
+    "popup-properties": {
+      "TITLE_TY_1": "Type",
+      "TITLE_TYPE": "Type",
+      "TITLE_DISP_1": "Disposition",
+      "AREA_IN_HE": "Superficie (ha)",
+      "STATUS": "Statut",
+      "HOLDER": "Titulaire",
+      "EARLY_EX_2": "Type",
+      "EARLY_EX_3": "Statut",
+      "TENURE_S_1": "Statut",
+      "CLAIM_DUE_": "Date d'échéance",
+      "PROJECT_NA": "Nom du projet",
+      "DISPOSITIO": "Disposition",
+      "ALIENATION": "Type d'aliénation",
+      "ALIENATI_1": "Classe d'aliénation",
+      "UPDATE_TIM": "Date de mise à jour"
+    },
+    "detail-values": {
+      "ALIENATION": {
+        "1": {
+          "label": "Retraits",
+          "description": "Zones retirées de l'inventaire des terres minières, empêchant les claims miniers ou les activités, ou accessibles uniquement en souterrain sauf autorisation."
+        },
+        "2": {
+          "label": "Avis",
+          "description": "Zones nécessitant une autorisation avant que des activités minières puissent être établies, ou où des conditions spéciales s'appliquent."
+        }
+      },
+      "ALIENATI_1": {
+        "Wm": {
+          "label": "Wm",
+          "description": "Droits miniers retirés du registre des claims miniers."
+        },
+        "Ws": {
+          "label": "Ws",
+          "description": "Droits de surface retirés du registre des claims miniers."
+        },
+        "Wsm": {
+          "label": "Wsm",
+          "description": "Droits miniers et de surface retirés du registre des claims miniers."
+        },
+        "Nmc": {
+          "label": "Nmc",
+          "description": "Zone pouvant nécessiter le consentement ministériel avant l'enregistrement."
+        },
+        "Nara": {
+          "label": "Nara",
+          "description": "Zone assujettie aux permis d'agrégats (cat. 11 et 12) en vertu de la Loi sur les ressources en agrégats."
+        },
+        "Nh": {
+          "label": "Nh",
+          "description": "La perturbation de terres minières réhabilitées nécessite le consentement du directeur."
+        },
+        "Nns": {
+          "label": "Nns",
+          "description": "Zone assujettie à un permis en vertu de la Loi fédérale sur la sûreté et la réglementation nucléaires."
+        },
+        "Npla": {
+          "label": "Npla",
+          "description": "Demande de droits de surface uniquement en vertu de la Loi sur les terres publiques."
+        },
+        "Nwpla": {
+          "label": "Nwpla",
+          "description": "Baux de force hydraulique."
+        }
+      },
+      "TITLE_TY_1": {
+        "Boundary Cell Mining Claim": {
+          "label": "Claim minier de cellule frontalière",
+          "description": "Partie d'un claim ancien (pré-MLAS) partiellement dans une cellule de la grille provinciale. Ne peut être enregistré dans le MLAS."
+        },
+        "Multi-Cell Mining Claim": {
+          "label": "Claim minier multi-cellules",
+          "description": "Claim MLAS comprenant jusqu'à 25 cellules contiguës sur la grille provinciale."
+        },
+        "Single Cell Mining Claim": {
+          "label": "Claim minier mono-cellule",
+          "description": "Claim MLAS comprenant une cellule unique sur la grille provinciale."
+        }
+      },
+      "TITLE_TYPE": {
+        "LEAS": {
+          "label": "Bail"
+        },
+        "PATN": {
+          "label": "Brevets non miniers"
+        }
+      }
     }
   },
   "data-layers": {

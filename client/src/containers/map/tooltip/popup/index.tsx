@@ -24,6 +24,8 @@ const MapPopup: FC<PropsWithChildren<MapTooltipProps>> = ({
       latitude={latitude}
       onClose={onClose}
       closeButton={false}
+      maxWidth="300px"
+      style={{ zIndex: 10 }}
     >
       <div className="px-3 pt-3 pb-2.5 space-y-1.5">
         <h3 className="text-sm font-bold leading-6">{title}</h3>
