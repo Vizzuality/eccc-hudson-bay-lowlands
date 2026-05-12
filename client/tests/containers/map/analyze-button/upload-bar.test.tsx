@@ -30,6 +30,7 @@ vi.mock("@/hooks/use-map-draw", () => ({
 vi.mock("@/hooks/use-analysis-settings", () => ({
   default: () => [mockAnalysisState, mockSetAnalysisSettings],
   useSetAnalysisResult: () => vi.fn(),
+  useIsAnalyzing: () => [false, vi.fn()],
 }));
 
 const mockRedraw = vi.fn();

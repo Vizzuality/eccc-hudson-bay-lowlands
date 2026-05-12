@@ -4,6 +4,7 @@ import type { Feature } from "geojson";
 import {
   CheckIcon,
   CircleAlertIcon,
+  LoaderCircleIcon,
   TrashIcon,
   UploadIcon,
 } from "lucide-react";
@@ -17,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";
 import RichText from "@/components/ui/rich-text";
 import useAnalysisSettings, {
+  useIsAnalyzing,
   useSetAnalysisResult,
 } from "@/hooks/use-analysis-settings";
 import useMapDraw from "@/hooks/use-map-draw";
@@ -60,17 +62,22 @@ const UploadBar = () => {
   const [{ geometry, locationType, fileName }, setAnalysisSettings] =
     useAnalysisSettings();
   const setAnalysisResult = useSetAnalysisResult();
+  const [, setIsAnalyzing] = useIsAnalyzing();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { mutate: postAnalysis, isPending } = useMutation({
-    mutationFn: (geometry: GeoJSON.Feature | GeoJSON.FeatureCollection) =>
-      API<AnalysisResponse>(postAnalysisConfig(geometry)),
+    mutationFn: (geometry: GeoJSON.Feature | GeoJSON.FeatureCollection) => {
+      setIsAnalyzing(true);
+      return API<AnalysisResponse>(postAnalysisConfig(geometry));
+    },
     onSuccess: (data) => {
+      setIsAnalyzing(false);
       setIsDrawing(false);
       setAnalysisResult(data);
       setMapStatus(MapStatus.analysis);
     },
     onError: (err) => {
+      setIsAnalyzing(false);
       if (isAxiosError(err) && err.response?.status === 422) {
         const detail: unknown = err.response.data?.detail;
         if (typeof detail === "string") {
@@ -108,7 +115,8 @@ const UploadBar = () => {
   );
 
   const { redraw } = useMapDraw({
-    enabled: mapStatus === MapStatus.upload && locationType === "draw",
+    enabled:
+      mapStatus === MapStatus.upload && locationType === "draw" && !isPending,
     styleVariant: mapStatus === MapStatus.analysis ? "analysis" : "draw",
     geometry:
       geometry && geometry.type === "Feature"
@@ -217,7 +225,12 @@ const UploadBar = () => {
   if (showConfirmation) {
     Component = (
       <>
-        {locationType === "draw" ? (
+        {isPending ? (
+          <div className="flex items-center gap-2 text-sm font-medium leading-5">
+            <LoaderCircleIcon className="size-4 animate-spin" aria-hidden />
+            <span>{t("analyzing")}</span>
+          </div>
+        ) : locationType === "draw" ? (
           <RichText>
             {(tags) =>
               t.rich("verify-shape", {
@@ -246,6 +259,7 @@ const UploadBar = () => {
             type="button"
             variant="secondary"
             className="flex-1"
+            disabled={isPending}
             onClick={() => {
               resetState();
               setIsDrawing(false);
