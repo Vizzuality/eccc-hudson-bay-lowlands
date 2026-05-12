@@ -1,16 +1,18 @@
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import type { AnalysisResult } from "@/containers/analysis/types";
-import type { convertFilesToGeojson } from "@/lib/utils/geometry-upload";
+import type { ParsedGeoJSON } from "@/lib/utils/geometry-upload";
 
 type AnalysisSettings = {
   locationType: "draw" | "upload";
-  geometry: Awaited<ReturnType<typeof convertFilesToGeojson>> | null;
+  geometry: ParsedGeoJSON | null;
+  fileName: string | null;
 };
 
 const initialValue: AnalysisSettings = {
   locationType: "draw",
   geometry: null,
+  fileName: null,
 };
 
 const analysisSettingsAtom = atom<AnalysisSettings>(initialValue);
