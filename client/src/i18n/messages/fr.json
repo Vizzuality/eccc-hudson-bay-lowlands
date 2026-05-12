@@ -150,7 +150,12 @@
   "analysis": {
     "title": "Ma zone d'intérêt",
     "description": "<p>Vous avez sélectionné une région de <b>{aoi_size} km²</b> dans les BTBHJ. Les sections suivantes résument ses principales caractéristiques environnementales en fonction du stockage de carbone, de l'hydrologie, de la neige saisonnière, du risque d'inondation, de la dynamique du couvert arboré, de la composition des écosystèmes et de la diversité des espèces.</p>",
-    "instructions": "<p><b>Cliquez sur la carte</b> pour commencer à dessiner votre zone personnalisée et obtenir des informations à son sujet.</p>",
+    "instructions": "<p>Cliquez sur la carte pour commencer à dessiner votre zone personnalisée ou téléversez votre fichier de zone et obtenez des informations à son sujet.</p>",
+    "upload-file": "Téléverser",
+    "upload-error-invalid-json": "<p>Le fichier n'a pas pu être lu. Veuillez téléverser un fichier GeoJSON valide.</p>",
+    "upload-error-invalid-geojson": "<p>Le fichier ne contient aucune géométrie de type polygone. Veuillez téléverser un fichier GeoJSON avec des entités Polygon ou MultiPolygon.</p>",
+    "upload-error-unsupported-file": "<p>Type de fichier non pris en charge. Veuillez téléverser un fichier .geojson ou .json.</p>",
+    "uploaded-file": "Téléversé : {fileName}",
     "verify-shape": "<p>Pour terminer votre forme, cliquez à nouveau sur le premier point ou double-cliquez n'importe où pour finir. Lorsque vous êtes satisfait, cliquez sur <b>Confirmer</b>. Pour recommencer, cliquez sur <b>Effacer</b> pour supprimer votre forme.</p>",
     "upload": "Téléverser",
     "clear": "Effacer",
