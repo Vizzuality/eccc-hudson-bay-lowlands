@@ -159,8 +159,8 @@
     "cancel": "Cancel",
     "datasets": "Datasets",
     "click-to-select": "Click to select your area of interest and get detailed insights on it.",
-    "area-too-big": "<p>The area is too big: the maximum allowed size is <b>{area_sq_km}</b> square kilometers. Please try drawing a smaller area.</p>",
-    "outside-of-bounds": "<p>The area is at least partially outside of Canada. Please try drawing an area limited to Canada.</p>",
+    "area-too-big": "<p>The drawn area is outside the allowed size range. Please try drawing a differently sized area.</p>",
+    "outside-of-bounds": "<p>The drawn area does not overlap with the study area. Please draw within the Hudson Bay Lowlands region.</p>",
     "generic-error": "<p>An error occurred while processing your request. Please try again.</p>",
     "leave-dialog": {
       "title": "Leave current analysis?",

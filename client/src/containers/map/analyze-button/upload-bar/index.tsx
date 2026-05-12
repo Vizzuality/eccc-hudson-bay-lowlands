@@ -1,7 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
+import { isAxiosError } from "axios";
 import type { Feature } from "geojson";
 import { CheckIcon, CircleAlertIcon, TrashIcon } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { MapStatus, useMapStatus } from "@/app/[locale]/url-store";
 import QuestionMarkIcon from "@/components/icons/question-mark";
@@ -10,41 +11,49 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";
 import RichText from "@/components/ui/rich-text";
-import { MAX_AREA_SIZE_SQUARE_METER } from "@/containers/map/analyze-button/upload-bar/constants";
-import { DESKTOP_MAX_BOUNDS } from "@/containers/map/constants";
 import useAnalysisSettings, {
   useSetAnalysisResult,
 } from "@/hooks/use-analysis-settings";
 import useMapDraw from "@/hooks/use-map-draw";
 import { API } from "@/lib/api";
 import { postAnalysisConfig } from "@/lib/api/config";
-import { format } from "@/lib/utils/format";
 import type { convertFilesToGeojson } from "@/lib/utils/geometry-upload";
-import {
-  validateGeoJSONBounds,
-  validateGeoJSONSize,
-} from "@/lib/utils/geometry-upload";
 import type { AnalysisResponse } from "@/types";
 
 const UploadBar = () => {
   const { mapStatus, setMapStatus } = useMapStatus();
   const [isDrawing, setIsDrawing] = useState(false);
-  const locale = useLocale();
   const t = useTranslations("analysis");
 
-  const [drawError, setDrawError] = useState<
-    "area-too-big" | "outside-of-bounds" | "generic-error" | null
-  >(null);
+  type DrawError = "area-too-big" | "outside-of-bounds" | "generic-error";
+  const [drawError, setDrawError] = useState<DrawError | null>(null);
   const [{ geometry }, setAnalysisSettings] = useAnalysisSettings();
   const setAnalysisResult = useSetAnalysisResult();
   const { mutate: postAnalysis, isPending } = useMutation({
     mutationFn: (geometry: GeoJSON.Feature) =>
       API<AnalysisResponse>(postAnalysisConfig(geometry)),
     onSuccess: (data) => {
+      setIsDrawing(false);
       setAnalysisResult(data);
       setMapStatus(MapStatus.analysis);
     },
-    onError: () => {
+    onError: (error) => {
+      if (isAxiosError(error) && error.response?.status === 422) {
+        const detail: unknown = error.response.data?.detail;
+        if (typeof detail === "string") {
+          if (
+            detail.includes("exceeds the maximum") ||
+            detail.includes("below the minimum")
+          ) {
+            setDrawError("area-too-big");
+          } else if (detail.includes("does not intersect")) {
+            setDrawError("outside-of-bounds");
+          } else {
+            setDrawError("generic-error");
+          }
+          return;
+        }
+      }
       setDrawError("generic-error");
     },
   });
@@ -54,29 +63,6 @@ const UploadBar = () => {
       const geometry =
         (features[0] as Awaited<ReturnType<typeof convertFilesToGeojson>>) ??
         null;
-
-      const isValidSize = validateGeoJSONSize(
-        geometry,
-        MAX_AREA_SIZE_SQUARE_METER,
-      );
-      const isValidBounds = validateGeoJSONBounds(geometry, DESKTOP_MAX_BOUNDS);
-
-      if (!isValidSize || !isValidBounds) {
-        setDrawError(
-          !isValidSize
-            ? "area-too-big"
-            : isValidBounds
-              ? "outside-of-bounds"
-              : null,
-        );
-
-        setAnalysisSettings((settings) => ({
-          ...settings,
-          geometry: null,
-        }));
-
-        return;
-      }
 
       setDrawError(null);
 
@@ -144,17 +130,7 @@ const UploadBar = () => {
           >
             <CircleAlertIcon aria-hidden />
             <AlertDescription className="text-red-600 text-sm font-medium leading-5">
-              <RichText>
-                {(tags) =>
-                  t.rich("area-too-big", {
-                    ...tags,
-                    area_sq_km: format(
-                      locale,
-                      MAX_AREA_SIZE_SQUARE_METER / 1000000,
-                    ),
-                  })
-                }
-              </RichText>
+              <RichText>{(tags) => t.rich(drawError, { ...tags })}</RichText>
             </AlertDescription>
           </Alert>
         )}
@@ -177,7 +153,6 @@ const UploadBar = () => {
               if (!geometry) return;
 
               postAnalysis(geometry);
-              setIsDrawing(false);
             }}
             disabled={!!drawError || !geometry || isPending}
           >

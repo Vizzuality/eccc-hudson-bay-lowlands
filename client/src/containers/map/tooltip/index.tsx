@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
 import { useMap } from "react-map-gl/mapbox";
-import { useLayerIds } from "@/app/[locale]/url-store";
+import { MapStatus, useLayerIds, useMapStatus } from "@/app/[locale]/url-store";
 import { interactiveLayerAtom } from "@/containers/map/store";
 import MapPopup from "@/containers/map/tooltip/popup";
 import MapPopupItem from "@/containers/map/tooltip/popup/item";
@@ -22,6 +22,7 @@ interface StyleMeta {
 const MapTooltip = () => {
   const { current: map } = useMap();
   const { layerIds } = useLayerIds();
+  const { mapStatus } = useMapStatus();
   const [interactiveLayer, setInteractiveLayer] = useAtom(interactiveLayerAtom);
   const { getTranslation } = useApiTranslation();
 
@@ -66,7 +67,8 @@ const MapTooltip = () => {
 
   const handleClick = useCallback(
     (e: mapboxgl.MapMouseEvent) => {
-      if (!map || mapboxLayerIds.length === 0) return;
+      if (!map || mapboxLayerIds.length === 0 || mapStatus === MapStatus.upload)
+        return;
 
       const bbox: [mapboxgl.PointLike, mapboxgl.PointLike] = [
         [e.point.x - 5, e.point.y - 5],
@@ -102,16 +104,18 @@ const MapTooltip = () => {
         properties,
       });
     },
-    [map, mapboxLayerIds, mapboxIdToMeta, setInteractiveLayer],
+    [map, mapboxLayerIds, mapboxIdToMeta, setInteractiveLayer, mapStatus],
   );
 
   const handleMouseEnter = useCallback(() => {
-    if (map) map.getCanvas().style.cursor = "pointer";
-  }, [map]);
+    if (map && mapStatus !== MapStatus.upload)
+      map.getCanvas().style.cursor = "pointer";
+  }, [map, mapStatus]);
 
   const handleMouseLeave = useCallback(() => {
-    if (map) map.getCanvas().style.cursor = "";
-  }, [map]);
+    if (map && mapStatus !== MapStatus.upload)
+      map.getCanvas().style.cursor = "";
+  }, [map, mapStatus]);
 
   useEffect(() => {
     if (!map || mapboxLayerIds.length === 0) return;
@@ -129,6 +133,12 @@ const MapTooltip = () => {
       }
     };
   }, [map, mapboxLayerIds, handleClick, handleMouseEnter, handleMouseLeave]);
+
+  useEffect(() => {
+    if (mapStatus === MapStatus.upload) {
+      setInteractiveLayer(null);
+    }
+  }, [mapStatus, setInteractiveLayer]);
 
   useEffect(() => {
     if (
