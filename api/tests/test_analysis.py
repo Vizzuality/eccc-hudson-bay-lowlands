@@ -1157,3 +1157,45 @@ def test_ecosystem_classification_dataset_layer_full_schema(analysis_client):
         "fr": "Classification des Écosystèmes",
     }
     assert entry["path"].endswith("ecosystem_classification_cog.tif")
+
+
+# =============================================================================
+# NaN regression — polygon inside HBL bbox but outside raster footprints.
+#
+# The fixture rasters cover lon[-85, -83] lat[56, 58]. This polygon sits at
+# lon[-100, -99] lat[50, 50.5] — inside HBL_BBOX (-117..-51, 45..69) so it
+# passes step 5, but exactextract reads no valid pixels, returning NaN for
+# ops like mean/max/sum/majority. Pre-fix this produced 500
+# `Out of range float values are not JSON compliant: nan`.
+# =============================================================================
+
+POLYGON_OUTSIDE_RASTER_BUT_INSIDE_HBL = {
+    "type": "Feature",
+    "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+            [-100.0, 50.0],
+            [-99.0, 50.0],
+            [-99.0, 50.5],
+            [-100.0, 50.5],
+            [-100.0, 50.0],
+        ]],
+    },
+    "properties": {},
+}
+
+
+def test_polygon_outside_raster_returns_200_with_zero_stats(analysis_client):
+    response = analysis_client.post("/analysis/", json=POLYGON_OUTSIDE_RASTER_BUT_INSIDE_HBL)
+    assert response.status_code == 200
+
+
+def test_polygon_outside_raster_produces_finite_numeric_stats(analysis_client):
+    """NaN/Inf must never reach the JSON response — they break Pydantic encoding."""
+    import math
+
+    body = analysis_client.post("/analysis/", json=POLYGON_OUTSIDE_RASTER_BUT_INSIDE_HBL).json()
+    for widget in body.values():
+        for name, value in widget["stats"].items():
+            if isinstance(value, (int, float)):
+                assert math.isfinite(value), f"{name} = {value!r} is not finite"

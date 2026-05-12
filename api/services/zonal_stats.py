@@ -176,7 +176,14 @@ def _compute_stat(
 
     scale = stat_def.get("scale", 1.0)
     precision = stat_def.get("precision", 2)
-    return round(float(raw or 0) * scale, precision)
+    # exactextract returns NaN for ops like mean/max/sum/majority when the polygon
+    # covers no valid pixels (e.g. all-NoData area or polygon outside raster footprint).
+    # `raw or 0` doesn't catch NaN because NaN is truthy, so guard explicitly — NaN
+    # would otherwise propagate into the response and break Pydantic JSON encoding.
+    raw_value = float(raw or 0)
+    if not math.isfinite(raw_value):
+        raw_value = 0.0
+    return round(raw_value * scale, precision)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
