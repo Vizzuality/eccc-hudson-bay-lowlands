@@ -17,6 +17,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";
 import RichText from "@/components/ui/rich-text";
+import { MAX_AREA_KM2 } from "@/containers/map/analyze-button/upload-bar/constants";
 import useAnalysisSettings, {
   useIsAnalyzing,
   useSetAnalysisResult,
@@ -215,7 +216,9 @@ const UploadBar = () => {
         >
           <CircleAlertIcon aria-hidden />
           <AlertDescription className="text-red-600 text-sm font-medium leading-5">
-            <RichText>{(tags) => t.rich(error, { ...tags })}</RichText>
+            <RichText>
+              {(tags) => t.rich(error, { ...tags, maxArea: MAX_AREA_KM2 })}
+            </RichText>
           </AlertDescription>
         </Alert>
       )}
@@ -250,7 +253,9 @@ const UploadBar = () => {
           >
             <CircleAlertIcon aria-hidden />
             <AlertDescription className="text-red-600 text-sm font-medium leading-5">
-              <RichText>{(tags) => t.rich(error, { ...tags })}</RichText>
+              <RichText>
+                {(tags) => t.rich(error, { ...tags, maxArea: MAX_AREA_KM2 })}
+              </RichText>
             </AlertDescription>
           </Alert>
         )}

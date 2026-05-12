@@ -165,7 +165,7 @@
     "cancel": "Annuler",
     "datasets": "Jeux de données",
     "click-to-select": "Cliquez pour sélectionner votre zone d'intérêt et obtenir des informations détaillées.",
-    "area-too-big": "<p>La zone dessinée est en dehors de la plage de taille autorisée. Veuillez essayer de dessiner une zone de taille différente.</p>",
+    "area-too-big": "<p>La zone dessinée est en dehors de la plage de taille autorisée (max {maxArea, number} km²). Veuillez essayer de dessiner une zone de taille différente.</p>",
     "outside-of-bounds": "<p>La zone dessinée ne chevauche pas la zone d'étude. Veuillez dessiner à l'intérieur de la région des basses terres de la baie d'Hudson.</p>",
     "generic-error": "<p>Une erreur s'est produite lors du traitement de votre demande. Veuillez réessayer.</p>",
     "leave-dialog": {
