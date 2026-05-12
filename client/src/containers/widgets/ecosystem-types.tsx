@@ -53,7 +53,7 @@ interface EcosystemTypesProps extends WidgetCardBaseProps {
 }
 
 const EcosystemTypes: FC<EcosystemTypesProps> = ({ id, stats, layers }) => {
-  const t = useTranslations("widgets.ecosystem_types");
+  const t = useTranslations("widgets.ecosystem_classification");
   const { getTranslation } = useApiTranslation();
   const data = mockData.map((item) => ({
     key: item.key,

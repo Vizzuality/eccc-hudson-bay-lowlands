@@ -39,7 +39,7 @@ interface TreeCoverChangeProps extends WidgetCardBaseProps {
 }
 
 const TreeCoverChange: FC<TreeCoverChangeProps> = ({ id, stats, layers }) => {
-  const t = useTranslations("widgets.tree_cover_change");
+  const t = useTranslations("widgets.treed_area");
   const { getTranslation } = useApiTranslation();
   const data = mockData.map((item) => ({
     key: item.key,
