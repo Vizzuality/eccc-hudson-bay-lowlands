@@ -28,6 +28,7 @@ import MapLegend from "@/containers/map/legend";
 import MapLegendItem from "@/containers/map/legend/item";
 import MapTooltip from "@/containers/map/tooltip";
 import { env } from "@/env";
+import { useIsAnalyzing } from "@/hooks/use-analysis-settings";
 import { cn } from "@/lib/utils";
 
 const defaultBbox = [-112, 50, -56, 64];
@@ -49,6 +50,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
   const { layerIds, setLayerIds } = useLayerIds();
   const { layersSettings, setLayersSettings } = useSyncLayersSettings();
   const { maxZoom } = useLayerZoomConstraints();
+  const [isAnalyzing] = useIsAnalyzing();
 
   // Enforce zoom constraints imperatively to avoid triggering _createProxyTransform
   // in @vis.gl/react-mapbox. Passing minZoom/maxZoom as props causes it to re-wrap
@@ -87,6 +89,9 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
   return (
     <div ref={containerRef} className={cn("relative h-full w-full", className)}>
       <DownloadWatermark />
+      {isAnalyzing && (
+        <div className="absolute inset-0 z-10 cursor-not-allowed" />
+      )}
       <MapBoxMap
         ref={mapRef}
         mapboxAccessToken={env.NEXT_PUBLIC_MAPBOX_API_TOKEN}

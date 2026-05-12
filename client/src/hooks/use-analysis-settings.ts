@@ -17,6 +17,7 @@ const initialValue: AnalysisSettings = {
 
 const analysisSettingsAtom = atom<AnalysisSettings>(initialValue);
 const analysisResultAtom = atom<AnalysisResult | null>(null);
+const isAnalyzingAtom = atom(false);
 
 export default function useAnalysisSettings() {
   return [...useAtom(analysisSettingsAtom), initialValue] as const;
@@ -28,4 +29,8 @@ export function useAnalysisResult() {
 
 export function useSetAnalysisResult() {
   return useSetAtom(analysisResultAtom);
+}
+
+export function useIsAnalyzing() {
+  return useAtom(isAnalyzingAtom);
 }
