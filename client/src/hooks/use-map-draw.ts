@@ -9,7 +9,7 @@ import {
   useMap,
 } from "react-map-gl/mapbox";
 
-import type { convertFilesToGeojson } from "@/lib/utils/geometry-upload";
+import type { ValidGeometryType } from "@/lib/utils/geometry-upload";
 
 /** `draw`: green stroke while editing. `analysis`: dark transparent fill + white border + inset glow. */
 export type MapDrawStyleVariant = "draw" | "analysis";
@@ -17,7 +17,7 @@ export type MapDrawStyleVariant = "draw" | "analysis";
 export interface UseMapboxDrawProps {
   /** When false, drawing is disabled (no polygon vertices can be added). */
   enabled?: boolean;
-  geometry?: Awaited<ReturnType<typeof convertFilesToGeojson>>;
+  geometry?: Feature<ValidGeometryType>;
   onCreate?: (evt: { features: Feature[] }) => void;
   onUpdate?: (evt: { features: Feature[]; action: string }) => void;
   onClick?: () => void;
