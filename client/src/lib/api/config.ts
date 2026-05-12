@@ -33,7 +33,7 @@ export const getTileJsonConfig = (
 });
 
 export const postAnalysisConfig = (
-  geometry: GeoJSON.Feature,
+  geometry: GeoJSON.Feature | GeoJSON.FeatureCollection,
 ): AxiosRequestConfig => ({
   url: "/analysis",
   method: "POST",
