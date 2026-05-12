@@ -7,10 +7,16 @@ import { MapStatus, useMapStatus } from "@/app/[locale]/url-store";
 import UploadBar from "@/containers/map/analyze-button/upload-bar";
 import messages from "@/i18n/messages/en.json";
 
-const { mockUseMapDraw, mockSetAnalysisSettings } = vi.hoisted(() => ({
-  mockUseMapDraw: vi.fn(),
-  mockSetAnalysisSettings: vi.fn(),
-}));
+const { mockUseMapDraw, mockSetAnalysisSettings, mockAnalysisState } =
+  vi.hoisted(() => ({
+    mockUseMapDraw: vi.fn(),
+    mockSetAnalysisSettings: vi.fn(),
+    mockAnalysisState: {
+      locationType: "draw" as const,
+      geometry: null as GeoJSON.Feature | null,
+      fileName: null as string | null,
+    },
+  }));
 
 vi.mock("@/app/[locale]/url-store", () => ({
   MapStatus: { default: "default", upload: "upload", analysis: "analysis" },
@@ -22,10 +28,7 @@ vi.mock("@/hooks/use-map-draw", () => ({
 }));
 
 vi.mock("@/hooks/use-analysis-settings", () => ({
-  default: () => [
-    { locationType: "draw" as const, geometry: null },
-    mockSetAnalysisSettings,
-  ],
+  default: () => [mockAnalysisState, mockSetAnalysisSettings],
   useSetAnalysisResult: () => vi.fn(),
 }));
 
@@ -64,7 +67,26 @@ function setupHooks(mapStatus = MapStatus.upload) {
   });
 }
 
+const FAKE_GEOMETRY: GeoJSON.Feature = {
+  type: "Feature",
+  geometry: {
+    type: "Polygon",
+    coordinates: [
+      [
+        [0, 0],
+        [1, 0],
+        [1, 1],
+        [0, 0],
+      ],
+    ],
+  },
+  properties: {},
+};
+
 function startDrawing() {
+  // The component requires both isDrawing=true AND geometry to show confirmation UI.
+  // Set geometry on the mock so hasGeometry is true when the component re-renders.
+  mockAnalysisState.geometry = FAKE_GEOMETRY;
   act(() => {
     capturedOnDrawingStart?.();
   });
@@ -74,6 +96,9 @@ describe("@containers/map/analyze-button/upload-bar", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     capturedOnDrawingStart = undefined;
+    mockAnalysisState.locationType = "draw";
+    mockAnalysisState.geometry = null;
+    mockAnalysisState.fileName = null;
   });
 
   it("renders instructions when not drawing", () => {
@@ -111,8 +136,18 @@ describe("@containers/map/analyze-button/upload-bar", () => {
     expect(mockSetAnalysisSettings).toHaveBeenCalled();
     const updater = mockSetAnalysisSettings.mock.calls[0][0];
     expect(
-      updater({ locationType: "draw", geometry: { type: "Feature" } }),
-    ).toEqual(expect.objectContaining({ geometry: null }));
+      updater({
+        locationType: "draw",
+        geometry: { type: "Feature" },
+        fileName: null,
+      }),
+    ).toEqual(
+      expect.objectContaining({
+        locationType: "draw",
+        geometry: null,
+        fileName: null,
+      }),
+    );
   });
 
   it("returns to instructions after Clear is clicked", async () => {
