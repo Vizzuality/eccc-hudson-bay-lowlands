@@ -67,6 +67,7 @@ export default defineConfig(({ mode }) => ({
         "src/containers/map-sidebar/index.tsx",
         "src/containers/map/layer-manager/**",
         "src/containers/map/tooltip/**",
+        "src/containers/map/analyze-button/**",
         "src/containers/map/store.ts",
       ],
       thresholds: {
