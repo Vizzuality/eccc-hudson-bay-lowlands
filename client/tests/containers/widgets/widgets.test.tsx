@@ -5,7 +5,6 @@ import type { ReactElement } from "react";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { useLayerIds } from "@/app/[locale]/url-store";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import type { WidgetLayer } from "@/containers/analysis/types";
 import { mockAnalysisResult } from "@/containers/map-sidebar/analysis/mockData";
 import CarbonPeatland from "@/containers/widgets/carbon-peatland";
 import EcosystemTypes from "@/containers/widgets/ecosystem-types";
@@ -15,6 +14,7 @@ import SnowDynamics from "@/containers/widgets/snow-dynamics";
 import TreeCoverChange from "@/containers/widgets/tree-cover-change";
 import WaterDynamics from "@/containers/widgets/water-dynamics";
 import messages from "@/i18n/messages/en.json";
+import type { Layer } from "@/types";
 
 vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
   const actual =
@@ -25,11 +25,20 @@ vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
   };
 });
 
-const testWidgetLayers: WidgetLayer[] = [
+const testWidgetLayers: Layer[] = [
   {
     id: "analysis.test.layer",
+    format: "cog",
+    type: "raster",
     path: "",
-    title: { en: "Test layer", fr: "Couche test" },
+    unit: "",
+    categories: null,
+    metadata: {
+      title: { en: "Test layer", fr: "Couche test" },
+      description: { en: "", fr: "" },
+    },
+    dataset_id: 1,
+    config: null,
   },
 ];
 
@@ -87,8 +96,8 @@ const widgetCardComponents = [
     name: "TreeCoverChange",
     element: (
       <TreeCoverChange
-        id="tree_cover_change"
-        stats={mockAnalysisResult.tree_cover_change.stats}
+        id="treed_area"
+        stats={mockAnalysisResult.treed_area.stats}
         layers={testWidgetLayers}
       />
     ),
@@ -97,8 +106,8 @@ const widgetCardComponents = [
     name: "EcosystemTypes",
     element: (
       <EcosystemTypes
-        id="ecosystem_types"
-        stats={mockAnalysisResult.ecosystem_types.stats}
+        id="ecosystem_classification"
+        stats={mockAnalysisResult.ecosystem_classification.stats}
         layers={testWidgetLayers}
       />
     ),

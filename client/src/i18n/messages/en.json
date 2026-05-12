@@ -221,7 +221,7 @@
         "description": "The timing and duration of snow influence spring runoff, soil moisture, and the growing season, affecting vegetation and wetland dynamics."
       }
     },
-    "tree_cover_change": {
+    "treed_area": {
       "title": "Tree cover change",
       "description": "<p>Tree cover in the area has changed between 1984 and 2022. Currently, <b>{total_treed_area}</b> km² of the area is treed. Since 1984, <b>{newly_treed_area}</b> km² has gained treed cover while <b>{was_treed_area}</b> km² of tree cover was lost, resulting in a net change of <b>{changed_treed_area}</b> km².</p>",
       "more-info": {
@@ -229,7 +229,7 @@
         "description": "Trees provide important ecosystem services, including carbon storage, habitat, soil stabilization, and water regulation. Changes in tree cover can alter these functions and signal broader environmental shifts."
       }
     },
-    "ecosystem_types": {
+    "ecosystem_classification": {
       "title": "Ecosystem types",
       "description": "<p>The selected area contains <b>{ecosystem_count}</b> ecosystem types and is predominantly <b>{dominant_ecosystem} ({dominant_ecosystem_perc}%)</b>. This composition reflects the area’s habitat diversity and influences patterns in carbon storage, water dynamics, and vegetation.</p>",
       "more-info": {

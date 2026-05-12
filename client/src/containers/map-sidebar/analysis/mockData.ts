@@ -87,7 +87,7 @@ export const mockAnalysisResult: AnalysisResult = {
       endL_mean_date: "April 15",
     },
   },
-  tree_cover_change: {
+  treed_area: {
     unit: "cm",
     chart: {},
     dataset: {
@@ -108,7 +108,7 @@ export const mockAnalysisResult: AnalysisResult = {
       changed_treed_area: 20,
     },
   },
-  ecosystem_types: {
+  ecosystem_classification: {
     unit: "cm",
     chart: {},
     dataset: {

@@ -48,7 +48,7 @@ const Widget: FC<WidgetProps> = ({ id, data }) => {
           layers={data[id].dataset.layers ?? []}
         />
       );
-    case "tree_cover_change":
+    case "treed_area":
       return (
         <TreeCoverChange
           id={id}
@@ -56,7 +56,7 @@ const Widget: FC<WidgetProps> = ({ id, data }) => {
           layers={data[id].dataset.layers ?? []}
         />
       );
-    case "ecosystem_types":
+    case "ecosystem_classification":
       return (
         <EcosystemTypes
           id={id}

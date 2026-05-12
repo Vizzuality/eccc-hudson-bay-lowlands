@@ -71,6 +71,9 @@ export interface AnalysisResult {
     FloodSusceptibilityStats
   >;
   snow_dynamics: WidgetData<TimeSeriesDataPoint, SnowDynamicsStats>;
-  tree_cover_change: WidgetData<CategoricalDataPoint, TreeCoverChangeStats>;
-  ecosystem_types: WidgetData<CategoricalDataPoint, EcosystemTypesStats>;
+  treed_area: WidgetData<CategoricalDataPoint, TreeCoverChangeStats>;
+  ecosystem_classification: WidgetData<
+    CategoricalDataPoint,
+    EcosystemTypesStats
+  >;
 }

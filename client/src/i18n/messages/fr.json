@@ -221,7 +221,7 @@
         "description": "Le moment et la durée de l'enneigement influencent la fonte printanière, l'humidité du sol et la saison de croissance, affectant la végétation et la dynamique des milieux humides."
       }
     },
-    "tree_cover_change": {
+    "treed_area": {
       "title": "Changement du couvert arboré",
       "description": "<p>Le couvert arboré de la zone a changé entre 1984 et 2022. Actuellement, <b>{total_treed_area}</b> km² de la zone sont boisés. Depuis 1984, <b>{newly_treed_area}</b> km² ont gagné un couvert arboré tandis que <b>{was_treed_area}</b> km² de couvert arboré ont été perdus, ce qui donne un changement net de <b>{changed_treed_area}</b> km².</p>",
       "more-info": {
@@ -229,7 +229,7 @@
         "description": "Les arbres fournissent d'importants services écosystémiques, notamment le stockage de carbone, l'habitat, la stabilisation des sols et la régulation de l'eau. Les changements du couvert arboré peuvent modifier ces fonctions et signaler des changements environnementaux plus larges."
       }
     },
-    "ecosystem_types": {
+    "ecosystem_classification": {
       "title": "Types d'écosystèmes",
       "description": "<p>La zone sélectionnée contient <b>{ecosystem_count}</b> types d'écosystèmes et est principalement composée de <b>{dominant_ecosystem} ({dominant_ecosystem_perc} %)</b>. Cette composition reflète la diversité des habitats de la zone et influence les schémas de stockage de carbone, de dynamique de l'eau et de végétation.</p>",
       "more-info": {
