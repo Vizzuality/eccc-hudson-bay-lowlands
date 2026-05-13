@@ -57,6 +57,7 @@ const Widget: FC<WidgetProps> = ({ id, data }) => {
           <SnowDynamics
             id={id}
             stats={data[id].stats}
+            chart={data[id].chart}
             layers={data[id].dataset.layers ?? []}
             onInfoButtonClick={onInfoButtonClick}
           />

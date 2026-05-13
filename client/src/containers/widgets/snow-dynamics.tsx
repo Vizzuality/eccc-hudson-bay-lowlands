@@ -9,7 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { SnowDynamicsStats } from "@/containers/analysis/types";
+import type {
+  SnowDynamicsStats,
+  TimeSeriesDataPoint,
+} from "@/containers/analysis/types";
 import LineChart from "@/containers/charts/line-chart";
 import Highlight from "@/containers/highlight";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
@@ -27,18 +30,6 @@ const WINTER_RANGES = [
 ] as const;
 
 type WinterKey = (typeof WINTER_RANGES)[number]["key"];
-
-const mockData = [
-  { x: 2021, y: 10 },
-  { x: 2022, y: 14 },
-  { x: 2023, y: 18 },
-  { x: 2024, y: 22 },
-  { x: 2025, y: 26 },
-  { x: 2027, y: 30 },
-  { x: 2028, y: 34 },
-  { x: 2029, y: 38 },
-  { x: 2030, y: 42 },
-];
 
 const Description = ({
   stats,
@@ -89,6 +80,7 @@ const Description = ({
 
 interface SnowDynamicsProps extends WidgetCardBaseProps {
   stats: SnowDynamicsStats;
+  chart: Record<string, TimeSeriesDataPoint[]>;
   layers: Layer[];
   onInfoButtonClick: () => void;
 }
@@ -96,6 +88,7 @@ interface SnowDynamicsProps extends WidgetCardBaseProps {
 const SnowDynamics: FC<SnowDynamicsProps> = ({
   id,
   stats,
+  chart,
   layers,
   onInfoButtonClick,
 }) => {
@@ -137,7 +130,7 @@ const SnowDynamics: FC<SnowDynamicsProps> = ({
       </MoreInfoTooltip>
       <LineChart
         title={t("chart-title")}
-        data={mockData}
+        data={chart.lengthT_mean ?? []}
         chartConfig={chartConfig}
       />
       <div className="flex gap-3">

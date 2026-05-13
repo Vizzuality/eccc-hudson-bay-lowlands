@@ -92,6 +92,7 @@ const widgetCardComponents = [
       <SnowDynamics
         id="snow_dynamics"
         stats={mockAnalysisResult.snow_dynamics.stats}
+        chart={mockAnalysisResult.snow_dynamics.chart ?? {}}
         layers={testWidgetLayers}
       />
     ),
