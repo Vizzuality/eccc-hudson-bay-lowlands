@@ -50,9 +50,15 @@ const chartConfig = {
 interface EcosystemTypesProps extends WidgetCardBaseProps {
   stats: EcosystemTypesStats;
   layers: Layer[];
+  onInfoButtonClick: () => void;
 }
 
-const EcosystemTypes: FC<EcosystemTypesProps> = ({ id, stats, layers }) => {
+const EcosystemTypes: FC<EcosystemTypesProps> = ({
+  id,
+  stats,
+  layers,
+  onInfoButtonClick,
+}) => {
   const t = useTranslations("widgets.ecosystem_classification");
   const { getTranslation } = useApiTranslation();
   const data = mockData.map((item) => ({
@@ -83,7 +89,7 @@ const EcosystemTypes: FC<EcosystemTypesProps> = ({ id, stats, layers }) => {
         />
       }
       layers={layers}
-      onInfoButtonClick={() => {}}
+      onInfoButtonClick={onInfoButtonClick}
       onAddToMapButtonClick={() => {}}
     >
       <MoreInfoTooltip title={t("more-info.title")}>

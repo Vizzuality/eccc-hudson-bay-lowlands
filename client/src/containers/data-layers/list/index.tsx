@@ -3,7 +3,7 @@ import { type FC, useState } from "react";
 import { Accordion } from "@/components/ui/accordion";
 import { Skeleton } from "@/components/ui/skeleton";
 import DataLayersListItem from "@/containers/data-layers/list/item";
-import DataLayersListItemDialog from "@/containers/data-layers/list/item/item-dialog";
+import DatasetDialog from "@/containers/dataset-dialog";
 import { cn } from "@/lib/utils";
 import type { NormalizedDataset } from "@/types";
 
@@ -47,7 +47,7 @@ const DataLayersList: FC<DataLayersListProps> = ({
           />
         ))}
       </Accordion>
-      <DataLayersListItemDialog
+      <DatasetDialog
         open={!!dialogProps}
         onOpenChange={() => setDialogProps(null)}
         dataset={dialogProps}

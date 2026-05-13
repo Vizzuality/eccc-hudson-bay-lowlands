@@ -31,12 +31,14 @@ const mockData = [
 interface FloodSusceptibilityProps extends WidgetCardBaseProps {
   stats: FloodSusceptibilityStats;
   layers: Layer[];
+  onInfoButtonClick: () => void;
 }
 
 const FloodSusceptibility: FC<FloodSusceptibilityProps> = ({
   id,
   stats,
   layers,
+  onInfoButtonClick,
 }) => {
   const t = useTranslations("widgets.flood_susceptibility");
   const { getTranslation } = useApiTranslation();
@@ -58,7 +60,7 @@ const FloodSusceptibility: FC<FloodSusceptibilityProps> = ({
         />
       }
       layers={layers}
-      onInfoButtonClick={() => {}}
+      onInfoButtonClick={onInfoButtonClick}
       onAddToMapButtonClick={() => {}}
     >
       <div className="flex gap-4">
