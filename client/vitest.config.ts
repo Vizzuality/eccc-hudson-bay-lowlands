@@ -59,7 +59,9 @@ export default defineConfig(({ mode }) => ({
 
         // Map-coupled components (better covered by E2E)
         "src/hooks/use-map-download.ts",
+        "src/hooks/use-widget-download.ts",
         "src/hooks/use-map-draw.ts",
+        "src/components/download-watermark.tsx",
         "src/containers/map/controls/download/**",
         "src/containers/map/index.tsx",
         "src/containers/map/controls/index.tsx",

@@ -48,7 +48,6 @@ const CarbonPeatland: FC<CarbonPeatlandProps> = ({
         />
       }
       layers={layers}
-      onDowloadButtonClick={() => {}}
       onInfoButtonClick={() => {}}
       onAddToMapButtonClick={() => {}}
     >

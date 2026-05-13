@@ -25,6 +25,10 @@ vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
   };
 });
 
+vi.mock("@/hooks/use-widget-download", () => ({
+  useWidgetDownload: () => ({ download: vi.fn(), loading: false }),
+}));
+
 const testWidgetLayers: Layer[] = [
   {
     id: "analysis.test.layer",

@@ -68,7 +68,6 @@ const WaterDynamics: FC<WaterDynamicsProps> = ({ id, unit, stats, layers }) => {
         />
       }
       layers={layers}
-      onDowloadButtonClick={() => {}}
       onInfoButtonClick={() => {}}
       onAddToMapButtonClick={() => {}}
     >

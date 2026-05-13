@@ -1,8 +1,14 @@
 "use client";
 
-import { DownloadIcon, InfoIcon, PlusIcon, XIcon } from "lucide-react";
+import {
+  DownloadIcon,
+  InfoIcon,
+  LoaderCircleIcon,
+  PlusIcon,
+  XIcon,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
-import { type FC, useCallback } from "react";
+import { type FC, useCallback, useRef } from "react";
 import { useLayerIds } from "@/app/[locale]/url-store";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +24,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { WidgetCardProps } from "@/containers/widgets/types";
+import { useWidgetDownload } from "@/hooks/use-widget-download";
 import { cn } from "@/lib/utils";
 
 const WidgetCard: FC<WidgetCardProps> = ({
@@ -28,12 +35,13 @@ const WidgetCard: FC<WidgetCardProps> = ({
   icon,
   className,
   layers,
-  onDowloadButtonClick,
   onInfoButtonClick,
   onAddToMapButtonClick,
 }) => {
   const t = useTranslations("widgets.card");
   const { layerIds, setLayerIds } = useLayerIds();
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { download, loading: downloading } = useWidgetDownload(cardRef, id);
 
   const handleAddToMap = useCallback(() => {
     if (layers?.length) {
@@ -57,23 +65,28 @@ const WidgetCard: FC<WidgetCardProps> = ({
   const isLayerSelected = layers?.some((layer) => layerIds.includes(layer.id));
 
   return (
-    <Card id={id} className="group gap-2">
+    <Card ref={cardRef} id={id} className="group relative gap-2">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             {icon}
             <h3 className="text-lg leading-8 font-normal">{title}</h3>
           </div>
-          <div className="flex items-center">
+          <div data-download-exclude className="flex items-center">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={onDowloadButtonClick}
+                  onClick={download}
+                  disabled={downloading}
                   aria-label={t("download-image")}
                 >
-                  <DownloadIcon />
+                  {downloading ? (
+                    <LoaderCircleIcon className="animate-spin" />
+                  ) : (
+                    <DownloadIcon />
+                  )}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>{t("download-image")}</TooltipContent>

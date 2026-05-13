@@ -63,7 +63,6 @@ const SnowDynamics: FC<SnowDynamicsProps> = ({ id, stats, layers }) => {
         />
       }
       layers={layers}
-      onDowloadButtonClick={() => {}}
       onInfoButtonClick={() => {}}
       onAddToMapButtonClick={() => {}}
     >

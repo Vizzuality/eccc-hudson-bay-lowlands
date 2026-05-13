@@ -58,7 +58,6 @@ const FloodSusceptibility: FC<FloodSusceptibilityProps> = ({
         />
       }
       layers={layers}
-      onDowloadButtonClick={() => {}}
       onInfoButtonClick={() => {}}
       onAddToMapButtonClick={() => {}}
     >
