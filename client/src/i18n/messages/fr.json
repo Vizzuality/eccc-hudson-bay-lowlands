@@ -120,6 +120,11 @@
       }
     }
   },
+  "dataset-dialog": {
+    "source": "Source",
+    "citation": "Citation",
+    "ok": "OK"
+  },
   "data-layers": {
     "search": {
       "placeholder": "Rechercher...",
@@ -130,11 +135,6 @@
     },
     "item": {
       "data-sources": "Sources de données"
-    },
-    "item-dialog": {
-      "source": "Source",
-      "citation": "Citation",
-      "ok": "OK"
     },
     "bottom-bar": {
       "active-data": "Données actives ({count})",

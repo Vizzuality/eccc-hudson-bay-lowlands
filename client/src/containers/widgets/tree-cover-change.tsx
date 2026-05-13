@@ -36,9 +36,15 @@ const mockData = [
 interface TreeCoverChangeProps extends WidgetCardBaseProps {
   stats: TreeCoverChangeStats;
   layers: Layer[];
+  onInfoButtonClick: () => void;
 }
 
-const TreeCoverChange: FC<TreeCoverChangeProps> = ({ id, stats, layers }) => {
+const TreeCoverChange: FC<TreeCoverChangeProps> = ({
+  id,
+  stats,
+  layers,
+  onInfoButtonClick,
+}) => {
   const t = useTranslations("widgets.treed_area");
   const { getTranslation } = useApiTranslation();
   const data = mockData.map((item) => ({
@@ -58,7 +64,7 @@ const TreeCoverChange: FC<TreeCoverChangeProps> = ({ id, stats, layers }) => {
         />
       }
       layers={layers}
-      onInfoButtonClick={() => {}}
+      onInfoButtonClick={onInfoButtonClick}
       onAddToMapButtonClick={() => {}}
     >
       <div className="flex gap-4">

@@ -39,9 +39,15 @@ const Description = ({ stats }: { stats: SnowDynamicsStats }) => {
 interface SnowDynamicsProps extends WidgetCardBaseProps {
   stats: SnowDynamicsStats;
   layers: Layer[];
+  onInfoButtonClick: () => void;
 }
 
-const SnowDynamics: FC<SnowDynamicsProps> = ({ id, stats, layers }) => {
+const SnowDynamics: FC<SnowDynamicsProps> = ({
+  id,
+  stats,
+  layers,
+  onInfoButtonClick,
+}) => {
   const t = useTranslations("widgets.snow_dynamics");
 
   const chartConfig = {
@@ -63,7 +69,7 @@ const SnowDynamics: FC<SnowDynamicsProps> = ({ id, stats, layers }) => {
         />
       }
       layers={layers}
-      onInfoButtonClick={() => {}}
+      onInfoButtonClick={onInfoButtonClick}
       onAddToMapButtonClick={() => {}}
     >
       <MoreInfoTooltip title={t("more-info.title")}>

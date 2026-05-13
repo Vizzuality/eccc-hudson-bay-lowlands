@@ -2,12 +2,12 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import { describe, expect, it, vi } from "vitest";
-import DataLayersListItemDialog from "@/containers/data-layers/list/item/item-dialog";
+import DatasetDialog from "@/containers/dataset-dialog";
 import messages from "@/i18n/messages/en.json";
 import { DATA_LAYERS } from "@/tests/helpers/mocks";
 import type { NormalizedDataset } from "@/types";
 
-describe("@containers/data-layers/list/item-dialog", () => {
+describe("@containers/dataset-dialog", () => {
   const DATASET = DATA_LAYERS[0];
 
   const renderDialog = (
@@ -27,7 +27,7 @@ describe("@containers/data-layers/list/item-dialog", () => {
     return {
       ...render(
         <NextIntlClientProvider locale="en" messages={messages}>
-          <DataLayersListItemDialog {...merged} />
+          <DatasetDialog {...merged} />
         </NextIntlClientProvider>,
       ),
       ...merged,

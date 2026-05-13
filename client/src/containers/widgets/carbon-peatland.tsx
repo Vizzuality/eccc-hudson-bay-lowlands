@@ -16,6 +16,7 @@ interface CarbonPeatlandProps extends WidgetCardBaseProps {
   stats: PeatCarbonStats;
   chart: Record<string, TimeSeriesDataPoint[]>;
   layers: Layer[];
+  onInfoButtonClick: () => void;
 }
 
 const CarbonPeatland: FC<CarbonPeatlandProps> = ({
@@ -23,6 +24,7 @@ const CarbonPeatland: FC<CarbonPeatlandProps> = ({
   stats,
   chart,
   layers,
+  onInfoButtonClick,
 }) => {
   const t = useTranslations("widgets.peat_carbon");
 
@@ -48,7 +50,7 @@ const CarbonPeatland: FC<CarbonPeatlandProps> = ({
         />
       }
       layers={layers}
-      onInfoButtonClick={() => {}}
+      onInfoButtonClick={onInfoButtonClick}
       onAddToMapButtonClick={() => {}}
     >
       <MoreInfoTooltip title={t("more-info.title")}>

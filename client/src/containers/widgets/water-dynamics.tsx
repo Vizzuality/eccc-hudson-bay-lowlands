@@ -32,9 +32,16 @@ interface WaterDynamicsProps extends WidgetCardBaseProps {
   unit: string;
   stats: WaterDynamicsStats;
   layers: Layer[];
+  onInfoButtonClick: () => void;
 }
 
-const WaterDynamics: FC<WaterDynamicsProps> = ({ id, unit, stats, layers }) => {
+const WaterDynamics: FC<WaterDynamicsProps> = ({
+  id,
+  unit,
+  stats,
+  layers,
+  onInfoButtonClick,
+}) => {
   const t = useTranslations("widgets.water_dynamics");
   const { getTranslation } = useApiTranslation();
   const data = Object.entries(mockData[0]).map(([key, value]) => ({
@@ -68,7 +75,7 @@ const WaterDynamics: FC<WaterDynamicsProps> = ({ id, unit, stats, layers }) => {
         />
       }
       layers={layers}
-      onInfoButtonClick={() => {}}
+      onInfoButtonClick={onInfoButtonClick}
       onAddToMapButtonClick={() => {}}
     >
       <div className="flex gap-4">
