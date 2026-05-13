@@ -83,7 +83,6 @@ const EcosystemTypes: FC<EcosystemTypesProps> = ({ id, stats, layers }) => {
         />
       }
       layers={layers}
-      onDowloadButtonClick={() => {}}
       onInfoButtonClick={() => {}}
       onAddToMapButtonClick={() => {}}
     >

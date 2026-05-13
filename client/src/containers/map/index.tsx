@@ -9,6 +9,7 @@ import {
   useMapBasemap,
   useSyncLayersSettings,
 } from "@/app/[locale]/url-store";
+import DownloadWatermark from "@/components/download-watermark";
 import AnalyzeButton from "@/containers/map/analyze-button";
 import {
   BASEMAPS,
@@ -18,7 +19,6 @@ import {
 } from "@/containers/map/constants";
 import { Controls } from "@/containers/map/controls";
 import MapDownload from "@/containers/map/controls/download";
-import DownloadWatermark from "@/containers/map/controls/download/watermark";
 import SettingsControl from "@/containers/map/controls/settings";
 import { BasemapControl } from "@/containers/map/controls/settings/basemap";
 import ZoomControl from "@/containers/map/controls/zoom";

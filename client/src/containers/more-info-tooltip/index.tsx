@@ -15,6 +15,7 @@ const MoreInfoTooltip: FC<MoreInfoTooltipProps> = ({ title, children }) => {
     <Tooltip>
       <TooltipTrigger asChild>
         <button
+          data-download-exclude
           type="button"
           className="flex items-center gap-1 text-muted-foreground cursor-help"
         >

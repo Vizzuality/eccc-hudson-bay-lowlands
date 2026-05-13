@@ -18,11 +18,14 @@ vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
   };
 });
 
+vi.mock("@/hooks/use-widget-download", () => ({
+  useWidgetDownload: () => ({ download: vi.fn(), loading: false }),
+}));
+
 const defaultCardProps: ComponentProps<typeof WidgetCard> = {
   id: "test_widget",
   title: "Test widget",
   icon: <span />,
-  onDowloadButtonClick: vi.fn(),
   onInfoButtonClick: vi.fn(),
   onAddToMapButtonClick: vi.fn(),
 };
@@ -80,12 +83,10 @@ describe("@containers/widgets/card", () => {
 
   it("fires callbacks when the action buttons are clicked", async () => {
     const user = userEvent.setup();
-    const onDowloadButtonClick = vi.fn();
     const onInfoButtonClick = vi.fn();
     const onAddToMapButtonClick = vi.fn();
 
     renderWidgetCard({
-      onDowloadButtonClick,
       onInfoButtonClick,
       onAddToMapButtonClick,
     });
@@ -94,7 +95,6 @@ describe("@containers/widgets/card", () => {
     await user.click(screen.getByRole("button", { name: /more info/i }));
     await user.click(screen.getByRole("button", { name: /add to map/i }));
 
-    expect(onDowloadButtonClick).toHaveBeenCalledTimes(1);
     expect(onInfoButtonClick).toHaveBeenCalledTimes(1);
     expect(onAddToMapButtonClick).toHaveBeenCalledTimes(1);
   });

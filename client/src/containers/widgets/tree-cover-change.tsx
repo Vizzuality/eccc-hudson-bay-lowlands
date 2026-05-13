@@ -58,7 +58,6 @@ const TreeCoverChange: FC<TreeCoverChangeProps> = ({ id, stats, layers }) => {
         />
       }
       layers={layers}
-      onDowloadButtonClick={() => {}}
       onInfoButtonClick={() => {}}
       onAddToMapButtonClick={() => {}}
     >
