@@ -45,9 +45,18 @@ export interface FloodSusceptibilityStats {
 }
 
 export interface SnowDynamicsStats {
-  selected_winter: string;
-  lengthT_mean: number;
-  endL_mean_date: string;
+  endL_mean_date_1819: string;
+  endL_mean_date_1920: string;
+  endL_mean_date_2021: string;
+  endL_mean_date_2122: string;
+  endL_mean_date_2223: string;
+  endL_mean_date_2324: string;
+  lengthT_mean_1819: number;
+  lengthT_mean_1920: number;
+  lengthT_mean_2021: number;
+  lengthT_mean_2122: number;
+  lengthT_mean_2223: number;
+  lengthT_mean_2324: number;
 }
 
 export interface EcosystemTypesStats {
