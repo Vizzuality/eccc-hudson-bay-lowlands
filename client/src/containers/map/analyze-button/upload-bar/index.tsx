@@ -27,7 +27,7 @@ import { API } from "@/lib/api";
 import { postAnalysisConfig } from "@/lib/api/config";
 import {
   type ParsedGeoJSON,
-  parseGeoJSONFile,
+  parseGeometryFile,
   UploadErrorType,
   type ValidGeometryType,
 } from "@/lib/utils/geometry-upload";
@@ -39,7 +39,9 @@ type UploadBarError =
   | "generic-error"
   | "upload-error-invalid-json"
   | "upload-error-invalid-geojson"
-  | "upload-error-unsupported-file";
+  | "upload-error-unsupported-file"
+  | "upload-error-invalid-zip"
+  | "upload-error-shp-missing-file";
 
 function mapUploadError(error: UploadErrorType): UploadBarError {
   switch (error) {
@@ -49,6 +51,10 @@ function mapUploadError(error: UploadErrorType): UploadBarError {
       return "upload-error-invalid-geojson";
     case UploadErrorType.UnsupportedFile:
       return "upload-error-unsupported-file";
+    case UploadErrorType.InvalidZip:
+      return "upload-error-invalid-zip";
+    case UploadErrorType.SHPMissingFile:
+      return "upload-error-shp-missing-file";
     default:
       return "generic-error";
   }
@@ -159,7 +165,7 @@ const UploadBar = () => {
       setError(null);
 
       try {
-        const parsed = await parseGeoJSONFile(file);
+        const parsed = await parseGeometryFile(file);
 
         setAnalysisSettings((settings) => ({
           ...settings,
@@ -196,7 +202,7 @@ const UploadBar = () => {
       <input
         ref={fileInputRef}
         type="file"
-        accept=".geojson,.json"
+        accept=".geojson,.json,.zip"
         className="hidden"
         onChange={handleFileChange}
       />
