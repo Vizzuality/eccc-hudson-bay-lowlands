@@ -221,7 +221,7 @@
       "chart-title": "Mean Snow Duration per Winter (days)",
       "avg-days": "AVG days",
       "mean-end-date": "Mean end date",
-      "description": "<p>Snow cover shapes seasonal conditions and ecosystem processes. For the winter of <b>{selected_winter}</b>, snow persisted for an average of <b>{lengthT_mean} days</b>, typically ending around <b>{endL_mean_date}</b>.</p>",
+      "description": "<p>Snow cover shapes seasonal conditions and ecosystem processes. For the winter of <dropdown>{selected_winter}</dropdown>, snow persisted for an average of <b>{lengthT_mean} days</b>, typically ending around <b>{endL_mean_date}</b>.</p>",
       "more-info": {
         "title": "Why are snow dynamics important?",
         "description": "The timing and duration of snow influence spring runoff, soil moisture, and the growing season, affecting vegetation and wetland dynamics."

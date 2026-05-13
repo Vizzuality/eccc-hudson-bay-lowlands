@@ -12,7 +12,9 @@ export default function RichText({ className, children }: Props) {
     <>
       {children({
         p: (chunks: ReactNode) => <p className={className}>{chunks}</p>,
-        b: (chunks: ReactNode) => <b className="font-bold">{chunks}</b>,
+        b: (chunks: ReactNode) => (
+          <b className="font-bold text-foreground">{chunks}</b>
+        ),
         i: (chunks: ReactNode) => <i className="italic">{chunks}</i>,
       })}
     </>

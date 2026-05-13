@@ -221,7 +221,7 @@
       "chart-title": "Durée moyenne de la neige par hiver (jours)",
       "avg-days": "Jours MOY",
       "mean-end-date": "Date de fin moyenne",
-      "description": "<p>Le couvert neigeux façonne les conditions saisonnières et les processus écosystémiques. Pour l'hiver <b>{selected_winter}</b>, la neige a persisté en moyenne pendant <b>{lengthT_mean} jours</b>, se terminant généralement vers le <b>{endL_mean_date}</b>.</p>",
+      "description": "<p>Le couvert neigeux façonne les conditions saisonnières et les processus écosystémiques. Pour l'hiver <dropdown>{selected_winter}</dropdown>, la neige a persisté en moyenne pendant <b>{lengthT_mean} jours</b>, se terminant généralement vers le <b>{endL_mean_date}</b>.</p>",
       "more-info": {
         "title": "Pourquoi la dynamique de la neige est-elle importante ?",
         "description": "Le moment et la durée de l'enneigement influencent la fonte printanière, l'humidité du sol et la saison de croissance, affectant la végétation et la dynamique des milieux humides."
