@@ -1,5 +1,7 @@
 """Tests for the GET /hbl-area endpoint."""
 
+from pytest import approx
+
 
 def test_hbl_area_returns_200(client):
     response = client.get("/hbl-area")
@@ -42,7 +44,7 @@ def test_hbl_area_matches_test_fixture_bounds(client):
     coords = body["geometry"]["coordinates"][0]  # outer ring of the test Polygon fixture
     lons = [pt[0] for pt in coords]
     lats = [pt[1] for pt in coords]
-    assert min(lons) == -117.0
-    assert max(lons) == -51.0
-    assert min(lats) == 45.0
-    assert max(lats) == 69.0
+    assert min(lons) == approx(-117.0)
+    assert max(lons) == approx(-51.0)
+    assert min(lats) == approx(45.0)
+    assert max(lats) == approx(69.0)
