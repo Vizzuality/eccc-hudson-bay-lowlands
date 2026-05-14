@@ -15,7 +15,7 @@ interface TreeMapProps {
 
 const TreeMap: FC<TreeMapProps> = ({ data, chartConfig }) => {
   return (
-    <section>
+    <section className="space-y-1.5">
       <ChartContainer config={chartConfig} className="h-[200px] w-full">
         <TreeMapChart data={data} dataKey="value">
           <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
@@ -26,6 +26,7 @@ const TreeMap: FC<TreeMapProps> = ({ data, chartConfig }) => {
           ...item,
           fill: chartConfig[item.key]?.color ?? "",
         }))}
+        className="justify-start"
       />
     </section>
   );

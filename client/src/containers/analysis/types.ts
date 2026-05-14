@@ -60,16 +60,34 @@ export interface SnowDynamicsStats {
 }
 
 export interface EcosystemTypesStats {
-  ecosystem_count: number;
-  dominant_ecosystem: string;
+  dominant_ecosystem: number;
   dominant_ecosystem_perc: number;
+  eco_bog_perc: number;
+  eco_coastal_perc: number;
+  eco_emergent_perc: number;
+  eco_fire_perc: number;
+  eco_graminoid_perc: number;
+  eco_grassland_perc: number;
+  eco_marine_perc: number;
+  eco_mudflats_perc: number;
+  eco_shrub_perc: number;
+  eco_temperate_perc: number;
+  eco_treed_perc: number;
+  eco_water_perc: number;
+  ecosystem_count: number;
 }
 
 export interface TreeCoverChangeStats {
-  total_treed_area: number;
-  newly_treed_area: number;
-  was_treed_area: number;
+  always_treed_area: number;
+  always_treed_perc: number;
   changed_treed_area: number;
+  newly_treed_area: number;
+  newly_treed_perc: number;
+  non_treed_area: number;
+  non_treed_perc: number;
+  total_treed_area: number;
+  was_treed_area: number;
+  was_treed_perc: number;
 }
 
 export interface AnalysisResult {

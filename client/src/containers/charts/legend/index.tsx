@@ -1,11 +1,18 @@
 import type { FC } from "react";
+import { cn } from "@/lib/utils";
 
 interface ChartLegendProps {
   items: { label: string; value: number; fill: string }[];
+  className?: string;
 }
-const ChartLegend: FC<ChartLegendProps> = ({ items }) => {
+const ChartLegend: FC<ChartLegendProps> = ({ items, className }) => {
   return (
-    <ul className="flex items-center justify-center gap-y-0.5 gap-x-2 flex-wrap text-muted-foreground">
+    <ul
+      className={cn(
+        "flex items-center justify-center gap-y-0.5 gap-x-2 flex-wrap text-muted-foreground",
+        className,
+      )}
+    >
       {items.map((item) => (
         <li
           key={`chart-legend-item-${item.label}-${item.value}`}

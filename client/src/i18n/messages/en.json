@@ -235,6 +235,12 @@
       "more-info": {
         "title": "Why is tree cover change important?",
         "description": "Trees provide important ecosystem services, including carbon storage, habitat, soil stabilization, and water regulation. Changes in tree cover can alter these functions and signal broader environmental shifts."
+      },
+      "chart": {
+        "non_treed_perc": "Non-treed",
+        "always_treed_perc": "Always-treed",
+        "newly_treed_perc": "Newly-treed",
+        "was_treed_perc": "Was-treed"
       }
     },
     "ecosystem_classification": {
@@ -243,6 +249,22 @@
       "more-info": {
         "title": "Why are ecosystem types important?",
         "description": "Different ecosystem types support different communities and ecosystem services. Understanding their distribution helps identify areas important for carbon storage, biodiversity, and ecological resilience."
+      },
+      "chart": {
+        "dominant_ecosystem": "Dominant ecosystem",
+        "dominant_ecosystem_perc": "Dominant ecosystem percentage",
+        "eco_bog_perc": "Bog",
+        "eco_coastal_perc": "Coastal Marsh",
+        "eco_emergent_perc": "Emergent/Open Wetland",
+        "eco_fire_perc": "Shrubland-grassland (Fire Disturbance)",
+        "eco_graminoid_perc": "Graminoid Fen",
+        "eco_grassland_perc": "Shrubland-grassland",
+        "eco_marine_perc": "Supralittoral Marine",
+        "eco_mudflats_perc": "Mudflats",
+        "eco_shrub_perc": "Shrub Fen",
+        "eco_temperate_perc": "Temperate/Boreal Forest",
+        "eco_treed_perc": "Treed Wetland",
+        "eco_water_perc": "Water"
       }
     },
     "share": {
