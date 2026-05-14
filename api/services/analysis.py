@@ -90,7 +90,7 @@ def validate_geometry(geojson) -> tuple:
     2. Structural validity — Shapely ``is_valid`` (no self-intersections, degenerate rings, etc.).
     3. Minimum area — projected area must be ≥ MIN_AREA_KM2.
     4. Maximum area — projected area must be ≤ MAX_AREA_KM2.
-    5. Geographic scope — geometry must intersect the HBL study-area shape (HBL_SHAPE).
+    5. Geographic scope — geometry must lie entirely within the HBL study-area shape (HBL_SHAPE).
 
     Returns a ``(geom, area_km2)`` tuple where ``geom`` is the EPSG:4326 Shapely
     geometry and ``area_km2`` is its area projected to EPSG:6933 (Cylindrical
@@ -145,13 +145,15 @@ def validate_geometry(geojson) -> tuple:
     logger.info("Step 4 passed — area within maximum: %.2f km²", area_km2)
 
     # ── Step 5: Geographic scope ──────────────────────────────────────────────
-    if not HBL_SHAPE.intersects(geom):
-        logger.warning("Step 5 failed — geometry does not intersect the HBL study area")
+    # ``covers`` (vs ``contains``) accepts polygons whose edge touches the HBL
+    # boundary, which matches user intent for "inside the highlighted region."
+    if not HBL_SHAPE.covers(geom):
+        logger.warning("Step 5 failed — geometry is not entirely within the HBL study area")
         raise HTTPException(
             status_code=422,
-            detail="Geometry does not intersect the Hudson Bay Lowlands study area.",
+            detail="Geometry must lie entirely within the Hudson Bay Lowlands study area.",
         )
-    logger.info("Step 5 passed — geometry intersects the HBL study area")
+    logger.info("Step 5 passed — geometry lies entirely within the HBL study area")
 
     logger.info("Geometry validation complete [area=%.2f km²]", area_km2)
     return geom, area_km2
