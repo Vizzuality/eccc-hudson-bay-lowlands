@@ -14,7 +14,7 @@ from db.database import engine
 from exception_handlers import http_exception_handler, unhandled_exception_handler, validation_exception_handler
 from logging_config import setup_logging
 from models import Category, Dataset, Layer  # noqa: F401  # Register models with Base metadata
-from routers import analysis, categories, cog, datasets, health, layers, seed
+from routers import analysis, categories, cog, datasets, hbl_area, health, layers, seed
 
 settings = get_settings()
 
@@ -121,6 +121,7 @@ app.include_router(categories.router, prefix="/categories", tags=["Categories"])
 app.include_router(datasets.router, prefix="/datasets", tags=["Datasets"])
 app.include_router(seed.router, prefix="/seed", tags=["Seed"])
 app.include_router(analysis.router, prefix="/analysis", tags=["Analysis"])
+app.include_router(hbl_area.router, prefix="/hbl-area", tags=["HBL Area"])
 
 
 @app.get(
@@ -143,4 +144,5 @@ def root():
         "datasets": "/datasets",
         "seed": "/seed",
         "analysis": "/analysis",
+        "hbl_area": "/hbl-area",
     }
