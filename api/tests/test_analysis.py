@@ -155,11 +155,11 @@ OUTSIDE_HBL_FEATURE = {
     "properties": {},
 }
 
-# A narrow polygon that crosses the HBL bbox western edge at lon=-117 (so it is
-# partly outside, partly inside HBL) and also overlaps the analysis_client raster
-# extent at lon=[-85, -83]. Should pass because the bbox check uses intersection,
-# not containment. Latitude is intentionally narrow to keep the area below
-# MAX_AREA_KM2 (50,000 km²) given the wide longitude span.
+# A narrow polygon that crosses the HBL study-area western edge at lon=-117 (so
+# it is partly outside, partly inside HBL) and also overlaps the analysis_client
+# raster extent at lon=[-85, -83]. Should pass because the HBL check uses
+# intersection, not containment. Latitude is intentionally narrow to keep the
+# area below MAX_AREA_KM2 (50,000 km²) given the wide longitude span.
 PARTIALLY_OUTSIDE_HBL_FEATURE = {
     "type": "Feature",
     "geometry": {
@@ -217,8 +217,8 @@ def test_valid_feature_collection_multiple_features_returns_200(analysis_client)
     assert response.status_code == 200
 
 
-def test_polygon_partially_outside_hbl_bbox_still_returns_200(analysis_client):
-    """Geometry that extends beyond the HBL bbox passes as long as it intersects it."""
+def test_polygon_partially_outside_hbl_still_returns_200(analysis_client):
+    """Geometry that extends beyond the HBL study area passes as long as it intersects it."""
     response = analysis_client.post("/analysis/", json=PARTIALLY_OUTSIDE_HBL_FEATURE)
     assert response.status_code == 200
 
@@ -1160,10 +1160,10 @@ def test_ecosystem_classification_dataset_layer_full_schema(analysis_client):
 
 
 # =============================================================================
-# NaN regression — polygon inside HBL bbox but outside raster footprints.
+# NaN regression — polygon inside HBL study area but outside raster footprints.
 #
 # The fixture rasters cover lon[-85, -83] lat[56, 58]. This polygon sits at
-# lon[-100, -99] lat[50, 50.5] — inside HBL_BBOX (-117..-51, 45..69) so it
+# lon[-100, -99] lat[50, 50.5] — inside the test HBL shape (-117..-51, 45..69) so it
 # passes step 5, but exactextract reads no valid pixels, returning NaN for
 # ops like mean/max/sum/majority. Pre-fix this produced 500
 # `Out of range float values are not JSON compliant: nan`.

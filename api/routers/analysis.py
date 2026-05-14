@@ -12,7 +12,7 @@ from config import get_settings
 from db.database import get_db
 from models.dataset import Dataset
 from schemas.analysis import AnalysisInput, AnalysisResponse
-from services.analysis import HBL_BBOX, MAX_AREA_KM2, MIN_AREA_KM2, validate_geometry
+from services.analysis import MAX_AREA_KM2, MIN_AREA_KM2, validate_geometry
 from services.zonal_stats import compute_zonal_stats
 
 logger = logging.getLogger(__name__)
@@ -32,8 +32,8 @@ router = APIRouter(tags=["Analysis"])
         "2. Structural validity — no self-intersections or degenerate rings\n"
         f"3. Minimum area — must be ≥ {MIN_AREA_KM2:g} km²\n"
         f"4. Maximum area — must be ≤ {MAX_AREA_KM2:,.0f} km²\n"
-        f"5. Geographic scope — must intersect the Hudson Bay Lowlands study area "
-        f"(lon=[{HBL_BBOX[0]}, {HBL_BBOX[2]}], lat=[{HBL_BBOX[1]}, {HBL_BBOX[3]}], EPSG:4326)"
+        "5. Geographic scope — must intersect the Hudson Bay Lowlands study area "
+        "(GeoJSON polygon in EPSG:4326)"
     ),
     responses={
         200: {"description": "Geometry is valid and ready for analysis"},

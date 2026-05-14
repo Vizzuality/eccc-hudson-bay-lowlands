@@ -45,6 +45,10 @@ class Settings(BaseSettings):
     s3_bucket_name: str = Field(default="", validation_alias="S3_BUCKET_NAME")
     aws_region: str = Field(default="ca-central-1", validation_alias="AWS_REGION")
 
+    # Path to the HBL study-area GeoJSON used to validate analysis inputs.
+    # Resolved relative to the API package root when not absolute.
+    hbl_shape_path: str = Field(default="data/polygon_4326.geojson", validation_alias="HBL_SHAPE_PATH")
+
     # Logging
     log_level: str = Field(default="info", validation_alias="LOG_LEVEL")
 
