@@ -47,10 +47,10 @@ const ItemHeader: FC<ItemHeaderProps> = ({ id, title, description }) => {
           <PlusIcon className="size-4" aria-hidden />
         )}
       </label>
-      <div className="px-5 pt-5 pb-4 space-y-2 group-hover:translate-x-2">
-        <h2 className="text-sm font-semibold">{title}</h2>
+      <div className="px-5 pt-5 pb-4 space-y-2 group-hover:translate-x-2 text-sm">
+        <h2 className="font-normal leading-5">{title}</h2>
 
-        <p className="text-xs text-muted-foreground font-medium pr-5">
+        <p className="text-muted-foreground font-medium leading-6 pr-5">
           {description}
         </p>
       </div>
