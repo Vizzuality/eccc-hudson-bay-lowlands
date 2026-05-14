@@ -103,6 +103,7 @@ const widgetCardComponents = [
       <TreeCoverChange
         id="treed_area"
         stats={mockAnalysisResult.treed_area.stats}
+        chart={mockAnalysisResult.treed_area.chart ?? {}}
         layers={testWidgetLayers}
       />
     ),
@@ -113,6 +114,7 @@ const widgetCardComponents = [
       <EcosystemTypes
         id="ecosystem_classification"
         stats={mockAnalysisResult.ecosystem_classification.stats}
+        chart={mockAnalysisResult.ecosystem_classification.chart ?? {}}
         layers={testWidgetLayers}
       />
     ),

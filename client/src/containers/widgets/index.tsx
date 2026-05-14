@@ -67,6 +67,7 @@ const Widget: FC<WidgetProps> = ({ id, data }) => {
           <TreeCoverChange
             id={id}
             stats={data[id].stats}
+            chart={data[id].chart}
             layers={data[id].dataset.layers ?? []}
             onInfoButtonClick={onInfoButtonClick}
           />
@@ -76,6 +77,7 @@ const Widget: FC<WidgetProps> = ({ id, data }) => {
           <EcosystemTypes
             id={id}
             stats={data[id].stats}
+            chart={data[id].chart}
             layers={data[id].dataset.layers ?? []}
             onInfoButtonClick={onInfoButtonClick}
           />

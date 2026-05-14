@@ -235,6 +235,12 @@
       "more-info": {
         "title": "Pourquoi le changement du couvert arboré est-il important ?",
         "description": "Les arbres fournissent d'importants services écosystémiques, notamment le stockage de carbone, l'habitat, la stabilisation des sols et la régulation de l'eau. Les changements du couvert arboré peuvent modifier ces fonctions et signaler des changements environnementaux plus larges."
+      },
+      "chart": {
+        "non_treed_perc": "Non Arboré",
+        "always_treed_perc": "Toujours Arboré",
+        "newly_treed_perc": "Nouvellement Arboré (Gain de Bois)",
+        "was_treed_perc": "Anciennement Arboré (Perte de Bois)"
       }
     },
     "ecosystem_classification": {
@@ -243,6 +249,22 @@
       "more-info": {
         "title": "Pourquoi les types d'écosystèmes sont-ils importants ?",
         "description": "Les différents types d'écosystèmes soutiennent différentes communautés et services écosystémiques. Comprendre leur répartition aide à identifier les zones importantes pour le stockage de carbone, la biodiversité et la résilience écologique."
+      },
+      "chart": {
+        "dominant_ecosystem": "Écosystème dominant",
+        "dominant_ecosystem_perc": "Pourcentage de l'écosystème dominant",
+        "eco_bog_perc": "Tourbière",
+        "eco_coastal_perc": "Marais côtier",
+        "eco_emergent_perc": "Zone humide émergente/ouverte",
+        "eco_fire_perc": "Landes-prairies (Perturbation par le feu)",
+        "eco_graminoid_perc": "Tourbière à graminoïdes",
+        "eco_grassland_perc": "Landes-prairies",
+        "eco_marine_perc": "Supralittoral marin",
+        "eco_mudflats_perc": "Vasières",
+        "eco_shrub_perc": "Tourbière arbustive",
+        "eco_temperate_perc": "Forêt Tempérée/Boréale",
+        "eco_treed_perc": "Zone Humide Arborée",
+        "eco_water_perc": "Eau"
       }
     },
     "share": {
