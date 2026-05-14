@@ -156,10 +156,11 @@ OUTSIDE_HBL_FEATURE = {
 }
 
 # A narrow polygon that crosses the HBL study-area western edge at lon=-117
-# (partly outside, partly inside HBL). Used to assert the containment check
-# rejects geometry that is not fully inside the HBL shape. Latitude is
-# intentionally narrow to keep the area below MAX_AREA_KM2 (50,000 km²) given
-# the wide longitude span.
+# (partly outside, partly inside HBL) and also overlaps the analysis_client
+# raster extent at lon=[-85, -83]. Passes ``/analysis`` (v1: intersects bbox)
+# and is rejected by ``/analysis/v2`` (must lie entirely within the HBL
+# polygon). Latitude is intentionally narrow to keep the area below
+# MAX_AREA_KM2 (50,000 km²) given the wide longitude span.
 PARTIALLY_OUTSIDE_HBL_FEATURE = {
     "type": "Feature",
     "geometry": {
@@ -217,11 +218,23 @@ def test_valid_feature_collection_multiple_features_returns_200(analysis_client)
     assert response.status_code == 200
 
 
-def test_polygon_partially_outside_hbl_returns_422(analysis_client):
-    """Geometry that extends beyond the HBL study area is rejected — must be fully inside."""
+def test_polygon_partially_outside_hbl_v1_returns_200(analysis_client):
+    """v1 accepts geometry that intersects the HBL bbox, even if partly outside."""
     response = analysis_client.post("/analysis/", json=PARTIALLY_OUTSIDE_HBL_FEATURE)
+    assert response.status_code == 200
+
+
+def test_polygon_partially_outside_hbl_v2_returns_422(analysis_client):
+    """v2 rejects geometry that is not entirely within the HBL study-area polygon."""
+    response = analysis_client.post("/analysis/v2", json=PARTIALLY_OUTSIDE_HBL_FEATURE)
     assert response.status_code == 422
     assert "hudson bay" in response.json()["detail"].lower()
+
+
+def test_valid_polygon_v2_returns_200(analysis_client):
+    """v2 happy path: polygon fully inside the HBL study area is accepted."""
+    response = analysis_client.post("/analysis/v2", json=VALID_POLYGON_FEATURE)
+    assert response.status_code == 200
 
 
 # =============================================================================
