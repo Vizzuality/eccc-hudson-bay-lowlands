@@ -1,0 +1,18 @@
+{
+  "type": "Feature",
+  "properties": {
+    "comment": "Wide rectangular polygon used as the HBL study-area shape during tests. Coordinates match the historical HBL_BBOX (-117, 45, -51, 69) so the existing test polygons remain inside it. Replace the production polygon at api/data/polygon_4326.geojson without touching this file."
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [-117.0, 45.0],
+        [-51.0, 45.0],
+        [-51.0, 69.0],
+        [-117.0, 69.0],
+        [-117.0, 45.0]
+      ]
+    ]
+  }
+}

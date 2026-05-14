@@ -1,12 +1,17 @@
 """Geometry validation service for POST /analysis."""
 
+import json
 import logging
+from pathlib import Path
 
 from fastapi import HTTPException
 from pyproj import Transformer
-from shapely.geometry import box, shape
+from shapely.geometry import shape
 from shapely.ops import transform, unary_union
+from shapely.prepared import prep
 from shapely.validation import explain_validity
+
+from config import get_settings
 
 logger = logging.getLogger(__name__)
 
@@ -18,14 +23,50 @@ logger = logging.getLogger(__name__)
 MIN_AREA_KM2: float = 1.0        # Polygons smaller than this produce meaningless stats
 MAX_AREA_KM2: float = 50_000.0   # ~⅛ of the HBL region; keeps raster I/O tractable
 
-# Hudson Bay Lowlands study area bounding box in EPSG:4326 (min_lon, min_lat, max_lon, max_lat).
-# Derived from the map default view [-112, 50, -56, 64] with a +5° buffer on every side.
-HBL_BBOX: tuple[float, float, float, float] = (-117.0, 45.0, -51.0, 69.0)
-
 # ─────────────────────────────────────────────────────────────────────────────
 
 # Module-level transformer — created once, reused across requests.
 _TRANSFORMER_4326_TO_6933 = Transformer.from_crs("EPSG:4326", "EPSG:6933", always_xy=True)
+
+
+def _load_hbl_shape():
+    """Load the HBL study-area polygon from GeoJSON and return a prepared geometry.
+
+    The file is expected to be in EPSG:4326 (lon/lat degrees) — same CRS as the
+    analysis input — so the containment check is a pure planar comparison with
+    no reprojection. See `.claude/PROJECTION.md` for rationale.
+
+    A FeatureCollection's features are unioned. The result is validated with
+    Shapely (``is_valid``) and wrapped in ``shapely.prepared.prep`` so repeated
+    predicate checks (``intersects``, ``covers``) are O(log n) rather than O(n).
+
+    Raises ``RuntimeError`` on startup if the file is missing or invalid — this
+    is a deploy-time configuration error, not a runtime condition.
+    """
+    raw_path = Path(get_settings().hbl_shape_path)
+    path = raw_path if raw_path.is_absolute() else Path(__file__).resolve().parent.parent / raw_path
+    if not path.is_file():
+        raise RuntimeError(f"HBL shape file not found at {path}")
+
+    with path.open() as f:
+        gj = json.load(f)
+
+    gj_type = gj.get("type")
+    if gj_type == "FeatureCollection":
+        geom = unary_union([shape(feat["geometry"]) for feat in gj["features"]])
+    elif gj_type == "Feature":
+        geom = shape(gj["geometry"])
+    else:
+        geom = shape(gj)
+
+    if not geom.is_valid:
+        raise RuntimeError(f"HBL shape at {path} is not a valid geometry: {explain_validity(geom)}")
+
+    logger.info("Loaded HBL shape from %s (type=%s, bounds=%s)", path, geom.geom_type, geom.bounds)
+    return prep(geom)
+
+
+HBL_SHAPE = _load_hbl_shape()
 
 
 def _extract_geometry(geojson):
@@ -49,7 +90,7 @@ def validate_geometry(geojson) -> tuple:
     2. Structural validity — Shapely ``is_valid`` (no self-intersections, degenerate rings, etc.).
     3. Minimum area — projected area must be ≥ MIN_AREA_KM2.
     4. Maximum area — projected area must be ≤ MAX_AREA_KM2.
-    5. Geographic scope — geometry must intersect HBL_BBOX.
+    5. Geographic scope — geometry must intersect the HBL study-area shape (HBL_SHAPE).
 
     Returns a ``(geom, area_km2)`` tuple where ``geom`` is the EPSG:4326 Shapely
     geometry and ``area_km2`` is its area projected to EPSG:6933 (Cylindrical
@@ -104,19 +145,11 @@ def validate_geometry(geojson) -> tuple:
     logger.info("Step 4 passed — area within maximum: %.2f km²", area_km2)
 
     # ── Step 5: Geographic scope ──────────────────────────────────────────────
-    hbl_box = box(*HBL_BBOX)
-    if not geom.intersects(hbl_box):
-        logger.warning(
-            "Step 5 failed — geometry does not intersect the HBL study area (bbox=%s)",
-            HBL_BBOX,
-        )
+    if not HBL_SHAPE.intersects(geom):
+        logger.warning("Step 5 failed — geometry does not intersect the HBL study area")
         raise HTTPException(
             status_code=422,
-            detail=(
-                "Geometry does not intersect the Hudson Bay Lowlands study area. "
-                f"Expected overlap with bounding box lon=[{HBL_BBOX[0]}, {HBL_BBOX[2]}] "
-                f"lat=[{HBL_BBOX[1]}, {HBL_BBOX[3]}] (EPSG:4326)."
-            ),
+            detail="Geometry does not intersect the Hudson Bay Lowlands study area.",
         )
     logger.info("Step 5 passed — geometry intersects the HBL study area")
 
