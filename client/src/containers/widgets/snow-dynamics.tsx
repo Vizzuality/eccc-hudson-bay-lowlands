@@ -78,6 +78,15 @@ const Description = ({
   );
 };
 
+const formatChartData = (chart: Record<string, TimeSeriesDataPoint[]>) => {
+  return Object.values(chart)
+    .flat()
+    .map((item) => ({
+      x: `${item.x}/${(Number(item.x) + 1).toString().slice(-2)}`,
+      y: item.y,
+    }));
+};
+
 interface SnowDynamicsProps extends WidgetCardBaseProps {
   stats: SnowDynamicsStats;
   chart: Record<string, TimeSeriesDataPoint[]>;
@@ -130,7 +139,7 @@ const SnowDynamics: FC<SnowDynamicsProps> = ({
       </MoreInfoTooltip>
       <LineChart
         title={t("chart-title")}
-        data={chart.lengthT_mean ?? []}
+        data={formatChartData(chart)}
         chartConfig={chartConfig}
       />
       <div className="flex gap-3">

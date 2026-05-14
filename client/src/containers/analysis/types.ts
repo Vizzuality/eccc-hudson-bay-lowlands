@@ -1,7 +1,7 @@
 import type { Dataset, Translatable } from "@/types";
 
 export interface TimeSeriesDataPoint {
-  x: number;
+  x: string | number;
   y: number;
 }
 
