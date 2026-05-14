@@ -32,7 +32,7 @@ router = APIRouter(tags=["Analysis"])
         "2. Structural validity — no self-intersections or degenerate rings\n"
         f"3. Minimum area — must be ≥ {MIN_AREA_KM2:g} km²\n"
         f"4. Maximum area — must be ≤ {MAX_AREA_KM2:,.0f} km²\n"
-        "5. Geographic scope — must intersect the Hudson Bay Lowlands study area "
+        "5. Geographic scope — must lie entirely within the Hudson Bay Lowlands study area "
         "(GeoJSON polygon in EPSG:4326)"
     ),
     responses={
