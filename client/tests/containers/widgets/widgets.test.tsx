@@ -62,6 +62,7 @@ const widgetCardComponents = [
         stats={mockAnalysisResult.peat_carbon.stats}
         chart={mockAnalysisResult.peat_carbon.chart}
         layers={testWidgetLayers}
+        onInfoButtonClick={vi.fn()}
       />
     ),
   },
@@ -73,6 +74,7 @@ const widgetCardComponents = [
         unit={mockAnalysisResult.water_dynamics.unit}
         stats={mockAnalysisResult.water_dynamics.stats}
         layers={testWidgetLayers}
+        onInfoButtonClick={vi.fn()}
       />
     ),
   },
@@ -83,6 +85,7 @@ const widgetCardComponents = [
         id="flood_susceptibility"
         stats={mockAnalysisResult.flood_susceptibility.stats}
         layers={testWidgetLayers}
+        onInfoButtonClick={vi.fn()}
       />
     ),
   },
@@ -94,6 +97,7 @@ const widgetCardComponents = [
         stats={mockAnalysisResult.snow_dynamics.stats}
         chart={mockAnalysisResult.snow_dynamics.chart ?? {}}
         layers={testWidgetLayers}
+        onInfoButtonClick={vi.fn()}
       />
     ),
   },
@@ -105,6 +109,7 @@ const widgetCardComponents = [
         stats={mockAnalysisResult.treed_area.stats}
         chart={mockAnalysisResult.treed_area.chart ?? {}}
         layers={testWidgetLayers}
+        onInfoButtonClick={vi.fn()}
       />
     ),
   },
@@ -116,6 +121,7 @@ const widgetCardComponents = [
         stats={mockAnalysisResult.ecosystem_classification.stats}
         chart={mockAnalysisResult.ecosystem_classification.chart ?? {}}
         layers={testWidgetLayers}
+        onInfoButtonClick={vi.fn()}
       />
     ),
   },
