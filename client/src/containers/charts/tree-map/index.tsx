@@ -40,12 +40,21 @@ const TreeMapCell: FC<CellProps> = ({
     <g>
       <rect x={gx} y={gy} width={gw} height={gh} fill={fill} rx={4} />
       {showLabel && (
-        <foreignObject x={gx} y={gy} width={gw} height={gh}>
-          <div className="flex h-full flex-col justify-center items-center px-2 text-xs font-bold leading-tight text-white">
-            <span className="truncate font-medium">{label}</span>
-            <span className="truncate">{value}%</span>
-          </div>
-        </foreignObject>
+        <text
+          x={gx + gw / 2}
+          y={gy + gh / 2}
+          textAnchor="middle"
+          fill="white"
+          fontSize={12}
+          fontWeight={700}
+        >
+          <tspan x={gx + gw / 2} dy="-0.4em">
+            {label}
+          </tspan>
+          <tspan x={gx + gw / 2} dy="1.2em">
+            {value}%
+          </tspan>
+        </text>
       )}
     </g>
   );
