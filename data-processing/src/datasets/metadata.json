@@ -1799,7 +1799,7 @@
                       "fill-color": "#000000",
                       "fill-opacity": 0.01
                     },
-                    "source-layer": "ecozones-49opvn"
+                    "source-layer": "ecozones"
                   },
                   {
                     "id": "ecozones-line",
@@ -1808,7 +1808,7 @@
                       "line-color": "#6e6e6e",
                       "line-width": 1
                     },
-                    "source-layer": "ecozones-49opvn"
+                    "source-layer": "ecozones"
                   }
                 ],
                 "params_config": [
@@ -1866,7 +1866,7 @@
                       "fill-color": "#000000",
                       "fill-opacity": 0.01
                     },
-                    "source-layer": "ecoprovinces-dq7frf"
+                    "source-layer": "ecoprovinces"
                   },
                   {
                     "id": "ecoprovinces-line",
@@ -1876,7 +1876,7 @@
                       "line-width": 1,
                       "line-dasharray": [1, 2]
                     },
-                    "source-layer": "ecoprovinces-dq7frf"
+                    "source-layer": "ecoprovinces"
                   }
                 ],
                 "params_config": [
@@ -1935,7 +1935,7 @@
                       "fill-color": "#000000",
                       "fill-opacity": 0.01
                     },
-                    "source-layer": "ecoregions-3tft44"
+                    "source-layer": "ecoregions"
                   },
                   {
                     "id": "ecoregions-line",
@@ -1944,7 +1944,7 @@
                       "line-color": "#6e6e6e",
                       "line-width": 1
                     },
-                    "source-layer": "ecoregions-3tft44"
+                    "source-layer": "ecoregions"
                   }
                 ],
                 "params_config": [
@@ -2002,7 +2002,7 @@
                       "fill-color": "#000000",
                       "fill-opacity": 0.01
                     },
-                    "source-layer": "ecodistricts-d4x3uv"
+                    "source-layer": "ecodistricts"
                   },
                   {
                     "id": "ecodistricts-line",
@@ -2012,7 +2012,7 @@
                       "line-width": 1,
                       "line-dasharray": [1, 2]
                     },
-                    "source-layer": "ecodistricts-d4x3uv"
+                    "source-layer": "ecodistricts"
                   }
                 ],
                 "params_config": [
