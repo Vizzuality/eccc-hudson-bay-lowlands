@@ -43,10 +43,9 @@ def _download_file(url: str, output_path: Path, timeout: int = 60) -> bool:
 def _extract_zip(zip_path: Path, output_dir: Path, remove_zip: bool = False) -> bool:
     """Extract a ZIP file."""
     try:
-        extract_dir = output_dir / zip_path.stem
-        print(f"Extracting {zip_path.name} → {extract_dir}")
+        print(f"Extracting {zip_path.name} → {output_dir}")
         with zipfile.ZipFile(zip_path, "r") as zip_ref:
-            zip_ref.extractall(extract_dir)
+            zip_ref.extractall(output_dir)
 
         if remove_zip:
             zip_path.unlink()
@@ -77,10 +76,13 @@ def _prepare_files(dataset_name: str, dataset: dict) -> list[dict]:
     # Layers
     elif "layers" in dataset:
         for layer in dataset["layers"]:
-            files_to_download.append({
+            entry = {
                 "url": layer.get("url"),
-                "filename": layer.get("filename")
-            })
+                "filename": layer.get("filename"),
+            }
+            if layer.get("extract"):
+                entry["extract"] = True
+            files_to_download.append(entry)
 
     # Simple files
     elif "files" in dataset:
@@ -101,7 +103,8 @@ def download_files(files: list[dict], output_dir: str, extract: bool = False, re
         file_path = output_path / f["filename"]
         if _download_file(f["url"], file_path):
             success_count += 1
-            if extract and file_path.suffix.lower() == ".zip":
+            should_extract = extract or f.get("extract", False)
+            if should_extract and file_path.suffix.lower() == ".zip":
                 _extract_zip(file_path, output_path, remove_zip)
 
     print(f"\nDownloaded {success_count}/{len(files)} files")

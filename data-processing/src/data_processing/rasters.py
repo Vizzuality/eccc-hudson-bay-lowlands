@@ -7,8 +7,9 @@ import numpy as np
 import rasterio
 from rasterio.features import shapes
 from rasterio.mask import mask
+from rasterio.transform import Affine
 from shapely import union_all
-from shapely.geometry import mapping, shape
+from shapely.geometry import MultiPolygon, Polygon, mapping, shape
 
 
 def detect_raster_type(geotiff_path: Path, categorical_threshold: int = 20) -> str:
@@ -263,17 +264,31 @@ def raster_to_footprint(raster_path, output_vector):
         crs = src.crs
 
     # Binary mask of valid data
-    mask = image != nodata
-    binary = mask.astype("uint8")
+    valid = image != nodata
+
+    # Downsample the mask to speed up vectorization — pixel-perfect edges
+    # are not needed for a clipping footprint
+    scale = 10
+    small = valid[::scale, ::scale]
+    scaled_transform = Affine(
+        transform.a * scale, transform.b, transform.c,
+        transform.d, transform.e * scale, transform.f,
+    )
+
+    binary = small.astype("uint8")
 
     # Extract polygons
-    geoms = [shape(geom) for geom, value in shapes(binary, mask=binary, transform=transform)]
+    geoms = [shape(geom) for geom, value in shapes(binary, mask=binary, transform=scaled_transform)]
 
-    # Merge into single footprint
-    footprint = union_all(geoms)
+    # Merge into single footprint and remove interior holes
+    merged = union_all(geoms)
+    if merged.geom_type == "MultiPolygon":
+        footprint = MultiPolygon([Polygon(p.exterior) for p in merged.geoms])
+    else:
+        footprint = Polygon(merged.exterior)
 
-    # Create GeoDataFrame
-    gdf = gpd.GeoDataFrame({"id": [1]}, geometry=[footprint], crs=crs)
+    # Create GeoDataFrame and reproject to EPSG:4326
+    gdf = gpd.GeoDataFrame({"id": [1]}, geometry=[footprint], crs=crs).to_crs(epsg=4326)
 
     # Save to file
     gdf.to_file(output_vector, driver="GeoJSON")
