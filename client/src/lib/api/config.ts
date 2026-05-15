@@ -32,6 +32,10 @@ export const getTileJsonConfig = (
   url: `/cog/${tileMatrixSetId}/tilejson.json?url=${path}`,
 });
 
+export const getHblAreaConfig: AxiosRequestConfig = {
+  url: "/hbl-area",
+};
+
 export const postAnalysisConfig = (
   geometry: GeoJSON.Feature | GeoJSON.FeatureCollection,
 ): AxiosRequestConfig => ({
