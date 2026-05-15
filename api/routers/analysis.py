@@ -13,22 +13,29 @@ differ only in step 5 of geometry validation:
 
 import logging
 from typing import Annotated
+from uuid import UUID
 
 import rasterio.errors
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
-from config import get_settings
+from config import Settings, get_settings
 from db.database import get_db
 from models.dataset import Dataset
 from schemas.analysis import AnalysisInput, AnalysisResponse
+from schemas.shared_analysis import (
+    SharedAnalysisCreate,
+    SharedAnalysisCreateResponse,
+    SharedAnalysisRead,
+)
 from services.analysis import (
     MAX_AREA_KM2,
     MIN_AREA_KM2,
     validate_geometry_v1,
     validate_geometry_v2,
 )
+from services.shared_analysis import SHARED_ANALYSIS_TTL_DAYS, create_shared, get_shared
 from services.zonal_stats import compute_zonal_stats
 
 logger = logging.getLogger(__name__)
@@ -130,3 +137,61 @@ def analyze_v2(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> 
     logger.info("POST /analysis/v2 received")
     geom, polygon_area_km2 = validate_geometry_v2(body)
     return _run_analysis(geom, polygon_area_km2, db)
+
+
+def _build_share_url(client_url: str, share_id: UUID) -> str:
+    """Build the full public share URL from the configured client base URL."""
+    return f"{client_url.rstrip('/')}/share/{share_id}"
+
+
+@router.post(
+    "/v2/share",
+    status_code=201,
+    summary="Persist an analysis snapshot for public sharing (v2)",
+    description=(
+        "Persists a successful v2 analysis snapshot so it can be re-displayed via a "
+        "public link. The body must include the rendered ``AnalysisResponse`` and the "
+        "GeoJSON Feature/FeatureCollection used to produce it. The geometry is "
+        "re-validated through the same v2 pipeline (steps 1–5) before the row is "
+        "inserted — invalid geometries are rejected with 422.\n\n"
+        f"Shared analyses are automatically deleted after {SHARED_ANALYSIS_TTL_DAYS} days. "
+        "The returned ``url`` is the full client-facing URL ready to be shared."
+    ),
+    responses={
+        201: {"description": "Snapshot persisted; returns the share id and full URL"},
+        422: {"description": "Payload failed validation (analysis schema or geometry)"},
+    },
+)
+def share_analysis_v2(
+    body: SharedAnalysisCreate,
+    db: Annotated[Session, Depends(get_db)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> SharedAnalysisCreateResponse:
+    """Persist an analysis snapshot and return the share id + full URL."""
+    logger.info("POST /analysis/v2/share received")
+    row = create_shared(db, body.analysis, body.geojson)
+    db.commit()
+    return SharedAnalysisCreateResponse(id=row.id, url=_build_share_url(settings.client_url, row.id))
+
+
+@router.get(
+    "/v2/share/{share_id}",
+    summary="Retrieve a previously shared analysis (v2)",
+    description=(
+        "Returns the stored ``AnalysisResponse`` and original geojson for a shared "
+        "analysis link. The stored payload is revalidated against the current "
+        "``AnalysisResponse`` schema on every read — if it no longer conforms, or "
+        "the row has been cleaned up, the endpoint responds with 410 Gone."
+    ),
+    responses={
+        200: {"description": "Stored analysis + geojson"},
+        410: {"description": "Share link has expired or is no longer available"},
+    },
+)
+def get_shared_analysis_v2(
+    share_id: UUID,
+    db: Annotated[Session, Depends(get_db)],
+) -> SharedAnalysisRead:
+    """Retrieve a previously shared analysis by id."""
+    logger.info("GET /analysis/v2/share/%s received", share_id)
+    return get_shared(db, share_id)

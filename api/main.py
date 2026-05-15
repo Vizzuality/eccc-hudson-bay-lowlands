@@ -13,8 +13,9 @@ from db.base import Base
 from db.database import engine
 from exception_handlers import http_exception_handler, unhandled_exception_handler, validation_exception_handler
 from logging_config import setup_logging
-from models import Category, Dataset, Layer  # noqa: F401  # Register models with Base metadata
+from models import Category, Dataset, Layer, SharedAnalysis  # noqa: F401  # Register models with Base metadata
 from routers import analysis, categories, cog, datasets, hbl_area, health, layers, seed
+from services.cleanup import cleanup_shared_analyses
 
 settings = get_settings()
 
@@ -45,6 +46,11 @@ async def lifespan(app: FastAPI):
     # Create database tables if they don't exist.
     # TODO: Replace with Alembic migrations once the data model is stable.
     Base.metadata.create_all(bind=engine)
+
+    # Schedule nightly cleanup of expired shared analyses (runs at 03:00 UTC).
+    # Calling the @repeat_at-decorated coroutine kicks off the background loop;
+    # it then re-fires itself on the configured cron schedule for the process lifetime.
+    await cleanup_shared_analyses()
 
     yield
 
