@@ -60,14 +60,14 @@ def shared_analysis_create_body(analysis_client):
 # ───────────────────────────── POST /analysis/v2/share ──────────────────────
 
 
-def test_share_returns_id_and_url(analysis_client, shared_analysis_create_body):
-    """Happy path: POST returns 201 with a UUID id and the full client URL."""
+def test_share_returns_id(analysis_client, shared_analysis_create_body):
+    """Happy path: POST returns 201 with a UUID id."""
     response = analysis_client.post("/analysis/v2/share", json=shared_analysis_create_body)
     assert response.status_code == 201, response.text
 
     body = response.json()
-    share_id = UUID(body["id"])  # raises if not a UUID
-    assert body["url"] == f"http://localhost:3000/share/{share_id}"
+    UUID(body["id"])  # raises if not a UUID
+    assert set(body.keys()) == {"id"}
 
 
 def test_share_persists_row(analysis_client, db_session, shared_analysis_create_body):
