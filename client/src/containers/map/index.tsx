@@ -5,8 +5,10 @@ import type { MapProps, MapRef } from "react-map-gl/mapbox";
 import MapBoxMap from "react-map-gl/mapbox";
 import {
   type LayersSettings,
+  MapStatus,
   useLayerIds,
   useMapBasemap,
+  useMapStatus,
   useSyncLayersSettings,
 } from "@/app/[locale]/url-store";
 import DownloadWatermark from "@/components/download-watermark";
@@ -22,6 +24,7 @@ import MapDownload from "@/containers/map/controls/download";
 import SettingsControl from "@/containers/map/controls/settings";
 import { BasemapControl } from "@/containers/map/controls/settings/basemap";
 import ZoomControl from "@/containers/map/controls/zoom";
+import { HblAreaMask } from "@/containers/map/hbl-area-mask";
 import { LayerManager } from "@/containers/map/layer-manager";
 import { useLayerZoomConstraints } from "@/containers/map/layer-manager/use-layer-zoom-constraints";
 import MapLegend from "@/containers/map/legend";
@@ -51,6 +54,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
   const { layersSettings, setLayersSettings } = useSyncLayersSettings();
   const { maxZoom } = useLayerZoomConstraints();
   const [isAnalyzing] = useIsAnalyzing();
+  const { mapStatus } = useMapStatus();
 
   // Enforce zoom constraints imperatively to avoid triggering _createProxyTransform
   // in @vis.gl/react-mapbox. Passing minZoom/maxZoom as props causes it to re-wrap
@@ -122,6 +126,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
         {loaded && (
           <>
             <LayerManager />
+            {mapStatus === MapStatus.upload && <HblAreaMask />}
             <MapTooltip />
             {children}
           </>

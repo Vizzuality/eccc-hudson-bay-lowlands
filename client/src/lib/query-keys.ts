@@ -16,6 +16,9 @@ export const queryKeys = createQueryKeyStore({
       queryKey: [{ id }],
     }),
   },
+  hblArea: {
+    all: null,
+  },
   cog: {
     tileInfo: (path: string) => [{ path }],
   },
