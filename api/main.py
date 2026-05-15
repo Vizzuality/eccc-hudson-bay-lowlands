@@ -1,5 +1,6 @@
 """FastAPI application with enhanced OpenAPI configuration and CORS support."""
 
+import asyncio
 import os
 from contextlib import asynccontextmanager
 
@@ -48,9 +49,10 @@ async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
 
     # Schedule nightly cleanup of expired shared analyses (runs at 03:00 UTC).
-    # Calling the @repeat_at-decorated coroutine kicks off the background loop;
-    # it then re-fires itself on the configured cron schedule for the process lifetime.
-    await cleanup_shared_analyses()
+    # fastapi-utilities `@repeat_at` returns a wrapper that *is* the cron loop
+    # for async functions, so awaiting it would block startup forever — run it
+    # as a background task instead.
+    asyncio.create_task(cleanup_shared_analyses())
 
     yield
 
