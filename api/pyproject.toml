@@ -5,6 +5,7 @@ description = "ECCC Hudson Bay Lowlands backend API"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi[standard]",
+    "fastapi-utilities>=0.3",
     "titiler-core==1.1.0",
     "pydantic-settings>=2.0.0",
     "sqlalchemy>=2.0",

@@ -78,6 +78,24 @@ Stores metadata about Cloud Optimized GeoTIFF (COG) and other geospatial layers 
 
 **ORM Note**: The `metadata` column is accessed via the Python attribute `metadata_` to avoid collision with SQLAlchemy's reserved `Base.metadata`. Similarly, `format` maps to `format_` and `type` maps to `type_`.
 
+### `shared_analyses`
+
+Persisted analysis snapshots used to back public share links for `POST /analysis/v2/share`. Rows are deleted automatically by the nightly cleanup task once older than the configured TTL (30 days).
+
+| Column | Type | Nullable | Description |
+|--------|------|----------|-------------|
+| `id` | `UUID` (PK) | No | Generated client-side via `uuid4()` |
+| `analysis` | `JSON` | No | Snapshot of the full `AnalysisResponse` payload |
+| `geojson` | `JSON` | No | The input GeoJSON Feature/FeatureCollection used for the analysis, returned as-is on read so the FE can re-draw the AOI |
+| `created_at` | `TIMESTAMP WITH TIME ZONE` (indexed) | No | Insertion time; the cleanup task reads this column to find rows past the TTL |
+
+**ORM model**: `api/models/shared_analysis.py`
+**Pydantic schemas**: `api/schemas/shared_analysis.py`
+
+**Relationships**: None — snapshots are self-contained so they keep working even if other tables change.
+
+**Read-time validation**: `GET /analysis/v2/share/{id}` revalidates the stored `analysis` column against the current `AnalysisResponse` schema; rows that no longer conform return `410 Gone`, the same response as a missing row.
+
 ## Internationalization (i18n)
 
 All `metadata` columns use a **field-first** i18n structure. Each field contains an object with language keys, rather than grouping all fields under a language key.

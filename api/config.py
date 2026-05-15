@@ -41,6 +41,9 @@ class Settings(BaseSettings):
     # Seed secret for authenticating POST /seed requests
     seed_secret: str = Field(validation_alias="SEED_SECRET")
 
+    # Public base URL of the client app, used to build full share URLs from /analysis/v2/share
+    client_url: str = Field(validation_alias="CLIENT_URL")
+
     # S3 configuration
     s3_bucket_name: str = Field(default="", validation_alias="S3_BUCKET_NAME")
     aws_region: str = Field(default="ca-central-1", validation_alias="AWS_REGION")
