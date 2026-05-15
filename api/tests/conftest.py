@@ -4,7 +4,6 @@ import os
 
 os.environ["TESTING"] = "true"
 os.environ.setdefault("SEED_SECRET", "test-seed-secret")
-os.environ.setdefault("CLIENT_URL", "http://localhost:3000")
 os.environ.setdefault("S3_BUCKET_NAME", "test-bucket")
 os.environ.setdefault("HBL_SHAPE_PATH", "tests/fixtures/hbl_shape_test.geojson")
 

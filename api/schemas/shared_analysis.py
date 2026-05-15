@@ -18,7 +18,6 @@ class SharedAnalysisCreateResponse(BaseModel):
     """Response from ``POST /analysis/v2/share``."""
 
     id: UUID
-    url: str
 
 
 class SharedAnalysisRead(BaseModel):

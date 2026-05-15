@@ -20,7 +20,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
-from config import Settings, get_settings
+from config import get_settings
 from db.database import get_db
 from models.dataset import Dataset
 from schemas.analysis import AnalysisInput, AnalysisResponse
@@ -139,11 +139,6 @@ def analyze_v2(body: AnalysisInput, db: Annotated[Session, Depends(get_db)]) -> 
     return _run_analysis(geom, polygon_area_km2, db)
 
 
-def _build_share_url(client_url: str, share_id: UUID) -> str:
-    """Build the full public share URL from the configured client base URL."""
-    return f"{client_url.rstrip('/')}/share/{share_id}"
-
-
 @router.post(
     "/v2/share",
     status_code=201,
@@ -155,23 +150,22 @@ def _build_share_url(client_url: str, share_id: UUID) -> str:
         "re-validated through the same v2 pipeline (steps 1–5) before the row is "
         "inserted — invalid geometries are rejected with 422.\n\n"
         f"Shared analyses are automatically deleted after {SHARED_ANALYSIS_TTL_DAYS} days. "
-        "The returned ``url`` is the full client-facing URL ready to be shared."
+        "Clients build the public-facing URL themselves from the returned ``id``."
     ),
     responses={
-        201: {"description": "Snapshot persisted; returns the share id and full URL"},
+        201: {"description": "Snapshot persisted; returns the share id"},
         422: {"description": "Payload failed validation (analysis schema or geometry)"},
     },
 )
 def share_analysis_v2(
     body: SharedAnalysisCreate,
     db: Annotated[Session, Depends(get_db)],
-    settings: Annotated[Settings, Depends(get_settings)],
 ) -> SharedAnalysisCreateResponse:
-    """Persist an analysis snapshot and return the share id + full URL."""
+    """Persist an analysis snapshot and return the share id."""
     logger.info("POST /analysis/v2/share received")
     row = create_shared(db, body.analysis, body.geojson)
     db.commit()
-    return SharedAnalysisCreateResponse(id=row.id, url=_build_share_url(settings.client_url, row.id))
+    return SharedAnalysisCreateResponse(id=row.id)
 
 
 @router.get(

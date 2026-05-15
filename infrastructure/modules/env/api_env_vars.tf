@@ -12,7 +12,6 @@ locals {
     DB_PORT        = module.postgresql.port
     S3_BUCKET_NAME = module.s3.s3_outputs.name
     SEED_SECRET    = random_string.seed_secret.result
-    CLIENT_URL     = "https://${var.domain}"
 
   }
   api_env_vars = {

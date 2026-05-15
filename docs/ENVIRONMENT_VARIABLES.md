@@ -41,7 +41,6 @@ Copy `.env.example` to `.env` at the project root. These variables configure all
 | `AWS_SECRET_ACCESS_KEY` | No | `""` | AWS IAM secret access key for S3 authentication. Not needed if using IAM role-based access. |
 | `AWS_SESSION_TOKEN` | No | `""` | Optional AWS session token for temporary STS credentials. Used with `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. |
 | `SEED_SECRET` | **Yes** | *(none)* | Secret token for authorizing database seed requests via `POST /seed`. The API will crash on startup if this is not set. |
-| `CLIENT_URL` | **Yes** | *(none)* | Public base URL of the client app (e.g., `https://eccc.dev-vizzuality.com`). Used to build the full share URL returned by `POST /analysis/v2/share`. The API will crash on startup if this is not set. |
 | `ROOT_PATH` | No | `""` | FastAPI root path for reverse proxy. Set to `/api` in production. |
 
 ### Client (build-time)
@@ -87,7 +86,6 @@ Configured in GitHub repository settings under Settings > Secrets and variables 
 | `AWS_SECRET_ACCESS_KEY` | AWS IAM secret key (optional with IAM role) | Deploy |
 | `AWS_SESSION_TOKEN` | Optional AWS STS session token | Deploy |
 | `SEED_SECRET` | Secret token for authorizing `POST /seed` requests | Deploy |
-| `CLIENT_URL` | Public base URL of the client app, used to build share URLs | Deploy |
 | `NEXTAUTH_SECRET` | Production NextAuth.js secret | Deploy |
 
 ### Variables (non-sensitive)
@@ -119,7 +117,6 @@ These are set in the deploy bundle `.env` and consumed by `docker-compose.prod.y
 | `AWS_SECRET_ACCESS_KEY` | api | AWS IAM secret key (optional with IAM role) |
 | `AWS_SESSION_TOKEN` | api | AWS STS session token (optional) |
 | `SEED_SECRET` | api | Secret token for authorizing `POST /seed` requests |
-| `CLIENT_URL` | api | Public base URL of the client app, used to build share URLs returned by `POST /analysis/v2/share` |
 | `ROOT_PATH` | api | Always `/api` in production (set in compose file) |
 | `NEXTAUTH_URL` | client | Production URL for NextAuth.js |
 | `NEXTAUTH_SECRET` | client | NextAuth.js signing secret |
