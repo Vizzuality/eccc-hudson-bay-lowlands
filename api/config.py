@@ -47,7 +47,7 @@ class Settings(BaseSettings):
 
     # Path to the HBL study-area GeoJSON used to validate analysis inputs.
     # Resolved relative to the API package root when not absolute.
-    hbl_shape_path: str = Field(default="data/polygon_4326.geojson", validation_alias="HBL_SHAPE_PATH")
+    hbl_shape_path: str = Field(default="data/HJBL_footprint.geojson", validation_alias="HBL_SHAPE_PATH")
 
     # Logging
     log_level: str = Field(default="info", validation_alias="LOG_LEVEL")
