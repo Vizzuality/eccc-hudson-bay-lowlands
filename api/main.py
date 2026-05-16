@@ -20,6 +20,10 @@ from services.cleanup import cleanup_shared_analyses
 
 settings = get_settings()
 
+# Strong references to background tasks so they aren't garbage-collected
+# while still running (asyncio only keeps a weak reference).
+_background_tasks: set[asyncio.Task] = set()
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -52,7 +56,9 @@ async def lifespan(app: FastAPI):
     # fastapi-utilities `@repeat_at` returns a wrapper that *is* the cron loop
     # for async functions, so awaiting it would block startup forever — run it
     # as a background task instead.
-    asyncio.create_task(cleanup_shared_analyses())
+    cleanup_task = asyncio.create_task(cleanup_shared_analyses())
+    _background_tasks.add(cleanup_task)
+    cleanup_task.add_done_callback(_background_tasks.discard)
 
     yield
 
