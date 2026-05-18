@@ -63,8 +63,16 @@ describe("HblAreaMask", () => {
     expect(getByTestId("layer-hbl-area-mask-fill")).toBeDefined();
   });
 
-  it("renders nothing when data is not available", () => {
-    mockUseHblArea.mockReturnValue({ data: undefined });
+  it("renders a loading spinner while data is loading", () => {
+    mockUseHblArea.mockReturnValue({ data: undefined, isLoading: true });
+
+    const { getByLabelText } = render(<HblAreaMask />, { wrapper });
+
+    expect(getByLabelText("Loading study area")).toBeDefined();
+  });
+
+  it("renders nothing when data is not available and not loading", () => {
+    mockUseHblArea.mockReturnValue({ data: undefined, isLoading: false });
 
     const { container } = render(<HblAreaMask />, { wrapper });
 

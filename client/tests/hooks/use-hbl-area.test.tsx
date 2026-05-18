@@ -50,10 +50,10 @@ describe("useHblArea", () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    const data = result.current.data!;
-    expect(data.geometry.type).toBe("Polygon");
-    expect(data.geometry.coordinates).toHaveLength(2);
-    expect(data.geometry.coordinates[0]).toEqual([
+    const data = result.current.data;
+    expect(data?.geometry.type).toBe("Polygon");
+    expect(data?.geometry.coordinates).toHaveLength(2);
+    expect(data?.geometry.coordinates[0]).toEqual([
       [-180, -85],
       [180, -85],
       [180, 85],
