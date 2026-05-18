@@ -8,6 +8,10 @@ import pytest
 from models.shared_analysis import SharedAnalysis
 from services.shared_analysis import SHARED_ANALYSIS_TTL_DAYS, delete_expired
 
+# Bound on the clock skew between the test process and the DB ``server_default=func.now()``
+# call. Tests using this assert ``created_at`` is "recent" without flaking on slow CI.
+RECENT_WINDOW = timedelta(minutes=5)
+
 # A ~6,700 km² polygon centred on (-84, 57) — well inside the HBL study area and the
 # extent of the rasters created by the ``analysis_client`` fixture. Mirrors the
 # constant in tests/test_analysis.py rather than importing across test modules.
@@ -108,7 +112,7 @@ def test_share_rejects_geojson_outside_hbl(analysis_client, shared_analysis_crea
 
 
 def test_get_share_happy_path(analysis_client, shared_analysis_create_body):
-    """GET returns the same analysis + geojson that were posted, plus the row id."""
+    """GET returns the same analysis + geojson that were posted, plus the row id and created_at."""
     create_response = analysis_client.post("/analysis/v2/share", json=shared_analysis_create_body)
     share_id = create_response.json()["id"]
 
@@ -119,6 +123,34 @@ def test_get_share_happy_path(analysis_client, shared_analysis_create_body):
     assert body["id"] == share_id
     assert body["analysis"] == shared_analysis_create_body["analysis"]
     assert body["geojson"] == shared_analysis_create_body["geojson"]
+    assert "created_at" in body
+
+
+def test_get_share_returns_created_at_close_to_now(analysis_client, shared_analysis_create_body):
+    """The ``created_at`` returned by GET is the row's persisted timestamp (near now, tz-aware)."""
+    create_response = analysis_client.post("/analysis/v2/share", json=shared_analysis_create_body)
+    share_id = create_response.json()["id"]
+
+    get_response = analysis_client.get(f"/analysis/v2/share/{share_id}")
+    assert get_response.status_code == 200, get_response.text
+
+    created_at = datetime.fromisoformat(get_response.json()["created_at"])
+    assert created_at.tzinfo is not None, "created_at must be timezone-aware"
+    assert abs(datetime.now(timezone.utc) - created_at) < RECENT_WINDOW
+
+
+def test_get_share_created_at_matches_row(analysis_client, db_session, shared_analysis_create_body):
+    """``created_at`` in the GET response equals the value persisted in the DB row."""
+    create_response = analysis_client.post("/analysis/v2/share", json=shared_analysis_create_body)
+    share_id = UUID(create_response.json()["id"])
+
+    row = db_session.get(SharedAnalysis, share_id)
+    assert row is not None
+
+    get_response = analysis_client.get(f"/analysis/v2/share/{share_id}")
+    assert get_response.status_code == 200, get_response.text
+
+    assert datetime.fromisoformat(get_response.json()["created_at"]) == row.created_at
 
 
 def test_get_share_missing_returns_410(client):
