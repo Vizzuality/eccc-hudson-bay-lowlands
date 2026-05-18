@@ -1,5 +1,6 @@
 """Pydantic schemas for the shared-analysis endpoints."""
 
+from datetime import datetime
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -25,8 +26,12 @@ class SharedAnalysisRead(BaseModel):
 
     ``geojson`` is returned as an opaque dict (the exact payload that was persisted) —
     revalidating it on read would only repeat work already done on write.
+
+    ``created_at`` is the UTC timestamp when the snapshot was persisted; the FE uses it
+    to display "shared on …" alongside the analysis.
     """
 
     id: UUID
     analysis: AnalysisResponse
     geojson: dict
+    created_at: datetime

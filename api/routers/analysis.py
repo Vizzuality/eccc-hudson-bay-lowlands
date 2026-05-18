@@ -172,13 +172,14 @@ def share_analysis_v2(
     "/v2/share/{share_id}",
     summary="Retrieve a previously shared analysis (v2)",
     description=(
-        "Returns the stored ``AnalysisResponse`` and original geojson for a shared "
-        "analysis link. The stored payload is revalidated against the current "
-        "``AnalysisResponse`` schema on every read — if it no longer conforms, or "
-        "the row has been cleaned up, the endpoint responds with 410 Gone."
+        "Returns the stored ``AnalysisResponse``, original geojson, and the "
+        "``created_at`` timestamp of the snapshot. The stored payload is revalidated "
+        "against the current ``AnalysisResponse`` schema on every read — if it no "
+        "longer conforms, or the row has been cleaned up, the endpoint responds with "
+        "410 Gone."
     ),
     responses={
-        200: {"description": "Stored analysis + geojson"},
+        200: {"description": "Stored analysis + geojson + created_at"},
         410: {"description": "Share link has expired or is no longer available"},
     },
 )

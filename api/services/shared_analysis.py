@@ -70,7 +70,12 @@ def get_shared(db: Session, share_id: UUID) -> SharedAnalysisRead:
         )
         raise HTTPException(status_code=410, detail=EXPIRED_DETAIL)
 
-    return SharedAnalysisRead(id=row.id, analysis=analysis, geojson=row.geojson)
+    return SharedAnalysisRead(
+        id=row.id,
+        analysis=analysis,
+        geojson=row.geojson,
+        created_at=row.created_at,
+    )
 
 
 def delete_expired(db: Session, ttl_days: int = SHARED_ANALYSIS_TTL_DAYS) -> int:
