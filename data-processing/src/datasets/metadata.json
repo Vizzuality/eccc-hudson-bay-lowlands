@@ -528,7 +528,7 @@
           "id": 4,
           "metadata": {
             "title": {
-              "en": "Annual 30 m snow dynamics (2018-2019 to 2023-2024)",
+              "en": "Annual 30 m Snow Dynamics (2018-2019 to 2023-2024)",
               "fr": "Dynamique annuelle de la neige à 30 m (2018-2019 à 2023-2024)"
             },
             "description": {
@@ -1379,7 +1379,7 @@
           "id": 5,
           "metadata": {
             "title": {
-              "en": "Treed Area (1984-2022)",
+              "en": "Treed Area (1984–2022)",
               "fr": "Zone arborée au Canada (1984-2022)"
             },
             "description": {
@@ -1769,7 +1769,7 @@
               "fr": "https://sis.agr.gc.ca/siscan/nsdb/ecostrat/gis_data.html"
             },
             "citation": {
-              "en": "Government of Canada. (2017). National Ecological Framework for Canada [GIS dataset]",
+              "en": "Government of Canada. (2017). National Ecological Framework for Canada [GIS dataset].",
               "fr": "Gouvernement du Canada. (2017). Cadre écologique national du Canada [jeu de données SIG]."
             }
           },
