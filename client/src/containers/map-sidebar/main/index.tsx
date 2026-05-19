@@ -25,10 +25,17 @@ const Main = () => {
     });
   const t = useTranslations("map");
   const { layerIds, setLayerIds } = useLayerIds();
+  const getActiveDataCount = () => {
+    if (layerIds.some((l) => l === DEFAULT_LAYER_IDS[0])) {
+      return layerIds.length === 1 ? 1 : layerIds.length - 1;
+    }
+
+    return layerIds.length;
+  };
 
   return (
     <ScrollArea className="min-h-0 flex-1">
-      <div className="space-y-4">
+      <div className="space-y-4 pb-12">
         <header className="min-w-0 px-6">
           <h1 className="text-4xl mb-5">{t("title")}</h1>
           <p className="text-muted-foreground">{t("description")}</p>
@@ -44,8 +51,8 @@ const Main = () => {
           isLoading={isFilteredDatasetsLoading}
         />
         <DataLayersBottomBar
-          activeDataCount={layerIds.length - DEFAULT_LAYER_IDS.length}
-          onRemoveAll={() => setLayerIds(DEFAULT_LAYER_IDS)}
+          activeDataCount={getActiveDataCount()}
+          onRemoveAll={() => setLayerIds([])}
         />
       </div>
     </ScrollArea>
