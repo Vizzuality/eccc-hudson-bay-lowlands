@@ -73,7 +73,7 @@ vi.mock("@/components/ui/scroll-area", () => ({
   ),
 }));
 
-function setupHooks(layerIds: number[] = []) {
+function setupHooks(layerIds: string[] = []) {
   (useLayerIds as Mock).mockReturnValue({
     layerIds,
     setLayerIds: mockSetLayerIds,
@@ -106,29 +106,41 @@ describe("@containers/map-sidebar/main", () => {
   });
 
   it("passes datasets to DataLayersList", () => {
-    setupHooks([1, 5]);
+    setupHooks(["layer-a", "layer-b"]);
     renderMain();
 
     expect(capturedListProps.datasets).toBeDefined();
     expect(Array.isArray(capturedListProps.datasets)).toBe(true);
   });
 
-  it("passes active layer count to DataLayersBottomBar", () => {
-    setupHooks([1, 2, 3]);
+  it("passes active layer count to DataLayersBottomBar without default layer", () => {
+    setupHooks(["layer-a", "layer-b", "layer-c"]);
     renderMain();
 
-    expect(capturedBottomBarProps.activeDataCount).toBe(
-      3 - DEFAULT_LAYER_IDS.length,
-    );
+    expect(capturedBottomBarProps.activeDataCount).toBe(3);
+  });
+
+  it("excludes default layer from active count when present", () => {
+    setupHooks([...DEFAULT_LAYER_IDS, "layer-a", "layer-b"]);
+    renderMain();
+
+    expect(capturedBottomBarProps.activeDataCount).toBe(2);
+  });
+
+  it("counts a single default layer as 1", () => {
+    setupHooks([...DEFAULT_LAYER_IDS]);
+    renderMain();
+
+    expect(capturedBottomBarProps.activeDataCount).toBe(1);
   });
 
   it("clears all layers when onRemoveAll is called", () => {
-    setupHooks([1, 2]);
+    setupHooks(["layer-a", "layer-b"]);
     renderMain();
 
     const onRemoveAll = capturedBottomBarProps.onRemoveAll as () => void;
     onRemoveAll();
 
-    expect(mockSetLayerIds).toHaveBeenCalledWith(DEFAULT_LAYER_IDS);
+    expect(mockSetLayerIds).toHaveBeenCalledWith([]);
   });
 });

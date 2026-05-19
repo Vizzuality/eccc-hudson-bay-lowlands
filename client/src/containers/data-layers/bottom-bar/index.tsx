@@ -18,7 +18,7 @@ const DataLayersBottomBar: FC<DataLayersBottomBarProps> = ({
       className={cn({
         "px-6 py-1 flex items-center justify-between absolute left-0 w-full bottom-0 z-20": true,
         "backdrop-blur-[10.5px] bg-linear-[340deg] from-[#EFF5F3] from-[13.58%] to-[rgba(255,255,255,0.10)] to-[76.73%]": true,
-        hidden: activeDataCount === 0,
+        hidden: activeDataCount <= 0,
       })}
     >
       <p className="text-xs">{t("active-data", { count: activeDataCount })}</p>
