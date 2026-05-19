@@ -6,11 +6,11 @@ import { useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, Suspense, useLayoutEffect } from "react";
 import { MapStatus, useMapStatus } from "@/app/[locale]/url-store";
-import { Skeleton } from "@/components/ui/skeleton";
 import { AnalysisProvider } from "@/containers/analysis/analysis-context";
 import AnalysisPanelContent from "@/containers/analysis/panel-content";
 import MapContainer from "@/containers/map";
 import ShareButton from "@/containers/share-button";
+import { SharedAnalysisSkeleton } from "@/containers/skeletons";
 import TopBar from "@/containers/top-bar";
 import useAnalysisSettings, {
   useAnalysisResult,
@@ -53,25 +53,9 @@ function SharedAnalysisHydrator({
     };
   }, [data, setAnalysisResult, setSettings, setMapStatus]);
 
-  if (!analysisResult) return <SharedAnalysisLoading />;
+  if (!analysisResult) return <SharedAnalysisSkeleton />;
 
   return children;
-}
-
-function SharedAnalysisLoading() {
-  return (
-    <div className="flex flex-1 flex-col gap-4 p-6">
-      <Skeleton className="h-10 w-64" />
-      <div className="flex gap-2">
-        <Skeleton className="h-8 w-28" />
-        <Skeleton className="h-8 w-28" />
-        <Skeleton className="h-8 w-28" />
-        <Skeleton className="h-8 w-28" />
-      </div>
-      <Skeleton className="h-64 w-full" />
-      <Skeleton className="h-64 w-full" />
-    </div>
-  );
 }
 
 function SharedAnalysisError() {
@@ -108,7 +92,7 @@ export default function SharedAnalysisPage() {
         <Suspense>
           <TopBar />
         </Suspense>
-        <SharedAnalysisLoading />
+        <SharedAnalysisSkeleton />
       </main>
     );
   }
