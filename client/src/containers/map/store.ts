@@ -1,9 +1,10 @@
 import { atom } from "jotai";
-import type { InteractionConfig, Translatable } from "@/types";
+import type { InteractionConfig, LegendItem, Translatable } from "@/types";
 
 export const interactiveLayerAtom = atom<{
   layerId: string;
   layerTitle: Translatable;
+  legendItems: LegendItem[] | null;
   longitude: number;
   latitude: number;
   type: InteractionConfig["type"];
