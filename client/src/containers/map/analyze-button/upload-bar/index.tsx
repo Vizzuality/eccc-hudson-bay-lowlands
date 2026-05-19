@@ -93,7 +93,10 @@ const UploadBar = () => {
             detail.includes("below the minimum")
           ) {
             setError("area-too-big");
-          } else if (detail.includes("does not intersect")) {
+          } else if (
+            detail.includes("does not intersect") ||
+            detail.includes("must lie entirely within")
+          ) {
             setError("outside-of-bounds");
           } else {
             setError("generic-error");
