@@ -125,6 +125,18 @@
     "citation": "Citation",
     "ok": "OK"
   },
+  "shared-analysis": {
+    "expired-title": "Analyse non disponible",
+    "expired-description": "Cette analyse partagée a expiré ou le lien n'est plus valide. Les liens partagés sont disponibles pendant 30 jours après leur création."
+  },
+  "share-dialog": {
+    "title": "Partager l'analyse",
+    "description": "<p>Partagez cette analyse en copiant l'URL ci-dessous.</p><p>Toute personne disposant du lien peut rouvrir cet état exact.</p>",
+    "expiration": "Les liens partagés restent disponibles pendant <b>{date}.</b>",
+    "copy": "Copier",
+    "copied": "Copié",
+    "close": "Fermer"
+  },
   "data-layers": {
     "search": {
       "placeholder": "Rechercher...",

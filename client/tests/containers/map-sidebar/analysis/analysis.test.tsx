@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
@@ -25,16 +26,29 @@ vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
 });
 
 vi.mock("@/hooks/use-analysis-settings", () => ({
+  default: () => [
+    { locationType: "draw", geometry: null, fileName: null },
+    vi.fn(),
+    { locationType: "draw", geometry: null, fileName: null },
+  ],
   useAnalysisResult: () => mockAnalysisResult,
+  useSetAnalysisResult: () => vi.fn(),
+  useIsAnalyzing: () => [false, vi.fn()],
 }));
+
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+});
 
 const renderAnalysis = () => {
   return render(
-    <NextIntlClientProvider locale="en" messages={messages}>
-      <TooltipProvider>
-        <Analysis />
-      </TooltipProvider>
-    </NextIntlClientProvider>,
+    <QueryClientProvider client={queryClient}>
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <TooltipProvider>
+          <Analysis />
+        </TooltipProvider>
+      </NextIntlClientProvider>
+    </QueryClientProvider>,
   );
 };
 

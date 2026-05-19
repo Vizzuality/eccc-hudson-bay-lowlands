@@ -1,5 +1,6 @@
 import type { AxiosRequestConfig } from "axios";
 import type { DatasetFilters } from "@/lib/schema";
+import type { AnalysisResponse } from "@/types";
 
 export const getCategoriesConfig: AxiosRequestConfig = {
   url: "/categories",
@@ -39,7 +40,21 @@ export const getHblAreaConfig: AxiosRequestConfig = {
 export const postAnalysisConfig = (
   geometry: GeoJSON.Feature | GeoJSON.FeatureCollection,
 ): AxiosRequestConfig => ({
-  url: "/analysis",
+  url: "/analysis/v2",
   method: "POST",
   data: geometry,
+});
+
+export const shareAnalysisConfig = (
+  analysis: AnalysisResponse,
+  geojson: GeoJSON.Feature | GeoJSON.FeatureCollection,
+): AxiosRequestConfig => ({
+  url: "/analysis/v2/share",
+  method: "POST",
+  data: { analysis, geojson },
+});
+
+export const getSharedAnalysisConfig = (id: string): AxiosRequestConfig => ({
+  url: `/analysis/v2/share/${id}`,
+  method: "GET",
 });

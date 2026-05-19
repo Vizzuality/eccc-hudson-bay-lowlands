@@ -125,6 +125,18 @@
     "citation": "Citation",
     "ok": "OK"
   },
+  "shared-analysis": {
+    "expired-title": "Analysis not available",
+    "expired-description": "This shared analysis has expired or the link is no longer valid. Shared links are available for 30 days after creation."
+  },
+  "share-dialog": {
+    "title": "Share analysis",
+    "description": "<p>Share this analysis by copying the URL below.</p><p>Anyone with the link can reopen this exact state.</p>",
+    "expiration": "Shared links remain available for <b>{date}.</b>",
+    "copy": "Copy",
+    "copied": "Copied",
+    "close": "Close"
+  },
   "data-layers": {
     "search": {
       "placeholder": "Search...",

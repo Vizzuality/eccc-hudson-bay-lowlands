@@ -11,6 +11,8 @@ import {
 } from "react";
 
 type AnalysisContextValue = {
+  createdAt: string | null;
+  setCreatedAt: (date: string | null) => void;
   scrollRoot: HTMLElement | null;
   scrollViewportRef: (el: HTMLDivElement | null) => void;
   activeWidgetId: string | null;
@@ -19,11 +21,23 @@ type AnalysisContextValue = {
     isIntersecting: boolean,
     entry: IntersectionObserverEntry | undefined,
   ) => void;
+  shareUrl: string | null;
+  setShareUrl: (url: string | null) => void;
+  shareDialogOpen: boolean;
+  setShareDialogOpen: (open: boolean) => void;
 };
 
 const AnalysisContext = createContext<AnalysisContextValue | null>(null);
 
-export function AnalysisProvider({ children }: { children: ReactNode }) {
+export function AnalysisProvider({
+  children,
+  initialShareUrl = null,
+  initialCreatedAt = null,
+}: {
+  children: ReactNode;
+  initialShareUrl?: string | null;
+  initialCreatedAt?: string | null;
+}) {
   const [scrollRoot, setScrollRoot] = useState<HTMLElement | null>(null);
   const scrollViewportRef = useCallback((el: HTMLDivElement | null) => {
     setScrollRoot(el);
@@ -55,6 +69,9 @@ export function AnalysisProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  const [shareUrl, setShareUrl] = useState<string | null>(initialShareUrl);
+  const [createdAt, setCreatedAt] = useState<string | null>(initialCreatedAt);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [activeWidgetId, setActiveWidgetId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -79,8 +96,22 @@ export function AnalysisProvider({ children }: { children: ReactNode }) {
       scrollViewportRef,
       activeWidgetId,
       reportWidgetIntersection,
+      shareUrl,
+      createdAt,
+      setShareUrl,
+      setCreatedAt,
+      shareDialogOpen,
+      setShareDialogOpen,
     }),
-    [scrollRoot, scrollViewportRef, activeWidgetId, reportWidgetIntersection],
+    [
+      scrollRoot,
+      scrollViewportRef,
+      activeWidgetId,
+      reportWidgetIntersection,
+      shareUrl,
+      createdAt,
+      shareDialogOpen,
+    ],
   );
 
   return (
@@ -113,4 +144,23 @@ export function useAnalysisViewportRef() {
 export function useAnalysisWidgetSpy() {
   const { activeWidgetId, reportWidgetIntersection } = useAnalysisContext();
   return { activeWidgetId, reportWidgetIntersection };
+}
+
+export function useAnalysisShare() {
+  const {
+    createdAt,
+    setCreatedAt,
+    shareUrl,
+    setShareUrl,
+    shareDialogOpen,
+    setShareDialogOpen,
+  } = useAnalysisContext();
+  return {
+    createdAt,
+    setCreatedAt,
+    shareUrl,
+    setShareUrl,
+    shareDialogOpen,
+    setShareDialogOpen,
+  };
 }

@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
@@ -5,6 +6,7 @@ import type { ReactElement } from "react";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { useLayerIds } from "@/app/[locale]/url-store";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AnalysisProvider } from "@/containers/analysis/analysis-context";
 import { mockAnalysisResult } from "@/containers/map-sidebar/analysis/mockData";
 import CarbonPeatland from "@/containers/widgets/carbon-peatland";
 import EcosystemTypes from "@/containers/widgets/ecosystem-types";
@@ -29,6 +31,17 @@ vi.mock("@/hooks/use-widget-download", () => ({
   useWidgetDownload: () => ({ download: vi.fn(), loading: false }),
 }));
 
+vi.mock("@/hooks/use-analysis-settings", () => ({
+  default: () => [
+    { locationType: "draw", geometry: null, fileName: null },
+    vi.fn(),
+    { locationType: "draw", geometry: null, fileName: null },
+  ],
+  useAnalysisResult: () => mockAnalysisResult,
+  useSetAnalysisResult: () => vi.fn(),
+  useIsAnalyzing: () => [false, vi.fn()],
+}));
+
 const testWidgetLayers: Layer[] = [
   {
     id: "analysis.test.layer",
@@ -46,11 +59,28 @@ const testWidgetLayers: Layer[] = [
   },
 ];
 
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+});
+
 const renderWithProviders = (ui: ReactElement) =>
   render(
-    <NextIntlClientProvider locale="en" messages={messages}>
-      <TooltipProvider>{ui}</TooltipProvider>
-    </NextIntlClientProvider>,
+    <QueryClientProvider client={queryClient}>
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <TooltipProvider>{ui}</TooltipProvider>
+      </NextIntlClientProvider>
+    </QueryClientProvider>,
+  );
+
+const renderWithAnalysisProviders = (ui: ReactElement) =>
+  render(
+    <QueryClientProvider client={queryClient}>
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <TooltipProvider>
+          <AnalysisProvider>{ui}</AnalysisProvider>
+        </TooltipProvider>
+      </NextIntlClientProvider>
+    </QueryClientProvider>,
   );
 
 const widgetCardComponents = [
@@ -148,7 +178,7 @@ describe("@containers/widgets", () => {
   );
 
   it("renders ShareWidget", () => {
-    renderWithProviders(<ShareWidget />);
+    renderWithAnalysisProviders(<ShareWidget />);
 
     expect(
       screen.getByRole("button", { name: messages.share.title }),
