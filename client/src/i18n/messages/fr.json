@@ -250,10 +250,10 @@
         "description": "Les arbres fournissent d'importants services écosystémiques, notamment le stockage de carbone, l'habitat, la stabilisation des sols et la régulation de l'eau. Les changements du couvert arboré peuvent modifier ces fonctions et signaler des changements environnementaux plus larges."
       },
       "chart": {
-        "non_treed_perc": "Non Arboré",
-        "always_treed_perc": "Toujours Arboré",
-        "newly_treed_perc": "Nouvellement Arboré (Gain de Bois)",
-        "was_treed_perc": "Anciennement Arboré (Perte de Bois)"
+        "non_treed_perc": "Non arboré",
+        "always_treed_perc": "Toujours arboré",
+        "newly_treed_perc": "Nouvellement arboré (gain d'arbres)",
+        "was_treed_perc": "Anciennement arboré (perte d'arbres)"
       }
     },
     "ecosystem_classification": {
@@ -269,14 +269,14 @@
         "eco_bog_perc": "Tourbière",
         "eco_coastal_perc": "Marais côtier",
         "eco_emergent_perc": "Zone humide émergente/ouverte",
-        "eco_fire_perc": "Landes-prairies (Perturbation par le feu)",
+        "eco_fire_perc": "Arbustaie-prairie (perturbation par le feu)",
         "eco_graminoid_perc": "Tourbière à graminoïdes",
-        "eco_grassland_perc": "Landes-prairies",
+        "eco_grassland_perc": "Arbustaie-prairie",
         "eco_marine_perc": "Supralittoral marin",
         "eco_mudflats_perc": "Vasières",
         "eco_shrub_perc": "Tourbière arbustive",
-        "eco_temperate_perc": "Forêt Tempérée/Boréale",
-        "eco_treed_perc": "Zone Humide Arborée",
+        "eco_temperate_perc": "Forêt tempérée/boréale",
+        "eco_treed_perc": "Zone humide arborée",
         "eco_water_perc": "Eau"
       }
     },

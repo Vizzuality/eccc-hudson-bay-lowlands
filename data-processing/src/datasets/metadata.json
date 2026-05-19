@@ -14,7 +14,7 @@
           "metadata": {
             "title": {
               "en": "Peat & Carbon",
-              "fr": "Tourbe et Carbone"
+              "fr": "Tourbe et carbone"
             },
             "description": {
               "en": "This dataset contains ground-measured peat depth and maps with the spatial distribution of peat depth and carbon stock in the Hudson Bay Lowlands, Ontario, Canada.",
@@ -39,7 +39,7 @@
               "metadata": {
                 "title": {
                   "en": "Peat Depth",
-                  "fr": "Profondeur de la Tourbe"
+                  "fr": "Profondeur de la tourbe"
                 },
                 "description": {
                   "en": "Estimated peat depth at 30 m resolution in cm.",
@@ -119,7 +119,7 @@
               "metadata": {
                 "title": {
                   "en": "Carbon Storage",
-                  "fr": "Stockage de Carbone"
+                  "fr": "Stockage de carbone"
                 },
                 "description": {
                   "en": "Estimated soil carbon stored in peatlands at 30 m resolution in kg/m².",
@@ -206,7 +206,7 @@
           "metadata": {
             "title": {
               "en": "Dynamic Surface Water",
-              "fr": "Eau de Surface Dynamique"
+              "fr": "Eau de surface dynamique"
             },
             "description": {
               "en": "Provides national-scale information on surface water dynamics from 1984–2023 at 30 m resolution, derived from Landsat imagery.",
@@ -268,7 +268,7 @@
               "metadata": {
                 "title": {
                   "en": "Inundation Trends",
-                  "fr": "Tendances des Inondations"
+                  "fr": "Tendances des inondations"
                 },
                 "description": {
                   "en": "Trends showing areas becoming wetter or drier over time.",
@@ -352,7 +352,7 @@
               "metadata": {
                 "title": {
                   "en": "Inundation Frequency",
-                  "fr": "Fréquence des Inondations"
+                  "fr": "Fréquence des inondations"
                 },
                 "description": {
                   "en": "Frequency of water occurrence from 1984–2023.",
@@ -417,7 +417,7 @@
           "metadata": {
             "title": {
               "en": "Flood Susceptibility Index",
-              "fr": "Indice de vulnérabilité aux inondations"
+              "fr": "Indice de susceptibilité aux inondations"
             },
             "description": {
               "en": "This flood susceptibility index is based on historical flood patterns and machine learning models. Values range from 0 (low susceptibility) to 100 (high susceptibility).",
@@ -442,7 +442,7 @@
               "metadata": {
                 "title": {
                   "en": "Flood Susceptibility Index",
-                  "fr": "Indice de vulnérabilité aux inondations"
+                  "fr": "Indice de susceptibilité aux inondations"
                 },
                 "description": {
                   "en": "Flood susceptibility score from low to high risk.",
@@ -554,7 +554,7 @@
               "metadata": {
                 "title": {
                   "en": "End of Snow Period for Winter 2018-2019",
-                  "fr": "Fin de la Période de Neige pour l'Hiver 2018-2019"
+                  "fr": "Fin de la période de neige pour l'hiver 2018-2019"
                 },
                 "description": {
                   "en": "Last day of seasonal snow cover during the winter 2018-2019.",
@@ -625,7 +625,7 @@
               "metadata": {
                 "title": {
                   "en": "End of Snow Period for Winter 2019-2020",
-                  "fr": "Fin de la Période de Neige pour l'Hiver 2019-2020"
+                  "fr": "Fin de la période de neige pour l'hiver 2019-2020"
                 },
                 "description": {
                   "en": "Last day of seasonal snow cover during the winter 2019-2020.",
@@ -696,7 +696,7 @@
               "metadata": {
                 "title": {
                   "en": "End of Snow Period for Winter 2020-2021",
-                  "fr": "Fin de la Période de Neige pour l'Hiver 2020-2021"
+                  "fr": "Fin de la période de neige pour l'hiver 2020-2021"
                 },
                 "description": {
                   "en": "Last day of seasonal snow cover during the winter 2020-2021.",
@@ -767,7 +767,7 @@
               "metadata": {
                 "title": {
                   "en": "End of Snow Period for Winter 2021-2022",
-                  "fr": "Fin de la Période de Neige pour l'Hiver 2021-2022"
+                  "fr": "Fin de la période de neige pour l'hiver 2021-2022"
                 },
                 "description": {
                   "en": "Last day of seasonal snow cover during the winter 2021-2022.",
@@ -838,7 +838,7 @@
               "metadata": {
                 "title": {
                   "en": "End of Snow Period for Winter 2022-2023",
-                  "fr": "Fin de la Période de Neige pour l'Hiver 2022-2023"
+                  "fr": "Fin de la période de neige pour l'hiver 2022-2023"
                 },
                 "description": {
                   "en": "Last day of seasonal snow cover during the winter 2022-2023.",
@@ -909,7 +909,7 @@
               "metadata": {
                 "title": {
                   "en": "End of Snow Period for Winter 2023-2024",
-                  "fr": "Fin de la Période de Neige pour l'Hiver 2023-2024"
+                  "fr": "Fin de la période de neige pour l'hiver 2023-2024"
                 },
                 "description": {
                   "en": "Last day of seasonal snow cover during the winter 2023-2024.",
@@ -980,7 +980,7 @@
               "metadata": {
                 "title": {
                   "en": "Total Snow Length for Winter 2018-2019",
-                  "fr": "Durée Totale de la Neige pour l'Hiver 2018-2019"
+                  "fr": "Durée totale de la neige pour l'hiver 2018-2019"
                 },
                 "description": {
                   "en": "Total number of days with snow cover during the winter 2018-2019.",
@@ -1047,7 +1047,7 @@
               "metadata": {
                 "title": {
                   "en": "Total Snow Length for Winter 2019-2020",
-                  "fr": "Durée Totale de la Neige pour l'Hiver 2019-2020"
+                  "fr": "Durée totale de la neige pour l'hiver 2019-2020"
                 },
                 "description": {
                   "en": "Total number of days with snow cover during the winter 2019-2020.",
@@ -1114,7 +1114,7 @@
               "metadata": {
                 "title": {
                   "en": "Total Snow Length for Winter 2020-2021",
-                  "fr": "Durée Totale de la Neige pour l'Hiver 2020-2021"
+                  "fr": "Durée totale de la neige pour l'hiver 2020-2021"
                 },
                 "description": {
                   "en": "Total number of days with snow cover during the winter 2020-2021.",
@@ -1181,7 +1181,7 @@
               "metadata": {
                 "title": {
                   "en": "Total Snow Length for Winter 2021-2022",
-                  "fr": "Durée Totale de la Neige pour l'Hiver 2021-2022"
+                  "fr": "Durée totale de la neige pour l'hiver 2021-2022"
                 },
                 "description": {
                   "en": "Total number of days with snow cover during the winter 2021-2022.",
@@ -1248,7 +1248,7 @@
               "metadata": {
                 "title": {
                   "en": "Total Snow Length for Winter 2022-2023",
-                  "fr": "Durée Totale de la Neige pour l'Hiver 2022-2023"
+                  "fr": "Durée totale de la neige pour l'hiver 2022-2023"
                 },
                 "description": {
                   "en": "Total number of days with snow cover during the winter 2022-2023.",
@@ -1315,7 +1315,7 @@
               "metadata": {
                 "title": {
                   "en": "Total Snow Length for Winter 2023-2024",
-                  "fr": "Durée Totale de la Neige pour l'Hiver 2023-2024"
+                  "fr": "Durée totale de la neige pour l'hiver 2023-2024"
                 },
                 "description": {
                   "en": "Total number of days with snow cover during the winter 2023-2024.",
@@ -1380,7 +1380,7 @@
           "metadata": {
             "title": {
               "en": "Treed Area (1984-2022)",
-              "fr": "Zone Arborée au Canada (1984-2022)"
+              "fr": "Zone arborée au Canada (1984-2022)"
             },
             "description": {
               "en": "Provides treed area dynamics across Canada's forest ecosystems from 1984–2022 at 30 m resolution, derived from Landsat imagery. This dataset identifies areas that remained treed, transitioned to treed (newly treed), or transitioned to other cover that is not treed vegetation (was-treed).",
@@ -1407,35 +1407,35 @@
                   "value": 0,
                   "label": {
                     "en": "Non-Treed",
-                    "fr": "Non Arboré"
+                    "fr": "Non arboré"
                   }
                 },
                 {
                   "value": 1,
                   "label": {
                     "en": "Always Treed",
-                    "fr": "Toujours Arboré"
+                    "fr": "Toujours arboré"
                   }
                 },
                 {
                   "value": 2,
                   "label": {
                     "en": "Newly Treed (Tree Gain)",
-                    "fr": "Nouvellement Arboré (Gain de Bois)"
+                    "fr": "Nouvellement arboré (gain d'arbres)"
                   }
                 },
                 {
                   "value": 3,
                   "label": {
                     "en": "Was-Treed (Tree Loss)",
-                    "fr": "Anciennement Arboré (Perte de Bois)"
+                    "fr": "Anciennement arboré (perte d'arbres)"
                   }
                 }
               ],
               "metadata": {
                 "title": {
                   "en": "Treed Area (1984–2022)",
-                  "fr": "Zone Arborée (1984–2022)"
+                  "fr": "Zone arborée (1984–2022)"
                 },
                 "description": {
                   "en": "Classification of treed area over the period in always treed, newly treed (tree gain), and was-treed (tree loss) areas.",
@@ -1468,28 +1468,28 @@
                       "color": "#bfb6ba",
                       "label": {
                         "en": "Non-Treed",
-                        "fr": "Non Arboré"
+                        "fr": "Non arboré"
                       }
                     },
                     {
                       "color": "#0c4c23",
                       "label": {
                         "en": "Always Treed",
-                        "fr": "Toujours Arboré"
+                        "fr": "Toujours arboré"
                       }
                     },
                     {
                       "color": "#5cad34",
                       "label": {
                         "en": "Newly Treed (Tree Gain)",
-                        "fr": "Nouvellement Arboré (Gain de Bois)"
+                        "fr": "Nouvellement arboré (gain d'arbres)"
                       }
                     },
                     {
                       "color": "#ca0003",
                       "label": {
                         "en": "Was-Treed (Tree Loss)",
-                        "fr": "Anciennement Arboré (Perte de Bois)"
+                        "fr": "Anciennement arboré (perte d'arbres)"
                       }
                     }
                   ]
@@ -1509,7 +1509,7 @@
           "metadata": {
             "title": {
               "en": "Ecosystem Classification",
-              "fr": "Classification des Écosystèmes"
+              "fr": "Classification des écosystèmes"
             },
             "description": {
               "en": "Provides a 12-class ecosystem classification map of the Hudson Bay Lowlands derived from Landsat imagery and expert-based decision tree methods.",
@@ -1536,28 +1536,28 @@
                   "value": 1,
                   "label": {
                     "en": "Temperate/Boreal Forest",
-                    "fr": "Forêt Tempérée/Boréale"
+                    "fr": "Forêt tempérée/boréale"
                   }
                 },
                 {
                   "value": 2,
                   "label": {
                     "en": "Treed Wetland",
-                    "fr": "Zone Humide Arborée"
+                    "fr": "Zone humide arborée"
                   }
                 },
                 {
                   "value": 3,
                   "label": {
                     "en": "Shrubland‑grassland",
-                    "fr": "Landes‑prairies"
+                    "fr": "Arbustaie‑prairie"
                   }
                 },
                 {
                   "value": 4,
                   "label": {
                     "en": "Shrubland‑grassland (Fire Disturbance)",
-                    "fr": "Landes‑prairies (Perturbation par le feu)"
+                    "fr": "Arbustaie‑prairie (perturbation par le feu)"
                   }
                 },
                 {
@@ -1620,7 +1620,7 @@
               "metadata": {
                 "title": {
                   "en": "Ecosystem Classification",
-                  "fr": "Classification des Écosystèmes"
+                  "fr": "Classification des écosystèmes"
                 },
                 "description": {
                   "en": "Classification of ecosystem types across the region.",
@@ -1653,28 +1653,28 @@
                       "color": "#005a00",
                       "label": {
                         "en": "Temperate/Boreal Forest",
-                        "fr": "Forêt Tempérée/Boréale"
+                        "fr": "Forêt tempérée/boréale"
                       }
                     },
                     {
                       "color": "#009a00",
                       "label": {
                         "en": "Treed Wetland",
-                        "fr": "Zone Humide Arborée"
+                        "fr": "Zone humide arborée"
                       }
                     },
                     {
                       "color": "#ffad31",
                       "label": {
                         "en": "Shrubland‑grassland",
-                        "fr": "Landes‑prairies"
+                        "fr": "Arbustaie‑prairie"
                       }
                     },
                     {
                       "color": "#ffff00",
                       "label": {
                         "en": "Shrubland‑grassland (Fire Disturbance)",
-                        "fr": "Landes‑prairies (Perturbation par le feu)"
+                        "fr": "Arbustaie‑prairie (perturbation par le feu)"
                       }
                     },
                     {
@@ -1758,7 +1758,7 @@
           "metadata": {
             "title": {
               "en": "Ecological Framework",
-              "fr": "Cadre Écologique"
+              "fr": "Cadre écologique"
             },
             "description": {
               "en": "Defines the ecological framework of the region, including ecozones, ecoprovinces, ecoregions, and ecodistricts.",
@@ -2055,7 +2055,7 @@
       "metadata": {
         "title": {
           "en": "Indigenous Value",
-          "fr": "Valeur Autochtone"
+          "fr": "Valeur autochtone"
         }
       },
       "datasets": [
@@ -2064,7 +2064,7 @@
           "metadata": {
             "title": {
               "en": "Indigenous Territories",
-              "fr": "Territoires Autochtones"
+              "fr": "Territoires autochtones"
             },
             "description": {
               "en": "Native Land maps Indigenous territories, treaties, and languages. The map is a living document informed by contributions of Indigenous communities.",
@@ -2089,7 +2089,7 @@
               "metadata": {
                 "title": {
                   "en": "Indigenous Territories",
-                  "fr": "Territoires Autochtones"
+                  "fr": "Territoires autochtones"
                 },
                 "description": {
                   "en": "Indigenous territories.",
@@ -2275,7 +2275,7 @@
       "metadata": {
         "title": {
           "en": "Human Pressures",
-          "fr": "Pressions Humaines"
+          "fr": "Pressions humaines"
         }
       },
       "datasets": [
@@ -2284,7 +2284,7 @@
           "metadata": {
             "title": {
               "en": "Mining Claims",
-              "fr": "Concessions Minières"
+              "fr": "Concessions minières"
             },
             "description": {
               "en": "This dataset provides a comprehensive overview of active mining claims, land tenures, and early exploration projects in Ontario, Canada.",
@@ -2309,7 +2309,7 @@
               "metadata": {
                 "title": {
                   "en": "Mining Land Tenure",
-                  "fr": "Tenure Minière"
+                  "fr": "Tenure minière"
                 },
                 "description": {
                   "en": "Lands occupied by mining land tenures.",
@@ -2346,7 +2346,7 @@
                       "fill-outline-color": "#085FD9",
                       "label": {
                         "en": "Mining Land Tenure",
-                        "fr": "Tenure Minière"
+                        "fr": "Tenure minière"
                       }
                     }
                   ]
@@ -2373,7 +2373,7 @@
               "metadata": {
                 "title": {
                   "en": "Non-Mining Land Tenure",
-                  "fr": "Tenure Non Minière"
+                  "fr": "Tenure non minière"
                 },
                 "description": {
                   "en": "Lands occupied by land tenures unrelated to mining.",
@@ -2410,7 +2410,7 @@
                       "fill-outline-color": "#8c8c8c",
                       "label": {
                         "en": "Non-Mining Land Tenure",
-                        "fr": "Tenure Non Minière"
+                        "fr": "Tenure non minière"
                       }
                     }
                   ]
@@ -2431,7 +2431,7 @@
               "metadata": {
                 "title": {
                   "en": "Operational Cell Claims",
-                  "fr": "Concessions Cellules Opérationnelles"
+                  "fr": "Concessions cellules opérationnelles"
                 },
                 "description": {
                   "en": "Lands registered as mining claims.",
@@ -2487,7 +2487,7 @@
                       "fill-outline-color": "#f4984e",
                       "label": {
                         "en": "Operational Cell Claims",
-                        "fr": "Concessions Cellules Opérationnelles"
+                        "fr": "Concessions cellules opérationnelles"
                       }
                     }
                   ]
@@ -2508,7 +2508,7 @@
               "metadata": {
                 "title": {
                   "en": "Operational Alienations",
-                  "fr": "Aliénations Opérationnelles"
+                  "fr": "Aliénations opérationnelles"
                 },
                 "description": {
                   "en": "Lands withdrawn or with restrictions related to mining claims.",
@@ -2545,7 +2545,7 @@
                       "fill-outline-color": "#e10e4e",
                       "label": {
                         "en": "Operational Alienations",
-                        "fr": "Aliénations Opérationnelles"
+                        "fr": "Aliénations opérationnelles"
                       }
                     }
                   ]
@@ -2566,7 +2566,7 @@
               "metadata": {
                 "title": {
                   "en": "Plans & Permits",
-                  "fr": "Plans & Permis"
+                  "fr": "Plans et permis"
                 },
                 "description": {
                   "en": "Lands occupied by early exploration projects.",
@@ -2603,7 +2603,7 @@
                       "fill-outline-color": "#74a324",
                       "label": {
                         "en": "Plans & Permits",
-                        "fr": "Plans & Permis"
+                        "fr": "Plans et permis"
                       }
                     }
                   ]
