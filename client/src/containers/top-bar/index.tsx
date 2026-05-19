@@ -16,17 +16,31 @@ const TopBar = () => {
       <section className="flex items-center gap-4">
         <nav className="border-slate-200 border-r">
           <ul className="flex gap-4">
-            {NAVIGATION.map(({ id, href }) => (
-              <li key={`top-bar-navigation-${id}`}>
-                <Button
-                  variant="menuItem"
-                  aria-current={pathname.startsWith(href) ? "page" : undefined}
-                  asChild
-                >
-                  <Link href={href}>{t(`navigation.${id}`)}</Link>
-                </Button>
-              </li>
-            ))}
+            {NAVIGATION.map(({ id, href }) => {
+              const isAnalysis = id === "analysis";
+              if (isAnalysis && !pathname.startsWith("/analysis")) return null;
+              return (
+                <li key={`top-bar-navigation-${id}`}>
+                  <Button
+                    variant="menuItem"
+                    aria-current={
+                      (
+                        href === "/"
+                          ? pathname === "/"
+                          : pathname.startsWith(href)
+                      )
+                        ? "page"
+                        : undefined
+                    }
+                    asChild
+                  >
+                    <Link href={isAnalysis ? pathname : href}>
+                      {t(`navigation.${id}`)}
+                    </Link>
+                  </Button>
+                </li>
+              );
+            })}
           </ul>
         </nav>
         <LanguageSelect />

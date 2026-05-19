@@ -7,6 +7,7 @@
     "title": "données spatiales des basses-terres",
     "navigation": {
       "map": "Carte",
+      "analysis": "Analyse",
       "resources": "Ressources"
     }
   },
@@ -127,7 +128,7 @@
   },
   "shared-analysis": {
     "expired-title": "Analyse non disponible",
-    "expired-description": "Cette analyse partagée a expiré ou le lien n'est plus valide. Les liens partagés sont disponibles pendant 30 jours après leur création."
+    "expired-description": "Cette analyse partagée a expiré ou le lien n'est plus valide."
   },
   "share-dialog": {
     "title": "Partager l'analyse",

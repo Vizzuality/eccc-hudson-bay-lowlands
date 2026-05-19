@@ -7,6 +7,7 @@
     "title": "lowlands spatial data",
     "navigation": {
       "map": "Map",
+      "analysis": "Analysis",
       "resources": "Resources"
     }
   },
@@ -127,7 +128,7 @@
   },
   "shared-analysis": {
     "expired-title": "Analysis not available",
-    "expired-description": "This shared analysis has expired or the link is no longer valid. Shared links are available for 30 days after creation."
+    "expired-description": "This shared analysis has expired or the link is no longer valid."
   },
   "share-dialog": {
     "title": "Share analysis",
