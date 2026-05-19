@@ -12,11 +12,17 @@ import { useApiTranslation } from "@/i18n/api-translation";
 import { API } from "@/lib/api";
 import { getLayersConfig } from "@/lib/api/config";
 import { queryKeys } from "@/lib/query-keys";
-import type { InteractionConfig, LayersResponse, Translatable } from "@/types";
+import type {
+  InteractionConfig,
+  LayerConfig,
+  LayersResponse,
+  Translatable,
+} from "@/types";
 
 interface StyleMeta {
   interactionConfig: InteractionConfig;
   layerTitle: Translatable;
+  legendConfig: LayerConfig["legend_config"] | undefined;
 }
 
 const MapTooltip = () => {
@@ -46,6 +52,7 @@ const MapTooltip = () => {
       const meta: StyleMeta = {
         interactionConfig: layer.config.interaction_config,
         layerTitle: layer.metadata.title,
+        legendConfig: layer.config.legend_config,
       };
       const styles = layer.config.styles;
 
@@ -95,9 +102,13 @@ const MapTooltip = () => {
         properties[key] = feature.properties?.[key] ?? null;
       }
 
+      const legendItems =
+        meta.legendConfig?.type === "basic" ? meta.legendConfig.items : null;
+
       setInteractiveLayer({
         layerId: styleId,
         layerTitle: meta.layerTitle,
+        legendItems,
         longitude: e.lngLat.lng,
         latitude: e.lngLat.lat,
         type: meta.interactionConfig.type,
