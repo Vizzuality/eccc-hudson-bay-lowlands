@@ -188,7 +188,6 @@ const UploadBar = () => {
   }, [geometry, postAnalysis]);
 
   const hasGeometry = !!geometry;
-  const showConfirmation = isDrawing && hasGeometry;
 
   let Component = (
     <>
@@ -231,7 +230,7 @@ const UploadBar = () => {
     </>
   );
 
-  if (showConfirmation) {
+  if (isDrawing) {
     Component = (
       <>
         {isPending ? (
