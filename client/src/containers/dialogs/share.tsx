@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { type FC, useCallback, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -42,9 +43,11 @@ const ShareDialog: FC<ShareDialogProps> = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{t("title")}</DialogTitle>
-          <DialogDescription>
+        <DialogHeader className="gap-1.5">
+          <DialogTitle className="text-lg font-semibold">
+            {t("title")}
+          </DialogTitle>
+          <DialogDescription className="text-base leading-6">
             <RichText>{(tags) => t.rich("description", tags)}</RichText>
           </DialogDescription>
         </DialogHeader>
@@ -59,16 +62,29 @@ const ShareDialog: FC<ShareDialogProps> = ({
             {copied ? t("copied") : t("copy")}
           </Button>
         </div>
-        <p className="text-muted-foreground text-xs">
-          <RichText>
-            {(tags) =>
-              t.rich("expiration", {
-                ...tags,
-                date: getRemainingTime(createdAt, locale),
-              })
-            }
-          </RichText>
-        </p>
+        <Card className="text-muted-foreground bg-muted shadow-none">
+          <CardContent>
+            <p className="text-sm leading-5">
+              <RichText>
+                {(tags) =>
+                  t.rich("expiration", {
+                    ...tags,
+                    b: (chunks) => <b className="font-bold">{chunks}</b>,
+                    date: getRemainingTime(createdAt, locale),
+                  })
+                }
+              </RichText>
+            </p>
+          </CardContent>
+        </Card>
+        <Button
+          type="button"
+          variant="secondary"
+          className="justify-self-start"
+          onClick={() => onOpenChange(false)}
+        >
+          {t("close")}
+        </Button>
       </DialogContent>
     </Dialog>
   );
