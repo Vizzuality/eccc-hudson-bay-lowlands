@@ -1,9 +1,9 @@
 import { useTranslations } from "next-intl";
 import { type FC, useState } from "react";
 import { Accordion } from "@/components/ui/accordion";
-import { Skeleton } from "@/components/ui/skeleton";
 import DataLayersListItem from "@/containers/data-layers/list/item";
 import DatasetDialog from "@/containers/dialogs/dataset";
+import { DataLayersListSkeleton } from "@/containers/skeletons";
 import { cn } from "@/lib/utils";
 import type { NormalizedDataset } from "@/types";
 
@@ -52,28 +52,6 @@ const DataLayersList: FC<DataLayersListProps> = ({
         onOpenChange={() => setDialogProps(null)}
         dataset={dialogProps}
       />
-    </section>
-  );
-};
-
-const DataLayersListSkeleton = () => {
-  return (
-    <section aria-label="Data layers list skeleton" className="space-y-5">
-      <Skeleton className="h-3 w-16" />
-      <div className="space-y-2">
-        {[...Array(6).keys()].map((num) => (
-          <div
-            key={`data-layers-list-skeleton-${num}`}
-            className="space-y-5 h-24"
-          >
-            <div className="flex justify-between items-center">
-              <Skeleton className="h-4 w-20" />
-              <Skeleton className="h-4 w-12" />
-            </div>
-            <Skeleton className="h-12 w-full" />
-          </div>
-        ))}
-      </div>
     </section>
   );
 };

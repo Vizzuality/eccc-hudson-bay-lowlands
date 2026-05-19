@@ -1,8 +1,8 @@
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import { useCategory } from "@/app/[locale]/url-store";
-import { Skeleton } from "@/components/ui/skeleton";
 import { getCategoryIcon } from "@/containers/data-layers/category-selector/utils";
+import { CategorySelectorSkeleton } from "@/containers/skeletons";
 import { cn } from "@/lib/utils";
 import type { CategorySelectorItem } from "@/types";
 
@@ -77,23 +77,6 @@ const CategorySelector: FC<CategorySelectorProps> = ({
         },
       )}
     </fieldset>
-  );
-};
-
-const CategorySelectorSkeleton = () => {
-  return (
-    <div className="grid grid-cols-2 gap-2">
-      {[...Array(4).keys()].map((num) => (
-        <div
-          key={`category-selector-skeleton-${num}`}
-          className="bg-white/80 rounded-4xl p-6 space-y-2"
-        >
-          <Skeleton className="size-4 shrink-0 rounded-full" />
-          <Skeleton className="w-2/3 h-2.5" />
-          <Skeleton className="w-1/2 h-2" />
-        </div>
-      ))}
-    </div>
   );
 };
 
