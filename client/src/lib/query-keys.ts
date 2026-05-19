@@ -22,4 +22,9 @@ export const queryKeys = createQueryKeyStore({
   cog: {
     tileInfo: (path: string) => [{ path }],
   },
+  sharedAnalysis: {
+    byId: (id: string) => ({
+      queryKey: [{ id }],
+    }),
+  },
 });

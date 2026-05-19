@@ -3,7 +3,7 @@ import { type FC, useState } from "react";
 import { Accordion } from "@/components/ui/accordion";
 import { Skeleton } from "@/components/ui/skeleton";
 import DataLayersListItem from "@/containers/data-layers/list/item";
-import DatasetDialog from "@/containers/dataset-dialog";
+import DatasetDialog from "@/containers/dialogs/dataset";
 import { cn } from "@/lib/utils";
 import type { NormalizedDataset } from "@/types";
 

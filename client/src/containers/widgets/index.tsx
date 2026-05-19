@@ -2,7 +2,7 @@
 
 import { type FC, useState } from "react";
 import type { AnalysisResult } from "@/containers/analysis/types";
-import DatasetDialog from "@/containers/dataset-dialog";
+import DatasetDialog from "@/containers/dialogs/dataset";
 import CarbonPeatland from "@/containers/widgets/carbon-peatland";
 import EcosystemTypes from "@/containers/widgets/ecosystem-types";
 import FloodSusceptibility from "@/containers/widgets/flood-susceptibility";

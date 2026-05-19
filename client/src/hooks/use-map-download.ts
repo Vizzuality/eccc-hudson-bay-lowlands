@@ -1,13 +1,7 @@
 import { toPng } from "html-to-image";
 import { type RefObject, useCallback, useState } from "react";
 
-function formatDate(): string {
-  const d = new Date();
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
+import { formatDate } from "@/lib/utils/date";
 
 export function useMapDownload(containerRef: RefObject<HTMLDivElement | null>) {
   const [loading, setLoading] = useState(false);

@@ -111,3 +111,10 @@ export interface TileInfoResponse {
 }
 
 export type { AnalysisResult as AnalysisResponse } from "@/containers/analysis/types";
+
+export interface SharedAnalysisResponse {
+  id: string;
+  analysis: import("@/containers/analysis/types").AnalysisResult;
+  geojson: unknown;
+  created_at: string;
+}

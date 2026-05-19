@@ -1,20 +1,14 @@
 import { toPng } from "html-to-image";
 import { type RefObject, useCallback, useRef, useState } from "react";
 
+import { formatDate } from "@/lib/utils/date";
+
 const LOGO_PATH = "/logo.svg";
 const LOGO_WIDTH = 63;
 const LOGO_HEIGHT = 18.5;
 const LOGO_PADDING = 4;
 const LOGO_RADIUS = 7;
 const LOGO_MARGIN = 12;
-
-function formatDate(): string {
-  const d = new Date();
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
 
 function createOverlay(): HTMLDivElement {
   const overlay = document.createElement("div");
