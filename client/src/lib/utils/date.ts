@@ -16,5 +16,5 @@ export function getRemainingTime(
 ): string {
   const expirationDate = dayjs(date).locale(locale).add(1, "month");
 
-  return expirationDate.fromNow();
+  return expirationDate.fromNow(true);
 }
