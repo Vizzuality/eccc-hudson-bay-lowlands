@@ -8,8 +8,9 @@ import {
 } from "@/components/ui/chart";
 import ChartLegend from "@/containers/charts/legend";
 
-const MIN_LABEL_WIDTH = 50;
 const MIN_LABEL_HEIGHT = 30;
+const AVG_CHAR_WIDTH = 7;
+const LABEL_PADDING = 8;
 
 interface CellProps {
   x?: number;
@@ -35,7 +36,9 @@ const TreeMapCell: FC<CellProps> = ({
   const gy = y + gap;
   const gw = Math.max(width - gap * 2, 0);
   const gh = Math.max(height - gap * 2, 0);
-  const showLabel = gw > MIN_LABEL_WIDTH && gh > MIN_LABEL_HEIGHT;
+  const estimatedTextWidth =
+    (label?.length ?? 0) * AVG_CHAR_WIDTH + LABEL_PADDING;
+  const showLabel = gw > estimatedTextWidth && gh > MIN_LABEL_HEIGHT;
   return (
     <g>
       <rect x={gx} y={gy} width={gw} height={gh} fill={fill} rx={4} />
