@@ -62,6 +62,8 @@ export interface InteractionConfig {
   keys: string[];
   type: "feature-value" | "feature-detail" | "feature-properties";
   event: "click";
+  multi?: boolean;
+  dedup_key?: string;
 }
 
 export interface LayerConfig {

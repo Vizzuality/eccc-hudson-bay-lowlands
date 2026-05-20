@@ -25,6 +25,17 @@ interface StyleMeta {
   legendConfig: LayerConfig["legend_config"] | undefined;
 }
 
+function extractFeatureProperties(
+  feature: mapboxgl.MapboxGeoJSONFeature,
+  keys: string[],
+): Record<string, unknown> {
+  const properties: Record<string, unknown> = {};
+  for (const key of keys) {
+    properties[key] = feature.properties?.[key] ?? null;
+  }
+  return properties;
+}
+
 const MapTooltip = () => {
   const { current: map } = useMap();
   const { layerIds } = useLayerIds();
@@ -91,19 +102,40 @@ const MapTooltip = () => {
         return;
       }
 
-      const feature = features[0];
-      const styleId = feature.layer?.id;
+      const topFeature = features[0];
+      const styleId = topFeature.layer?.id;
       if (!styleId) return;
       const meta = mapboxIdToMeta.get(styleId);
       if (!meta) return;
 
-      const properties: Record<string, unknown> = {};
-      for (const key of meta.interactionConfig.keys) {
-        properties[key] = feature.properties?.[key] ?? null;
-      }
-
+      const { interactionConfig } = meta;
       const legendItems =
         meta.legendConfig?.type === "basic" ? meta.legendConfig.items : null;
+
+      let featureList: { properties: Record<string, unknown> }[];
+
+      if (interactionConfig.multi && interactionConfig.dedup_key) {
+        const seen = new Set<unknown>();
+        featureList = [];
+        for (const f of features) {
+          if (f.layer?.id !== styleId) continue;
+          const dedupValue = f.properties?.[interactionConfig.dedup_key];
+          if (seen.has(dedupValue)) continue;
+          seen.add(dedupValue);
+          featureList.push({
+            properties: extractFeatureProperties(f, interactionConfig.keys),
+          });
+        }
+      } else {
+        featureList = [
+          {
+            properties: extractFeatureProperties(
+              topFeature,
+              interactionConfig.keys,
+            ),
+          },
+        ];
+      }
 
       setInteractiveLayer({
         layerId: styleId,
@@ -111,8 +143,8 @@ const MapTooltip = () => {
         legendItems,
         longitude: e.lngLat.lng,
         latitude: e.lngLat.lat,
-        type: meta.interactionConfig.type,
-        properties,
+        type: interactionConfig.type,
+        features: featureList,
       });
     },
     [map, mapboxLayerIds, mapboxIdToMeta, setInteractiveLayer, mapStatus],

@@ -85,6 +85,14 @@ class InteractionConfig(BaseModel):
     keys: list[str] = Field(description="Feature property keys to surface on interaction (e.g. ['NAME_EN', 'NAME_FR'])")
     type: str = Field(description="Interaction type (e.g. 'feature-value')")
     event: str = Field(description="Event that triggers the interaction (e.g. 'click')")
+    multi: bool = Field(
+        default=False,
+        description="When true, show all overlapping features instead of just the topmost one",
+    )
+    dedup_key: str | None = Field(
+        default=None,
+        description="Feature property used to deduplicate across tile boundaries",
+    )
 
 
 class LayerConfig(BaseModel):
