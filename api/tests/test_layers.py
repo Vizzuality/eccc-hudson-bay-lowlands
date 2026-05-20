@@ -310,6 +310,8 @@ def test_get_vector_layer_with_interaction_config(client, db_session, dataset, s
         "keys": ["NAME_EN", "NAME_FR"],
         "type": "feature-value",
         "event": "click",
+        "multi": False,
+        "dedup_key": None,
     }
 
 
