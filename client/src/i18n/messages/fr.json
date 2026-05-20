@@ -182,6 +182,7 @@
     "click-to-select": "Cliquez pour sélectionner votre zone d'intérêt et obtenir des informations détaillées.",
     "area-too-big": "<p>La zone dessinée est en dehors de la plage de taille autorisée (max {maxArea, number} km²). Veuillez essayer de dessiner une zone de taille différente.</p>",
     "outside-of-bounds": "<p>La zone dessinée ne chevauche pas la zone d'étude. Veuillez dessiner à l'intérieur de la région des basses terres de la baie d'Hudson.</p>",
+    "invalid-geometry": "<p>Votre géométrie est invalide. Veuillez la simplifier ou la corriger, puis réessayer.</p>",
     "generic-error": "<p>Une erreur s'est produite lors du traitement de votre demande. Veuillez réessayer.</p>",
     "leave-dialog": {
       "title": "Quitter l'analyse en cours ?",
