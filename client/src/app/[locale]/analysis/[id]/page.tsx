@@ -8,6 +8,7 @@ import { type ReactNode, Suspense, useLayoutEffect } from "react";
 import { MapStatus, useMapStatus } from "@/app/[locale]/url-store";
 import { AnalysisProvider } from "@/containers/analysis/analysis-context";
 import AnalysisPanelContent from "@/containers/analysis/panel-content";
+import DataLayersPanel from "@/containers/data-layers/panel";
 import MapContainer from "@/containers/map";
 import ShareButton from "@/containers/share-button";
 import { SharedAnalysisSkeleton } from "@/containers/skeletons";
@@ -126,10 +127,15 @@ export default function SharedAnalysisPage() {
           </Suspense>
 
           <section className="flex h-full overflow-hidden">
-            <aside className="flex h-full w-[600px] shrink-0 flex-col">
-              <AnalysisPanelContent
-                headerActions={<ShareButton size="xl" className="font-bold" />}
-              />
+            <aside className="flex h-full shrink-0">
+              <div className="flex h-full w-[600px] shrink-0 flex-col">
+                <AnalysisPanelContent
+                  headerActions={
+                    <ShareButton size="xl" className="font-bold" />
+                  }
+                />
+              </div>
+              <DataLayersPanel />
             </aside>
 
             <Suspense>
