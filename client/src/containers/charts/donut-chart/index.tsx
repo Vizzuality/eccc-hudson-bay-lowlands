@@ -28,6 +28,10 @@ const DonutChart: FC<DonutChartProps> = ({ data, chartConfig }) => {
             nameKey="label"
             innerRadius={60}
             outerRadius={80}
+            startAngle={90}
+            endAngle={-270}
+            stroke="#FFFFFF"
+            strokeWidth={1}
           />
         </PieChart>
       </ChartContainer>
