@@ -1,7 +1,7 @@
 "use client";
 
 import { type FC, useState } from "react";
-import type { AnalysisResult } from "@/containers/analysis/types";
+import type { AnalysisResult, WidgetId } from "@/containers/analysis/types";
 import DatasetDialog from "@/containers/dialogs/dataset";
 import CarbonPeatland from "@/containers/widgets/carbon-peatland";
 import EcosystemTypes from "@/containers/widgets/ecosystem-types";
@@ -13,7 +13,7 @@ import WaterDynamics from "@/containers/widgets/water-dynamics";
 import type { Dataset } from "@/types";
 
 interface WidgetProps {
-  id: keyof AnalysisResult;
+  id: WidgetId;
   data: AnalysisResult;
 }
 
