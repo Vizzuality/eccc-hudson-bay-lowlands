@@ -228,12 +228,23 @@ export default function useMapDraw(props?: UseMapboxDrawProps) {
       return;
     }
 
+    const onModeChange = () => {
+      if (
+        enabledRef.current &&
+        draw.getMode() === "simple_select" &&
+        draw.getAll().features.length === 0
+      ) {
+        draw.changeMode("draw_polygon");
+      }
+    };
+
     if (!map.hasControl(draw)) {
       map.addControl(draw);
       map.on("draw.create", props?.onCreate ?? NOOP);
       map.on("draw.click", props?.onClick ?? NOOP);
       map.on("draw.update", props?.onUpdate ?? NOOP);
       map.on("draw.delete", props?.onDelete ?? NOOP);
+      map.on("draw.modechange", onModeChange);
     }
 
     if (!enabledRef.current) {
@@ -253,6 +264,7 @@ export default function useMapDraw(props?: UseMapboxDrawProps) {
       map.off("draw.click", props?.onClick ?? NOOP);
       map.off("draw.update", props?.onUpdate ?? NOOP);
       map.off("draw.delete", props?.onDelete ?? NOOP);
+      map.off("draw.modechange", onModeChange);
 
       if (map.hasControl(draw)) {
         map.removeControl(draw);
@@ -278,6 +290,19 @@ export default function useMapDraw(props?: UseMapboxDrawProps) {
       map.off("click", onMapClick);
     };
   }, [map, draw]);
+
+  useEffect(() => {
+    if (!map) return;
+    const gl = map.getMap();
+    if (enabled) {
+      gl.doubleClickZoom.disable();
+    } else {
+      gl.doubleClickZoom.enable();
+    }
+    return () => {
+      gl.doubleClickZoom.enable();
+    };
+  }, [map, enabled]);
 
   useEffect(() => {
     if (!enabled) {
