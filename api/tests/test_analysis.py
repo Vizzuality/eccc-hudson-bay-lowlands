@@ -237,6 +237,13 @@ def test_valid_polygon_v2_returns_200(analysis_client):
     assert response.status_code == 200
 
 
+def test_response_includes_aoi_size(analysis_client):
+    body = analysis_client.post("/analysis/", json=VALID_POLYGON_FEATURE).json()
+    assert "aoi_size" in body
+    assert isinstance(body["aoi_size"], float)
+    assert body["aoi_size"] > 0
+
+
 # =============================================================================
 # Schema validation failures (Pydantic → 422)
 # =============================================================================
@@ -1209,7 +1216,9 @@ def test_polygon_outside_raster_produces_finite_numeric_stats(analysis_client):
     import math
 
     body = analysis_client.post("/analysis/", json=POLYGON_OUTSIDE_RASTER_BUT_INSIDE_HBL).json()
-    for widget in body.values():
+    for key, widget in body.items():
+        if key == "aoi_size":
+            continue
         for name, value in widget["stats"].items():
             if isinstance(value, (int, float)):
                 assert math.isfinite(value), f"{name} = {value!r} is not finite"
