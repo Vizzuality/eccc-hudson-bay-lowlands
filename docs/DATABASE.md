@@ -61,7 +61,7 @@ Stores metadata about Cloud Optimized GeoTIFF (COG) and other geospatial layers 
 
 | Column | Type | Nullable | Description |
 |--------|------|----------|-------------|
-| `id` | `INTEGER` (PK, auto-increment) | No | Primary key |
+| `id` | `VARCHAR` (PK) | No | String primary key (e.g., `peat_cog`, `inundation_frequency_cog`); assigned by the seed payload, not auto-generated |
 | `format` | `VARCHAR` | No | Data format: `"raster"` or `"vector"` |
 | `type` | `VARCHAR` | Yes | Layer type: `"continuous"`, `"categorical"`, or `NULL` |
 | `path` | `VARCHAR` | No | Data path — relative S3 key for rasters (e.g., `temperature/2024_cog.tif`), or tileset ID for vectors (e.g., `ecc-design.5qnlusni`) |
@@ -69,12 +69,12 @@ Stores metadata about Cloud Optimized GeoTIFF (COG) and other geospatial layers 
 | `categories` | `JSON` | Yes | Category definitions for categorical layers (list of `{value, label}`) |
 | `config` | `JSON` | Yes | Visualization configuration (styles, legend, params). See [Layer Config](#layer-config) section below |
 | `metadata` | `JSON` | No | Field-first i18n metadata (see i18n section below) |
-| `dataset_id` | `INTEGER` (FK, indexed) | Yes | Foreign key to `datasets.id`; nullable to allow orphaned layers |
+| `dataset_id` | `INTEGER` (FK, indexed) | No | Foreign key to `datasets.id` |
 
 **ORM model**: `api/models/layer.py`
 **Pydantic schema**: `api/schemas/layer.py`
 
-**Relationships**: Many-to-one with `datasets` via `dataset_id` FK (optional).
+**Relationships**: Many-to-one with `datasets` via `dataset_id` FK (required).
 
 **ORM Note**: The `metadata` column is accessed via the Python attribute `metadata_` to avoid collision with SQLAlchemy's reserved `Base.metadata`. Similarly, `format` maps to `format_` and `type` maps to `type_`.
 
@@ -352,7 +352,7 @@ class Dataset(Base):
 class Layer(Base):
     __tablename__ = "layers"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    id: Mapped[str] = mapped_column(String, primary_key=True)
     format_: Mapped[str] = mapped_column("format", String, nullable=False)
     type_: Mapped[str | None] = mapped_column("type", String, nullable=True)
     path: Mapped[str] = mapped_column(String, nullable=False)
@@ -360,8 +360,8 @@ class Layer(Base):
     categories: Mapped[list | None] = mapped_column(JSON, nullable=True)
     config: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     metadata_: Mapped[dict] = mapped_column("metadata", JSON, nullable=False)
-    dataset_id: Mapped[int | None] = mapped_column(ForeignKey("datasets.id"), nullable=True, index=True)
-    dataset: Mapped["Dataset | None"] = relationship(back_populates="layers")
+    dataset_id: Mapped[int] = mapped_column(Integer, ForeignKey("datasets.id"), nullable=False, index=True)
+    dataset: Mapped["Dataset"] = relationship(back_populates="layers")
 ```
 
 **Key design notes**:

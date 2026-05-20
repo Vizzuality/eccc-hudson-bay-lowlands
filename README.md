@@ -2,10 +2,10 @@
 
 [![Deploy Trunk](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/deploy-trunk.yml/badge.svg?branch=main)](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/deploy-trunk.yml)
 [![API CI](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/api-ci.yml/badge.svg)](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/api-ci.yml)
-[![Client CI](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/client-ci.yml/badge.svg)](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/client-ci.yml)
-[![Client Tests](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/client-tests.yml/badge.svg?branch=main)](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/client-tests.yml)
+[![Client CI](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/client-ci.yml/badge.svg?branch=main)](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/client-ci.yml)
 [![e2e Tests](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/e2e-tests.yml/badge.svg?branch=main)](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/e2e-tests.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Vizzuality_eccc-hudson-bay-lowlands&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Vizzuality_eccc-hudson-bay-lowlands)
+-- TODO: Coverage
 [![Coverage -- TODO](https://sonarcloud.io/api/project_badges/measure?project=Vizzuality_eccc-hudson-bay-lowlands&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Vizzuality_eccc-hudson-bay-lowlands)
 
 Full-stack geospatial project combining Terraform infrastructure and a FastAPI backend for Hudson Bay Lowlands imagery.
@@ -29,7 +29,7 @@ This project provides:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/eccc-hudson-bay-lowlands/eccc-hudson-bay-lowlands.git
+   git clone https://github.com/Vizzuality/eccc-hudson-bay-lowlands.git
    cd eccc-hudson-bay-lowlands
    ```
 
@@ -94,7 +94,7 @@ cd api
 uv sync
 
 # Run development server with auto-reload
-uv run fastapi dev main.py
+uv run uvicorn main:app --reload --port 8000
 
 # Run tests
 uv run pytest -v
@@ -108,22 +108,35 @@ uv run ruff format .
 
 ```
 eccc-hudson-bay-lowlands/
-├── api/                    # FastAPI backend
+├── api/                    # FastAPI backend (Python 3.12, uv)
 │   ├── main.py             # Application entry point
 │   ├── config.py           # Configuration settings
+│   ├── db/                 # SQLAlchemy engine and base
+│   ├── models/             # ORM models (Category, Dataset, Layer, SharedAnalysis)
+│   ├── schemas/            # Pydantic request/response schemas
 │   ├── routers/            # API route handlers
-│   ├── tests/              # Test suite
-│   ├── Dockerfile          # Container definition
+│   ├── services/           # Business logic (analysis, widgets, zonal stats, seed, cleanup)
+│   ├── tests/              # pytest test suite
+│   ├── Dockerfile          # Multi-stage Python build
 │   └── pyproject.toml      # Python dependencies
-├── docker/                 # Docker utilities
-│   └── init-db.sh          # PostgreSQL initialization
-├── infrastructure/         # Terraform configuration
-│   ├── main.tf             # Core resources
-│   ├── providers.tf        # AWS provider setup
-│   └── vars/               # Variable files
-├── docker-compose.yml      # Service orchestration
+├── client/                 # Next.js frontend (Node 24.13, pnpm)
+│   ├── src/                # App Router pages, containers, hooks
+│   ├── tests/              # Vitest unit and component tests
+│   ├── Dockerfile          # Multi-stage Node.js build
+│   └── package.json
+├── e2e/                    # Playwright end-to-end tests
+├── data-processing/        # Data processing utilities and metadata.json
+├── infrastructure/         # Terraform AWS infrastructure (Elastic Beanstalk, RDS, ECR)
+│   ├── main.tf
+│   ├── modules/
+│   ├── source_bundle/      # Beanstalk deployment bundle
+│   └── vars/
+├── docker/                 # PostgreSQL init script
+├── docs/                   # ARCHITECTURE, DATABASE, DEPLOYMENT, ADRs
+├── .github/workflows/      # CI/CD pipelines
+├── docker-compose.yml      # Local development services
 ├── .env.example            # Environment template
-└── CLAUDE.md               # Development guidelines
+└── CLAUDE.md               # AI agent context
 ```
 
 ## API Documentation
@@ -132,11 +145,17 @@ For detailed API documentation, see [api/README.md](api/README.md).
 
 ### Key Endpoints
 
-- `GET /` - API discovery endpoint
-- `GET /health` - Health check
-- `GET /docs` - Interactive Swagger UI
-- `GET /cog/info?url={cog_url}` - COG metadata
-- `GET /cog/tiles/{tileMatrixSetId}/{z}/{x}/{y}?url={cog_url}` - Map tiles
+- `GET /` — API discovery endpoint
+- `GET /health` — Health check (includes database connectivity)
+- `GET /docs` — Interactive Swagger UI
+- `GET /categories`, `GET /categories/{id}` — Category metadata
+- `GET /datasets`, `GET /datasets/{id}` — Dataset metadata (with optional nested layers)
+- `GET /layers`, `GET /layers/{id}` — Layer metadata
+- `GET /cog/info`, `GET /cog/tiles/{z}/{x}/{y}` — COG metadata and map tiles via TiTiler
+- `POST /analysis`, `POST /analysis/v2` — Zonal-statistics analysis (v2 enforces HBL containment)
+- `POST /analysis/v2/share`, `GET /analysis/v2/share/{id}` — Public share links for analyses
+- `GET /hbl-area` — Hudson Bay Lowlands study-area boundary
+- `POST /seed` — Authenticated database seeding (requires `X-Seed-Secret` header)
 
 ## Infrastructure
 

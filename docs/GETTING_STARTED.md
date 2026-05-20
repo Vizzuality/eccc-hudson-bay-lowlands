@@ -9,7 +9,7 @@ A zero-to-running guide for new developers joining the ECCC Hudson Bay Lowlands 
 | Docker | 20.10+ | [docker.com](https://docs.docker.com/get-docker/) |
 | Docker Compose | v2+ | Included with Docker Desktop |
 | Node.js | 24.13.0 (see `.nvmrc`) | [nvm](https://github.com/nvm-sh/nvm) or [nodejs.org](https://nodejs.org) |
-| pnpm | 10.20.0 | `corepack enable && corepack prepare pnpm@10.20.0 --activate` |
+| pnpm | 10.33.0 | `corepack enable && corepack prepare pnpm@10.33.0 --activate` |
 | Python | 3.12 | [python.org](https://www.python.org/downloads/) |
 | uv | latest | [docs.astral.sh/uv](https://docs.astral.sh/uv/) |
 | AWS CLI | v2 | Only needed for infrastructure work |
@@ -21,7 +21,7 @@ The fastest way to get everything running.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/eccc-hudson-bay-lowlands/eccc-hudson-bay-lowlands.git
+git clone https://github.com/Vizzuality/eccc-hudson-bay-lowlands.git
 cd eccc-hudson-bay-lowlands
 ```
 
@@ -100,7 +100,7 @@ docker compose up eccc-db -d
 ```bash
 cd api
 uv sync
-uv run fastapi dev main.py
+uv run uvicorn main:app --reload --port 8000
 ```
 
 The API starts at http://127.0.0.1:8000 with auto-reload enabled.

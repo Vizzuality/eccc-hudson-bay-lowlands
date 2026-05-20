@@ -102,14 +102,14 @@ The database runs on a separate RDS instance (not in Docker).
 
 | Component | Technology | Version | Purpose |
 |-----------|-----------|---------|---------|
-| Client | Next.js | 16.1.6 | React framework with SSR |
+| Client | Next.js | 16.2.6 | React framework with SSR |
 | Client runtime | Node.js | 24.13.0 | JavaScript runtime |
-| Client package manager | pnpm | 10.20.0 | Dependency management |
+| Client package manager | pnpm | 10.33.0 | Dependency management |
 | Client i18n | next-intl | 4.7.0 | Internationalization (separate from API i18n) |
 | UI styling | Tailwind CSS | 4.x | Utility-first CSS |
 | API framework | FastAPI | latest | Python web framework |
 | Tile serving | TiTiler Core | 1.1.0 | COG tile serving |
-| Python | Python | 3.11+ | API runtime |
+| Python | Python | 3.12 | API runtime |
 | Python package manager | uv | latest | Dependency management |
 | ORM | SQLAlchemy | 2.0+ | Database ORM with type annotations |
 | DB driver | psycopg | 3.0+ | PostgreSQL adapter (binary for performance) |

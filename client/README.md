@@ -5,7 +5,7 @@ Next.js frontend application for the Hudson Bay Lowlands geospatial project.
 ## Prerequisites
 
 - **Node.js**: 24.13.0 (specified in `.nvmrc` at the project root)
-- **pnpm**: 10.20.0 (specified in `package.json` `packageManager` field)
+- **pnpm**: 10.33.0 (specified in `package.json` `packageManager` field)
 
 ```bash
 nvm use                # Sets Node.js version from .nvmrc
@@ -46,7 +46,7 @@ pnpm format     # Format code with Biome
 
 The client Dockerfile (`client/Dockerfile`) uses a multi-stage build:
 
-1. **base**: Node.js 20-alpine with pnpm enabled via corepack
+1. **base**: Node.js 22-alpine with pnpm enabled via corepack
 2. **deps**: Installs dependencies from the pnpm workspace with frozen lockfile
 3. **builder**: Compiles Next.js with standalone output
 4. **runner**: Minimal production image with non-root user (`nextjs`)
@@ -103,7 +103,7 @@ Returns HTTP 200 when all services are healthy, HTTP 503 when any component is u
 
 | Package | Version | Purpose |
 |---------|---------|---------|
-| next | 16.1.6 | React framework |
+| next | 16.2.6 | React framework |
 | react / react-dom | 19.2.4 | UI library |
 | next-intl | 4.7.0 | Internationalization |
 | tailwindcss | 4.x | Utility-first CSS |
