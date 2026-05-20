@@ -36,6 +36,7 @@ import type { AnalysisResponse } from "@/types";
 type UploadBarError =
   | "area-too-big"
   | "outside-of-bounds"
+  | "invalid-geometry"
   | "generic-error"
   | "upload-error-invalid-json"
   | "upload-error-invalid-geojson"
@@ -98,6 +99,8 @@ const UploadBar = () => {
             detail.includes("must lie entirely within")
           ) {
             setError("outside-of-bounds");
+          } else if (detail.includes("structurally invalid")) {
+            setError("invalid-geometry");
           } else {
             setError("generic-error");
           }
