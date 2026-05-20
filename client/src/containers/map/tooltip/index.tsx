@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { booleanPointInPolygon, point } from "@turf/turf";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
 import { useMap } from "react-map-gl/mapbox";
@@ -8,6 +9,7 @@ import { MapStatus, useLayerIds, useMapStatus } from "@/app/[locale]/url-store";
 import { interactiveLayerAtom } from "@/containers/map/store";
 import MapPopup from "@/containers/map/tooltip/popup";
 import MapPopupItem from "@/containers/map/tooltip/popup/item";
+import { useHblAreaRaw } from "@/hooks/use-hbl-area";
 import { useApiTranslation } from "@/i18n/api-translation";
 import { API } from "@/lib/api";
 import { getLayersConfig } from "@/lib/api/config";
@@ -18,6 +20,8 @@ import type {
   LayersResponse,
   Translatable,
 } from "@/types";
+
+const HBL_RESTRICTED_LAYER_ID = "indigenous-territories-fill";
 
 interface StyleMeta {
   interactionConfig: InteractionConfig;
@@ -42,6 +46,7 @@ const MapTooltip = () => {
   const { mapStatus } = useMapStatus();
   const [interactiveLayer, setInteractiveLayer] = useAtom(interactiveLayerAtom);
   const { getTranslation } = useApiTranslation();
+  const { data: hblArea } = useHblAreaRaw();
 
   const { data: layers } = useQuery({
     queryKey: queryKeys.layers.all.queryKey,
@@ -108,6 +113,14 @@ const MapTooltip = () => {
       const meta = mapboxIdToMeta.get(styleId);
       if (!meta) return;
 
+      if (styleId === HBL_RESTRICTED_LAYER_ID && hblArea) {
+        const clickPoint = point([e.lngLat.lng, e.lngLat.lat]);
+        if (!booleanPointInPolygon(clickPoint, hblArea)) {
+          setInteractiveLayer(null);
+          return;
+        }
+      }
+
       const { interactionConfig } = meta;
       const legendItems =
         meta.legendConfig?.type === "basic" ? meta.legendConfig.items : null;
@@ -147,7 +160,14 @@ const MapTooltip = () => {
         features: featureList,
       });
     },
-    [map, mapboxLayerIds, mapboxIdToMeta, setInteractiveLayer, mapStatus],
+    [
+      map,
+      mapboxLayerIds,
+      mapboxIdToMeta,
+      setInteractiveLayer,
+      mapStatus,
+      hblArea,
+    ],
   );
 
   const handleMouseEnter = useCallback(() => {
@@ -160,22 +180,52 @@ const MapTooltip = () => {
       map.getCanvas().style.cursor = "";
   }, [map, mapStatus]);
 
+  const handleRestrictedMouseMove = useCallback(
+    (e: mapboxgl.MapLayerMouseEvent) => {
+      if (!map || mapStatus === MapStatus.upload) return;
+      if (
+        hblArea &&
+        booleanPointInPolygon(point([e.lngLat.lng, e.lngLat.lat]), hblArea)
+      ) {
+        map.getCanvas().style.cursor = "pointer";
+      } else {
+        map.getCanvas().style.cursor = "";
+      }
+    },
+    [map, mapStatus, hblArea],
+  );
+
   useEffect(() => {
     if (!map || mapboxLayerIds.length === 0) return;
 
     map.on("click", handleClick);
     for (const id of mapboxLayerIds) {
-      map.on("mouseenter", id, handleMouseEnter);
+      if (id === HBL_RESTRICTED_LAYER_ID) {
+        map.on("mousemove", id, handleRestrictedMouseMove);
+      } else {
+        map.on("mouseenter", id, handleMouseEnter);
+      }
       map.on("mouseleave", id, handleMouseLeave);
     }
     return () => {
       map.off("click", handleClick);
       for (const id of mapboxLayerIds) {
-        map.off("mouseenter", id, handleMouseEnter);
+        if (id === HBL_RESTRICTED_LAYER_ID) {
+          map.off("mousemove", id, handleRestrictedMouseMove);
+        } else {
+          map.off("mouseenter", id, handleMouseEnter);
+        }
         map.off("mouseleave", id, handleMouseLeave);
       }
     };
-  }, [map, mapboxLayerIds, handleClick, handleMouseEnter, handleMouseLeave]);
+  }, [
+    map,
+    mapboxLayerIds,
+    handleClick,
+    handleMouseEnter,
+    handleMouseLeave,
+    handleRestrictedMouseMove,
+  ]);
 
   useEffect(() => {
     if (mapStatus === MapStatus.upload) {
