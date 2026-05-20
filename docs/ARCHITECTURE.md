@@ -60,7 +60,7 @@ Production uses `docker-compose.prod.yml` with pre-built ECR images and an Nginx
 
 | Service | Image Source | Port | Purpose |
 |---------|-------------|------|---------|
-| `nginx` | `nginx` (official) | 80 | Reverse proxy routing |
+| `nginx` | `nginx:1.30.1-alpine` (official) | 80 | Reverse proxy routing |
 | `client` | ECR client repository | 3000 | Next.js frontend |
 | `api` | ECR API repository | 8000 | FastAPI backend |
 
