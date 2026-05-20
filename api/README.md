@@ -22,7 +22,7 @@ uv sync
 ### Development server (with auto-reload)
 
 ```bash
-uv run fastapi dev main.py
+uv run uvicorn main:app --reload --port 8000
 ```
 
 The server starts at http://127.0.0.1:8000.
@@ -30,8 +30,10 @@ The server starts at http://127.0.0.1:8000.
 ### Production server
 
 ```bash
-uv run fastapi run main.py
+uv run uvicorn main:app --host 0.0.0.0 --port 8000
 ```
+
+(This mirrors the `CMD` in `api/Dockerfile`.)
 
 ## API Endpoints
 
@@ -58,25 +60,37 @@ uv run fastapi run main.py
 | `GET /cog/tiles/{tileMatrixSetId}/{z}/{x}/{y}?url={cog_url}` | Map tiles |
 | `GET /cog/{tileMatrixSetId}/tilejson.json?url={cog_url}` | TileJSON format |
 
-### Layer Management
+### Catalogue (read-only)
 
 | Endpoint | Description |
 |----------|-------------|
-| `GET /layers?offset=0&limit=10` | Paginated list of layers |
+| `GET /categories?offset=0&limit=10&search=&include_datasets=&include_layers=` | Paginated list of categories with optional nested datasets/layers |
+| `GET /categories/{id}` | Retrieve a category, optionally with nested datasets and layers |
+| `GET /datasets?offset=0&limit=10&search=&include_layers=&category_id=` | Paginated list of datasets, optionally filtered by category |
+| `GET /datasets/{id}?include_layers=` | Retrieve a dataset, optionally with nested layers |
+| `GET /layers?offset=0&limit=10&search=` | Paginated list of layers with case-insensitive search across en/fr titles |
 | `GET /layers/{id}` | Retrieve a specific layer |
-| `POST /layers` | Create a new layer with i18n metadata (en/fr) |
 
-### Dataset Management
-
-| Endpoint | Description |
-|----------|-------------|
-| (Coming soon) | Create, list, and manage datasets that group related layers |
-
-### Analysis (Geometry Validation + Zonal Statistics)
+### Study area
 
 | Endpoint | Description |
 |----------|-------------|
-| `POST /analysis` | Validate a GeoJSON `Feature` / `FeatureCollection` (EPSG:4326, Polygon/MultiPolygon) and compute pixel-coverage-weighted statistics for the configured raster layers. Returns one widget object per key (currently `peat_carbon`, `water_dynamics`); each widget has `unit`, `layers` (list of `{id, title, path}`), `chart` (keyed by layer id), and a typed `stats` object. Returns 422 for invalid geometry, 500 if `S3_BUCKET_NAME` is unset. |
+| `GET /hbl-area` | Returns the Hudson Bay Lowlands study-area boundary as GeoJSON |
+
+### Seeding (authenticated)
+
+| Endpoint | Description |
+|----------|-------------|
+| `POST /seed` | Upserts categories, datasets, and layers from a JSON payload. Requires `X-Seed-Secret` header matching the `SEED_SECRET` env var. Idempotent. |
+
+### Analysis (geometry validation + zonal statistics)
+
+| Endpoint | Description |
+|----------|-------------|
+| `POST /analysis` | v1 (legacy): geometry must intersect the HBL bbox. Returns an `AnalysisResponse` with typed widget objects (`peat_carbon`, `water_dynamics`, `flood_susceptibility`, `snow_dynamics`, `treed_area`, `ecosystem_classification`). |
+| `POST /analysis/v2` | Same response shape as `/analysis` but the geometry must lie *entirely within* the HBL study-area polygon. New clients should target v2. |
+| `POST /analysis/v2/share` | Persists a rendered analysis snapshot for public sharing. Body: `{analysis, geojson}`. Returns `{id: UUID}` (201). The geojson is re-validated through the v2 pipeline. |
+| `GET /analysis/v2/share/{share_id}` | Returns `{id, analysis, geojson, created_at}`. Re-validates the stored analysis against the current schema; returns 410 Gone if the row is missing or has drifted. |
 
 Widgets and the layers/ops/stats they consume are declared in `api/services/widgets.py` (`WIDGET_CONFIG`); the builder in `api/services/zonal_stats.py` is generic, so adding a new raster or widget does not require new branching code.
 
@@ -107,29 +121,52 @@ uv run ruff format .          # Format code
 api/
 |-- main.py                 # FastAPI app entry point, router mounting, lifespan
 |-- config.py               # Settings class (pydantic-settings, env vars)
+|-- seed.py                 # Standalone CLI seed script (posts to /seed)
 |-- db/
 |   |-- base.py             # SQLAlchemy declarative base
 |   +-- database.py         # Engine, SessionLocal, get_db() dependency
 |-- models/
-|   |-- __init__.py         # Model exports (Layer, Dataset)
-|   |-- layer.py            # Layer ORM model (with i18n metadata)
-|   +-- dataset.py          # Dataset ORM model (groups layers)
+|   |-- __init__.py         # Model exports
+|   |-- category.py         # Category ORM model
+|   |-- dataset.py          # Dataset ORM model
+|   |-- layer.py            # Layer ORM model (string PK; i18n metadata)
+|   +-- shared_analysis.py  # SharedAnalysis ORM model (public share links)
 |-- schemas/
 |   |-- __init__.py         # Schema exports
-|   |-- i18n.py             # Shared i18n Pydantic types (LayerLocale, DatasetLocale, etc.)
-|   |-- layer.py            # Layer request/response schemas
-|   +-- dataset.py          # Dataset request/response schemas
+|   |-- i18n.py             # Shared i18n Pydantic types (I18nText, *Metadata)
+|   |-- analysis.py         # Analysis request/response schemas (typed widgets)
+|   |-- category.py         # Category schemas
+|   |-- dataset.py          # Dataset schemas
+|   |-- layer.py            # Layer schemas
+|   +-- shared_analysis.py  # SharedAnalysis schemas
 |-- routers/
-|   |-- health.py           # Health check endpoint
+|   |-- health.py           # Health check
 |   |-- cog.py              # TiTiler COG tile serving
-|   +-- layers.py           # Layer CRUD endpoints
+|   |-- categories.py       # GET /categories
+|   |-- datasets.py         # GET /datasets
+|   |-- layers.py           # GET /layers
+|   |-- seed.py             # POST /seed (X-Seed-Secret auth)
+|   |-- analysis.py         # POST /analysis, /analysis/v2, /analysis/v2/share
+|   +-- hbl_area.py         # GET /hbl-area
+|-- services/
+|   |-- analysis.py         # Geometry validation pipeline (area, scope, structural)
+|   |-- widgets.py          # WIDGET_CONFIG — declarative widget→layer→stats/chart map
+|   |-- zonal_stats.py      # Generic widget builder powered by exactextract
+|   |-- shared_analysis.py  # create/get/delete_expired for shared analyses
+|   |-- cleanup.py          # @repeat_at scheduled cleanup of expired shares
+|   +-- seed.py             # Upsert logic for categories/datasets/layers
 |-- tests/
-|   |-- conftest.py         # Test fixtures and configuration
-|   |-- test_health.py      # Health endpoint tests (4 tests)
-|   |-- test_cog.py         # COG endpoint tests (3 tests)
-|   |-- test_layers.py      # Layer CRUD tests (25 tests)
-|   +-- test_datasets.py    # Dataset tests (8 tests)
-|-- Dockerfile              # Multi-stage Python build
+|   |-- conftest.py         # Test fixtures (DB session rollback isolation)
+|   |-- test_health.py
+|   |-- test_cog.py
+|   |-- test_cog_integration.py
+|   |-- test_categories.py
+|   |-- test_datasets.py
+|   |-- test_layers.py
+|   |-- test_seed.py
+|   |-- test_analysis.py    # validation + per-widget stats/chart assertions
+|   +-- test_shared_analysis.py
+|-- Dockerfile              # Multi-stage Python build (python:3.12-slim)
 +-- pyproject.toml          # Dependencies and tool configuration
 ```
 
