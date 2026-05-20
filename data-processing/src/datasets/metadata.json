@@ -2262,7 +2262,9 @@
                 "interaction_config": {
                   "keys": ["Name"],
                   "type": "feature-value",
-                  "event": "click"
+                  "event": "click",
+                  "multi": true,
+                  "dedup_key": "Name"
                 }
               }
             }
