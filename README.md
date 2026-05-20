@@ -1,6 +1,12 @@
 # ECCC Hudson Bay Lowlands
 
-![Client Coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/vizzuality/eccc-hudson-bay-lowlands/badges/client-coverage.json)
+[![Deploy Trunk](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/deploy-trunk.yml/badge.svg?branch=main)](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/deploy-trunk.yml)
+[![API CI](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/api-ci.yml/badge.svg)](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/api-ci.yml)
+[![Client CI](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/client-ci.yml/badge.svg)](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/client-ci.yml)
+[![Client Tests](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/client-tests.yml/badge.svg?branch=main)](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/client-tests.yml)
+[![e2e Tests](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/e2e-tests.yml/badge.svg?branch=main)](https://github.com/Vizzuality/eccc-hudson-bay-lowlands/actions/workflows/e2e-tests.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Vizzuality_eccc-hudson-bay-lowlands&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Vizzuality_eccc-hudson-bay-lowlands)
+[![Coverage -- TODO](https://sonarcloud.io/api/project_badges/measure?project=Vizzuality_eccc-hudson-bay-lowlands&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Vizzuality_eccc-hudson-bay-lowlands)
 
 Full-stack geospatial project combining Terraform infrastructure and a FastAPI backend for Hudson Bay Lowlands imagery.
 
