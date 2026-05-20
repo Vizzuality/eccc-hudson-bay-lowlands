@@ -3,7 +3,7 @@ import { renderHook, waitFor } from "@testing-library/react";
 import type { Feature, Polygon } from "geojson";
 import type { PropsWithChildren } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { useHblArea } from "@/hooks/use-hbl-area";
+import { useHblArea, useHblAreaRaw } from "@/hooks/use-hbl-area";
 
 const mockAPI = vi.hoisted(() => vi.fn());
 
@@ -60,5 +60,35 @@ describe("useHblArea", () => {
       [-180, 85],
       [-180, -85],
     ]);
+  });
+});
+
+describe("useHblAreaRaw", () => {
+  let queryClient: QueryClient;
+
+  beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    mockAPI.mockReset();
+  });
+
+  const wrapper = ({ children }: PropsWithChildren) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+
+  it("returns the original feature without inversion", async () => {
+    mockAPI.mockResolvedValue(fakeFeature);
+
+    const { result } = renderHook(() => useHblAreaRaw(), { wrapper });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    const data = result.current.data;
+    expect(data?.geometry.type).toBe("Polygon");
+    expect(data?.geometry.coordinates).toHaveLength(1);
+    expect(data?.geometry.coordinates[0]).toEqual(
+      fakeFeature.geometry.coordinates[0],
+    );
   });
 });
