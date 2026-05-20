@@ -10,11 +10,17 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import DataLayersList from "@/containers/data-layers/list";
 import Analysis from "@/containers/map-sidebar/analysis";
 import Main from "@/containers/map-sidebar/main";
+import { useTranslatedDatasets } from "@/hooks/use-datasets";
 import { cn } from "@/lib/utils";
 
 const MapSidebar = () => {
   const { mapStatus } = useMapStatus();
   const { datasets } = useMapAnalysis();
+  const { data: allDatasets, isFetching: isDatasetsLoading } =
+    useTranslatedDatasets({
+      include_layers: true,
+      limit: 99,
+    });
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   const { default: mapRef } = useMap();
@@ -68,8 +74,12 @@ const MapSidebar = () => {
           datasets ? "w-[350px] opacity-100" : "w-0 opacity-0",
         )}
       >
-        <ScrollArea className="h-full w-full pt-6">
-          <DataLayersList datasets={[]} isLoading={false} className="pb-6" />
+        <ScrollArea className="h-full w-full pt-6 border-l border-l-secondary">
+          <DataLayersList
+            datasets={allDatasets ?? []}
+            isLoading={isDatasetsLoading}
+            className="pb-6"
+          />
         </ScrollArea>
       </div>
     </aside>
