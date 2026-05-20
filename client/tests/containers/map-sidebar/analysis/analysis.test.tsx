@@ -77,7 +77,7 @@ describe("@containers/map-sidebar/analysis", () => {
     ).filter((key) => key !== "share" && key !== "card");
 
     expect(widgetNamespaces).toHaveLength(
-      Object.keys(mockAnalysisResult).length,
+      Object.keys(mockAnalysisResult).filter((k) => k !== "aoi_size").length,
     );
 
     for (const key of widgetNamespaces) {

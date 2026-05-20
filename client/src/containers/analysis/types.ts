@@ -91,6 +91,7 @@ export interface TreeCoverChangeStats {
 }
 
 export interface AnalysisResult {
+  aoi_size: number;
   peat_carbon: WidgetData<TimeSeriesDataPoint, PeatCarbonStats>;
   water_dynamics: WidgetData<CategoricalDataPoint, WaterDynamicsStats>;
   flood_susceptibility: WidgetData<
@@ -104,3 +105,5 @@ export interface AnalysisResult {
     EcosystemTypesStats
   >;
 }
+
+export type WidgetId = Exclude<keyof AnalysisResult, "aoi_size">;

@@ -1,6 +1,7 @@
 import type { AnalysisResult } from "@/containers/analysis/types";
 
 export const mockAnalysisResult: AnalysisResult = {
+  aoi_size: 100,
   peat_carbon: {
     unit: "cm",
     chart: {

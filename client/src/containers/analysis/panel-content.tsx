@@ -6,7 +6,7 @@ import RichText from "@/components/ui/rich-text";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAnalysisViewportRef } from "@/containers/analysis/analysis-context";
 import AnalysisNavigation from "@/containers/analysis/navigation";
-import type { AnalysisResult } from "@/containers/analysis/types";
+import type { AnalysisResult, WidgetId } from "@/containers/analysis/types";
 import WidgetSection from "@/containers/analysis/widget-section";
 import ShareDialog from "@/containers/dialogs/share";
 import Widget from "@/containers/widgets";
@@ -40,7 +40,7 @@ export default function AnalysisPanelContent({
           {(tags) =>
             t.rich("description", {
               ...tags,
-              aoi_size: 100,
+              aoi_size: analysisResult.aoi_size,
             })
           }
         </RichText>
@@ -52,13 +52,13 @@ export default function AnalysisPanelContent({
 
       <ScrollArea className="min-h-0 flex-1" viewportRef={viewportRef}>
         <section className="space-y-4 px-6 pb-10">
-          {(Object.keys(analysisResult) as (keyof AnalysisResult)[]).map(
-            (id) => (
+          {(Object.keys(analysisResult) as (keyof AnalysisResult)[])
+            .filter((id): id is WidgetId => id !== "aoi_size")
+            .map((id) => (
               <WidgetSection key={`analysis-widget-section-${id}`} id={id}>
                 <Widget id={id} data={analysisResult} />
               </WidgetSection>
-            ),
-          )}
+            ))}
           <ShareWidget />
         </section>
       </ScrollArea>

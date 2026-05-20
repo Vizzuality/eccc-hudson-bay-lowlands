@@ -223,6 +223,7 @@ class EcosystemClassificationWidget(BaseModel):
 class AnalysisResponse(BaseModel):
     """Full analysis result returned after geometry validation and zonal stats computation."""
 
+    aoi_size: float
     peat_carbon: PeatCarbonWidget
     water_dynamics: WaterDynamicsWidget
     flood_susceptibility: FloodSusceptibilityWidget

@@ -71,6 +71,7 @@ def _run_analysis(
         logger.exception("Failed to read raster data")
         raise HTTPException(status_code=500, detail="Analysis is unavailable")
     return AnalysisResponse(
+        aoi_size=round(polygon_area_km2, 2),
         peat_carbon=result["peat_carbon"],
         water_dynamics=result["water_dynamics"],
         flood_susceptibility=result["flood_susceptibility"],
