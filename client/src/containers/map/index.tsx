@@ -34,11 +34,8 @@ import { env } from "@/env";
 import { useIsAnalyzing } from "@/hooks/use-analysis-settings";
 import { cn } from "@/lib/utils";
 
-const defaultBbox = [-112, 50, -56, 64];
-const defaultZoom = 5;
-// Calculate center from bbox: [minLng, minLat, maxLng, maxLat]
-const defaultLongitude = (defaultBbox[0] + defaultBbox[2]) / 2;
-const defaultLatitude = (defaultBbox[1] + defaultBbox[3]) / 2;
+const DEFAULT_CENTER = { longitude: -85.74, latitude: 54.53 };
+const DEFAULT_ZOOM = 5;
 
 type MapContainerProps = {
   className?: HTMLDivElement["className"];
@@ -55,7 +52,6 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
   const { maxZoom } = useLayerZoomConstraints();
   const [isAnalyzing] = useIsAnalyzing();
   const { mapStatus } = useMapStatus();
-
   // Enforce zoom constraints imperatively to avoid triggering _createProxyTransform
   // in @vis.gl/react-mapbox. Passing minZoom/maxZoom as props causes it to re-wrap
   // map.transform in a new Proxy on every change. _calcMatrices is in unproxiedMethods
@@ -103,9 +99,8 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
         mapStyle={mapStyle}
         projection="mercator"
         initialViewState={{
-          longitude: defaultLongitude,
-          latitude: defaultLatitude,
-          zoom: defaultZoom,
+          ...DEFAULT_CENTER,
+          zoom: DEFAULT_ZOOM,
         }}
         onLoad={() => {
           const map = mapRef.current?.getMap();
