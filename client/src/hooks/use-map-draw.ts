@@ -32,8 +32,7 @@ export interface UseMapboxDrawProps {
 // Shape tokens (Mapbox GL layers cannot use CSS box-shadow; inset glow is approximated with line-blur + offset).
 const SHAPE_FILL = "rgba(16, 185, 129, 0.10)";
 const SHAPE_STROKE = "rgb(16, 185, 129)";
-/** Semi-transparent dark overlay on the polygon interior (analysis view). */
-const ANALYSIS_FILL_OVERLAY = "rgba(0, 0, 0, 0.35)";
+const ANALYSIS_FILL_TRANSPARENT = "rgba(0, 0, 0, 0)";
 const ANALYSIS_BORDER = "#fff";
 const SHAPE_STROKE_WIDTH = 2;
 const SHAPE_INSET_LIGHT = "rgba(255, 255, 255, 0.25)";
@@ -49,7 +48,7 @@ export function getDrawStyles(
 )[] {
   const isAnalysis = variant === "analysis";
   const polygonStroke = isAnalysis ? ANALYSIS_BORDER : SHAPE_STROKE;
-  const polygonFill = isAnalysis ? ANALYSIS_FILL_OVERLAY : SHAPE_FILL;
+  const polygonFill = isAnalysis ? ANALYSIS_FILL_TRANSPARENT : SHAPE_FILL;
 
   // Analysis renders in "static" mode (locked, no handles); draw variants exclude static.
   const polygonFilter: FillLayerSpecification["filter"] = isAnalysis

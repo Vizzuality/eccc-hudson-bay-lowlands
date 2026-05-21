@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { MapProps, MapRef } from "react-map-gl/mapbox";
 import MapBoxMap from "react-map-gl/mapbox";
 import {
@@ -12,6 +12,7 @@ import {
   useSyncLayersSettings,
 } from "@/app/[locale]/url-store";
 import DownloadWatermark from "@/components/download-watermark";
+import { AnalysisAreaMask } from "@/containers/map/analysis-area-mask";
 import AnalyzeButton from "@/containers/map/analyze-button";
 import {
   BASEMAPS,
@@ -31,8 +32,11 @@ import MapLegend from "@/containers/map/legend";
 import MapLegendItem from "@/containers/map/legend/item";
 import MapTooltip from "@/containers/map/tooltip";
 import { env } from "@/env";
-import { useIsAnalyzing } from "@/hooks/use-analysis-settings";
+import useAnalysisSettings, {
+  useIsAnalyzing,
+} from "@/hooks/use-analysis-settings";
 import { cn } from "@/lib/utils";
+import { getGeometryBounds } from "@/lib/utils/get-geometry-bounds";
 
 const DEFAULT_CENTER = { longitude: -85.74, latitude: 54.53 };
 const DEFAULT_ZOOM = 5;
@@ -52,6 +56,67 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
   const { maxZoom } = useLayerZoomConstraints();
   const [isAnalyzing] = useIsAnalyzing();
   const { mapStatus } = useMapStatus();
+  const [{ geometry: analysisGeometry }] = useAnalysisSettings();
+  const prevMapStatusRef = useRef(mapStatus);
+  const hasZoomedRef = useRef(false);
+
+  const zoomToAnalysisArea = useCallback(() => {
+    if (!analysisGeometry || !mapRef.current) return;
+    const bounds = getGeometryBounds(analysisGeometry);
+    if (!bounds) return;
+    hasZoomedRef.current = true;
+    mapRef.current.fitBounds(bounds, {
+      padding: { top: 100, bottom: 100, left: 700, right: 100 },
+      animate: true,
+    });
+  }, [analysisGeometry]);
+
+  useEffect(() => {
+    const justEnteredAnalysis =
+      prevMapStatusRef.current !== MapStatus.analysis &&
+      mapStatus === MapStatus.analysis;
+    prevMapStatusRef.current = mapStatus;
+
+    if (mapStatus !== MapStatus.analysis) {
+      hasZoomedRef.current = false;
+      return;
+    }
+
+    if (hasZoomedRef.current) return;
+
+    // Map loaded while already in analysis mode (shared analysis page)
+    if (!justEnteredAnalysis && loaded) {
+      zoomToAnalysisArea();
+      return;
+    }
+
+    if (!justEnteredAnalysis) return;
+
+    // Entered analysis from upload — wait for sidebar transition
+    const sidebar = document.querySelector("aside");
+    if (!sidebar) {
+      zoomToAnalysisArea();
+      return;
+    }
+
+    const onTransitionEnd = (e: TransitionEvent) => {
+      if (e.propertyName === "width") {
+        sidebar.removeEventListener("transitionend", onTransitionEnd);
+        zoomToAnalysisArea();
+      }
+    };
+    sidebar.addEventListener("transitionend", onTransitionEnd);
+
+    const fallback = setTimeout(() => {
+      sidebar.removeEventListener("transitionend", onTransitionEnd);
+      zoomToAnalysisArea();
+    }, 500);
+
+    return () => {
+      clearTimeout(fallback);
+      sidebar.removeEventListener("transitionend", onTransitionEnd);
+    };
+  }, [mapStatus, loaded, zoomToAnalysisArea]);
   // Enforce zoom constraints imperatively to avoid triggering _createProxyTransform
   // in @vis.gl/react-mapbox. Passing minZoom/maxZoom as props causes it to re-wrap
   // map.transform in a new Proxy on every change. _calcMatrices is in unproxiedMethods
@@ -122,6 +187,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
           <>
             <LayerManager />
             {mapStatus === MapStatus.upload && <HblAreaMask />}
+            {mapStatus === MapStatus.analysis && <AnalysisAreaMask />}
             <MapTooltip />
             {children}
           </>
