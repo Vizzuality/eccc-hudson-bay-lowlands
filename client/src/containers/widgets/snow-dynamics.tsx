@@ -1,4 +1,3 @@
-import { SnowflakeIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { type FC, useState } from "react";
 import RichText from "@/components/ui/rich-text";
@@ -17,6 +16,7 @@ import LineChart from "@/containers/charts/line-chart";
 import Highlight from "@/containers/highlight";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
+import WidgetIcon from "@/containers/widgets/icon";
 import type { WidgetCardBaseProps } from "@/containers/widgets/types";
 import type { Layer } from "@/types";
 
@@ -126,7 +126,7 @@ const SnowDynamics: FC<SnowDynamicsProps> = ({
       }
       icon={
         <WidgetCardIcon
-          icon={<SnowflakeIcon className="size-5 text-indigo-700" />}
+          icon={<WidgetIcon id={id} className="size-5 text-indigo-700" />}
           backgroundColor="#4F46E5"
         />
       }

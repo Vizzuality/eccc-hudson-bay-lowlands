@@ -25,7 +25,29 @@ const DonutChart: FC<DonutChartProps> = ({ data, chartConfig }) => {
         <PieChart>
           <ChartTooltip
             cursor={false}
-            content={<ChartTooltipContent hideLabel />}
+            content={
+              <ChartTooltipContent
+                hideLabel
+                formatter={(value, name, item) => (
+                  <>
+                    <div
+                      className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
+                      style={{
+                        backgroundColor: item.payload?.fill ?? item.color,
+                      }}
+                    />
+                    <div className="flex flex-1 justify-between leading-none items-center gap-1">
+                      <span className="text-muted-foreground">{name}</span>
+                      <span className="font-mono font-medium text-foreground tabular-nums">
+                        {typeof value === "number"
+                          ? `${value.toLocaleString()}%`
+                          : String(value)}
+                      </span>
+                    </div>
+                  </>
+                )}
+              />
+            }
           />
           <Pie
             data={data}

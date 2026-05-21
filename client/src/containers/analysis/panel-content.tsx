@@ -50,8 +50,8 @@ export default function AnalysisPanelContent({
         <AnalysisNavigation />
       </div>
 
-      <ScrollArea className="min-h-0 flex-1 px-6" viewportRef={viewportRef}>
-        <section className="space-y-4">
+      <ScrollArea className="min-h-0 flex-1" viewportRef={viewportRef}>
+        <section className="space-y-4 px-6 pb-10">
           {(Object.keys(analysisResult) as (keyof AnalysisResult)[]).map(
             (id) => (
               <WidgetSection key={`analysis-widget-section-${id}`} id={id}>

@@ -25,10 +25,12 @@ const DatasetDialog = ({
   open,
   onOpenChange,
   dataset,
+  icon,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   dataset: DatasetDialogDataset | null;
+  icon?: React.ReactNode;
 }) => {
   const t = useTranslations("dataset-dialog");
   const { getTranslation } = useApiTranslation();
@@ -50,7 +52,7 @@ const DatasetDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="gap-6">
         <DialogHeader className="gap-6">
-          <HandHeartIcon />
+          {icon ?? <HandHeartIcon />}
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>

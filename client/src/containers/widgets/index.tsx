@@ -6,6 +6,7 @@ import DatasetDialog from "@/containers/dialogs/dataset";
 import CarbonPeatland from "@/containers/widgets/carbon-peatland";
 import EcosystemTypes from "@/containers/widgets/ecosystem-types";
 import FloodSusceptibility from "@/containers/widgets/flood-susceptibility";
+import WidgetIcon from "@/containers/widgets/icon";
 import SnowDynamics from "@/containers/widgets/snow-dynamics";
 import TreeCoverChange from "@/containers/widgets/tree-cover-change";
 import WaterDynamics from "@/containers/widgets/water-dynamics";
@@ -18,8 +19,12 @@ interface WidgetProps {
 
 const Widget: FC<WidgetProps> = ({ id, data }) => {
   const [dialogDataset, setDialogDataset] = useState<Dataset | null>(null);
+  const [dialogIcon, setDialogIcon] = useState<React.ReactNode | null>(null);
 
-  const onInfoButtonClick = () => setDialogDataset(data[id].dataset);
+  const onInfoButtonClick = () => {
+    setDialogDataset(data[id].dataset);
+    setDialogIcon(<WidgetIcon id={id} />);
+  };
 
   const widget = (() => {
     switch (id) {
@@ -93,8 +98,12 @@ const Widget: FC<WidgetProps> = ({ id, data }) => {
       {widget}
       <DatasetDialog
         open={!!dialogDataset}
-        onOpenChange={() => setDialogDataset(null)}
+        onOpenChange={() => {
+          setDialogDataset(null);
+          setDialogIcon(null);
+        }}
         dataset={dialogDataset}
+        icon={dialogIcon}
       />
     </>
   );

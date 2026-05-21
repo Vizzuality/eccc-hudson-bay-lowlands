@@ -1,4 +1,3 @@
-import { TreesIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
@@ -9,6 +8,7 @@ import type {
 import DonutChart from "@/containers/charts/donut-chart";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
+import WidgetIcon from "@/containers/widgets/icon";
 import type { WidgetCardBaseProps } from "@/containers/widgets/types";
 import type { Layer } from "@/types";
 
@@ -41,7 +41,7 @@ const TreeCoverChange: FC<TreeCoverChangeProps> = ({
       title={t("title")}
       icon={
         <WidgetCardIcon
-          icon={<TreesIcon className="size-5 text-green-600" />}
+          icon={<WidgetIcon id={id} className="size-5 text-green-600" />}
           backgroundColor="#16A34A"
         />
       }

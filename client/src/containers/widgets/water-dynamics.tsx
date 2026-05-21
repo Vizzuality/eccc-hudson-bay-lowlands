@@ -1,4 +1,3 @@
-import { DropletsIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
@@ -7,6 +6,7 @@ import DonutChart from "@/containers/charts/donut-chart";
 import Highlight from "@/containers/highlight";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
+import WidgetIcon from "@/containers/widgets/icon";
 import type { WidgetCardBaseProps } from "@/containers/widgets/types";
 import { useApiTranslation } from "@/i18n/api-translation";
 import type { Layer } from "@/types";
@@ -70,7 +70,7 @@ const WaterDynamics: FC<WaterDynamicsProps> = ({
       }
       icon={
         <WidgetCardIcon
-          icon={<DropletsIcon className="size-5 text-sky-500" />}
+          icon={<WidgetIcon id={id} className="size-5 text-sky-500" />}
           backgroundColor="#0EA5E9"
         />
       }
