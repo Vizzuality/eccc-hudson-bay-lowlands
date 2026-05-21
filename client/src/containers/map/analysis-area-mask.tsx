@@ -31,7 +31,7 @@ export function AnalysisAreaMask() {
         type="fill"
         paint={{
           "fill-color": "#000",
-          "fill-opacity": 0.3,
+          "fill-opacity": 0.2,
         }}
       />
     </Source>
