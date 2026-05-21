@@ -1,4 +1,3 @@
-import { WavesIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
@@ -6,6 +5,7 @@ import type { FloodSusceptibilityStats } from "@/containers/analysis/types";
 import DonutChart from "@/containers/charts/donut-chart";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
+import WidgetIcon from "@/containers/widgets/icon";
 import type { WidgetCardBaseProps } from "@/containers/widgets/types";
 import { useApiTranslation } from "@/i18n/api-translation";
 import type { Layer } from "@/types";
@@ -55,7 +55,7 @@ const FloodSusceptibility: FC<FloodSusceptibilityProps> = ({
       title={t("title")}
       icon={
         <WidgetCardIcon
-          icon={<WavesIcon className="size-5 text-red-500" />}
+          icon={<WidgetIcon id={id} className="size-5 text-red-500" />}
           backgroundColor="#EF4444"
         />
       }

@@ -3,7 +3,16 @@ import type { AnalysisResult } from "@/containers/analysis/types";
 export const mockAnalysisResult: AnalysisResult = {
   peat_carbon: {
     unit: "cm",
-    chart: {},
+    chart: {
+      peat_cog: [
+        { x: 2018, y: 120 },
+        { x: 2019, y: 135 },
+      ],
+      carbon_cog: [
+        { x: 2018, y: 38 },
+        { x: 2019, y: 42 },
+      ],
+    },
     dataset: {
       id: 1,
       category_id: 1,
@@ -69,7 +78,12 @@ export const mockAnalysisResult: AnalysisResult = {
   },
   snow_dynamics: {
     unit: "cm",
-    chart: {},
+    chart: {
+      snow_cog: [
+        { x: 2018, y: 95 },
+        { x: 2019, y: 98 },
+      ],
+    },
     dataset: {
       id: 4,
       category_id: 1,
@@ -98,7 +112,30 @@ export const mockAnalysisResult: AnalysisResult = {
   },
   treed_area: {
     unit: "cm",
-    chart: {},
+    chart: {
+      treed_cog: [
+        {
+          key: "non_treed_perc",
+          label: { en: "Non-treed", fr: "Non boisé" },
+          value: 50,
+        },
+        {
+          key: "always_treed_perc",
+          label: { en: "Always-treed", fr: "Toujours boisé" },
+          value: 25,
+        },
+        {
+          key: "newly_treed_perc",
+          label: { en: "Newly-treed", fr: "Nouvellement boisé" },
+          value: 15,
+        },
+        {
+          key: "was_treed_perc",
+          label: { en: "Was-treed", fr: "Était boisé" },
+          value: 10,
+        },
+      ],
+    },
     dataset: {
       id: 5,
       category_id: 1,
@@ -125,7 +162,28 @@ export const mockAnalysisResult: AnalysisResult = {
   },
   ecosystem_classification: {
     unit: "cm",
-    chart: {},
+    chart: {
+      eco_cog: [
+        {
+          key: "eco_temperate_perc",
+          label: {
+            en: "Temperate/Boreal Forest",
+            fr: "Forêt tempérée/boréale",
+          },
+          value: 50,
+        },
+        {
+          key: "eco_treed_perc",
+          label: { en: "Treed Wetland", fr: "Milieu humide boisé" },
+          value: 10,
+        },
+        {
+          key: "eco_bog_perc",
+          label: { en: "Bog", fr: "Tourbière" },
+          value: 5,
+        },
+      ],
+    },
     dataset: {
       id: 6,
       category_id: 1,

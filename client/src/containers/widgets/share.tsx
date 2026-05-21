@@ -19,7 +19,7 @@ const ShareWidget = () => {
           <p className="text-sm">{t("widgets.share.description")}</p>
           <Button
             variant="ghost"
-            className="px-0!"
+            className="float-right px-4"
             onClick={triggerShare}
             disabled={isPending}
           >

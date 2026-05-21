@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { HorizontalScrollArea } from "@/components/ui/scroll-area";
 import { useAnalysisWidgetSpy } from "@/containers/analysis/analysis-context";
+import AnalysisNavigationIcon from "@/containers/analysis/navigation/icon";
 import { useWidgets } from "@/hooks/use-widgets";
 import { cn } from "@/lib/utils";
 
@@ -41,7 +42,7 @@ const AnalysisNavigation = () => {
                 size="sm"
                 aria-current={isActive ? "location" : undefined}
                 className={cn(
-                  "text-xs font-bold leading-5",
+                  "text-xs font-bold leading-5 gap-1 normal-case",
                   !isActive &&
                     "bg-(--transparency-white-40,rgba(255,255,255,0.40)) [backdrop-filter:blur(calc(var(--blur-lg)/2))] text-muted-foreground hover:bg-primary hover:text-primary-foreground",
                 )}
@@ -51,6 +52,7 @@ const AnalysisNavigation = () => {
                     ?.scrollIntoView({ behavior: "smooth", block: "start" });
                 }}
               >
+                <AnalysisNavigationIcon id={widget.id} />
                 {widget.title}
               </Button>
             </li>
