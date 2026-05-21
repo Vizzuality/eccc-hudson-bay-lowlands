@@ -176,7 +176,6 @@
     "upload-error-shp-missing-file": "<p>The zip file is missing required shapefile components (.shp, .shx, or .dbf). Please include all required files in the zip.</p>",
     "uploaded-file": "Uploaded: {fileName}",
     "verify-shape": "<p>To complete your shape, either click the first point again or double-click anywhere to finish. When you're satisfied, click <b>Confirm</b>. To start over, click <b>Clear</b> to erase your shape.</p>",
-    "upload": "Upload",
     "clear": "Clear",
     "confirm": "Confirm",
     "analyze-area": "Analyze area",

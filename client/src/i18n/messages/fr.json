@@ -176,7 +176,6 @@
     "upload-error-shp-missing-file": "<p>Le fichier zip ne contient pas les composants shapefile requis (.shp, .shx ou .dbf). Veuillez inclure tous les fichiers requis dans le zip.</p>",
     "uploaded-file": "Téléversé : {fileName}",
     "verify-shape": "<p>Pour terminer votre forme, cliquez à nouveau sur le premier point ou double-cliquez n'importe où pour finir. Lorsque vous êtes satisfait, cliquez sur <b>Confirmer</b>. Pour recommencer, cliquez sur <b>Effacer</b> pour supprimer votre forme.</p>",
-    "upload": "Téléverser",
     "clear": "Effacer",
     "confirm": "Confirmer",
     "analyze-area": "Analyser la zone",
