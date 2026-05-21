@@ -7,6 +7,7 @@ import "@/app/globals.css";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import ClientProviders from "@/app/[locale]/providers";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import BetaBanner from "@/containers/beta-banner";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -44,7 +45,10 @@ export default async function LocaleLayout({
         <NextIntlClientProvider>
           <NuqsAdapter>
             <TooltipProvider>
-              <ClientProviders>{children}</ClientProviders>
+              <ClientProviders>
+                <BetaBanner />
+                {children}
+              </ClientProviders>
             </TooltipProvider>
           </NuqsAdapter>
         </NextIntlClientProvider>
