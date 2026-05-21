@@ -11,6 +11,10 @@
       "resources": "Ressources"
     }
   },
+  "beta-banner": {
+    "message": "<p><b>Nous sommes en version bêta!</b> Nous améliorons activement cet outil. Bien que la plupart des fonctionnalités soient opérationnelles, vous pourriez occasionnellement rencontrer des bogues, des fonctionnalités incomplètes ou des problèmes de performance.</p>",
+    "dismiss": "Compris"
+  },
   "map": {
     "title": "Découvrez la région de la baie d'Hudson et de la baie James",
     "description": "Explorez et combinez des couches de données géographiques. Analysez votre zone d'intérêt et obtenez des informations personnalisées.",

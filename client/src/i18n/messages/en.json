@@ -11,6 +11,10 @@
       "resources": "Resources"
     }
   },
+  "beta-banner": {
+    "message": "<p><b>We're in Beta!</b> We're actively improving this tool. While most features are functional, you may occasionally encounter bugs, incomplete functionality, or performance issues.</p>",
+    "dismiss": "Got it"
+  },
   "map": {
     "title": "Discover the Hudson & James bay region",
     "description": "Explore and combine geographical data overlays. Analyze your area of interest and get custom insights.",
