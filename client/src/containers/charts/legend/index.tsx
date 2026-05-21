@@ -3,9 +3,14 @@ import { cn } from "@/lib/utils";
 
 interface ChartLegendProps {
   items: { label: string; value: number; fill: string }[];
+  showValues?: boolean;
   className?: string;
 }
-const ChartLegend: FC<ChartLegendProps> = ({ items, className }) => {
+const ChartLegend: FC<ChartLegendProps> = ({
+  items,
+  showValues,
+  className,
+}) => {
   return (
     <ul
       className={cn(
@@ -22,7 +27,9 @@ const ChartLegend: FC<ChartLegendProps> = ({ items, className }) => {
             className="size-2.5 rounded-full shrink-0"
             style={{ backgroundColor: item.fill }}
           />
-          <span className="text-2xs font-semibold leading-4">{item.label}</span>
+          <span className="text-2xs font-semibold leading-4">
+            {showValues ? `${item.label} (${item.value}%)` : item.label}
+          </span>
         </li>
       ))}
     </ul>
