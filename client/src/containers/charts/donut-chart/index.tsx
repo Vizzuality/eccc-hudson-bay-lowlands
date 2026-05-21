@@ -14,6 +14,11 @@ interface DonutChartProps {
 }
 
 const DonutChart: FC<DonutChartProps> = ({ data, chartConfig }) => {
+  const legendItems = data.map((item) => ({
+    ...item,
+    fill: chartConfig[item.key]?.color ?? "",
+  }));
+
   return (
     <section>
       <ChartContainer config={chartConfig} className="w-[200px] h-[200px]">
@@ -35,12 +40,12 @@ const DonutChart: FC<DonutChartProps> = ({ data, chartConfig }) => {
           />
         </PieChart>
       </ChartContainer>
-      <ChartLegend
-        items={data.map((item) => ({
-          ...item,
-          fill: chartConfig[item.key]?.color ?? "",
-        }))}
-      />
+      <div data-download-exclude>
+        <ChartLegend items={legendItems} />
+      </div>
+      <div data-download-only className="hidden">
+        <ChartLegend items={legendItems} showValues />
+      </div>
     </section>
   );
 };
