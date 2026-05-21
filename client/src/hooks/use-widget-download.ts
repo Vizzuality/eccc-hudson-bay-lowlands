@@ -80,6 +80,13 @@ export function useWidgetDownload(
     const overlay = createOverlay();
     el.appendChild(overlay);
 
+    const downloadOnlyEls = el.querySelectorAll<HTMLElement>(
+      "[data-download-only]",
+    );
+    for (const node of downloadOnlyEls) {
+      node.classList.remove("hidden");
+    }
+
     const excludedEls = el.querySelectorAll<HTMLElement>(
       "[data-download-exclude]",
     );
@@ -108,6 +115,10 @@ export function useWidgetDownload(
       a.download = `hudson-bay-lowlands-${widgetId}-${formatDate()}.png`;
       a.click();
     } finally {
+      for (const node of downloadOnlyEls) {
+        node.classList.add("hidden");
+      }
+
       for (const node of excludedEls) {
         node.style.removeProperty("display");
       }

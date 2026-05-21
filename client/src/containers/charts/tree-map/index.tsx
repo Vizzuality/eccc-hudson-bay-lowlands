@@ -69,6 +69,11 @@ interface TreeMapProps {
 }
 
 const TreeMap: FC<TreeMapProps> = ({ data, chartConfig }) => {
+  const legendItems = data.map((item) => ({
+    ...item,
+    fill: chartConfig[item.key]?.color ?? "",
+  }));
+
   return (
     <section className="space-y-1.5">
       <ChartContainer config={chartConfig} className="h-[200px] w-full">
@@ -83,13 +88,12 @@ const TreeMap: FC<TreeMapProps> = ({ data, chartConfig }) => {
           <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
         </TreeMapChart>
       </ChartContainer>
-      <ChartLegend
-        items={data.map((item) => ({
-          ...item,
-          fill: chartConfig[item.key]?.color ?? "",
-        }))}
-        className="justify-start"
-      />
+      <div data-download-exclude>
+        <ChartLegend items={legendItems} className="justify-start" />
+      </div>
+      <div data-download-only className="hidden">
+        <ChartLegend items={legendItems} showValues className="justify-start" />
+      </div>
     </section>
   );
 };
