@@ -91,7 +91,9 @@ export interface TreeCoverChangeStats {
 }
 
 export interface AnalysisResult {
-  aoi_size: number;
+  // Optional for backward compatibility with shared analyses persisted
+  // before the backend started returning this field (commit 6a57de6).
+  aoi_size?: number | null;
   peat_carbon: WidgetData<TimeSeriesDataPoint, PeatCarbonStats>;
   water_dynamics: WidgetData<CategoricalDataPoint, WaterDynamicsStats>;
   flood_susceptibility: WidgetData<

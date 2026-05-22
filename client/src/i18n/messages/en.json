@@ -167,6 +167,7 @@
   "analysis": {
     "title": "My area of interest",
     "description": "<p>You have selected a region of <b>{aoi_size} km²</b> within the HJBL. The following sections summarize its main environmental characteristics based on carbon storage, hydrology, seasonal snow, flood risk, tree cover dynamics, ecosystem composition, and species diversity.</p>",
+    "aoi_size_unknown": "unknown",
     "instructions": "<p>Click on the map to start drawing your custom area or upload your area file and get insights about it.</p>",
     "upload-file": "Upload",
     "upload-error-invalid-json": "<p>The file could not be read. Please upload a valid GeoJSON file.</p>",

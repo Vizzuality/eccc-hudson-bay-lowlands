@@ -167,6 +167,7 @@
   "analysis": {
     "title": "Ma zone d'intérêt",
     "description": "<p>Vous avez sélectionné une région de <b>{aoi_size} km²</b> dans les BTBHJ. Les sections suivantes résument ses principales caractéristiques environnementales en fonction du stockage de carbone, de l'hydrologie, de la neige saisonnière, du risque d'inondation, de la dynamique du couvert arboré, de la composition des écosystèmes et de la diversité des espèces.</p>",
+    "aoi_size_unknown": "inconnue",
     "instructions": "<p>Cliquez sur la carte pour commencer à dessiner votre zone personnalisée ou téléversez votre fichier de zone et obtenez des informations à son sujet.</p>",
     "upload-file": "Téléverser",
     "upload-error-invalid-json": "<p>Le fichier n'a pas pu être lu. Veuillez téléverser un fichier GeoJSON valide.</p>",
