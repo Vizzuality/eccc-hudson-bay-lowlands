@@ -42,7 +42,7 @@ const AnalysisNavigation = () => {
                 size="sm"
                 aria-current={isActive ? "location" : undefined}
                 className={cn(
-                  "text-xs font-bold leading-5 gap-1 normal-case",
+                  "text-xs font-bold leading-5 gap-1 normal-case tracking-normal",
                   !isActive &&
                     "bg-(--transparency-white-40,rgba(255,255,255,0.40)) [backdrop-filter:blur(calc(var(--blur-lg)/2))] text-muted-foreground hover:bg-primary hover:text-primary-foreground",
                 )}
