@@ -45,7 +45,7 @@ export default defineConfig({
         NEXT_PUBLIC_MAPBOX_API_TOKEN:
           process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN ?? "",
       },
-      timeout: 120000,
+      timeout: 180000,
       cwd: path.join(projectRoot, "client"),
       stderr: "pipe",
     },
