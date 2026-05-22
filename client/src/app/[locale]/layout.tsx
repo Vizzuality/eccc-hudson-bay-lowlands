@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { Inter, Nunito, Tinos } from "next/font/google";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
@@ -9,6 +10,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import ClientProviders from "@/app/[locale]/providers";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import BetaBanner from "@/containers/beta-banner";
+import { COOKIE_NAME, COOLDOWN_DAYS } from "@/containers/beta-banner/constants";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -46,9 +48,10 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   const cookieStore = await cookies();
-  const dismissed = cookieStore.get("beta-dismissed")?.value;
+  const dismissed = cookieStore.get(COOKIE_NAME)?.value;
   const showBanner =
-    !dismissed || Date.now() - Number(dismissed) >= 7 * 24 * 60 * 60 * 1000;
+    !dismissed ||
+    dayjs().diff(dayjs(Number(dismissed)), "day") >= COOLDOWN_DAYS;
 
   return (
     <html lang={locale}>

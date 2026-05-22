@@ -1,5 +1,6 @@
 "use client";
 
+import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useMap } from "react-map-gl/mapbox";
@@ -7,9 +8,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import RichText from "@/components/ui/rich-text";
-
-const COOKIE_NAME = "beta-dismissed";
-const MAX_AGE = 7 * 24 * 60 * 60;
+import { COOKIE_NAME, COOLDOWN_DAYS } from "./constants";
 
 const BetaBanner = () => {
   const t = useTranslations("beta-banner");
@@ -41,8 +40,14 @@ const BetaBanner = () => {
               size="sm"
               type="button"
               onClick={() => {
-                // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API lacks Firefox support
-                document.cookie = `${COOKIE_NAME}=${Date.now()}; path=/; max-age=${MAX_AGE}; SameSite=Lax`;
+                const expires = dayjs().add(COOLDOWN_DAYS, "day").valueOf();
+                cookieStore.set({
+                  name: COOKIE_NAME,
+                  value: String(Date.now()),
+                  path: "/",
+                  expires,
+                  sameSite: "lax",
+                });
                 setOpen(false);
               }}
             >
