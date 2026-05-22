@@ -40,7 +40,7 @@ export default function AnalysisPanelContent({
           {(tags) =>
             t.rich("description", {
               ...tags,
-              aoi_size: analysisResult.aoi_size,
+              aoi_size: analysisResult.aoi_size ?? t("aoi_size_unknown"),
             })
           }
         </RichText>
