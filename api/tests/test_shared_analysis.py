@@ -166,6 +166,29 @@ def test_get_share_invalid_uuid_returns_422(client):
     assert response.status_code == 422
 
 
+def test_get_share_legacy_payload_without_aoi_size_returns_200(
+    analysis_client, db_session, shared_analysis_create_body
+):
+    """Backward compatibility: snapshots persisted before ``aoi_size`` was added are still served.
+
+    The field was introduced in commit 6a57de6; ``aoi_size`` is intentionally
+    optional on ``AnalysisResponse`` so older share links keep working. This
+    test simulates a pre-existing row by stripping the key before persisting.
+    """
+    legacy_analysis = {
+        k: v for k, v in shared_analysis_create_body["analysis"].items() if k != "aoi_size"
+    }
+    assert "aoi_size" not in legacy_analysis
+
+    row = SharedAnalysis(analysis=legacy_analysis, geojson=VALID_POLYGON_FEATURE)
+    db_session.add(row)
+    db_session.flush()
+
+    response = analysis_client.get(f"/analysis/v2/share/{row.id}")
+    assert response.status_code == 200, response.text
+    assert response.json()["analysis"]["aoi_size"] is None
+
+
 def test_get_share_stale_schema_returns_410(client, db_session):
     """GET returns 410 when the stored analysis no longer matches AnalysisResponse.
 

@@ -223,7 +223,15 @@ class EcosystemClassificationWidget(BaseModel):
 class AnalysisResponse(BaseModel):
     """Full analysis result returned after geometry validation and zonal stats computation."""
 
-    aoi_size: float
+    aoi_size: float | None = Field(
+        default=None,
+        description=(
+            "Polygon area in km² (EPSG:6933). Temporarily optional for backward "
+            "compatibility: shared analyses persisted before this field was "
+            "introduced will return `null` when fetched via "
+            "`GET /analysis/v2/share/{id}`. Live analyses always populate it."
+        ),
+    )
     peat_carbon: PeatCarbonWidget
     water_dynamics: WaterDynamicsWidget
     flood_susceptibility: FloodSusceptibilityWidget
