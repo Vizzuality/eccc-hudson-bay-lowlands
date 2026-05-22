@@ -1,11 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import BetaBanner from "@/containers/beta-banner";
 import messages from "@/i18n/messages/en.json";
-
-const STORAGE_KEY = "beta-banner-dismissed-at";
 
 const renderBetaBanner = () =>
   render(
@@ -16,7 +14,10 @@ const renderBetaBanner = () =>
 
 describe("@containers/beta-banner", () => {
   beforeEach(() => {
-    localStorage.clear();
+    Object.defineProperty(document, "cookie", {
+      writable: true,
+      value: "",
+    });
   });
 
   it("renders the banner with the translated message", () => {
@@ -42,6 +43,20 @@ describe("@containers/beta-banner", () => {
     expect(collapsible).toHaveAttribute("data-state", "closed");
   });
 
+  it("sets a cookie when the dismiss button is clicked", async () => {
+    const user = userEvent.setup();
+    const now = Date.now();
+    vi.spyOn(Date, "now").mockReturnValue(now);
+
+    renderBetaBanner();
+    await user.click(screen.getByRole("button", { name: "Got it" }));
+
+    expect(document.cookie).toContain(`beta-dismissed=${now}`);
+    expect(document.cookie).toContain("max-age=604800");
+
+    vi.restoreAllMocks();
+  });
+
   it("removes the banner from the DOM after the dismiss animation", async () => {
     const user = userEvent.setup();
     renderBetaBanner();
@@ -54,22 +69,5 @@ describe("@containers/beta-banner", () => {
       },
       { timeout: 500 },
     );
-  });
-
-  it("hides the banner when dismissed less than 7 days ago", async () => {
-    localStorage.setItem(STORAGE_KEY, String(Date.now()));
-    renderBetaBanner();
-
-    await waitFor(() => {
-      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-    });
-  });
-
-  it("shows the banner when dismissed more than 7 days ago", async () => {
-    const eightDaysAgo = Date.now() - 8 * 24 * 60 * 60 * 1000;
-    localStorage.setItem(STORAGE_KEY, String(eightDaysAgo));
-    renderBetaBanner();
-
-    expect(screen.getByRole("alert")).toBeInTheDocument();
   });
 });

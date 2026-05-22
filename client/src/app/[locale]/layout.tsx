@@ -1,4 +1,5 @@
 import { Inter, Nunito, Tinos } from "next/font/google";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
@@ -44,6 +45,11 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
 
+  const cookieStore = await cookies();
+  const dismissed = cookieStore.get("beta-dismissed")?.value;
+  const showBanner =
+    !dismissed || Date.now() - Number(dismissed) >= 7 * 24 * 60 * 60 * 1000;
+
   return (
     <html lang={locale}>
       <body
@@ -54,7 +60,7 @@ export default async function LocaleLayout({
             <TooltipProvider>
               <ClientProviders>
                 <div className="flex h-screen flex-col overflow-hidden">
-                  <BetaBanner />
+                  {showBanner && <BetaBanner />}
                   {children}
                 </div>
               </ClientProviders>
