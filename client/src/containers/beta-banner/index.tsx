@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useMap } from "react-map-gl/mapbox";
-import { Alert, AlertAction, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import RichText from "@/components/ui/rich-text";
@@ -32,14 +32,12 @@ const BetaBanner = () => {
         onAnimationEnd={handleAnimationEnd}
       >
         <Alert className="rounded-none px-8 border-0 border-b border-secondary bg-(--transparency-white-80,rgba(255,255,255,0.80)) [backdrop-filter:blur(calc(var(--blur-lg)/2))]">
-          <AlertDescription className="text-sm font-semibold text-foreground">
+          <AlertDescription className="text-sm font-semibold text-foreground flex items-center justify-between gap-2.5">
             <RichText>{(tags) => t.rich("message", tags)}</RichText>
-          </AlertDescription>
-          <AlertAction className="top-1/2 right-8 -translate-y-1/2">
             <Button size="sm" type="button" onClick={() => setOpen(false)}>
               {t("dismiss")}
             </Button>
-          </AlertAction>
+          </AlertDescription>
         </Alert>
       </CollapsibleContent>
     </Collapsible>

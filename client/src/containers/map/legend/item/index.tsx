@@ -75,7 +75,7 @@ const MapLegendItem: FC<MapLegendItemProps> = ({
                   <GripVerticalIcon className="text-muted-foreground h-4 w-4" />
                 </button>
               )}
-              <h2 className="text-muted-foreground uppercase">
+              <h2 className="text-muted-foreground uppercase font-sans font-bold leading-5 tracking-[1.2px] text-2xs">
                 {getTranslation(layer.metadata.title)}
               </h2>
             </div>

@@ -24,7 +24,7 @@ const DataLayersSearch = () => {
 
   return (
     <form onSubmit={handleSubmit} className="sticky top-4 z-20 px-6">
-      <InputGroup className="bg-white/80 rounded-full p-4 h-12">
+      <InputGroup className="bg-white/80 focus-within:bg-white rounded-full p-4 h-12">
         <InputGroupInput
           placeholder={t("search.placeholder")}
           value={search ?? ""}

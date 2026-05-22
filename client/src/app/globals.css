@@ -120,6 +120,7 @@
 }
 
 @theme {
+  --font-inter: "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
   --font-nunito:
     "Nunito", "Nunito Fallback", ui-sans-serif, system-ui, sans-serif;
 }
@@ -134,10 +135,6 @@
 }
 
 @layer utilities {
-  .mapboxgl-canvas {
-    border-top-left-radius: var(--radius-3xl);
-  }
-
   .mapboxgl-ctrl-bottom-left {
     transform: translateX(40vw);
   }

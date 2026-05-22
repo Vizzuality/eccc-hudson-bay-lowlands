@@ -139,7 +139,7 @@ export default function SharedAnalysisPage() {
             </aside>
 
             <Suspense>
-              <MapContainer className="flex-1 rounded-tl-3xl" />
+              <MapContainer />
             </Suspense>
           </section>
         </main>

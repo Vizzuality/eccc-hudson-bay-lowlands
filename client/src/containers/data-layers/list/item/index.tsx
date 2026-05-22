@@ -69,7 +69,7 @@ const DataLayersListItem: FC<DataLayersListItemProps> = ({
         </div>
       </AccordionTrigger>
       <div className="ml-6 pl-2 border-l border-transparent group-data-[state=open]/item:border-accent transition-colors">
-        <p className="px-5 text-xs text-muted-foreground font-medium">
+        <p className="px-5 text-sm text-muted-foreground font-medium">
           {description}
         </p>
         <AccordionContent>
