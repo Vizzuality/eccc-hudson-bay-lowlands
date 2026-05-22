@@ -46,8 +46,10 @@ export default async function LocaleLayout({
           <NuqsAdapter>
             <TooltipProvider>
               <ClientProviders>
-                <BetaBanner />
-                {children}
+                <div className="flex h-screen flex-col overflow-hidden">
+                  <BetaBanner />
+                  {children}
+                </div>
               </ClientProviders>
             </TooltipProvider>
           </NuqsAdapter>

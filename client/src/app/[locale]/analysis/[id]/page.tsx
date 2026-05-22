@@ -89,7 +89,7 @@ export default function SharedAnalysisPage() {
 
   if (isLoading) {
     return (
-      <main className="flex h-screen flex-col" style={PAGE_BACKGROUND}>
+      <main className="flex min-h-0 flex-1 flex-col" style={PAGE_BACKGROUND}>
         <Suspense>
           <TopBar />
         </Suspense>
@@ -100,7 +100,7 @@ export default function SharedAnalysisPage() {
 
   if (isError || !data) {
     return (
-      <main className="flex h-screen flex-col" style={PAGE_BACKGROUND}>
+      <main className="flex min-h-0 flex-1 flex-col" style={PAGE_BACKGROUND}>
         <Suspense>
           <TopBar />
         </Suspense>
@@ -116,7 +116,7 @@ export default function SharedAnalysisPage() {
     >
       <SharedAnalysisHydrator data={data}>
         <main
-          className="flex h-screen flex-col"
+          className="flex min-h-0 flex-1 flex-col"
           style={{
             background:
               "radial-gradient(113.99% 208.31% at 0% 0%, var(--slate-200, #E2E8F0) 0%, var(--base-white, #FFF) 50.96%, var(--emerald-50, #ECFDF5) 100%), #FFF",
