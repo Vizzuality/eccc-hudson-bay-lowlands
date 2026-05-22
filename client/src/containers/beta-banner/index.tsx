@@ -1,35 +1,21 @@
 "use client";
 
-import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMap } from "react-map-gl/mapbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import RichText from "@/components/ui/rich-text";
 
-const STORAGE_KEY = "beta-banner-dismissed-at";
-const COOLDOWN_DAYS = 7;
-
-function isDismissedRecently(): boolean {
-  const dismissed = localStorage.getItem(STORAGE_KEY);
-  if (!dismissed) return false;
-  return dayjs().diff(dayjs(Number(dismissed)), "day") < COOLDOWN_DAYS;
-}
+const COOKIE_NAME = "beta-dismissed";
+const MAX_AGE = 7 * 24 * 60 * 60;
 
 const BetaBanner = () => {
   const t = useTranslations("beta-banner");
   const [open, setOpen] = useState(true);
   const [mounted, setMounted] = useState(true);
   const { default: mapRef } = useMap();
-
-  useEffect(() => {
-    if (isDismissedRecently()) {
-      setOpen(false);
-      setMounted(false);
-    }
-  }, []);
 
   const handleAnimationEnd = (event: React.AnimationEvent<HTMLDivElement>) => {
     if (event.animationName === "collapsible-up") {
@@ -55,7 +41,8 @@ const BetaBanner = () => {
               size="sm"
               type="button"
               onClick={() => {
-                localStorage.setItem(STORAGE_KEY, String(Date.now()));
+                // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API lacks Firefox support
+                document.cookie = `${COOKIE_NAME}=${Date.now()}; path=/; max-age=${MAX_AGE}; SameSite=Lax`;
                 setOpen(false);
               }}
             >
