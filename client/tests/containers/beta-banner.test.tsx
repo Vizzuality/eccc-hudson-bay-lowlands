@@ -3,7 +3,12 @@ import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import BetaBanner from "@/containers/beta-banner";
+import { COOKIE_NAME } from "@/containers/beta-banner/constants";
 import messages from "@/i18n/messages/en.json";
+
+const mockCookieStore = {
+  set: vi.fn(),
+};
 
 const renderBetaBanner = () =>
   render(
@@ -14,10 +19,8 @@ const renderBetaBanner = () =>
 
 describe("@containers/beta-banner", () => {
   beforeEach(() => {
-    Object.defineProperty(document, "cookie", {
-      writable: true,
-      value: "",
-    });
+    vi.stubGlobal("cookieStore", mockCookieStore);
+    mockCookieStore.set.mockClear();
   });
 
   it("renders the banner with the translated message", () => {
@@ -43,7 +46,7 @@ describe("@containers/beta-banner", () => {
     expect(collapsible).toHaveAttribute("data-state", "closed");
   });
 
-  it("sets a cookie when the dismiss button is clicked", async () => {
+  it("sets a cookie via cookieStore when the dismiss button is clicked", async () => {
     const user = userEvent.setup();
     const now = Date.now();
     vi.spyOn(Date, "now").mockReturnValue(now);
@@ -51,8 +54,14 @@ describe("@containers/beta-banner", () => {
     renderBetaBanner();
     await user.click(screen.getByRole("button", { name: "Got it" }));
 
-    expect(document.cookie).toContain(`beta-dismissed=${now}`);
-    expect(document.cookie).toContain("max-age=604800");
+    expect(mockCookieStore.set).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: COOKIE_NAME,
+        value: String(now),
+        path: "/",
+        sameSite: "lax",
+      }),
+    );
 
     vi.restoreAllMocks();
   });
