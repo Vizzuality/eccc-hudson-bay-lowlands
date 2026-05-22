@@ -16,8 +16,8 @@
     "dismiss": "Compris"
   },
   "map": {
-    "title": "Découvrez la région de la baie d'Hudson et de la baie James",
-    "description": "Explorez et combinez des couches de données géographiques. Analysez votre zone d'intérêt et obtenez des informations personnalisées.",
+    "title": "Découvrez la région des basses-terres de la baie d'Hudson et de la baie James",
+    "description": "Explorez et superposez vos couches de données géospatiales. Analysez votre zone d'intérêt et obtenez des analyses sur mesure.",
     "controls": {
       "basemap": {
         "title": "Style de carte"
@@ -166,7 +166,7 @@
   },
   "analysis": {
     "title": "Ma zone d'intérêt",
-    "description": "<p>Vous avez sélectionné une région de <b>{aoi_size} km²</b> dans les BTBHJ. Les sections suivantes résument ses principales caractéristiques environnementales en fonction du stockage de carbone, de l'hydrologie, de la neige saisonnière, du risque d'inondation, de la dynamique du couvert arboré, de la composition des écosystèmes et de la diversité des espèces.</p>",
+    "description": "<p>Vous avez sélectionné une région de <b>{aoi_size} km²</b> dans les basses-terres de la baie d'Hudson et de la baie James. Les sections suivantes résument ses principales caractéristiques environnementales en fonction du stockage de carbone, de l'hydrologie, de la neige saisonnière, du risque d'inondation, de la dynamique du couvert arboré, de la composition des écosystèmes et de la diversité des espèces.</p>",
     "aoi_size_unknown": "inconnue",
     "instructions": "<p>Cliquez sur la carte pour commencer à dessiner votre zone personnalisée ou téléversez votre fichier de zone et obtenez des informations à son sujet.</p>",
     "upload-file": "Téléverser",
@@ -300,8 +300,8 @@
   },
   "metadata": {
     "home": {
-      "title": "Découvrez la région de la baie d'Hudson et de la baie James",
-      "description": "Explorez et combinez des couches de données géographiques. Analysez votre zone d'intérêt et obtenez des informations personnalisées."
+      "title": "Découvrez la région des basses-terres de la baie d'Hudson et de la baie James",
+      "description": "Explorez et superposez vos couches de données géospatiales. Analysez votre zone d'intérêt et obtenez des analyses sur mesure."
     }
   }
 }
