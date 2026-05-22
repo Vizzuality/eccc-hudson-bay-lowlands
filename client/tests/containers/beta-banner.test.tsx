@@ -1,9 +1,11 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import BetaBanner from "@/containers/beta-banner";
 import messages from "@/i18n/messages/en.json";
+
+const STORAGE_KEY = "beta-banner-dismissed-at";
 
 const renderBetaBanner = () =>
   render(
@@ -13,6 +15,10 @@ const renderBetaBanner = () =>
   );
 
 describe("@containers/beta-banner", () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
   it("renders the banner with the translated message", () => {
     renderBetaBanner();
 
@@ -48,5 +54,22 @@ describe("@containers/beta-banner", () => {
       },
       { timeout: 500 },
     );
+  });
+
+  it("hides the banner when dismissed less than 7 days ago", async () => {
+    localStorage.setItem(STORAGE_KEY, String(Date.now()));
+    renderBetaBanner();
+
+    await waitFor(() => {
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    });
+  });
+
+  it("shows the banner when dismissed more than 7 days ago", async () => {
+    const eightDaysAgo = Date.now() - 8 * 24 * 60 * 60 * 1000;
+    localStorage.setItem(STORAGE_KEY, String(eightDaysAgo));
+    renderBetaBanner();
+
+    expect(screen.getByRole("alert")).toBeInTheDocument();
   });
 });
