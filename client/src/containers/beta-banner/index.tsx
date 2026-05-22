@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { useMap } from "react-map-gl/mapbox";
 import { Alert, AlertAction, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
@@ -11,10 +12,12 @@ const BetaBanner = () => {
   const t = useTranslations("beta-banner");
   const [open, setOpen] = useState(true);
   const [mounted, setMounted] = useState(true);
+  const { default: mapRef } = useMap();
 
   const handleAnimationEnd = (event: React.AnimationEvent<HTMLDivElement>) => {
     if (event.animationName === "collapsible-up") {
       setMounted(false);
+      mapRef?.resize();
     }
   };
 
