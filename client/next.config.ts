@@ -2,9 +2,7 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
-  // Enable standalone output for Docker deployments
-  // This creates a self-contained build in .next/standalone
-  output: "standalone",
+  output: process.env.STANDALONE === "1" ? "standalone" : undefined,
   poweredByHeader: false,
   images: {
     remotePatterns: [

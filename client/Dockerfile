@@ -58,8 +58,8 @@ ENV NEXT_PUBLIC_MAPBOX_API_TOKEN=${NEXT_PUBLIC_MAPBOX_API_TOKEN}
 
 # Disable telemetry during build
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV STANDALONE=1
 
-# Build the application with standalone output
 WORKDIR /app/client
 RUN pnpm build
 
