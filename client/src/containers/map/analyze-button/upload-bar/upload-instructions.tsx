@@ -46,7 +46,7 @@ export const UploadInstructions = ({
       </Button>
       <Tooltip>
         <TooltipTrigger asChild>
-          <p className="text-xs font-medium leading-5 underline decoration-dashed text-left cursor-help">
+          <p className="text-xs font-medium leading-5 underline decoration-dashed text-left cursor-help w-fit">
             {t("file-upload-instructions.title")}
           </p>
         </TooltipTrigger>
