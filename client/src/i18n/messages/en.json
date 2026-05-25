@@ -173,7 +173,7 @@
     "upload-success": "<p>Your file was successfully uploaded. Click <b>Confirm</b> to start start the analysis</p>",
     "upload-error-invalid-json": "<p>The file could not be read. Please upload a valid GeoJSON file.</p>",
     "upload-error-invalid-geojson": "<p>The file does not contain any polygon geometries. Please upload a GeoJSON file with Polygon or MultiPolygon features.</p>",
-    "upload-error-unsupported-file": "<p>Unsupported file type. Please upload a .geojson, .json, or .zip file.</p>",
+    "upload-error-unsupported-file": "<p>Unsupported file format. Upload a GeoJSON or a ZIP containing a valid shapefile.</p>",
     "upload-error-invalid-zip": "<p>The zip file could not be read. Please upload a valid zip archive containing shapefile data.</p>",
     "upload-error-shp-missing-file": "<p>The zip file is missing required shapefile components (.shp, .shx, or .dbf). Please include all required files in the zip.</p>",
     "verify-shape": "<p>To complete your shape, either click the first point again or double-click anywhere to finish. When you're satisfied, click <b>Confirm</b>. To start over, click <b>Clear</b> to erase your shape.</p>",
@@ -184,13 +184,13 @@
     "cancel": "Cancel",
     "datasets": "Datasets",
     "click-to-select": "Click to select your area of interest and get detailed insights on it.",
-    "area-too-big": "<p>The drawn area is outside the allowed size range (max {maxArea, number} km²). Please try drawing a differently sized area.</p>",
-    "outside-of-bounds": "<p>The drawn area does not overlap with the study area. Please draw within the Hudson Bay Lowlands region.</p>",
+    "area-too-big": "<p>The selected area is too large. Maximum allowed size is {maxArea, number} km².</p>",
+    "outside-of-bounds": "<p>The selected area is outside the supported boundaries.</p>",
     "invalid-geometry": "<p>Your geometry is invalid. Please simplify or correct it and try again.</p>",
     "generic-error": "<p>An error occurred while processing your request. Please try again.</p>",
     "file-upload-instructions": {
       "title": "File upload instructions",
-      "description": "Upload a GeoJSON file or a zipped shapefile in EPSG:4326 (WGS84).For shapefiles, include all required files (.shp, .shx, .dbf, .prj) in the ZIP.The uploaded area must be within the supported boundaries and smaller than {maxArea} km²."
+      "description": "Upload a GeoJSON file or a zipped shapefile in EPSG:4326 (WGS84). For shapefiles, include all required files (.shp, .shx, .dbf, .prj) in the ZIP. The uploaded area must be within the supported boundaries and smaller than {maxArea} km²."
     },
     "leave-dialog": {
       "title": "Leave current analysis?",
