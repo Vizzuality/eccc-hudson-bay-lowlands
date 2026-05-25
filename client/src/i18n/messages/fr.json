@@ -175,7 +175,7 @@
     "upload-error-unsupported-file": "<p>Type de fichier non pris en charge. Veuillez téléverser un fichier .geojson, .json ou .zip.</p>",
     "upload-error-invalid-zip": "<p>Le fichier zip n'a pas pu être lu. Veuillez téléverser une archive zip valide contenant des données shapefile.</p>",
     "upload-error-shp-missing-file": "<p>Le fichier zip ne contient pas les composants shapefile requis (.shp, .shx ou .dbf). Veuillez inclure tous les fichiers requis dans le zip.</p>",
-    "uploaded-file": "Téléversé : {fileName}",
+    "upload-success": "<p>Votre fichier a été téléversé avec succès. Cliquez sur <b>Confirmer</b> pour lancer l'analyse.</p>",
     "verify-shape": "<p>Pour terminer votre forme, cliquez à nouveau sur le premier point ou double-cliquez n'importe où pour finir. Lorsque vous êtes satisfait, cliquez sur <b>Confirmer</b>. Pour recommencer, cliquez sur <b>Effacer</b> pour supprimer votre forme.</p>",
     "clear": "Effacer",
     "confirm": "Confirmer",
@@ -188,6 +188,10 @@
     "outside-of-bounds": "<p>La zone dessinée ne chevauche pas la zone d'étude. Veuillez dessiner à l'intérieur de la région des basses terres de la baie d'Hudson.</p>",
     "invalid-geometry": "<p>Votre géométrie est invalide. Veuillez la simplifier ou la corriger, puis réessayer.</p>",
     "generic-error": "<p>Une erreur s'est produite lors du traitement de votre demande. Veuillez réessayer.</p>",
+    "file-upload-instructions": {
+      "title": "Instructions de téléversement",
+      "description": "Téléversez un fichier GeoJSON ou un shapefile compressé en EPSG:4326 (WGS84). Pour les shapefiles, incluez tous les fichiers requis (.shp, .shx, .dbf, .prj) dans le ZIP. La zone téléversée doit se trouver dans les limites prises en charge et être inférieure à {maxArea} km²."
+    },
     "leave-dialog": {
       "title": "Quitter l'analyse en cours ?",
       "description-1": "Revenir en arrière effacera votre analyse en cours et vous ramènera à la vue par défaut.",

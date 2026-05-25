@@ -41,6 +41,18 @@ vi.mock("@/components/ui/popover", () => ({
   ),
 }));
 
+vi.mock("@/components/ui/tooltip", () => ({
+  Tooltip: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  TooltipTrigger: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  TooltipContent: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+}));
+
 let capturedOnDrawingStart: (() => void) | undefined;
 
 const renderUploadBar = (mapStatus = MapStatus.upload) => {
@@ -161,9 +173,9 @@ describe("@containers/map/analyze-button/upload-bar", () => {
     expect(screen.getByText(/click on the map/i)).toBeInTheDocument();
   });
 
-  it("runs redraw when map status becomes default", () => {
+  it("resets analysis settings when map status becomes default", () => {
     renderUploadBar(MapStatus.default);
 
-    expect(mockRedraw).toHaveBeenCalled();
+    expect(mockSetAnalysisSettings).toHaveBeenCalled();
   });
 });

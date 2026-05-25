@@ -168,14 +168,14 @@
     "title": "My area of interest",
     "description": "<p>You have selected a region of <b>{aoi_size} km²</b> within the Hudson Bay Lowlands. The following sections summarize its main environmental characteristics based on carbon storage, hydrology, seasonal snow, flood risk, tree cover dynamics, ecosystem composition, and species diversity.</p>",
     "aoi_size_unknown": "unknown",
-    "instructions": "<p>Click on the map to start drawing your custom area or upload your area file and get insights about it.</p>",
+    "instructions": "<p><b>Click on the map</b> to start drawing your custom area or <b>upload</b> your area file and get insights about it.</p>",
     "upload-file": "Upload",
+    "upload-success": "<p>Your file was successfully uploaded. Click <b>Confirm</b> to start start the analysis</p>",
     "upload-error-invalid-json": "<p>The file could not be read. Please upload a valid GeoJSON file.</p>",
     "upload-error-invalid-geojson": "<p>The file does not contain any polygon geometries. Please upload a GeoJSON file with Polygon or MultiPolygon features.</p>",
     "upload-error-unsupported-file": "<p>Unsupported file type. Please upload a .geojson, .json, or .zip file.</p>",
     "upload-error-invalid-zip": "<p>The zip file could not be read. Please upload a valid zip archive containing shapefile data.</p>",
     "upload-error-shp-missing-file": "<p>The zip file is missing required shapefile components (.shp, .shx, or .dbf). Please include all required files in the zip.</p>",
-    "uploaded-file": "Uploaded: {fileName}",
     "verify-shape": "<p>To complete your shape, either click the first point again or double-click anywhere to finish. When you're satisfied, click <b>Confirm</b>. To start over, click <b>Clear</b> to erase your shape.</p>",
     "clear": "Clear",
     "confirm": "Confirm",
@@ -188,6 +188,10 @@
     "outside-of-bounds": "<p>The drawn area does not overlap with the study area. Please draw within the Hudson Bay Lowlands region.</p>",
     "invalid-geometry": "<p>Your geometry is invalid. Please simplify or correct it and try again.</p>",
     "generic-error": "<p>An error occurred while processing your request. Please try again.</p>",
+    "file-upload-instructions": {
+      "title": "File upload instructions",
+      "description": "Upload a GeoJSON file or a zipped shapefile in EPSG:4326 (WGS84).For shapefiles, include all required files (.shp, .shx, .dbf, .prj) in the ZIP.The uploaded area must be within the supported boundaries and smaller than {maxArea} km²."
+    },
     "leave-dialog": {
       "title": "Leave current analysis?",
       "description-1": "Going back will clear your current analysis and return you to the default view.",

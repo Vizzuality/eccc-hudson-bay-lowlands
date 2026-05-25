@@ -1,163 +1,30 @@
-import { useMutation } from "@tanstack/react-query";
-import { isAxiosError } from "axios";
-import type { Feature } from "geojson";
-import {
-  CheckIcon,
-  CircleAlertIcon,
-  LoaderCircleIcon,
-  TrashIcon,
-  UploadIcon,
-} from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { MapStatus, useMapStatus } from "@/app/[locale]/url-store";
+import { MapStatus } from "@/app/[locale]/url-store";
 import QuestionMarkIcon from "@/components/icons/question-mark";
 import TileIcon from "@/components/icons/tile";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";
-import RichText from "@/components/ui/rich-text";
-import { MAX_AREA_KM2 } from "@/containers/map/analyze-button/upload-bar/constants";
-import useAnalysisSettings, {
-  useIsAnalyzing,
-  useSetAnalysisResult,
-} from "@/hooks/use-analysis-settings";
 import useMapDraw from "@/hooks/use-map-draw";
-import { API } from "@/lib/api";
-import { postAnalysisConfig } from "@/lib/api/config";
-import {
-  type ParsedGeoJSON,
-  parseGeometryFile,
-  UploadErrorType,
-  type ValidGeometryType,
-} from "@/lib/utils/geometry-upload";
-import type { AnalysisResponse } from "@/types";
-
-type UploadBarError =
-  | "area-too-big"
-  | "outside-of-bounds"
-  | "invalid-geometry"
-  | "generic-error"
-  | "upload-error-invalid-json"
-  | "upload-error-invalid-geojson"
-  | "upload-error-unsupported-file"
-  | "upload-error-invalid-zip"
-  | "upload-error-shp-missing-file";
-
-function mapUploadError(error: UploadErrorType): UploadBarError {
-  switch (error) {
-    case UploadErrorType.InvalidJSON:
-      return "upload-error-invalid-json";
-    case UploadErrorType.InvalidGeoJSON:
-      return "upload-error-invalid-geojson";
-    case UploadErrorType.UnsupportedFile:
-      return "upload-error-unsupported-file";
-    case UploadErrorType.InvalidZip:
-      return "upload-error-invalid-zip";
-    case UploadErrorType.SHPMissingFile:
-      return "upload-error-shp-missing-file";
-    default:
-      return "generic-error";
-  }
-}
+import type { ValidGeometryType } from "@/lib/utils/geometry-upload";
+import { DrawingConfirmation } from "./drawing-confirmation";
+import { UploadInstructions } from "./upload-instructions";
+import { useSidebarCollapsed, useUploadAnalysis } from "./use-upload-analysis";
 
 const UploadBar = () => {
-  const { mapStatus, setMapStatus } = useMapStatus();
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const t = useTranslations("analysis");
-
-  useEffect(() => {
-    if (mapStatus !== MapStatus.upload) {
-      setSidebarCollapsed(false);
-      return;
-    }
-
-    const sidebar = document.querySelector("aside");
-    if (!sidebar) {
-      setSidebarCollapsed(true);
-      return;
-    }
-
-    const onTransitionEnd = (e: TransitionEvent) => {
-      if (e.target === sidebar && e.propertyName === "opacity") {
-        sidebar.removeEventListener("transitionend", onTransitionEnd);
-        setSidebarCollapsed(true);
-      }
-    };
-    sidebar.addEventListener("transitionend", onTransitionEnd);
-
-    const fallback = setTimeout(() => {
-      sidebar.removeEventListener("transitionend", onTransitionEnd);
-      setSidebarCollapsed(true);
-    }, 500);
-
-    return () => {
-      clearTimeout(fallback);
-      sidebar.removeEventListener("transitionend", onTransitionEnd);
-    };
-  }, [mapStatus]);
-
-  const [error, setError] = useState<UploadBarError | null>(null);
-  const [{ geometry, locationType, fileName }, setAnalysisSettings] =
-    useAnalysisSettings();
-  const setAnalysisResult = useSetAnalysisResult();
-  const [, setIsAnalyzing] = useIsAnalyzing();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const { mutate: postAnalysis, isPending } = useMutation({
-    mutationFn: (geometry: GeoJSON.Feature | GeoJSON.FeatureCollection) => {
-      setIsAnalyzing(true);
-      return API<AnalysisResponse>(postAnalysisConfig(geometry));
-    },
-    onSuccess: (data) => {
-      setIsAnalyzing(false);
-      setIsDrawing(false);
-      setAnalysisResult(data);
-      setMapStatus(MapStatus.analysis);
-    },
-    onError: (err) => {
-      setIsAnalyzing(false);
-      if (isAxiosError(err) && err.response?.status === 422) {
-        const detail: unknown = err.response.data?.detail;
-        if (typeof detail === "string") {
-          if (
-            detail.includes("exceeds the maximum") ||
-            detail.includes("below the minimum")
-          ) {
-            setError("area-too-big");
-          } else if (
-            detail.includes("does not intersect") ||
-            detail.includes("must lie entirely within")
-          ) {
-            setError("outside-of-bounds");
-          } else if (detail.includes("structurally invalid")) {
-            setError("invalid-geometry");
-          } else {
-            setError("generic-error");
-          }
-          return;
-        }
-      }
-      setError("generic-error");
-    },
-  });
-
-  const onUpdateGeometry = useCallback(
-    ({ features }: { features: Feature[] }) => {
-      const geometry = (features[0] as ParsedGeoJSON) ?? null;
-
-      setError(null);
-
-      setAnalysisSettings((settings) => ({
-        ...settings,
-        locationType: "draw" as const,
-        geometry,
-        fileName: null,
-      }));
-    },
-    [setAnalysisSettings],
-  );
+  const sidebarCollapsed = useSidebarCollapsed();
+  const {
+    mapStatus,
+    isDrawing,
+    setIsDrawing,
+    error,
+    isPending,
+    geometry,
+    locationType,
+    fileName,
+    fileInputRef,
+    onUpdateGeometry,
+    handleFileChange,
+    handleConfirm,
+    resetState,
+  } = useUploadAnalysis();
 
   const { redraw } = useMapDraw({
     enabled:
@@ -172,164 +39,14 @@ const UploadBar = () => {
     onDrawingStart: () => setIsDrawing(true),
   });
 
-  const resetState = useCallback(() => {
+  const handleClear = () => {
     redraw();
-    setError(null);
-    setAnalysisSettings((settings) => ({
-      ...settings,
-      locationType: "draw",
-      geometry: null,
-      fileName: null,
-    }));
-  }, [setAnalysisSettings, redraw]);
-
-  useEffect(() => {
-    if (mapStatus === MapStatus.default) {
-      resetState();
-      if (isDrawing) {
-        setIsDrawing(false);
-      }
-    }
-  }, [mapStatus, isDrawing, resetState]);
-
-  const handleFileChange = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-
-      // Reset file input so the same file can be re-selected
-      e.target.value = "";
-
-      setError(null);
-
-      try {
-        const parsed = await parseGeometryFile(file);
-
-        setAnalysisSettings((settings) => ({
-          ...settings,
-          locationType: "upload" as const,
-          geometry: parsed,
-          fileName: file.name,
-        }));
-
-        setIsDrawing(true);
-      } catch (uploadError) {
-        setError(mapUploadError(uploadError as UploadErrorType));
-      }
-    },
-    [setAnalysisSettings],
-  );
-
-  const handleConfirm = useCallback(() => {
-    if (!geometry) return;
-    postAnalysis(geometry);
-  }, [geometry, postAnalysis]);
-
-  const hasGeometry = !!geometry;
-
-  let Component = (
-    <>
-      <RichText>
-        {(tags) =>
-          t.rich("instructions", {
-            ...tags,
-          })
-        }
-      </RichText>
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".geojson,.json,.zip"
-        className="hidden"
-        onChange={handleFileChange}
-      />
-      <Button
-        type="button"
-        variant="secondary"
-        size="lg"
-        onClick={() => fileInputRef.current?.click()}
-      >
-        <UploadIcon />
-        <span>{t("upload-file")}</span>
-      </Button>
-      {error && (
-        <Alert
-          className="right-0 bg-red-100 text-red-600"
-          variant="destructive"
-        >
-          <CircleAlertIcon aria-hidden />
-          <AlertDescription className="text-red-600 text-sm font-medium leading-5">
-            <RichText>
-              {(tags) => t.rich(error, { ...tags, maxArea: MAX_AREA_KM2 })}
-            </RichText>
-          </AlertDescription>
-        </Alert>
-      )}
-    </>
-  );
-
-  if (isDrawing) {
-    Component = (
-      <>
-        {isPending ? (
-          <div className="flex items-center gap-2 text-sm font-medium leading-5">
-            <LoaderCircleIcon className="size-4 animate-spin" aria-hidden />
-            <span>{t("analyzing")}</span>
-          </div>
-        ) : locationType === "draw" ? (
-          <RichText>
-            {(tags) =>
-              t.rich("verify-shape", {
-                ...tags,
-              })
-            }
-          </RichText>
-        ) : (
-          <p className="text-sm font-medium leading-5">
-            {t("uploaded-file", { fileName: fileName ?? "" })}
-          </p>
-        )}
-        {error && (
-          <Alert
-            className="right-0 bg-red-100 text-red-600"
-            variant="destructive"
-          >
-            <CircleAlertIcon aria-hidden />
-            <AlertDescription className="text-red-600 text-sm font-medium leading-5">
-              <RichText>
-                {(tags) => t.rich(error, { ...tags, maxArea: MAX_AREA_KM2 })}
-              </RichText>
-            </AlertDescription>
-          </Alert>
-        )}
-        <div className="flex gap-2">
-          <Button
-            type="button"
-            variant="secondary"
-            className="flex-1"
-            disabled={isPending}
-            onClick={() => {
-              resetState();
-              setIsDrawing(false);
-            }}
-          >
-            <TrashIcon />
-            <span>{t("clear")}</span>
-          </Button>
-          <Button
-            className="flex-1"
-            onClick={handleConfirm}
-            disabled={!!error || !geometry || isPending}
-          >
-            <CheckIcon />
-            <span>{t("confirm")}</span>
-          </Button>
-        </div>
-      </>
-    );
-  }
+    resetState();
+  };
 
   if (!sidebarCollapsed) return null;
+
+  const hasGeometry = !!geometry;
 
   return (
     <PopoverContent
@@ -341,7 +58,23 @@ const UploadBar = () => {
       <TileIcon state={hasGeometry ? "checked" : "default"}>
         <QuestionMarkIcon />
       </TileIcon>
-      {Component}
+      {isDrawing ? (
+        <DrawingConfirmation
+          isPending={isPending}
+          locationType={locationType}
+          fileName={fileName}
+          error={error}
+          hasGeometry={hasGeometry}
+          onClear={handleClear}
+          onConfirm={handleConfirm}
+        />
+      ) : (
+        <UploadInstructions
+          error={error}
+          fileInputRef={fileInputRef}
+          onFileChange={handleFileChange}
+        />
+      )}
     </PopoverContent>
   );
 };
