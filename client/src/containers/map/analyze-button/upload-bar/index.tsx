@@ -64,7 +64,39 @@ function mapUploadError(error: UploadErrorType): UploadBarError {
 const UploadBar = () => {
   const { mapStatus, setMapStatus } = useMapStatus();
   const [isDrawing, setIsDrawing] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const t = useTranslations("analysis");
+
+  useEffect(() => {
+    if (mapStatus !== MapStatus.upload) {
+      setSidebarCollapsed(false);
+      return;
+    }
+
+    const sidebar = document.querySelector("aside");
+    if (!sidebar) {
+      setSidebarCollapsed(true);
+      return;
+    }
+
+    const onTransitionEnd = (e: TransitionEvent) => {
+      if (e.target === sidebar && e.propertyName === "opacity") {
+        sidebar.removeEventListener("transitionend", onTransitionEnd);
+        setSidebarCollapsed(true);
+      }
+    };
+    sidebar.addEventListener("transitionend", onTransitionEnd);
+
+    const fallback = setTimeout(() => {
+      sidebar.removeEventListener("transitionend", onTransitionEnd);
+      setSidebarCollapsed(true);
+    }, 500);
+
+    return () => {
+      clearTimeout(fallback);
+      sidebar.removeEventListener("transitionend", onTransitionEnd);
+    };
+  }, [mapStatus]);
 
   const [error, setError] = useState<UploadBarError | null>(null);
   const [{ geometry, locationType, fileName }, setAnalysisSettings] =
@@ -296,6 +328,8 @@ const UploadBar = () => {
       </>
     );
   }
+
+  if (!sidebarCollapsed) return null;
 
   return (
     <PopoverContent

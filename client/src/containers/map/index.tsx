@@ -59,6 +59,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
   const [{ geometry: analysisGeometry }] = useAnalysisSettings();
   const prevMapStatusRef = useRef(mapStatus);
   const hasZoomedRef = useRef(false);
+  const [showHblMask, setShowHblMask] = useState(false);
 
   const zoomToAnalysisArea = useCallback(() => {
     if (!analysisGeometry || !mapRef.current) return;
@@ -92,31 +93,45 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
 
     if (!justEnteredAnalysis) return;
 
-    // Entered analysis from upload — wait for sidebar transition
+    // Entered analysis from upload — sidebar expands instantly, wait for resize
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        zoomToAnalysisArea();
+      });
+    });
+  }, [mapStatus, loaded, zoomToAnalysisArea]);
+
+  useEffect(() => {
+    if (mapStatus !== MapStatus.upload) {
+      setShowHblMask(false);
+      return;
+    }
+
     const sidebar = document.querySelector("aside");
     if (!sidebar) {
-      zoomToAnalysisArea();
+      setShowHblMask(true);
       return;
     }
 
     const onTransitionEnd = (e: TransitionEvent) => {
-      if (e.propertyName === "width") {
+      if (e.target === sidebar && e.propertyName === "opacity") {
         sidebar.removeEventListener("transitionend", onTransitionEnd);
-        zoomToAnalysisArea();
+        setShowHblMask(true);
       }
     };
     sidebar.addEventListener("transitionend", onTransitionEnd);
 
     const fallback = setTimeout(() => {
       sidebar.removeEventListener("transitionend", onTransitionEnd);
-      zoomToAnalysisArea();
+      setShowHblMask(true);
     }, 500);
 
     return () => {
       clearTimeout(fallback);
       sidebar.removeEventListener("transitionend", onTransitionEnd);
     };
-  }, [mapStatus, loaded, zoomToAnalysisArea]);
+  }, [mapStatus]);
+
   // Enforce zoom constraints imperatively to avoid triggering _createProxyTransform
   // in @vis.gl/react-mapbox. Passing minZoom/maxZoom as props causes it to re-wrap
   // map.transform in a new Proxy on every change. _calcMatrices is in unproxiedMethods
@@ -193,7 +208,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
           {loaded && (
             <>
               <LayerManager />
-              {mapStatus === MapStatus.upload && <HblAreaMask />}
+              {showHblMask && <HblAreaMask />}
               {mapStatus === MapStatus.analysis && <AnalysisAreaMask />}
               <MapTooltip />
               {children}
