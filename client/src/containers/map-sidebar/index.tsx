@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMap } from "react-map-gl/mapbox";
 import { MapStatus, useMapStatus } from "@/app/[locale]/url-store";
 import DataLayersPanel from "@/containers/data-layers/panel";
@@ -14,29 +14,38 @@ const MapSidebar = () => {
   const { default: mapRef } = useMap();
 
   const isHidden = mapStatus === MapStatus.upload;
+  const [isCollapsed, setIsCollapsed] = useState(isHidden);
 
   useEffect(() => {
+    if (!isHidden) {
+      setIsCollapsed(false);
+      requestAnimationFrame(() => mapRef?.resize());
+      return;
+    }
+
+    const sidebar = sidebarRef.current;
+    if (!sidebar) return;
+
     const handleTransitionEnd = (e: TransitionEvent) => {
-      if (e.propertyName === "width") {
-        mapRef?.resize();
+      if (e.target === sidebar && e.propertyName === "opacity") {
+        setIsCollapsed(true);
+        requestAnimationFrame(() => mapRef?.resize());
       }
     };
 
-    const sidebarElement = sidebarRef.current;
-    sidebarElement?.addEventListener(
-      "transitionend",
-      handleTransitionEnd,
-      true,
-    );
+    sidebar.addEventListener("transitionend", handleTransitionEnd);
+
+    const fallback = setTimeout(() => {
+      sidebar.removeEventListener("transitionend", handleTransitionEnd);
+      setIsCollapsed(true);
+      requestAnimationFrame(() => mapRef?.resize());
+    }, 500);
 
     return () => {
-      sidebarElement?.removeEventListener(
-        "transitionend",
-        handleTransitionEnd,
-        true,
-      );
+      clearTimeout(fallback);
+      sidebar.removeEventListener("transitionend", handleTransitionEnd);
     };
-  }, [mapRef]);
+  }, [isHidden, mapRef]);
 
   return (
     <aside
@@ -48,8 +57,8 @@ const MapSidebar = () => {
     >
       <div
         className={cn(
-          "h-full shrink-0 overflow-hidden transition-[width,opacity,padding] duration-300 ease-in-out",
-          isHidden ? "w-0" : "w-[600px]",
+          "h-full shrink-0 overflow-hidden",
+          isCollapsed ? "w-0" : "w-[600px]",
         )}
       >
         <div className="flex h-full min-h-0 flex-col">
