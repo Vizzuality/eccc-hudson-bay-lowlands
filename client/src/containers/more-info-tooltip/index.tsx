@@ -17,10 +17,10 @@ const MoreInfoTooltip: FC<MoreInfoTooltipProps> = ({ title, children }) => {
         <button
           data-download-exclude
           type="button"
-          className="flex items-center gap-1 text-muted-foreground cursor-help"
+          className="flex items-start gap-1 text-muted-foreground cursor-help"
         >
-          <CircleQuestionMarkIcon className="size-3" />
-          <p className="text-xs font-medium leading-5 underline decoration-dashed">
+          <CircleQuestionMarkIcon className="size-4 shrink-0 mt-1" />
+          <p className="text-xs font-medium leading-5 underline decoration-dashed text-left">
             {title}
           </p>
         </button>
