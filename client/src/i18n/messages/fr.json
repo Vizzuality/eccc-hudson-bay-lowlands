@@ -50,7 +50,8 @@
       "DISPOSITIO": "Disposition",
       "ALIENATION": "Type d'aliénation",
       "ALIENATI_1": "Classe d'aliénation",
-      "UPDATE_TIM": "Date de mise à jour"
+      "UPDATE_TIM": "Date de mise à jour",
+      "DISPOSIT_1": "Disposition"
     },
     "detail-values": {
       "ALIENATION": {
