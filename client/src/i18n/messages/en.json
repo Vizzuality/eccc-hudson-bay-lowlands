@@ -50,7 +50,8 @@
       "DISPOSITIO": "Disposition",
       "ALIENATION": "Alienation type",
       "ALIENATI_1": "Alienation class",
-      "UPDATE_TIM": "Update date"
+      "UPDATE_TIM": "Update date",
+      "DISPOSIT_1": "Disposition"
     },
     "detail-values": {
       "ALIENATION": {
