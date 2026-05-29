@@ -10,7 +10,10 @@ import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
 import WidgetIcon from "@/containers/widgets/icon";
 import type { WidgetCardBaseProps } from "@/containers/widgets/types";
+import { useApiTranslation } from "@/i18n/api-translation";
 import type { Layer } from "@/types";
+
+const ECOSYSTEM_LAYER_ID = "ecosystem_classification_cog";
 
 const chartConfig = {
   eco_temperate_perc: {
@@ -66,6 +69,7 @@ const EcosystemTypes: FC<EcosystemTypesProps> = ({
   onInfoButtonClick,
 }) => {
   const t = useTranslations("widgets.ecosystem_classification");
+  const { getTranslation } = useApiTranslation();
   const data = Object.values(chart)
     .flat()
     .map((item) => ({
@@ -74,6 +78,12 @@ const EcosystemTypes: FC<EcosystemTypesProps> = ({
       value: item.value,
       fill: chartConfig[item.key as keyof typeof chartConfig].color,
     }));
+
+  const dominantEcosystemLabel = layers
+    .find((layer) => layer.id === ECOSYSTEM_LAYER_ID)
+    ?.categories?.find(
+      (category) => category.value === stats.dominant_ecosystem,
+    )?.label;
 
   return (
     <WidgetCard
@@ -85,6 +95,9 @@ const EcosystemTypes: FC<EcosystemTypesProps> = ({
             t.rich("description", {
               ...tags,
               ...stats,
+              dominant_ecosystem: dominantEcosystemLabel
+                ? getTranslation(dominantEcosystemLabel)
+                : stats.dominant_ecosystem,
             })
           }
         </RichText>
