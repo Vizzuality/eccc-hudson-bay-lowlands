@@ -5,12 +5,17 @@ export interface InteractiveFeature {
   properties: Record<string, unknown>;
 }
 
-export const interactiveLayerAtom = atom<{
+export interface InteractiveLayerEntry {
   layerId: string;
+  dataLayerId: string;
   layerTitle: Translatable;
   legendItems: LegendItem[] | null;
-  longitude: number;
-  latitude: number;
   type: InteractionConfig["type"];
   features: InteractiveFeature[];
+}
+
+export const interactiveLayerAtom = atom<{
+  longitude: number;
+  latitude: number;
+  layers: InteractiveLayerEntry[];
 } | null>(null);

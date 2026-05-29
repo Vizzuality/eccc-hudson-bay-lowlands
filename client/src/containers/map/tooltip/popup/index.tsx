@@ -5,7 +5,7 @@ interface MapTooltipProps {
   longitude: number;
   latitude: number;
   className?: string;
-  title: string;
+  title?: string;
   onClose: () => void;
 }
 
@@ -28,7 +28,7 @@ const MapPopup: FC<PropsWithChildren<MapTooltipProps>> = ({
       style={{ zIndex: 10 }}
     >
       <div className="px-3 pt-3 pb-2.5 space-y-1.5">
-        <h3 className="text-sm font-bold leading-6">{title}</h3>
+        {title && <h3 className="text-sm font-bold leading-6">{title}</h3>}
         {children}
       </div>
     </Popup>
