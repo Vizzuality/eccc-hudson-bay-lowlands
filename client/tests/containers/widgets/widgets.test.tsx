@@ -59,6 +59,32 @@ const testWidgetLayers: Layer[] = [
   },
 ];
 
+const ecosystemTestLayers: Layer[] = [
+  {
+    id: "ecosystem_classification_cog",
+    format: "cog",
+    type: "raster",
+    path: "",
+    unit: "",
+    categories: [
+      {
+        value: 1,
+        label: { en: "Sentinel Ecosystem One", fr: "Écosystème un" },
+      },
+      {
+        value: 2,
+        label: { en: "Sentinel Ecosystem Two", fr: "Écosystème deux" },
+      },
+    ],
+    metadata: {
+      title: { en: "Ecosystem classification", fr: "Classification" },
+      description: { en: "", fr: "" },
+    },
+    dataset_id: 6,
+    config: null,
+  },
+];
+
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: false } },
 });
@@ -176,6 +202,22 @@ describe("@containers/widgets", () => {
       await user.click(screen.getByRole("button", { name: /add to map/i }));
     },
   );
+
+  it("EcosystemTypes renders the dominant ecosystem label instead of its class id", () => {
+    renderWithProviders(
+      <EcosystemTypes
+        id="ecosystem_classification"
+        stats={mockAnalysisResult.ecosystem_classification.stats}
+        chart={mockAnalysisResult.ecosystem_classification.chart ?? {}}
+        layers={ecosystemTestLayers}
+        onInfoButtonClick={vi.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByText(/Sentinel Ecosystem One \(50%\)/),
+    ).toBeInTheDocument();
+  });
 
   it("renders ShareWidget", () => {
     renderWithAnalysisProviders(<ShareWidget />);
