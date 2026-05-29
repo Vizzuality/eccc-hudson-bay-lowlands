@@ -7,10 +7,10 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import ChartLegend from "@/containers/charts/legend";
+import { layoutLabel } from "@/containers/charts/tree-map/utils";
 
-const MIN_LABEL_HEIGHT = 30;
 const AVG_CHAR_WIDTH = 7;
-const LABEL_PADDING = 8;
+const LINE_HEIGHT = 14;
 
 interface CellProps {
   x?: number;
@@ -36,25 +36,36 @@ const TreeMapCell: FC<CellProps> = ({
   const gy = y + gap;
   const gw = Math.max(width - gap * 2, 0);
   const gh = Math.max(height - gap * 2, 0);
-  const estimatedTextWidth =
-    (label?.length ?? 0) * AVG_CHAR_WIDTH + LABEL_PADDING;
-  const showLabel = gw > estimatedTextWidth && gh > MIN_LABEL_HEIGHT;
+  const cx = gx + gw / 2;
+
+  const { lines, fits } = layoutLabel(label ?? "", gw, AVG_CHAR_WIDTH);
+  const totalLines = lines.length + 1;
+  const requiredHeight = totalLines * LINE_HEIGHT;
+  const showLabel = fits && gh > requiredHeight;
+  const firstLineOffset = -((totalLines - 1) / 2) * LINE_HEIGHT;
+
   return (
     <g>
       <rect x={gx} y={gy} width={gw} height={gh} fill={fill} rx={4} />
       {showLabel && (
         <text
-          x={gx + gw / 2}
+          x={cx}
           y={gy + gh / 2}
           textAnchor="middle"
           fill="white"
           fontSize={12}
           fontWeight={700}
         >
-          <tspan x={gx + gw / 2} dy="-0.4em">
-            {label}
-          </tspan>
-          <tspan x={gx + gw / 2} dy="1.2em">
+          {lines.map((line, index) => (
+            <tspan
+              key={line}
+              x={cx}
+              dy={index === 0 ? firstLineOffset : LINE_HEIGHT}
+            >
+              {line}
+            </tspan>
+          ))}
+          <tspan x={cx} dy={LINE_HEIGHT}>
             {value}%
           </tspan>
         </text>
