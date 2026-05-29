@@ -1,15 +1,17 @@
-import { useAtomValue } from "jotai";
 import { useLocale } from "next-intl";
 import type { FC } from "react";
-import { interactiveLayerAtom } from "@/containers/map/store";
+import type { LegendItem } from "@/types";
 
 interface FeatureValueTooltipProps {
   properties: Record<string, unknown>;
+  legendItems: LegendItem[] | null;
 }
 
-const FeatureValueTooltip: FC<FeatureValueTooltipProps> = ({ properties }) => {
+const FeatureValueTooltip: FC<FeatureValueTooltipProps> = ({
+  properties,
+  legendItems,
+}) => {
   const locale = useLocale();
-  const interactiveLayer = useAtomValue(interactiveLayerAtom);
   const suffix = `_${locale.toUpperCase()}`;
   const localizedKey = Object.keys(properties).find((k) => k.endsWith(suffix));
   const value = localizedKey
@@ -19,7 +21,6 @@ const FeatureValueTooltip: FC<FeatureValueTooltipProps> = ({ properties }) => {
   if (!value) return null;
 
   const valueStr = String(value);
-  const legendItems = interactiveLayer?.legendItems;
   const matchedItem = legendItems?.find(
     (item) => item.label[locale] === valueStr,
   );
