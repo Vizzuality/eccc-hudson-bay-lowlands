@@ -95,4 +95,20 @@ describe("parseGeometryFile CRS detection", () => {
 
     expect(result.type).toBe("Feature");
   });
+
+  it("accepts an OGC CRS84 URI regardless of http/https scheme", async () => {
+    const withUri = {
+      ...validFeature,
+      crs: {
+        type: "name",
+        properties: {
+          name: "https://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        },
+      },
+    };
+
+    const result = await parseGeometryFile(geojsonFile(withUri));
+
+    expect(result.type).toBe("Feature");
+  });
 });
