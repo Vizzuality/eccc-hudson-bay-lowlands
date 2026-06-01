@@ -177,6 +177,7 @@
     "upload-error-unsupported-file": "<p>Unsupported file format. Upload a GeoJSON or a ZIP containing a valid shapefile.</p>",
     "upload-error-invalid-zip": "<p>The zip file could not be read. Please upload a valid zip archive containing shapefile data.</p>",
     "upload-error-shp-missing-file": "<p>The zip file is missing required shapefile components (.shp, .shx, or .dbf). Please include all required files in the zip.</p>",
+    "upload-error-unsupported-crs": "<p>Unsupported coordinate system. Please use EPSG:4326 (WGS 84).</p>",
     "verify-shape": "<p>To complete your shape, either click the first point again or double-click anywhere to finish. When you're satisfied, click <b>Confirm</b>. To start over, click <b>Clear</b> to erase your shape.</p>",
     "clear": "Clear",
     "confirm": "Confirm",

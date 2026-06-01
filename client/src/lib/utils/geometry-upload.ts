@@ -17,6 +17,7 @@ export enum UploadErrorType {
   InvalidGeoJSON = "invalid-geojson",
   InvalidZip = "invalid-zip",
   SHPMissingFile = "shp-missing-file",
+  UnsupportedCRS = "unsupported-crs",
 }
 
 export type ParsedGeoJSON =
@@ -58,11 +59,60 @@ function filterPolygonFeatures(
   return features.filter(hasPolygonGeometry);
 }
 
+// Accepted spellings of WGS84 / CRS84 in a legacy GeoJSON-2008 `crs` member.
+// RFC 7946 GeoJSON omits `crs` entirely and is always WGS84, so an absent
+// member is also accepted (see assertSupportedCRS).
+const ACCEPTED_CRS_NAMES = new Set([
+  "urn:ogc:def:crs:ogc:1.3:crs84",
+  "urn:ogc:def:crs:ogc::crs84",
+  "urn:ogc:def:crs:epsg::4326",
+  "http://www.opengis.net/def/crs/ogc/1.3/crs84",
+  "http://www.opengis.net/def/crs/epsg/0/4326",
+  "epsg:4326",
+  "crs84",
+  "crs:84",
+]);
+
+// Fail closed: a `crs` member we can't confidently identify as 4326/CRS84 is
+// treated as unsupported. The range check is the backstop for files that
+// declare no CRS but still carry non-4326 coordinates.
+function assertSupportedCRS(value: object): void {
+  const crs = (value as { crs?: unknown }).crs;
+  if (crs == null) return;
+
+  const name = (crs as { properties?: { name?: unknown } }).properties?.name;
+  if (
+    typeof name === "string" &&
+    ACCEPTED_CRS_NAMES.has(name.trim().toLowerCase())
+  ) {
+    return;
+  }
+
+  throw UploadErrorType.UnsupportedCRS;
+}
+
+function assertCoordinatesInRange(geometry: ValidGeometryType): void {
+  const rings =
+    geometry.type === "Polygon"
+      ? geometry.coordinates
+      : geometry.coordinates.flat();
+
+  for (const ring of rings) {
+    for (const [lon, lat] of ring) {
+      if (lon < -180 || lon > 180 || lat < -90 || lat > 90) {
+        throw UploadErrorType.UnsupportedCRS;
+      }
+    }
+  }
+}
+
 function extractGeoJSON(parsed: unknown): ParsedGeoJSON {
   if (isFeature(parsed)) {
     if (!hasPolygonGeometry(parsed)) {
       throw UploadErrorType.InvalidGeoJSON;
     }
+    assertSupportedCRS(parsed);
+    assertCoordinatesInRange(parsed.geometry);
     return parsed;
   }
 
@@ -70,6 +120,10 @@ function extractGeoJSON(parsed: unknown): ParsedGeoJSON {
     const polygonFeatures = filterPolygonFeatures(parsed.features);
     if (polygonFeatures.length === 0) {
       throw UploadErrorType.InvalidGeoJSON;
+    }
+    assertSupportedCRS(parsed);
+    for (const feature of polygonFeatures) {
+      assertCoordinatesInRange(feature.geometry);
     }
     return { ...parsed, features: polygonFeatures };
   }

@@ -9,7 +9,8 @@ export type UploadBarError =
   | "upload-error-invalid-geojson"
   | "upload-error-unsupported-file"
   | "upload-error-invalid-zip"
-  | "upload-error-shp-missing-file";
+  | "upload-error-shp-missing-file"
+  | "upload-error-unsupported-crs";
 
 export function mapUploadError(error: UploadErrorType): UploadBarError {
   switch (error) {
@@ -23,6 +24,8 @@ export function mapUploadError(error: UploadErrorType): UploadBarError {
       return "upload-error-invalid-zip";
     case UploadErrorType.SHPMissingFile:
       return "upload-error-shp-missing-file";
+    case UploadErrorType.UnsupportedCRS:
+      return "upload-error-unsupported-crs";
     default:
       return "generic-error";
   }
