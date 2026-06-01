@@ -176,6 +176,7 @@
     "upload-error-unsupported-file": "<p>Format de fichier non pris en charge. Téléversez un GeoJSON ou un ZIP contenant un shapefile valide.</p>",
     "upload-error-invalid-zip": "<p>Le fichier zip n'a pas pu être lu. Veuillez téléverser une archive zip valide contenant des données shapefile.</p>",
     "upload-error-shp-missing-file": "<p>Le fichier zip ne contient pas les composants shapefile requis (.shp, .shx ou .dbf). Veuillez inclure tous les fichiers requis dans le zip.</p>",
+    "upload-error-unsupported-crs": "<p>Système de coordonnées non pris en charge. Veuillez utiliser EPSG:4326 (WGS 84).</p>",
     "upload-success": "<p>Votre fichier a été téléversé avec succès. Cliquez sur <b>Confirmer</b> pour lancer l'analyse.</p>",
     "verify-shape": "<p>Pour terminer votre forme, cliquez à nouveau sur le premier point ou double-cliquez n'importe où pour finir. Lorsque vous êtes satisfait, cliquez sur <b>Confirmer</b>. Pour recommencer, cliquez sur <b>Effacer</b> pour supprimer votre forme.</p>",
     "clear": "Effacer",
