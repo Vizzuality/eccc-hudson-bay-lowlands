@@ -62,12 +62,14 @@ function filterPolygonFeatures(
 // Accepted spellings of WGS84 / CRS84 in a legacy GeoJSON-2008 `crs` member.
 // RFC 7946 GeoJSON omits `crs` entirely and is always WGS84, so an absent
 // member is also accepted (see assertSupportedCRS).
+// Stored without a URL scheme; the incoming name has its http(s):// prefix
+// stripped before lookup, so both the http and https OGC URI forms match.
 const ACCEPTED_CRS_NAMES = new Set([
   "urn:ogc:def:crs:ogc:1.3:crs84",
   "urn:ogc:def:crs:ogc::crs84",
   "urn:ogc:def:crs:epsg::4326",
-  "http://www.opengis.net/def/crs/ogc/1.3/crs84",
-  "http://www.opengis.net/def/crs/epsg/0/4326",
+  "www.opengis.net/def/crs/ogc/1.3/crs84",
+  "www.opengis.net/def/crs/epsg/0/4326",
   "epsg:4326",
   "crs84",
   "crs:84",
@@ -83,7 +85,12 @@ function assertSupportedCRS(value: object): void {
   const name = (crs as { properties?: { name?: unknown } }).properties?.name;
   if (
     typeof name === "string" &&
-    ACCEPTED_CRS_NAMES.has(name.trim().toLowerCase())
+    ACCEPTED_CRS_NAMES.has(
+      name
+        .trim()
+        .toLowerCase()
+        .replace(/^https?:\/\//, ""),
+    )
   ) {
     return;
   }
