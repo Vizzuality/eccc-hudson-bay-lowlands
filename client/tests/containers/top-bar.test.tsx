@@ -4,12 +4,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import TopBar from "@/containers/top-bar";
 import messages from "@/i18n/messages/en.json";
 
-vi.mock("@/i18n/navigation", () => ({
-  usePathname: vi.fn(() => "/"),
-}));
-
-vi.mock("next/link", () => ({
-  default: ({
+const { LinkStub } = vi.hoisted(() => ({
+  LinkStub: ({
     children,
     href,
     ...props
@@ -22,6 +18,15 @@ vi.mock("next/link", () => ({
       {children}
     </a>
   ),
+}));
+
+vi.mock("@/i18n/navigation", () => ({
+  usePathname: vi.fn(() => "/"),
+  Link: LinkStub,
+}));
+
+vi.mock("next/link", () => ({
+  default: LinkStub,
 }));
 
 vi.mock("@/containers/language-select", () => ({
@@ -46,6 +51,15 @@ describe("@containers/top-bar", () => {
     expect(
       screen.getByRole("img", { name: "lowlands spatial data" }),
     ).toBeInTheDocument();
+  });
+
+  it("links the logo to the home page", () => {
+    renderTopBar();
+
+    const logoLink = screen.getByRole("link", {
+      name: "lowlands spatial data",
+    });
+    expect(logoLink).toHaveAttribute("href", "/");
   });
 
   it("renders navigation links for all items", () => {

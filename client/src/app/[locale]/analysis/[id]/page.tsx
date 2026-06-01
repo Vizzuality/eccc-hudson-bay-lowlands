@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, Suspense, useLayoutEffect } from "react";
 import { MapStatus, useMapStatus } from "@/app/[locale]/url-store";
 import { AnalysisProvider } from "@/containers/analysis/analysis-context";
+import CloseAnalysisButton from "@/containers/analysis/close-analysis-button";
 import AnalysisPanelContent from "@/containers/analysis/panel-content";
 import DataLayersPanel from "@/containers/data-layers/panel";
 import MapContainer from "@/containers/map";
@@ -131,7 +132,10 @@ export default function SharedAnalysisPage() {
               <div className="flex h-full w-[600px] shrink-0 flex-col">
                 <AnalysisPanelContent
                   headerActions={
-                    <ShareButton size="xl" className="font-bold" />
+                    <>
+                      <ShareButton size="xl" className="font-bold" />
+                      <CloseAnalysisButton />
+                    </>
                   }
                 />
               </div>

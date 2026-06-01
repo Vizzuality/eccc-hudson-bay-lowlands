@@ -2,7 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import CloseDialog from "@/containers/map-sidebar/analysis/close-dialog";
+import CloseDialog from "@/containers/analysis/close-dialog";
 import messages from "@/i18n/messages/en.json";
 
 const mockPush = vi.fn();
@@ -11,7 +11,7 @@ vi.mock("next/navigation", () => ({
   useRouter: vi.fn(() => ({ push: mockPush })),
 }));
 
-describe("@containers/map-sidebar/analysis/close-dialog", () => {
+describe("@containers/analysis/close-dialog", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
