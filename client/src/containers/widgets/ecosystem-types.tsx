@@ -15,7 +15,25 @@ import type { Layer } from "@/types";
 
 const ECOSYSTEM_LAYER_ID = "ecosystem_classification_cog";
 
-const chartConfig = {
+// Maps each analysis stat key to its ecosystem class id, mirroring the
+// frac_sum values in api/services/widgets.py. The class id keys into the
+// layer's colormap so the chart matches the colors the map renders.
+const ECO_KEY_TO_CLASS: Record<string, number> = {
+  eco_temperate_perc: 1,
+  eco_treed_perc: 2,
+  eco_grassland_perc: 3,
+  eco_fire_perc: 4,
+  eco_graminoid_perc: 5,
+  eco_shrub_perc: 6,
+  eco_emergent_perc: 7,
+  eco_bog_perc: 8,
+  eco_mudflats_perc: 9,
+  eco_coastal_perc: 10,
+  eco_marine_perc: 11,
+  eco_water_perc: 12,
+};
+
+const FALLBACK_CHART_CONFIG = {
   eco_temperate_perc: {
     color: "var(--color-green-800)",
   },
@@ -54,6 +72,17 @@ const chartConfig = {
   },
 };
 
+function getColormapColor(
+  colormap: NonNullable<Layer["config"]>["colormap"] | undefined,
+  classId: number,
+): string | undefined {
+  if (!colormap) return undefined;
+  if (Array.isArray(colormap)) {
+    return colormap.find(([value]) => value === classId)?.[1];
+  }
+  return colormap[String(classId)];
+}
+
 interface EcosystemTypesProps extends WidgetCardBaseProps {
   stats: EcosystemTypesStats;
   chart: Record<string, CategoricalDataPoint[]>;
@@ -70,20 +99,34 @@ const EcosystemTypes: FC<EcosystemTypesProps> = ({
 }) => {
   const t = useTranslations("widgets.ecosystem_classification");
   const { getTranslation } = useApiTranslation();
+
+  const ecosystemLayer = layers.find(
+    (layer) => layer.id === ECOSYSTEM_LAYER_ID,
+  );
+  const colormap = ecosystemLayer?.config?.colormap;
+
+  const chartConfig = Object.fromEntries(
+    Object.entries(FALLBACK_CHART_CONFIG).map(([key, fallback]) => [
+      key,
+      {
+        color:
+          getColormapColor(colormap, ECO_KEY_TO_CLASS[key]) ?? fallback.color,
+      },
+    ]),
+  );
+
   const data = Object.values(chart)
     .flat()
     .map((item) => ({
       key: item.key,
       label: t(`chart.${item.key}`),
       value: item.value,
-      fill: chartConfig[item.key as keyof typeof chartConfig].color,
+      fill: chartConfig[item.key].color,
     }));
 
-  const dominantEcosystemLabel = layers
-    .find((layer) => layer.id === ECOSYSTEM_LAYER_ID)
-    ?.categories?.find(
-      (category) => category.value === stats.dominant_ecosystem,
-    )?.label;
+  const dominantEcosystemLabel = ecosystemLayer?.categories?.find(
+    (category) => category.value === stats.dominant_ecosystem,
+  )?.label;
 
   return (
     <WidgetCard
