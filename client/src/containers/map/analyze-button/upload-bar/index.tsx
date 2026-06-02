@@ -55,7 +55,9 @@ const UploadBar = () => {
       className="flex flex-col gap-4 overflow-hidden w-[335px] text-sm font-medium leading-5 p-6"
       onInteractOutside={(e) => e.preventDefault()}
     >
-      <TileIcon state={hasGeometry ? "checked" : "default"}>
+      <TileIcon
+        state={hasGeometry ? "checked" : isDrawing ? "drawing" : "default"}
+      >
         <QuestionMarkIcon />
       </TileIcon>
       {isDrawing ? (
