@@ -58,7 +58,7 @@ const MapSidebar = () => {
       <div
         className={cn(
           "h-full shrink-0 overflow-hidden",
-          isCollapsed ? "w-0" : "w-[600px]",
+          isCollapsed ? "w-0" : "w-[480px] min-[1440px]:w-[600px]",
         )}
       >
         <div className="flex h-full min-h-0 flex-col">

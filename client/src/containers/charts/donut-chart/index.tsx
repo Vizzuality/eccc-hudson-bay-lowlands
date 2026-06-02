@@ -11,16 +11,17 @@ import ChartLegend from "@/containers/charts/legend";
 interface DonutChartProps {
   data: { key: string; label: string; value: number; fill: string }[];
   chartConfig: ChartConfig;
+  className?: string;
 }
 
-const DonutChart: FC<DonutChartProps> = ({ data, chartConfig }) => {
+const DonutChart: FC<DonutChartProps> = ({ data, chartConfig, className }) => {
   const legendItems = data.map((item) => ({
     ...item,
     fill: chartConfig[item.key]?.color ?? "",
   }));
 
   return (
-    <section>
+    <section className={className}>
       <ChartContainer config={chartConfig} className="w-[200px] h-[200px]">
         <PieChart>
           <ChartTooltip
