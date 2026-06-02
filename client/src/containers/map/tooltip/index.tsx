@@ -348,18 +348,6 @@ const MultiLayerCarousel: FC<{ layers: InteractiveLayerEntry[] }> = ({
 
   return (
     <Carousel setApi={setApi}>
-      <div className="flex items-center justify-end gap-1">
-        <CarouselPrevious
-          variant="ghost"
-          size="icon"
-          className="static translate-x-0 translate-y-0 size-7 rounded-sm"
-        />
-        <CarouselNext
-          variant="ghost"
-          size="icon"
-          className="static translate-x-0 translate-y-0 size-7 rounded-sm"
-        />
-      </div>
       <div
         className="overflow-hidden transition-[height] duration-300 ease-in-out"
         style={contentHeight !== null ? { height: contentHeight } : undefined}
@@ -380,6 +368,18 @@ const MultiLayerCarousel: FC<{ layers: InteractiveLayerEntry[] }> = ({
             </CarouselItem>
           ))}
         </CarouselContent>
+      </div>
+      <div className="flex items-center justify-end gap-1">
+        <CarouselPrevious
+          variant="ghost"
+          size="icon"
+          className="static translate-x-0 translate-y-0 size-7 rounded-sm"
+        />
+        <CarouselNext
+          variant="ghost"
+          size="icon"
+          className="static translate-x-0 translate-y-0 size-7 rounded-sm"
+        />
       </div>
     </Carousel>
   );
