@@ -78,8 +78,9 @@ const WaterDynamics: FC<WaterDynamicsProps> = ({
       onInfoButtonClick={onInfoButtonClick}
       onAddToMapButtonClick={() => {}}
     >
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 min-[1440px]:flex-row">
         <DonutChart
+          className="flex flex-col items-center self-center min-[1440px]:self-auto"
           data={data}
           chartConfig={{
             water_perm_perc: {

@@ -129,7 +129,7 @@ export default function SharedAnalysisPage() {
 
           <section className="flex h-full overflow-hidden">
             <aside className="flex h-full shrink-0">
-              <div className="flex h-full w-[600px] shrink-0 flex-col">
+              <div className="flex h-full w-[480px] min-[1440px]:w-[600px] shrink-0 flex-col">
                 <AnalysisPanelContent
                   headerActions={
                     <>

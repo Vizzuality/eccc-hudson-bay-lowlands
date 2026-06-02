@@ -42,7 +42,7 @@ export const DataLayersListSkeleton = () => {
 export const SharedAnalysisSkeleton = () => {
   return (
     <section className="flex h-full">
-      <aside className="flex h-full min-h-0 flex-col w-[600px] pr-6">
+      <aside className="flex h-full min-h-0 flex-col w-[480px] min-[1440px]:w-[600px] pr-6">
         <CategorySelectorSkeleton />
         <DataLayersListSkeleton />
       </aside>
