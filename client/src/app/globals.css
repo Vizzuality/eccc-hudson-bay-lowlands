@@ -120,7 +120,6 @@
 }
 
 @theme {
-  --font-inter: "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
   --font-nunito:
     "Nunito", "Nunito Fallback", ui-sans-serif, system-ui, sans-serif;
 }

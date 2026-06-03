@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { Inter, Nunito, Tinos } from "next/font/google";
+import { Nunito, Tinos } from "next/font/google";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
@@ -11,11 +11,6 @@ import ClientProviders from "@/app/[locale]/providers";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import BetaBanner from "@/containers/beta-banner";
 import { COOKIE_NAME, COOLDOWN_DAYS } from "@/containers/beta-banner/constants";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -55,9 +50,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
-      <body
-        className={`${inter.variable} ${nunito.variable} ${tinos.variable} antialiased`}
-      >
+      <body className={`${nunito.variable} ${tinos.variable} antialiased`}>
         <NextIntlClientProvider>
           <NuqsAdapter>
             <TooltipProvider>
