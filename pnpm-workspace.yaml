@@ -7,11 +7,7 @@ ignoredBuiltDependencies:
 
 
 overrides:
-  esbuild: "0.28.1"
   picomatch: "4.0.4"
-  undici: "7.24.1"
-  "@xmldom/xmldom": "0.9.10"
-  "resolve-protobuf-schema>protocol-buffers-schema": "3.6.1"
   "next>postcss": "8.5.14"
 
 catalog:
