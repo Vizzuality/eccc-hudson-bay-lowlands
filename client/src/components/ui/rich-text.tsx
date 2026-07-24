@@ -7,7 +7,7 @@ type Props = {
   children(tags: Record<Tag, (chunks: ReactNode) => ReactNode>): ReactNode;
 };
 
-export default function RichText({ className, children }: Props) {
+export default function RichText({ className, children }: Readonly<Props>) {
   return (
     <>
       {children({

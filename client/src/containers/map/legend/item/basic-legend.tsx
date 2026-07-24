@@ -2,7 +2,7 @@ import type { FC } from "react";
 import { useApiTranslation } from "@/i18n/api-translation";
 import type { LegendItem } from "@/types";
 
-function LegendSwatch({ item }: { item: LegendItem }) {
+function LegendSwatch({ item }: Readonly<{ item: LegendItem }>) {
   const color = item.color ?? item["fill-color"] ?? "transparent";
 
   if (item["line-width"]) {

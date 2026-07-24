@@ -58,9 +58,11 @@ function DrawingContent({
   fileName,
   error,
   onClear,
-}: Pick<
-  DrawingConfirmationProps,
-  "isPending" | "locationType" | "fileName" | "error" | "onClear"
+}: Readonly<
+  Pick<
+    DrawingConfirmationProps,
+    "isPending" | "locationType" | "fileName" | "error" | "onClear"
+  >
 >) {
   const t = useTranslations("analysis");
 
@@ -121,13 +123,13 @@ function ActionButtons({
   hasError,
   onClear,
   onConfirm,
-}: {
+}: Readonly<{
   isPending: boolean;
   hasGeometry: boolean;
   hasError: boolean;
   onClear: () => void;
   onConfirm: () => void;
-}) {
+}>) {
   const t = useTranslations("analysis");
 
   return (
