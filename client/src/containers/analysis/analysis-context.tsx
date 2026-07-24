@@ -33,11 +33,11 @@ export function AnalysisProvider({
   children,
   initialShareUrl = null,
   initialCreatedAt = null,
-}: {
+}: Readonly<{
   children: ReactNode;
   initialShareUrl?: string | null;
   initialCreatedAt?: string | null;
-}) {
+}>) {
   const [scrollRoot, setScrollRoot] = useState<HTMLElement | null>(null);
   const scrollViewportRef = useCallback((el: HTMLDivElement | null) => {
     setScrollRoot(el);

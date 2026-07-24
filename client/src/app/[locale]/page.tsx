@@ -28,9 +28,9 @@ export async function generateMetadata({
 }
 export default async function Home({
   searchParams,
-}: {
+}: Readonly<{
   searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
+}>) {
   const { category, dataLayersSearch } = await searchParams;
   const categoryParam = Array.isArray(category) ? category[0] : category;
   const dataLayersSearchParam = Array.isArray(dataLayersSearch)

@@ -16,7 +16,9 @@ interface MapDownloadProps {
   containerRef: RefObject<HTMLDivElement | null>;
 }
 
-export default function MapDownload({ containerRef }: MapDownloadProps) {
+export default function MapDownload({
+  containerRef,
+}: Readonly<MapDownloadProps>) {
   const { download, loading } = useMapDownload(containerRef);
   const t = useTranslations("map.controls.download");
 

@@ -32,10 +32,10 @@ const PAGE_BACKGROUND = {
 function SharedAnalysisHydrator({
   data,
   children,
-}: {
+}: Readonly<{
   data: SharedAnalysisResponse;
   children: ReactNode;
-}) {
+}>) {
   const setAnalysisResult = useSetAnalysisResult();
   const [, setSettings] = useAnalysisSettings();
   const { setMapStatus } = useMapStatus();

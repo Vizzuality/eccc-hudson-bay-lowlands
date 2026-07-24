@@ -20,7 +20,7 @@ interface AnalysisPanelContentProps {
 
 export default function AnalysisPanelContent({
   headerActions,
-}: AnalysisPanelContentProps) {
+}: Readonly<AnalysisPanelContentProps>) {
   const t = useTranslations("analysis");
   const viewportRef = useAnalysisViewportRef();
   const analysisResult = useAnalysisResult();
