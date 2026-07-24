@@ -12,7 +12,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 logger = logging.getLogger(__name__)
 
 
-async def http_exception_handler(request: Request, exc: StarletteHTTPException) -> JSONResponse:
+def http_exception_handler(request: Request, exc: StarletteHTTPException) -> JSONResponse:
     """Handle HTTPException with logging and structured response."""
     logger.warning(
         "HTTP %d on %s %s: %s",
@@ -33,7 +33,7 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException) 
     )
 
 
-async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
     """Handle request validation errors with logging and structured response."""
     logger.warning(
         "Validation error on %s %s: %s",
@@ -54,7 +54,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     )
 
 
-async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     """Catch-all handler for unhandled exceptions — logs the full traceback."""
     logger.error(
         "Unhandled exception on %s %s: %s\n%s",

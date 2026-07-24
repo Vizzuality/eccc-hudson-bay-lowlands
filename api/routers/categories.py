@@ -31,9 +31,9 @@ def _escape_like(value: str) -> str:
 )
 def list_categories(
     db: Annotated[Session, Depends(get_db)],
-    offset: int = Query(default=0, ge=0, description="Number of items to skip"),
-    limit: int = Query(default=10, ge=1, le=100, description="Number of items to return"),
-    search: str | None = Query(default=None, description="Case-insensitive partial title search (en and fr)"),
+    offset: Annotated[int, Query(ge=0, description="Number of items to skip")] = 0,
+    limit: Annotated[int, Query(ge=1, le=100, description="Number of items to return")] = 10,
+    search: Annotated[str | None, Query(description="Case-insensitive partial title search (en and fr)")] = None,
 ) -> PaginatedCategoryResponse:
     """List categories with pagination and optional title search."""
     stmt = select(Category)
@@ -69,10 +69,10 @@ def list_categories(
 def get_category(
     category_id: int,
     db: Annotated[Session, Depends(get_db)],
-    include_datasets: bool = Query(default=False, description="Include nested datasets in response"),
-    include_layers: bool = Query(
-        default=False, description="Include layers within each dataset (requires include_datasets=true)"
-    ),
+    include_datasets: Annotated[bool, Query(description="Include nested datasets in response")] = False,
+    include_layers: Annotated[
+        bool, Query(description="Include layers within each dataset (requires include_datasets=true)")
+    ] = False,
 ) -> CategorySchema | CategoryWithDatasetsSchema | CategoryWithDatasetsAndLayersSchema:
     """Get a single category by ID with optional nested datasets and layers."""
     stmt = select(Category).where(Category.id == category_id)
