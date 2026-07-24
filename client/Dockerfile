@@ -26,7 +26,7 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml ./
 
 COPY client/package.json ./client/package.json
 
-RUN pnpm install --frozen-lockfile --filter client...
+RUN pnpm install --frozen-lockfile --ignore-scripts --filter client...
 
 # =============================================================================
 # Stage 3: Build the application

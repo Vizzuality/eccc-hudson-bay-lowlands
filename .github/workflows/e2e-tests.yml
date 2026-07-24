@@ -83,11 +83,11 @@ jobs:
 
       - name: Install dependencies
         working-directory: .
-        run: pnpm install
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Install browsers
         working-directory: e2e
-        run: npx playwright install --with-deps
+        run: pnpm exec playwright install --with-deps
 
       - name: Run e2e tests
         working-directory: e2e
