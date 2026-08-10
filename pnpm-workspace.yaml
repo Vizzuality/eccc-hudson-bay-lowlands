@@ -8,8 +8,6 @@ ignoredBuiltDependencies:
 
 overrides:
   picomatch: "4.0.4"
-  "next>postcss": "8.5.14"
-  "next>sharp": "0.35.3"
   "concurrently>shell-quote": "1.10.0"
 
 catalog:
