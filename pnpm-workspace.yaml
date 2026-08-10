@@ -7,7 +7,7 @@ ignoredBuiltDependencies:
 
 
 overrides:
-  picomatch: "4.0.4"
+  "picomatch@<2.3.2": "2.3.2"
 
 catalog:
   "@biomejs/biome": "2.2.0"
