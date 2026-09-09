@@ -5,6 +5,9 @@ ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
 
+overrides:
+  "@loaders.gl/compression>fflate": "0.7.5"
+
 catalog:
   "@biomejs/biome": "2.2.0"
   "@types/node": "24.1.0"
