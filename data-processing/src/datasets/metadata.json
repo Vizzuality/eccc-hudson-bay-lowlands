@@ -584,44 +584,76 @@
                   "type": "gradient",
                   "items": [
                     {
-                      "value": -47,
+                      "value": 2,
                       "color": "#051c2f",
                       "label": {
-                        "en": "-47",
-                        "fr": "-47"
+                        "en": "Jan",
+                        "fr": "janv."
                       }
                     },
                     {
-                      "value": 38,
-                      "color": "#0c499e",
+                      "value": 33,
+                      "color": "#083265",
                       "label": {
-                        "en": "38",
-                        "fr": "38"
+                        "en": "Feb",
+                        "fr": "févr."
                       }
                     },
                     {
-                      "value": 150,
-                      "color": "#37dfd4",
+                      "value": 61,
+                      "color": "#0b4595",
                       "label": {
-                        "en": "150",
-                        "fr": "150"
+                        "en": "Mar",
+                        "fr": "mars"
                       }
                     },
                     {
-                      "value": 235,
+                      "value": 92,
+                      "color": "#1977af",
+                      "label": {
+                        "en": "Apr",
+                        "fr": "avr."
+                      }
+                    },
+                    {
+                      "value": 122,
+                      "color": "#29adc2",
+                      "label": {
+                        "en": "May",
+                        "fr": "mai"
+                      }
+                    },
+                    {
+                      "value": 153,
+                      "color": "#40e0d6",
+                      "label": {
+                        "en": "Jun",
+                        "fr": "juin"
+                      }
+                    },
+                    {
+                      "value": 183,
+                      "color": "#9aedea",
+                      "label": {
+                        "en": "Jul",
+                        "fr": "juil."
+                      }
+                    },
+                    {
+                      "value": 214,
                       "color": "#f7fbff",
                       "label": {
-                        "en": "235",
-                        "fr": "235"
+                        "en": "Aug",
+                        "fr": "août"
                       }
                     }
                   ]
                 },
                 "colormap": [
-                  [-47, "#051c2f"],
-                  [38, "#0c499e"],
+                  [2, "#051c2f"],
+                  [66, "#0c499e"],
                   [150, "#37dfd4"],
-                  [235, "#f7fbff"]
+                  [214, "#f7fbff"]
                 ]
               }
             },
@@ -664,44 +696,76 @@
                   "type": "gradient",
                   "items": [
                     {
-                      "value": -47,
+                      "value": 2,
                       "color": "#051c2f",
                       "label": {
-                        "en": "-47",
-                        "fr": "-47"
+                        "en": "Jan",
+                        "fr": "janv."
                       }
                     },
                     {
-                      "value": 38,
-                      "color": "#0c499e",
+                      "value": 33,
+                      "color": "#083265",
                       "label": {
-                        "en": "38",
-                        "fr": "38"
+                        "en": "Feb",
+                        "fr": "févr."
                       }
                     },
                     {
-                      "value": 150,
-                      "color": "#37dfd4",
+                      "value": 61,
+                      "color": "#0b4595",
                       "label": {
-                        "en": "150",
-                        "fr": "150"
+                        "en": "Mar",
+                        "fr": "mars"
                       }
                     },
                     {
-                      "value": 235,
+                      "value": 92,
+                      "color": "#1977af",
+                      "label": {
+                        "en": "Apr",
+                        "fr": "avr."
+                      }
+                    },
+                    {
+                      "value": 122,
+                      "color": "#29adc2",
+                      "label": {
+                        "en": "May",
+                        "fr": "mai"
+                      }
+                    },
+                    {
+                      "value": 153,
+                      "color": "#40e0d6",
+                      "label": {
+                        "en": "Jun",
+                        "fr": "juin"
+                      }
+                    },
+                    {
+                      "value": 183,
+                      "color": "#9aedea",
+                      "label": {
+                        "en": "Jul",
+                        "fr": "juil."
+                      }
+                    },
+                    {
+                      "value": 214,
                       "color": "#f7fbff",
                       "label": {
-                        "en": "235",
-                        "fr": "235"
+                        "en": "Aug",
+                        "fr": "août"
                       }
                     }
                   ]
                 },
                 "colormap": [
-                  [-47, "#051c2f"],
-                  [38, "#0c499e"],
+                  [2, "#051c2f"],
+                  [66, "#0c499e"],
                   [150, "#37dfd4"],
-                  [235, "#f7fbff"]
+                  [214, "#f7fbff"]
                 ]
               }
             },
@@ -744,44 +808,76 @@
                   "type": "gradient",
                   "items": [
                     {
-                      "value": -47,
+                      "value": 2,
                       "color": "#051c2f",
                       "label": {
-                        "en": "-47",
-                        "fr": "-47"
+                        "en": "Jan",
+                        "fr": "janv."
                       }
                     },
                     {
-                      "value": 38,
-                      "color": "#0c499e",
+                      "value": 33,
+                      "color": "#083265",
                       "label": {
-                        "en": "38",
-                        "fr": "38"
+                        "en": "Feb",
+                        "fr": "févr."
                       }
                     },
                     {
-                      "value": 150,
-                      "color": "#37dfd4",
+                      "value": 61,
+                      "color": "#0b4595",
                       "label": {
-                        "en": "150",
-                        "fr": "150"
+                        "en": "Mar",
+                        "fr": "mars"
                       }
                     },
                     {
-                      "value": 235,
+                      "value": 92,
+                      "color": "#1977af",
+                      "label": {
+                        "en": "Apr",
+                        "fr": "avr."
+                      }
+                    },
+                    {
+                      "value": 122,
+                      "color": "#29adc2",
+                      "label": {
+                        "en": "May",
+                        "fr": "mai"
+                      }
+                    },
+                    {
+                      "value": 153,
+                      "color": "#40e0d6",
+                      "label": {
+                        "en": "Jun",
+                        "fr": "juin"
+                      }
+                    },
+                    {
+                      "value": 183,
+                      "color": "#9aedea",
+                      "label": {
+                        "en": "Jul",
+                        "fr": "juil."
+                      }
+                    },
+                    {
+                      "value": 214,
                       "color": "#f7fbff",
                       "label": {
-                        "en": "235",
-                        "fr": "235"
+                        "en": "Aug",
+                        "fr": "août"
                       }
                     }
                   ]
                 },
                 "colormap": [
-                  [-47, "#051c2f"],
-                  [38, "#0c499e"],
+                  [2, "#051c2f"],
+                  [66, "#0c499e"],
                   [150, "#37dfd4"],
-                  [235, "#f7fbff"]
+                  [214, "#f7fbff"]
                 ]
               }
             },
@@ -824,44 +920,76 @@
                   "type": "gradient",
                   "items": [
                     {
-                      "value": -47,
+                      "value": 2,
                       "color": "#051c2f",
                       "label": {
-                        "en": "-47",
-                        "fr": "-47"
+                        "en": "Jan",
+                        "fr": "janv."
                       }
                     },
                     {
-                      "value": 38,
-                      "color": "#0c499e",
+                      "value": 33,
+                      "color": "#083265",
                       "label": {
-                        "en": "38",
-                        "fr": "38"
+                        "en": "Feb",
+                        "fr": "févr."
                       }
                     },
                     {
-                      "value": 150,
-                      "color": "#37dfd4",
+                      "value": 61,
+                      "color": "#0b4595",
                       "label": {
-                        "en": "150",
-                        "fr": "150"
+                        "en": "Mar",
+                        "fr": "mars"
                       }
                     },
                     {
-                      "value": 235,
+                      "value": 92,
+                      "color": "#1977af",
+                      "label": {
+                        "en": "Apr",
+                        "fr": "avr."
+                      }
+                    },
+                    {
+                      "value": 122,
+                      "color": "#29adc2",
+                      "label": {
+                        "en": "May",
+                        "fr": "mai"
+                      }
+                    },
+                    {
+                      "value": 153,
+                      "color": "#40e0d6",
+                      "label": {
+                        "en": "Jun",
+                        "fr": "juin"
+                      }
+                    },
+                    {
+                      "value": 183,
+                      "color": "#9aedea",
+                      "label": {
+                        "en": "Jul",
+                        "fr": "juil."
+                      }
+                    },
+                    {
+                      "value": 214,
                       "color": "#f7fbff",
                       "label": {
-                        "en": "235",
-                        "fr": "235"
+                        "en": "Aug",
+                        "fr": "août"
                       }
                     }
                   ]
                 },
                 "colormap": [
-                  [-47, "#051c2f"],
-                  [38, "#0c499e"],
+                  [2, "#051c2f"],
+                  [66, "#0c499e"],
                   [150, "#37dfd4"],
-                  [235, "#f7fbff"]
+                  [214, "#f7fbff"]
                 ]
               }
             },
@@ -904,44 +1032,76 @@
                   "type": "gradient",
                   "items": [
                     {
-                      "value": -47,
+                      "value": 2,
                       "color": "#051c2f",
                       "label": {
-                        "en": "-47",
-                        "fr": "-47"
+                        "en": "Jan",
+                        "fr": "janv."
                       }
                     },
                     {
-                      "value": 38,
-                      "color": "#0c499e",
+                      "value": 33,
+                      "color": "#083265",
                       "label": {
-                        "en": "38",
-                        "fr": "38"
+                        "en": "Feb",
+                        "fr": "févr."
                       }
                     },
                     {
-                      "value": 150,
-                      "color": "#37dfd4",
+                      "value": 61,
+                      "color": "#0b4595",
                       "label": {
-                        "en": "150",
-                        "fr": "150"
+                        "en": "Mar",
+                        "fr": "mars"
                       }
                     },
                     {
-                      "value": 235,
+                      "value": 92,
+                      "color": "#1977af",
+                      "label": {
+                        "en": "Apr",
+                        "fr": "avr."
+                      }
+                    },
+                    {
+                      "value": 122,
+                      "color": "#29adc2",
+                      "label": {
+                        "en": "May",
+                        "fr": "mai"
+                      }
+                    },
+                    {
+                      "value": 153,
+                      "color": "#40e0d6",
+                      "label": {
+                        "en": "Jun",
+                        "fr": "juin"
+                      }
+                    },
+                    {
+                      "value": 183,
+                      "color": "#9aedea",
+                      "label": {
+                        "en": "Jul",
+                        "fr": "juil."
+                      }
+                    },
+                    {
+                      "value": 214,
                       "color": "#f7fbff",
                       "label": {
-                        "en": "235",
-                        "fr": "235"
+                        "en": "Aug",
+                        "fr": "août"
                       }
                     }
                   ]
                 },
                 "colormap": [
-                  [-47, "#051c2f"],
-                  [38, "#0c499e"],
+                  [2, "#051c2f"],
+                  [66, "#0c499e"],
                   [150, "#37dfd4"],
-                  [235, "#f7fbff"]
+                  [214, "#f7fbff"]
                 ]
               }
             },
@@ -984,44 +1144,76 @@
                   "type": "gradient",
                   "items": [
                     {
-                      "value": -47,
+                      "value": 2,
                       "color": "#051c2f",
                       "label": {
-                        "en": "-47",
-                        "fr": "-47"
+                        "en": "Jan",
+                        "fr": "janv."
                       }
                     },
                     {
-                      "value": 38,
-                      "color": "#0c499e",
+                      "value": 33,
+                      "color": "#083265",
                       "label": {
-                        "en": "38",
-                        "fr": "38"
+                        "en": "Feb",
+                        "fr": "févr."
                       }
                     },
                     {
-                      "value": 150,
-                      "color": "#37dfd4",
+                      "value": 61,
+                      "color": "#0b4595",
                       "label": {
-                        "en": "150",
-                        "fr": "150"
+                        "en": "Mar",
+                        "fr": "mars"
                       }
                     },
                     {
-                      "value": 235,
+                      "value": 92,
+                      "color": "#1977af",
+                      "label": {
+                        "en": "Apr",
+                        "fr": "avr."
+                      }
+                    },
+                    {
+                      "value": 122,
+                      "color": "#29adc2",
+                      "label": {
+                        "en": "May",
+                        "fr": "mai"
+                      }
+                    },
+                    {
+                      "value": 153,
+                      "color": "#40e0d6",
+                      "label": {
+                        "en": "Jun",
+                        "fr": "juin"
+                      }
+                    },
+                    {
+                      "value": 183,
+                      "color": "#9aedea",
+                      "label": {
+                        "en": "Jul",
+                        "fr": "juil."
+                      }
+                    },
+                    {
+                      "value": 214,
                       "color": "#f7fbff",
                       "label": {
-                        "en": "235",
-                        "fr": "235"
+                        "en": "Aug",
+                        "fr": "août"
                       }
                     }
                   ]
                 },
                 "colormap": [
-                  [-47, "#051c2f"],
-                  [38, "#0c499e"],
+                  [2, "#051c2f"],
+                  [66, "#0c499e"],
                   [150, "#37dfd4"],
-                  [235, "#f7fbff"]
+                  [214, "#f7fbff"]
                 ]
               }
             },
@@ -1064,40 +1256,40 @@
                   "type": "gradient",
                   "items": [
                     {
-                      "value": 0,
+                      "value": 135,
                       "color": "#051c2f",
                       "label": {
-                        "en": "0",
-                        "fr": "0"
+                        "en": "≤135",
+                        "fr": "≤135"
                       }
                     },
                     {
-                      "value": 131,
+                      "value": 168,
                       "color": "#0c499e",
                       "label": {
-                        "en": "131",
-                        "fr": "131"
+                        "en": "168",
+                        "fr": "168"
                       }
                     },
                     {
-                      "value": 305,
+                      "value": 212,
                       "color": "#37dfd4",
                       "label": {
-                        "en": "305",
-                        "fr": "305"
+                        "en": "212",
+                        "fr": "212"
                       }
                     },
                     {
-                      "value": 435,
+                      "value": 245,
                       "color": "#f7fbff",
                       "label": {
-                        "en": "435",
-                        "fr": "435"
+                        "en": "≥245",
+                        "fr": "≥245"
                       }
                     }
                   ]
                 },
-                "colormap": [[0, "#051c2f"], [131, "#0c499e"], [305, "#37dfd4"], [435, "#f7fbff"]]
+                "colormap": [[135, "#051c2f"], [168, "#0c499e"], [212, "#37dfd4"], [245, "#f7fbff"]]
               }
             },
             {
@@ -1139,40 +1331,40 @@
                   "type": "gradient",
                   "items": [
                     {
-                      "value": 0,
+                      "value": 135,
                       "color": "#051c2f",
                       "label": {
-                        "en": "0",
-                        "fr": "0"
+                        "en": "≤135",
+                        "fr": "≤135"
                       }
                     },
                     {
-                      "value": 131,
+                      "value": 168,
                       "color": "#0c499e",
                       "label": {
-                        "en": "131",
-                        "fr": "131"
+                        "en": "168",
+                        "fr": "168"
                       }
                     },
                     {
-                      "value": 305,
+                      "value": 212,
                       "color": "#37dfd4",
                       "label": {
-                        "en": "305",
-                        "fr": "305"
+                        "en": "212",
+                        "fr": "212"
                       }
                     },
                     {
-                      "value": 435,
+                      "value": 245,
                       "color": "#f7fbff",
                       "label": {
-                        "en": "435",
-                        "fr": "435"
+                        "en": "≥245",
+                        "fr": "≥245"
                       }
                     }
                   ]
                 },
-                "colormap": [[0, "#051c2f"], [131, "#0c499e"], [305, "#37dfd4"], [435, "#f7fbff"]]
+                "colormap": [[135, "#051c2f"], [168, "#0c499e"], [212, "#37dfd4"], [245, "#f7fbff"]]
               }
             },
             {
@@ -1214,40 +1406,40 @@
                   "type": "gradient",
                   "items": [
                     {
-                      "value": 0,
+                      "value": 135,
                       "color": "#051c2f",
                       "label": {
-                        "en": "0",
-                        "fr": "0"
+                        "en": "≤135",
+                        "fr": "≤135"
                       }
                     },
                     {
-                      "value": 131,
+                      "value": 168,
                       "color": "#0c499e",
                       "label": {
-                        "en": "131",
-                        "fr": "131"
+                        "en": "168",
+                        "fr": "168"
                       }
                     },
                     {
-                      "value": 305,
+                      "value": 212,
                       "color": "#37dfd4",
                       "label": {
-                        "en": "305",
-                        "fr": "305"
+                        "en": "212",
+                        "fr": "212"
                       }
                     },
                     {
-                      "value": 435,
+                      "value": 245,
                       "color": "#f7fbff",
                       "label": {
-                        "en": "435",
-                        "fr": "435"
+                        "en": "≥245",
+                        "fr": "≥245"
                       }
                     }
                   ]
                 },
-                "colormap": [[0, "#051c2f"], [131, "#0c499e"], [305, "#37dfd4"], [435, "#f7fbff"]]
+                "colormap": [[135, "#051c2f"], [168, "#0c499e"], [212, "#37dfd4"], [245, "#f7fbff"]]
               }
             },
             {
@@ -1289,40 +1481,40 @@
                   "type": "gradient",
                   "items": [
                     {
-                      "value": 0,
+                      "value": 135,
                       "color": "#051c2f",
                       "label": {
-                        "en": "0",
-                        "fr": "0"
+                        "en": "≤135",
+                        "fr": "≤135"
                       }
                     },
                     {
-                      "value": 131,
+                      "value": 168,
                       "color": "#0c499e",
                       "label": {
-                        "en": "131",
-                        "fr": "131"
+                        "en": "168",
+                        "fr": "168"
                       }
                     },
                     {
-                      "value": 305,
+                      "value": 212,
                       "color": "#37dfd4",
                       "label": {
-                        "en": "305",
-                        "fr": "305"
+                        "en": "212",
+                        "fr": "212"
                       }
                     },
                     {
-                      "value": 435,
+                      "value": 245,
                       "color": "#f7fbff",
                       "label": {
-                        "en": "435",
-                        "fr": "435"
+                        "en": "≥245",
+                        "fr": "≥245"
                       }
                     }
                   ]
                 },
-                "colormap": [[0, "#051c2f"], [131, "#0c499e"], [305, "#37dfd4"], [435, "#f7fbff"]]
+                "colormap": [[135, "#051c2f"], [168, "#0c499e"], [212, "#37dfd4"], [245, "#f7fbff"]]
               }
             },
             {
@@ -1364,40 +1556,40 @@
                   "type": "gradient",
                   "items": [
                     {
-                      "value": 0,
+                      "value": 135,
                       "color": "#051c2f",
                       "label": {
-                        "en": "0",
-                        "fr": "0"
+                        "en": "≤135",
+                        "fr": "≤135"
                       }
                     },
                     {
-                      "value": 131,
+                      "value": 168,
                       "color": "#0c499e",
                       "label": {
-                        "en": "131",
-                        "fr": "131"
+                        "en": "168",
+                        "fr": "168"
                       }
                     },
                     {
-                      "value": 305,
+                      "value": 212,
                       "color": "#37dfd4",
                       "label": {
-                        "en": "305",
-                        "fr": "305"
+                        "en": "212",
+                        "fr": "212"
                       }
                     },
                     {
-                      "value": 435,
+                      "value": 245,
                       "color": "#f7fbff",
                       "label": {
-                        "en": "435",
-                        "fr": "435"
+                        "en": "≥245",
+                        "fr": "≥245"
                       }
                     }
                   ]
                 },
-                "colormap": [[0, "#051c2f"], [131, "#0c499e"], [305, "#37dfd4"], [435, "#f7fbff"]]
+                "colormap": [[135, "#051c2f"], [168, "#0c499e"], [212, "#37dfd4"], [245, "#f7fbff"]]
               }
             },
             {
@@ -1439,40 +1631,40 @@
                   "type": "gradient",
                   "items": [
                     {
-                      "value": 0,
+                      "value": 135,
                       "color": "#051c2f",
                       "label": {
-                        "en": "0",
-                        "fr": "0"
+                        "en": "≤135",
+                        "fr": "≤135"
                       }
                     },
                     {
-                      "value": 131,
+                      "value": 168,
                       "color": "#0c499e",
                       "label": {
-                        "en": "131",
-                        "fr": "131"
+                        "en": "168",
+                        "fr": "168"
                       }
                     },
                     {
-                      "value": 305,
+                      "value": 212,
                       "color": "#37dfd4",
                       "label": {
-                        "en": "305",
-                        "fr": "305"
+                        "en": "212",
+                        "fr": "212"
                       }
                     },
                     {
-                      "value": 435,
+                      "value": 245,
                       "color": "#f7fbff",
                       "label": {
-                        "en": "435",
-                        "fr": "435"
+                        "en": "≥245",
+                        "fr": "≥245"
                       }
                     }
                   ]
                 },
-                "colormap": [[0, "#051c2f"], [131, "#0c499e"], [305, "#37dfd4"], [435, "#f7fbff"]]
+                "colormap": [[135, "#051c2f"], [168, "#0c499e"], [212, "#37dfd4"], [245, "#f7fbff"]]
               }
             }
           ]
