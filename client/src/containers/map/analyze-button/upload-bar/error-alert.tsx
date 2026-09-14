@@ -2,7 +2,10 @@ import { CircleAlertIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import RichText from "@/components/ui/rich-text";
-import { MAX_AREA_KM2 } from "@/containers/map/analyze-button/upload-bar/constants";
+import {
+  MAX_AREA_KM2,
+  MIN_AREA_KM2,
+} from "@/containers/map/analyze-button/upload-bar/constants";
 import type { UploadBarError } from "./types";
 
 export const UploadErrorAlert = ({ error }: { error: UploadBarError }) => {
@@ -13,7 +16,13 @@ export const UploadErrorAlert = ({ error }: { error: UploadBarError }) => {
       <CircleAlertIcon aria-hidden />
       <AlertDescription className="text-red-600 text-sm font-medium leading-5">
         <RichText>
-          {(tags) => t.rich(error, { ...tags, maxArea: MAX_AREA_KM2 })}
+          {(tags) =>
+            t.rich(error, {
+              ...tags,
+              maxArea: MAX_AREA_KM2,
+              minArea: MIN_AREA_KM2,
+            })
+          }
         </RichText>
       </AlertDescription>
     </Alert>

@@ -2,6 +2,7 @@ import { UploadErrorType } from "@/lib/utils/geometry-upload";
 
 export type UploadBarError =
   | "area-too-big"
+  | "area-too-small"
   | "outside-of-bounds"
   | "invalid-geometry"
   | "generic-error"
