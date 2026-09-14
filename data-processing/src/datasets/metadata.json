@@ -584,32 +584,8 @@
                   "type": "gradient",
                   "items": [
                     {
-                      "value": 2,
-                      "color": "#051c2f",
-                      "label": {
-                        "en": "Jan",
-                        "fr": "janv."
-                      }
-                    },
-                    {
-                      "value": 33,
-                      "color": "#083265",
-                      "label": {
-                        "en": "Feb",
-                        "fr": "févr."
-                      }
-                    },
-                    {
-                      "value": 61,
-                      "color": "#0b4595",
-                      "label": {
-                        "en": "Mar",
-                        "fr": "mars"
-                      }
-                    },
-                    {
                       "value": 92,
-                      "color": "#1977af",
+                      "color": "#051c2f",
                       "label": {
                         "en": "Apr",
                         "fr": "avr."
@@ -617,7 +593,7 @@
                     },
                     {
                       "value": 122,
-                      "color": "#29adc2",
+                      "color": "#0c499e",
                       "label": {
                         "en": "May",
                         "fr": "mai"
@@ -625,7 +601,7 @@
                     },
                     {
                       "value": 153,
-                      "color": "#40e0d6",
+                      "color": "#37dfd4",
                       "label": {
                         "en": "Jun",
                         "fr": "juin"
@@ -633,27 +609,19 @@
                     },
                     {
                       "value": 183,
-                      "color": "#9aedea",
+                      "color": "#f7fbff",
                       "label": {
                         "en": "Jul",
                         "fr": "juil."
-                      }
-                    },
-                    {
-                      "value": 214,
-                      "color": "#f7fbff",
-                      "label": {
-                        "en": "Aug",
-                        "fr": "août"
                       }
                     }
                   ]
                 },
                 "colormap": [
-                  [2, "#051c2f"],
-                  [66, "#0c499e"],
-                  [150, "#37dfd4"],
-                  [214, "#f7fbff"]
+                  [92, "#051c2f"],
+                  [122, "#0c499e"],
+                  [153, "#37dfd4"],
+                  [183, "#f7fbff"]
                 ]
               }
             },
@@ -696,32 +664,8 @@
                   "type": "gradient",
                   "items": [
                     {
-                      "value": 2,
-                      "color": "#051c2f",
-                      "label": {
-                        "en": "Jan",
-                        "fr": "janv."
-                      }
-                    },
-                    {
-                      "value": 33,
-                      "color": "#083265",
-                      "label": {
-                        "en": "Feb",
-                        "fr": "févr."
-                      }
-                    },
-                    {
-                      "value": 61,
-                      "color": "#0b4595",
-                      "label": {
-                        "en": "Mar",
-                        "fr": "mars"
-                      }
-                    },
-                    {
                       "value": 92,
-                      "color": "#1977af",
+                      "color": "#051c2f",
                       "label": {
                         "en": "Apr",
                         "fr": "avr."
@@ -729,7 +673,7 @@
                     },
                     {
                       "value": 122,
-                      "color": "#29adc2",
+                      "color": "#0c499e",
                       "label": {
                         "en": "May",
                         "fr": "mai"
@@ -737,7 +681,7 @@
                     },
                     {
                       "value": 153,
-                      "color": "#40e0d6",
+                      "color": "#37dfd4",
                       "label": {
                         "en": "Jun",
                         "fr": "juin"
@@ -745,27 +689,19 @@
                     },
                     {
                       "value": 183,
-                      "color": "#9aedea",
+                      "color": "#f7fbff",
                       "label": {
                         "en": "Jul",
                         "fr": "juil."
-                      }
-                    },
-                    {
-                      "value": 214,
-                      "color": "#f7fbff",
-                      "label": {
-                        "en": "Aug",
-                        "fr": "août"
                       }
                     }
                   ]
                 },
                 "colormap": [
-                  [2, "#051c2f"],
-                  [66, "#0c499e"],
-                  [150, "#37dfd4"],
-                  [214, "#f7fbff"]
+                  [92, "#051c2f"],
+                  [122, "#0c499e"],
+                  [153, "#37dfd4"],
+                  [183, "#f7fbff"]
                 ]
               }
             },
@@ -808,32 +744,8 @@
                   "type": "gradient",
                   "items": [
                     {
-                      "value": 2,
-                      "color": "#051c2f",
-                      "label": {
-                        "en": "Jan",
-                        "fr": "janv."
-                      }
-                    },
-                    {
-                      "value": 33,
-                      "color": "#083265",
-                      "label": {
-                        "en": "Feb",
-                        "fr": "févr."
-                      }
-                    },
-                    {
-                      "value": 61,
-                      "color": "#0b4595",
-                      "label": {
-                        "en": "Mar",
-                        "fr": "mars"
-                      }
-                    },
-                    {
                       "value": 92,
-                      "color": "#1977af",
+                      "color": "#051c2f",
                       "label": {
                         "en": "Apr",
                         "fr": "avr."
@@ -841,7 +753,7 @@
                     },
                     {
                       "value": 122,
-                      "color": "#29adc2",
+                      "color": "#0c499e",
                       "label": {
                         "en": "May",
                         "fr": "mai"
@@ -849,7 +761,7 @@
                     },
                     {
                       "value": 153,
-                      "color": "#40e0d6",
+                      "color": "#37dfd4",
                       "label": {
                         "en": "Jun",
                         "fr": "juin"
@@ -857,27 +769,19 @@
                     },
                     {
                       "value": 183,
-                      "color": "#9aedea",
+                      "color": "#f7fbff",
                       "label": {
                         "en": "Jul",
                         "fr": "juil."
-                      }
-                    },
-                    {
-                      "value": 214,
-                      "color": "#f7fbff",
-                      "label": {
-                        "en": "Aug",
-                        "fr": "août"
                       }
                     }
                   ]
                 },
                 "colormap": [
-                  [2, "#051c2f"],
-                  [66, "#0c499e"],
-                  [150, "#37dfd4"],
-                  [214, "#f7fbff"]
+                  [92, "#051c2f"],
+                  [122, "#0c499e"],
+                  [153, "#37dfd4"],
+                  [183, "#f7fbff"]
                 ]
               }
             },
@@ -920,32 +824,8 @@
                   "type": "gradient",
                   "items": [
                     {
-                      "value": 2,
-                      "color": "#051c2f",
-                      "label": {
-                        "en": "Jan",
-                        "fr": "janv."
-                      }
-                    },
-                    {
-                      "value": 33,
-                      "color": "#083265",
-                      "label": {
-                        "en": "Feb",
-                        "fr": "févr."
-                      }
-                    },
-                    {
-                      "value": 61,
-                      "color": "#0b4595",
-                      "label": {
-                        "en": "Mar",
-                        "fr": "mars"
-                      }
-                    },
-                    {
                       "value": 92,
-                      "color": "#1977af",
+                      "color": "#051c2f",
                       "label": {
                         "en": "Apr",
                         "fr": "avr."
@@ -953,7 +833,7 @@
                     },
                     {
                       "value": 122,
-                      "color": "#29adc2",
+                      "color": "#0c499e",
                       "label": {
                         "en": "May",
                         "fr": "mai"
@@ -961,7 +841,7 @@
                     },
                     {
                       "value": 153,
-                      "color": "#40e0d6",
+                      "color": "#37dfd4",
                       "label": {
                         "en": "Jun",
                         "fr": "juin"
@@ -969,27 +849,19 @@
                     },
                     {
                       "value": 183,
-                      "color": "#9aedea",
+                      "color": "#f7fbff",
                       "label": {
                         "en": "Jul",
                         "fr": "juil."
-                      }
-                    },
-                    {
-                      "value": 214,
-                      "color": "#f7fbff",
-                      "label": {
-                        "en": "Aug",
-                        "fr": "août"
                       }
                     }
                   ]
                 },
                 "colormap": [
-                  [2, "#051c2f"],
-                  [66, "#0c499e"],
-                  [150, "#37dfd4"],
-                  [214, "#f7fbff"]
+                  [92, "#051c2f"],
+                  [122, "#0c499e"],
+                  [153, "#37dfd4"],
+                  [183, "#f7fbff"]
                 ]
               }
             },
@@ -1032,32 +904,8 @@
                   "type": "gradient",
                   "items": [
                     {
-                      "value": 2,
-                      "color": "#051c2f",
-                      "label": {
-                        "en": "Jan",
-                        "fr": "janv."
-                      }
-                    },
-                    {
-                      "value": 33,
-                      "color": "#083265",
-                      "label": {
-                        "en": "Feb",
-                        "fr": "févr."
-                      }
-                    },
-                    {
-                      "value": 61,
-                      "color": "#0b4595",
-                      "label": {
-                        "en": "Mar",
-                        "fr": "mars"
-                      }
-                    },
-                    {
                       "value": 92,
-                      "color": "#1977af",
+                      "color": "#051c2f",
                       "label": {
                         "en": "Apr",
                         "fr": "avr."
@@ -1065,7 +913,7 @@
                     },
                     {
                       "value": 122,
-                      "color": "#29adc2",
+                      "color": "#0c499e",
                       "label": {
                         "en": "May",
                         "fr": "mai"
@@ -1073,7 +921,7 @@
                     },
                     {
                       "value": 153,
-                      "color": "#40e0d6",
+                      "color": "#37dfd4",
                       "label": {
                         "en": "Jun",
                         "fr": "juin"
@@ -1081,27 +929,19 @@
                     },
                     {
                       "value": 183,
-                      "color": "#9aedea",
+                      "color": "#f7fbff",
                       "label": {
                         "en": "Jul",
                         "fr": "juil."
-                      }
-                    },
-                    {
-                      "value": 214,
-                      "color": "#f7fbff",
-                      "label": {
-                        "en": "Aug",
-                        "fr": "août"
                       }
                     }
                   ]
                 },
                 "colormap": [
-                  [2, "#051c2f"],
-                  [66, "#0c499e"],
-                  [150, "#37dfd4"],
-                  [214, "#f7fbff"]
+                  [92, "#051c2f"],
+                  [122, "#0c499e"],
+                  [153, "#37dfd4"],
+                  [183, "#f7fbff"]
                 ]
               }
             },
@@ -1144,32 +984,8 @@
                   "type": "gradient",
                   "items": [
                     {
-                      "value": 2,
-                      "color": "#051c2f",
-                      "label": {
-                        "en": "Jan",
-                        "fr": "janv."
-                      }
-                    },
-                    {
-                      "value": 33,
-                      "color": "#083265",
-                      "label": {
-                        "en": "Feb",
-                        "fr": "févr."
-                      }
-                    },
-                    {
-                      "value": 61,
-                      "color": "#0b4595",
-                      "label": {
-                        "en": "Mar",
-                        "fr": "mars"
-                      }
-                    },
-                    {
                       "value": 92,
-                      "color": "#1977af",
+                      "color": "#051c2f",
                       "label": {
                         "en": "Apr",
                         "fr": "avr."
@@ -1177,7 +993,7 @@
                     },
                     {
                       "value": 122,
-                      "color": "#29adc2",
+                      "color": "#0c499e",
                       "label": {
                         "en": "May",
                         "fr": "mai"
@@ -1185,7 +1001,7 @@
                     },
                     {
                       "value": 153,
-                      "color": "#40e0d6",
+                      "color": "#37dfd4",
                       "label": {
                         "en": "Jun",
                         "fr": "juin"
@@ -1193,27 +1009,19 @@
                     },
                     {
                       "value": 183,
-                      "color": "#9aedea",
+                      "color": "#f7fbff",
                       "label": {
                         "en": "Jul",
                         "fr": "juil."
-                      }
-                    },
-                    {
-                      "value": 214,
-                      "color": "#f7fbff",
-                      "label": {
-                        "en": "Aug",
-                        "fr": "août"
                       }
                     }
                   ]
                 },
                 "colormap": [
-                  [2, "#051c2f"],
-                  [66, "#0c499e"],
-                  [150, "#37dfd4"],
-                  [214, "#f7fbff"]
+                  [92, "#051c2f"],
+                  [122, "#0c499e"],
+                  [153, "#37dfd4"],
+                  [183, "#f7fbff"]
                 ]
               }
             },
