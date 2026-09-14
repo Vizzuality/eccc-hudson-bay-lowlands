@@ -126,7 +126,7 @@ The database is seeded via a `POST /seed` endpoint that accepts a JSON payload w
 curl -X POST http://localhost:8000/seed \
   -H "Content-Type: application/json" \
   -H "X-Seed-Secret: dev-seed-secret" \
-  -d @data-processing/metadata.json
+  -d @data-processing/src/datasets/metadata.json
 ```
 
 **Local development (without Docker)**:
@@ -138,7 +138,7 @@ cd api
 SEED_SECRET=dev-seed-secret uv run python seed.py
 ```
 
-This reads `data-processing/metadata.json` and sends it to the running API.
+This reads `data-processing/src/datasets/metadata.json` and writes to the database directly -- it does not go through the API, so the API does not need to be running.
 
 **Production**:
 
@@ -146,7 +146,7 @@ This reads `data-processing/metadata.json` and sends it to the running API.
 curl -X POST https://your-domain.com/api/seed \
   -H "Content-Type: application/json" \
   -H "X-Seed-Secret: $SEED_SECRET" \
-  -d @data-processing/metadata.json
+  -d @data-processing/src/datasets/metadata.json
 ```
 
 The seed is idempotent: running it multiple times updates existing records rather than creating duplicates.
