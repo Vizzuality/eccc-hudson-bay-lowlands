@@ -187,6 +187,7 @@
     "datasets": "Datasets",
     "click-to-select": "Click to select your area of interest and get detailed insights on it.",
     "area-too-big": "<p>The selected area is too large. Maximum allowed size is {maxArea, number} km².</p>",
+    "area-too-small": "<p>The selected area is too small. Minimum allowed size is {minArea, number} km².</p>",
     "outside-of-bounds": "<p>The selected area is outside the supported boundaries.</p>",
     "invalid-geometry": "<p>Your geometry is invalid. Please simplify or correct it and try again.</p>",
     "generic-error": "<p>An error occurred while processing your request. Please try again.</p>",

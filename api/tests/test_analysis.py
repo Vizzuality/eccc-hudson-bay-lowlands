@@ -123,7 +123,7 @@ TOO_SMALL_POLYGON_FEATURE = {
     "properties": {},
 }
 
-# A ~16,600,000 km² polygon covering most of North America — above MAX_AREA_KM2 (200,000 km²).
+# A ~16,600,000 km² polygon covering most of North America — above MAX_AREA_KM2 (50,000 km²).
 TOO_LARGE_POLYGON_FEATURE = {
     "type": "Feature",
     "geometry": {

@@ -187,6 +187,7 @@
     "datasets": "Jeux de données",
     "click-to-select": "Cliquez pour sélectionner votre zone d'intérêt et obtenir des informations détaillées.",
     "area-too-big": "<p>La zone sélectionnée est trop grande. La taille maximale autorisée est de {maxArea, number} km².</p>",
+    "area-too-small": "<p>La zone sélectionnée est trop petite. La taille minimale autorisée est de {minArea, number} km².</p>",
     "outside-of-bounds": "<p>La zone sélectionnée se trouve en dehors des limites prises en charge.</p>",
     "invalid-geometry": "<p>Votre géométrie est invalide. Veuillez la simplifier ou la corriger, puis réessayer.</p>",
     "generic-error": "<p>Une erreur s'est produite lors du traitement de votre demande. Veuillez réessayer.</p>",

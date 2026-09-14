@@ -6,7 +6,7 @@
 
 ## Context
 
-The application validates user-submitted geometries and computes their area to enforce a maximum size limit (1000 sq km). Computing area from geographic coordinates (EPSG:4326, degrees) produces results in square degrees, which are not meaningful for area measurement. We needed an appropriate projection for accurate area computation.
+The application validates user-submitted geometries and computes their area to enforce size limits (minimum 1 sq km, maximum 50,000 sq km). Computing area from geographic coordinates (EPSG:4326, degrees) produces results in square degrees, which are not meaningful for area measurement. We needed an appropriate projection for accurate area computation.
 
 Options considered:
 1. EPSG:4326 -- compute area in square degrees and apply a conversion factor (inaccurate at high latitudes)
@@ -22,7 +22,7 @@ Implementation:
 - Geometries are stored in EPSG:4326 (WGS84)
 - For area computation, geometries are temporarily reprojected to EPSG:6933 using pyproj
 - The computed area in square meters is converted to square kilometers
-- Geometries exceeding 1000 sq km are rejected with a validation error
+- Geometries below 1 sq km or above 50,000 sq km are rejected with a validation error
 - Transformer instances are created at module level (thread-safe, initialized once)
 
 ## Consequences
@@ -32,14 +32,14 @@ Implementation:
 - Equal-area projection provides accurate area measurements regardless of latitude
 - Global coverage means no zone selection logic is needed (unlike UTM)
 - EPSG:6933 is well-supported by pyproj and recognized by the IERS
-- The 1000 sq km limit provides a reasonable guard against accidentally large geometries
+- The 50,000 sq km maximum guards against accidentally large geometries; the 1 sq km minimum rejects areas too small to produce meaningful statistics
 - Reprojection is only done transiently for computation; stored geometry remains in WGS84
 
 ### Negative
 
 - EPSG:6933 distorts shape and distance (it preserves only area), but this is acceptable since we only use it for area measurement
 - Adds pyproj as a dependency (though it is already needed for EPSG:3857 to EPSG:4326 transformations)
-- The 1000 sq km limit is a fixed business rule; changing it requires a code update
+- Both limits are fixed business rules; changing either requires a code update
 
 ### Neutral
 

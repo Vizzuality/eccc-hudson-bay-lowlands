@@ -43,11 +43,10 @@ export function useUploadAnalysis() {
       if (isAxiosError(err) && err.response?.status === 422) {
         const detail: unknown = err.response.data?.detail;
         if (typeof detail === "string") {
-          if (
-            detail.includes("exceeds the maximum") ||
-            detail.includes("below the minimum")
-          ) {
+          if (detail.includes("exceeds the maximum")) {
             setError("area-too-big");
+          } else if (detail.includes("below the minimum")) {
+            setError("area-too-small");
           } else if (
             detail.includes("does not intersect") ||
             detail.includes("must lie entirely within")
