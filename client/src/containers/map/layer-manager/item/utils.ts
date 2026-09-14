@@ -27,10 +27,13 @@ const toIntervalColormap = (
   });
 
 const GRADIENT_STEPS = 24;
+const CLAMP_LOWER_BOUND = -32766;
+const CLAMP_UPPER_BOUND = 32767;
 
 /** Linearly interpolate between colormap stops to produce interval entries.
  *  Returns 24 intervals covering the full data range with smoothly graded colors.
  *  Uses TiTiler interval format so no `rescale` param is needed.
+ *  Outer bounds are sentinels because TiTiler renders values matching no interval as transparent.
  */
 export const interpolateColormap = (
   colormap: [number, string][],
@@ -52,9 +55,11 @@ export const interpolateColormap = (
   const step = range / GRADIENT_STEPS;
 
   return Array.from({ length: GRADIENT_STEPS }, (_, i) => {
-    const lower = minVal + i * step;
-    const upper = i === GRADIENT_STEPS - 1 ? maxVal : minVal + (i + 1) * step;
-    const dataValue = i === GRADIENT_STEPS - 1 ? maxVal : lower;
+    const segmentStart = minVal + i * step;
+    const lower = i === 0 ? CLAMP_LOWER_BOUND : segmentStart;
+    const upper =
+      i === GRADIENT_STEPS - 1 ? CLAMP_UPPER_BOUND : minVal + (i + 1) * step;
+    const dataValue = i === GRADIENT_STEPS - 1 ? maxVal : segmentStart;
 
     let lowerIdx = rgbaStops.length - 2;
     for (let s = 0; s < rgbaStops.length - 1; s++) {

@@ -238,9 +238,8 @@ describe("getRasterLayerConfig", () => {
       expect(colormapMatch).not.toBeNull();
       const decoded = JSON.parse(decodeURIComponent(colormapMatch?.[1] ?? ""));
       expect(decoded).toHaveLength(24);
-      // First interval starts at 0, last interval ends at 100
-      expect(decoded[0][0][0]).toBe(0);
-      expect(decoded[23][0][1]).toBe(100);
+      expect(decoded[0][0][0]).toBe(-32766);
+      expect(decoded[23][0][1]).toBe(32767);
       // First color is black, last color is white
       expect(decoded[0][1]).toEqual([0, 0, 0, 255]);
       expect(decoded[23][1]).toEqual([255, 255, 255, 255]);
@@ -348,10 +347,10 @@ describe("interpolateColormap", () => {
     const result = interpolateColormap(stops);
 
     expect(result).toHaveLength(24);
-    // First interval starts at 0
-    expect(result[0][0][0]).toBe(0);
-    // Last interval ends at 100
-    expect(result[23][0][1]).toBe(100);
+    expect(result[0][0][0]).toBe(-32766);
+    expect(result[0][0][1]).toBeCloseTo(100 / 24);
+    expect(result[23][0][0]).toBeCloseTo((100 * 23) / 24);
+    expect(result[23][0][1]).toBe(32767);
     // First color is black
     expect(result[0][1]).toEqual([0, 0, 0, 255]);
     // Last color is white
@@ -385,6 +384,20 @@ describe("interpolateColormap", () => {
     expect(result).toHaveLength(1);
     expect(result[0][0]).toEqual([50, 50]);
     expect(result[0][1]).toEqual([255, 0, 0, 255]);
+  });
+
+  it("clamps values beyond the stops to the end colors", () => {
+    const stops: [number, string][] = [
+      [135, "#051c2f"],
+      [245, "#f7fbff"],
+    ];
+    const result = interpolateColormap(stops);
+
+    const colorAt = (value: number) =>
+      result.find(([[lower, upper]]) => value >= lower && value <= upper)?.[1];
+
+    expect(colorAt(100)).toEqual([5, 28, 47, 255]);
+    expect(colorAt(300)).toEqual([247, 251, 255, 255]);
   });
 
   it("returns empty array for empty colormap", () => {
