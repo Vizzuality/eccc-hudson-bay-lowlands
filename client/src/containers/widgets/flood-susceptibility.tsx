@@ -1,35 +1,20 @@
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
-import type { FloodSusceptibilityStats } from "@/containers/analysis/types";
+import type {
+  CategoricalDataPoint,
+  FloodSusceptibilityStats,
+} from "@/containers/analysis/types";
 import DonutChart from "@/containers/charts/donut-chart";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
 import WidgetIcon from "@/containers/widgets/icon";
 import type { WidgetCardBaseProps } from "@/containers/widgets/types";
-import { useApiTranslation } from "@/i18n/api-translation";
 import type { Layer } from "@/types";
-
-const mockData = [
-  {
-    key: "fsi_low_perc",
-    label: { en: "Low risk", fr: "Faible risque" },
-    value: 50,
-  },
-  {
-    key: "fsi_moderate_perc",
-    label: { en: "Moderate risk", fr: "Modéré risque" },
-    value: 30,
-  },
-  {
-    key: "fsi_high_perc",
-    label: { en: "High risk", fr: "Haut risque" },
-    value: 50,
-  },
-];
 
 interface FloodSusceptibilityProps extends WidgetCardBaseProps {
   stats: FloodSusceptibilityStats;
+  chart: Record<string, CategoricalDataPoint[]>;
   layers: Layer[];
   onInfoButtonClick: () => void;
 }
@@ -37,17 +22,19 @@ interface FloodSusceptibilityProps extends WidgetCardBaseProps {
 const FloodSusceptibility: FC<FloodSusceptibilityProps> = ({
   id,
   stats,
+  chart,
   layers,
   onInfoButtonClick,
 }) => {
   const t = useTranslations("widgets.flood_susceptibility");
-  const { getTranslation } = useApiTranslation();
-  const data = mockData.map((item) => ({
-    key: item.key,
-    label: getTranslation(item.label),
-    value: item.value,
-    fill: `var(--color-${item.key})`,
-  }));
+  const data = Object.values(chart)
+    .flat()
+    .map((item) => ({
+      key: item.key,
+      label: t(`chart.${item.key}`),
+      value: item.value,
+      fill: `var(--color-${item.key})`,
+    }));
 
   return (
     <WidgetCard

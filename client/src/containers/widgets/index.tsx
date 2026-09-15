@@ -44,6 +44,7 @@ const Widget: FC<WidgetProps> = ({ id, data }) => {
             id={id}
             unit={data[id].unit}
             stats={data[id].stats}
+            chart={data[id].chart}
             layers={data[id].dataset.layers ?? []}
             onInfoButtonClick={onInfoButtonClick}
           />
@@ -53,6 +54,7 @@ const Widget: FC<WidgetProps> = ({ id, data }) => {
           <FloodSusceptibility
             id={id}
             stats={data[id].stats}
+            chart={data[id].chart}
             layers={data[id].dataset.layers ?? []}
             onInfoButtonClick={onInfoButtonClick}
           />

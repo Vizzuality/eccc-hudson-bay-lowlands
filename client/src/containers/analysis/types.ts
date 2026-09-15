@@ -1,4 +1,4 @@
-import type { Dataset, Translatable } from "@/types";
+import type { Dataset } from "@/types";
 
 export interface TimeSeriesDataPoint {
   x: string | number;
@@ -7,7 +7,6 @@ export interface TimeSeriesDataPoint {
 
 export interface CategoricalDataPoint {
   key: string;
-  label: Translatable;
   value: number;
 }
 

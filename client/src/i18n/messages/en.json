@@ -233,6 +233,11 @@
       "more-info": {
         "title": "Why are water dynamics important?",
         "description": "Surface water influences wetlands, rivers, and ponds, shaping habitats, vegetation, and ecosystem processes. Shifts in inundation can signal environmental change and affect carbon storage and biodiversity."
+      },
+      "chart": {
+        "water_perm_perc": "Permanent water",
+        "water_ephemeral_perc": "Ephemeral water",
+        "land_perm_perc": "Permanently dry land"
       }
     },
     "flood_susceptibility": {
@@ -241,6 +246,11 @@
       "more-info": {
         "title": "Why is flood susceptibility important?",
         "description": "Wetlands and rivers in the area also help regulate floods and maintain habitat and landscape resilience. Understanding where flooding is more likely supports climate adaptation and informed land-use planning."
+      },
+      "chart": {
+        "fsi_low_perc": "Low risk",
+        "fsi_moderate_perc": "Moderate risk",
+        "fsi_high_perc": "High risk"
       }
     },
     "snow_dynamics": {

@@ -1,36 +1,22 @@
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import RichText from "@/components/ui/rich-text";
-import type { WaterDynamicsStats } from "@/containers/analysis/types";
+import type {
+  CategoricalDataPoint,
+  WaterDynamicsStats,
+} from "@/containers/analysis/types";
 import DonutChart from "@/containers/charts/donut-chart";
 import Highlight from "@/containers/highlight";
 import MoreInfoTooltip from "@/containers/more-info-tooltip";
 import { WidgetCard, WidgetCardIcon } from "@/containers/widgets/card";
 import WidgetIcon from "@/containers/widgets/icon";
 import type { WidgetCardBaseProps } from "@/containers/widgets/types";
-import { useApiTranslation } from "@/i18n/api-translation";
 import type { Layer } from "@/types";
-
-const mockData = [
-  {
-    water_perm_perc: {
-      label: { en: "Permanent Dry Land", fr: "Eau permanente" },
-      value: 8.3,
-    },
-    water_ephemeral_perc: {
-      label: { en: "Ephemeral Water", fr: "Eau ephemerale" },
-      value: 23.5,
-    },
-    land_perm_perc: {
-      label: { en: "Land permanent", fr: "Terre permanente" },
-      value: 68.2,
-    },
-  },
-];
 
 interface WaterDynamicsProps extends WidgetCardBaseProps {
   unit: string;
   stats: WaterDynamicsStats;
+  chart: Record<string, CategoricalDataPoint[]>;
   layers: Layer[];
   onInfoButtonClick: () => void;
 }
@@ -39,17 +25,19 @@ const WaterDynamics: FC<WaterDynamicsProps> = ({
   id,
   unit,
   stats,
+  chart,
   layers,
   onInfoButtonClick,
 }) => {
   const t = useTranslations("widgets.water_dynamics");
-  const { getTranslation } = useApiTranslation();
-  const data = Object.entries(mockData[0]).map(([key, value]) => ({
-    key,
-    label: getTranslation(value.label),
-    value: value.value,
-    fill: `var(--color-${key})`,
-  }));
+  const data = Object.values(chart)
+    .flat()
+    .map((item) => ({
+      key: item.key,
+      label: t(`chart.${item.key}`),
+      value: item.value,
+      fill: `var(--color-${item.key})`,
+    }));
 
   return (
     <WidgetCard
@@ -60,10 +48,7 @@ const WaterDynamics: FC<WaterDynamicsProps> = ({
           {(tags) =>
             t.rich("description", {
               ...tags,
-              water_perm_perc: 8.3,
-              water_ephemeral_perc: 23.5,
-              land_perm_perc: 68.2,
-              freq_mean: 14.7,
+              ...stats,
             })
           }
         </RichText>

@@ -34,7 +34,13 @@ export const mockAnalysisResult: AnalysisResult = {
   },
   water_dynamics: {
     unit: "%",
-    chart: {},
+    chart: {
+      inundation_frequency_cog: [
+        { key: "water_perm_perc", value: 8.3 },
+        { key: "water_ephemeral_perc", value: 23.5 },
+        { key: "land_perm_perc", value: 68.2 },
+      ],
+    },
     dataset: {
       id: 2,
       category_id: 1,
@@ -58,7 +64,13 @@ export const mockAnalysisResult: AnalysisResult = {
   },
   flood_susceptibility: {
     unit: "cm",
-    chart: {},
+    chart: {
+      flood_susceptibility_cog: [
+        { key: "fsi_low_perc", value: 20 },
+        { key: "fsi_moderate_perc", value: 30 },
+        { key: "fsi_high_perc", value: 50 },
+      ],
+    },
     dataset: {
       id: 3,
       category_id: 1,
@@ -117,22 +129,18 @@ export const mockAnalysisResult: AnalysisResult = {
       treed_cog: [
         {
           key: "non_treed_perc",
-          label: { en: "Non-treed", fr: "Non boisé" },
           value: 50,
         },
         {
           key: "always_treed_perc",
-          label: { en: "Always-treed", fr: "Toujours boisé" },
           value: 25,
         },
         {
           key: "newly_treed_perc",
-          label: { en: "Newly-treed", fr: "Nouvellement boisé" },
           value: 15,
         },
         {
           key: "was_treed_perc",
-          label: { en: "Was-treed", fr: "Était boisé" },
           value: 10,
         },
       ],
@@ -167,20 +175,14 @@ export const mockAnalysisResult: AnalysisResult = {
       eco_cog: [
         {
           key: "eco_temperate_perc",
-          label: {
-            en: "Temperate/Boreal Forest",
-            fr: "Forêt tempérée/boréale",
-          },
           value: 50,
         },
         {
           key: "eco_treed_perc",
-          label: { en: "Treed Wetland", fr: "Milieu humide boisé" },
           value: 10,
         },
         {
           key: "eco_bog_perc",
-          label: { en: "Bog", fr: "Tourbière" },
           value: 5,
         },
       ],
