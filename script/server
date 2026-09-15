@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Run the full stack locally: Postgres in Docker, API on :8000, client on :3000.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+if [ ! -f .env ]; then
+  echo "Missing .env — run ./script/bootstrap first." >&2
+  exit 1
+fi
+
+set -a
+# shellcheck disable=SC1091
+source .env
+set +a
+
+echo "Starting database (eccc-db)..."
+docker compose up -d eccc-db
+
+echo -n "Waiting for Postgres"
+for _ in $(seq 1 60); do
+  if docker exec eccc-db pg_isready -U "${DB_USERNAME}" -d "${DB_NAME}" >/dev/null 2>&1; then
+    echo " ready."
+    break
+  fi
+  echo -n "."
+  sleep 1
+done
+
+set -m
+trap 'echo; echo "Stopped (database left running — '\''docker compose down'\'' stops it)."; kill -TERM -- "-$api" "-$client" 2>/dev/null' EXIT
+
+echo "Starting API on http://localhost:8000 ..."
+(cd api && uv run uvicorn main:app --reload --port 8000) & api=$!
+
+echo "Starting client on http://localhost:3000 ..."
+(cd client && pnpm dev) & client=$!
+
+wait

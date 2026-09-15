@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Set up the project for local development: env files, Python deps, Node deps.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+require() {
+  command -v "$1" >/dev/null 2>&1 || {
+    echo "Missing required tool: $1 ($2)" >&2
+    exit 1
+  }
+}
+
+require docker "https://docs.docker.com/get-docker/"
+require uv "https://docs.astral.sh/uv/getting-started/installation/"
+require pnpm "https://pnpm.io/installation"
+
+for dir in . api; do
+  if [ ! -f "$dir/.env" ]; then
+    cp "$dir/.env.example" "$dir/.env"
+    echo "Created $dir/.env from .env.example"
+  fi
+done
+
+echo "Installing API dependencies (uv sync)..."
+(cd api && uv sync)
+
+echo "Installing client dependencies (pnpm install)..."
+pnpm install
+
+echo
+echo "Bootstrap complete."
+echo "  Start the stack: ./script/server"
+echo "  Run the tests:   ./script/test"

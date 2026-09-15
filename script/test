@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# Run the test suites.
+# Usage: ./script/test [api|client|e2e]   (default: api + client; e2e is opt-in)
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+target="${1:-all}"
+
+# Only for the JS suites: pytest must not see root .env, whose empty
+# S3_BUCKET_NAME would override the default that api/tests/conftest.py sets.
+load_client_env() {
+  if [ -f .env ]; then
+    set -a
+    # shellcheck disable=SC1091
+    source .env
+    set +a
+  fi
+  # The client validates these at import time; tests only need them non-empty.
+  export NEXT_PUBLIC_API_URL="${NEXT_PUBLIC_API_URL:-http://localhost:8000}"
+  export NEXT_PUBLIC_MAPBOX_API_TOKEN="${NEXT_PUBLIC_MAPBOX_API_TOKEN:-test-token}"
+}
+
+start_db() {
+  echo "Starting database (eccc-db)..."
+  docker compose up -d eccc-db
+
+  echo -n "Waiting for Postgres"
+  for _ in $(seq 1 60); do
+    if docker exec eccc-db pg_isready -U eccc -d eccc_db_test >/dev/null 2>&1; then
+      echo " ready."
+      return
+    fi
+    echo -n "."
+    sleep 1
+  done
+}
+
+if [ "$target" = "all" ] || [ "$target" = "api" ]; then
+  start_db
+  echo "Running API tests (pytest)..."
+  (cd api && uv run pytest -v)
+fi
+
+if [ "$target" = "all" ] || [ "$target" = "client" ]; then
+  load_client_env
+  echo "Running client tests (vitest)..."
+  (cd client && pnpm exec vitest run)
+fi
+
+if [ "$target" = "e2e" ]; then
+  start_db
+  # Playwright starts the API and client itself (see e2e/playwright.config.ts),
+  # reusing whatever ./script/server already has running.
+  # Installing chromium is a no-op once the matching build is cached.
+  load_client_env
+  echo "Running e2e tests (playwright)..."
+  (cd e2e && pnpm exec playwright install chromium && pnpm test)
+fi
