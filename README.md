@@ -25,6 +25,20 @@ This project provides:
 - [Terraform](https://www.terraform.io/downloads) (v1.14+ for infrastructure)
 - AWS CLI configured with `aws-eccc` profile (for infrastructure)
 
+## Quick Start with Scripts
+
+Three scripts in `script/` cover the local workflow (Postgres runs in Docker, API and client run natively with hot reload):
+
+```bash
+./script/bootstrap        # env files, uv sync, pnpm install
+./script/server           # db + API on :8000 + client on :3000
+./script/test             # API pytest + client vitest
+./script/test api         # API tests only (also: client)
+./script/test e2e         # Playwright e2e (opt-in — builds the client first)
+```
+
+`script/server` leaves the database container running on exit — `docker compose down` stops it.
+
 ## Quick Start with Docker
 
 1. **Clone the repository**
