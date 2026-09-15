@@ -307,6 +307,7 @@
     }
   },
   "legend": {
+    "title": "Legend",
     "hide-layer": "Hide layer",
     "show-layer": "Show layer",
     "remove-layer": "Remove layer",

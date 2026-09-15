@@ -307,6 +307,7 @@
     }
   },
   "legend": {
+    "title": "Légende",
     "hide-layer": "Masquer la couche",
     "show-layer": "Afficher la couche",
     "remove-layer": "Supprimer la couche",

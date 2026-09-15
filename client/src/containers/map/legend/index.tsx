@@ -1,4 +1,5 @@
 import { ArrowDownIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
   Children,
   isValidElement,
@@ -23,6 +24,7 @@ function MapLegend({
   onChangeOrder,
   ref,
 }: MapLegendProps & { ref?: Ref<HTMLDivElement> }) {
+  const t = useTranslations("legend");
   const [open, setOpen] = useState(false);
   const isChildren = useMemo(() => {
     return !!Children.count(
@@ -55,7 +57,9 @@ function MapLegend({
             aria-hidden
             className="group-data-[state=closed]:rotate-180"
           />
-          <span className="block group-data-[state=open]:hidden">legend</span>
+          <span className="block group-data-[state=open]:sr-only">
+            {t("title")}
+          </span>
         </Button>
       </CollapsibleTrigger>
       <CollapsibleContent
