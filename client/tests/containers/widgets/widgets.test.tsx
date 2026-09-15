@@ -129,6 +129,7 @@ const widgetCardComponents = [
         id="water_dynamics"
         unit={mockAnalysisResult.water_dynamics.unit}
         stats={mockAnalysisResult.water_dynamics.stats}
+        chart={mockAnalysisResult.water_dynamics.chart}
         layers={testWidgetLayers}
         onInfoButtonClick={vi.fn()}
       />
@@ -140,6 +141,7 @@ const widgetCardComponents = [
       <FloodSusceptibility
         id="flood_susceptibility"
         stats={mockAnalysisResult.flood_susceptibility.stats}
+        chart={mockAnalysisResult.flood_susceptibility.chart}
         layers={testWidgetLayers}
         onInfoButtonClick={vi.fn()}
       />
