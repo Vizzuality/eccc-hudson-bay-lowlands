@@ -1,0 +1,3 @@
+# pytest-cov data file
+.coverage
+.coverage.*

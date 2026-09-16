@@ -23,6 +23,7 @@ dev-dependencies = [
     "moto[s3]",
     "boto3",
     "pillow>=12.2.0",
+    "pytest-cov>=7.1.0",
 ]
 
 [tool.ruff]
@@ -33,3 +34,7 @@ select = ["E", "F", "I", "W"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["."]
+omit = ["tests/*"]
