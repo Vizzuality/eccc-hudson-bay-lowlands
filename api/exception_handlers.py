@@ -1,7 +1,7 @@
 """Centralized exception handlers for logging and consistent error responses."""
 
 import logging
-import traceback
+import uuid
 
 from fastapi import Request
 from fastapi.encoders import jsonable_encoder
@@ -56,18 +56,22 @@ def validation_exception_handler(request: Request, exc: RequestValidationError) 
 
 def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     """Catch-all handler for unhandled exceptions — logs the full traceback."""
+    error_id = str(uuid.uuid4())
+
     logger.error(
-        "Unhandled exception on %s %s: %s\n%s",
+        "Unhandled exception [%s] on %s %s: %s",
+        error_id,
         request.method,
         request.url.path,
         str(exc),
-        traceback.format_exc(),
+        exc_info=exc,
     )
     return JSONResponse(
         status_code=500,
         content={
             "status_code": 500,
-            "detail": str(exc),
+            "detail": "Internal server error. Please contact support with the error ID below.",
+            "error_id": error_id,
             "method": request.method,
             "path": request.url.path,
         },
