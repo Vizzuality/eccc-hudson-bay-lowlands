@@ -120,7 +120,7 @@ The database runs on a separate RDS instance (not in Docker).
 | Data validation | Pydantic | 2.0+ | Request/response schema validation with i18n support |
 | Linting (API) | Ruff | latest | Python linter/formatter |
 | Linting (Client) | Biome | latest | JS/TS linter/formatter |
-| Infrastructure | Terraform | 1.14.3 | Infrastructure as code |
+| Infrastructure | OpenTofu | 1.12+ | Infrastructure as code |
 | Cloud provider | AWS | eu-north-1 | Hosting |
 | Container registry | Amazon ECR | - | Docker image storage |
 | Deployment | Elastic Beanstalk | Docker platform | Container orchestration |
@@ -147,9 +147,9 @@ eccc-hudson-bay-lowlands/
 |   |-- src/app/                # App Router pages and routes
 |   |-- Dockerfile              # Multi-stage Node.js build
 |   +-- package.json            # Dependencies
-|-- infrastructure/             # Terraform AWS infrastructure
+|-- infrastructure/             # OpenTofu AWS infrastructure
 |   |-- main.tf                 # Root module
-|   |-- modules/                # Reusable Terraform modules
+|   |-- modules/                # Reusable OpenTofu modules
 |   |-- source_bundle/          # Beanstalk deployment bundle
 |   +-- vars/                   # Variable files
 |-- docker/                     # Docker utilities
@@ -190,4 +190,4 @@ eccc-hudson-bay-lowlands/
 - [Environment Variables](ENVIRONMENT_VARIABLES.md) -- all configuration variables
 - [Database](DATABASE.md) -- schema reference and spatial data patterns
 - [Deployment](DEPLOYMENT.md) -- deployment guide and runbook
-- [Infrastructure README](../infrastructure/README.md) -- Terraform module details
+- [Infrastructure README](../infrastructure/README.md) -- OpenTofu module details

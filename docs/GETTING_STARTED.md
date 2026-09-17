@@ -224,4 +224,4 @@ docker compose up
 - [Deployment](DEPLOYMENT.md) -- how code gets to production
 - [API docs](../api/README.md) -- API-specific development guide
 - [Client docs](../client/README.md) -- client-specific development guide
-- [Infrastructure docs](../infrastructure/README.md) -- Terraform modules and AWS setup
+- [Infrastructure docs](../infrastructure/README.md) -- OpenTofu modules and AWS setup

@@ -8,13 +8,13 @@
 -- TODO: Coverage
 [![Coverage -- TODO](https://sonarcloud.io/api/project_badges/measure?project=Vizzuality_eccc-hudson-bay-lowlands&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Vizzuality_eccc-hudson-bay-lowlands)
 
-Full-stack geospatial project combining Terraform infrastructure and a FastAPI backend for Hudson Bay Lowlands imagery.
+Full-stack geospatial project combining OpenTofu infrastructure and a FastAPI backend for Hudson Bay Lowlands imagery.
 
 ## Project Overview
 
 This project provides:
 - **FastAPI Backend**: API server with COG tile serving capabilities via TiTiler
-- **Terraform Infrastructure**: AWS infrastructure with remote state management
+- **OpenTofu Infrastructure**: AWS infrastructure with remote state management
 - **Docker Support**: Containerized development and deployment
 
 ## Prerequisites
@@ -22,7 +22,7 @@ This project provides:
 - [Docker](https://docs.docker.com/get-docker/) (v20.10+)
 - [Docker Compose](https://docs.docker.com/compose/install/) (v2.0+)
 - [uv](https://github.com/astral-sh/uv) (for local development without Docker)
-- [Terraform](https://www.terraform.io/downloads) (v1.14+ for infrastructure)
+- [OpenTofu](https://opentofu.org/docs/intro/install/) (v1.12+ for infrastructure)
 - AWS CLI configured with `aws-eccc` profile (for infrastructure)
 
 ## Quick Start with Scripts
@@ -140,7 +140,7 @@ eccc-hudson-bay-lowlands/
 │   └── package.json
 ├── e2e/                    # Playwright end-to-end tests
 ├── data-processing/        # Data processing utilities and metadata.json
-├── infrastructure/         # Terraform AWS infrastructure (Elastic Beanstalk, RDS, ECR)
+├── infrastructure/         # OpenTofu AWS infrastructure (Elastic Beanstalk, RDS, ECR)
 │   ├── main.tf
 │   ├── modules/
 │   ├── source_bundle/      # Beanstalk deployment bundle
@@ -173,13 +173,13 @@ For detailed API documentation, see [api/README.md](api/README.md).
 
 ## Infrastructure
 
-Terraform configuration for AWS resources. See [INFRASTRUCTURE README.md](infrastructure/README.md) for detailed commands.
+OpenTofu configuration for AWS resources. See [INFRASTRUCTURE README.md](infrastructure/README.md) for detailed commands.
 
 ```bash
 cd infrastructure
-terraform init -var-file=vars/terraform.tfvars
-terraform plan -var-file=vars/terraform.tfvars
-terraform apply -var-file=vars/terraform.tfvars
+tofu init -var-file=vars/terraform.tfvars
+tofu plan -var-file=vars/terraform.tfvars
+tofu apply -var-file=vars/terraform.tfvars
 ```
 
 ## License
