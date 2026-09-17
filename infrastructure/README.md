@@ -1,6 +1,6 @@
 # ECCC Hudson Bay Lowlands Infrastructure
 
-Terraform infrastructure for the ECCC Hudson Bay Lowlands geospatial project.
+OpenTofu infrastructure for the ECCC Hudson Bay Lowlands geospatial project.
 
 ## Overview
 
@@ -18,7 +18,7 @@ This infrastructure provides a complete AWS environment for deploying a containe
                     |                            |                            |
             +-------v-------+           +--------v--------+          +--------v--------+
             |  ECR (client) |           |   ECR (api)     |          |  S3 (state)     |
-            | Docker images |           | Docker images   |          | Terraform state |
+            | Docker images |           | Docker images   |          | OpenTofu state  |
             +---------------+           +-----------------+          +-----------------+
                                                  |
                     +----------------------------+----------------------------+
@@ -66,7 +66,7 @@ This infrastructure provides a complete AWS environment for deploying a containe
 
 | Module | Description |
 |--------|-------------|
-| `state` | S3 bucket and DynamoDB table for Terraform remote state with locking |
+| `state` | S3 bucket and DynamoDB table for OpenTofu remote state with locking |
 | `vpc` | VPC with 2 public subnets across different availability zones, internet gateway, and route tables |
 | `ecr` | Elastic Container Registry repositories for Docker images (client and api) |
 | `iam` | IAM pipeline user with ECR push/pull and Elastic Beanstalk permissions for CI/CD |
@@ -77,15 +77,53 @@ This infrastructure provides a complete AWS environment for deploying a containe
 
 ## Prerequisites
 
-1. **Terraform**: Version 1.14.3 (exact version required)
+1. **OpenTofu**: Version 1.12.0 or newer
    ```bash
-   terraform version
+   tofu version
    ```
 
-2. **AWS CLI**: Configured with the `aws-eccc` profile
-   ```bash
-   aws configure --profile aws-eccc
+   1.12 is the floor because `main.tf` uses a top-level `language` block to declare its
+   OpenTofu compatibility; earlier versions fail to parse it. Install with
+   `brew install opentofu` or see https://opentofu.org/docs/intro/install/.
+
+   Terraform is not used on this project. It sits at **Hold** on the Vizzuality Tech Radar,
+   replaced by OpenTofu after the licence change.
+
+2. **AWS CLI**: An `aws-eccc` profile backed by Vizzuality SSO
+
+   The S3 backend in `main.tf` hardcodes `profile = "aws-eccc"`, so the profile must exist
+   under that exact name. Setting `AWS_PROFILE` to something else will not override it, and
+   neither will a `-var-file` — backend authentication happens before variables are read.
+
+   If you already have an SSO profile for this account under a different name (the AWS
+   access portal generates names like `RestrictedAdminAccess-<account-id>`), add `aws-eccc`
+   as a second profile pointing at the same session and role rather than renaming it.
+
+   Add to `~/.aws/config` — take `sso_start_url` and `sso_account_id` from the Vizzuality
+   AWS access portal:
+
+   ```ini
+   [sso-session eccc]
+   sso_start_url = <sso-start-url>
+   sso_region = us-east-1
+   sso_registration_scopes = sso:account:access
+
+   [profile aws-eccc]
+   sso_session = eccc
+   sso_account_id = <account-id>
+   sso_role_name = RestrictedAdminAccess
+   region = eu-north-1
    ```
+
+   Then sign in and confirm the profile resolves:
+
+   ```bash
+   aws sso login --sso-session eccc
+   aws sts get-caller-identity --profile aws-eccc
+   ```
+
+   SSO sessions are short-lived. Re-run `aws sso login --sso-session eccc` whenever
+   credentials expire; the profile block itself is a one-time setup.
 
 3. **AWS Permissions**: The profile must have permissions to create:
    - VPC and networking resources
@@ -106,31 +144,31 @@ All commands must be run from the `infrastructure/` directory.
 Required on first run or after provider/backend changes:
 
 ```bash
-terraform init -var-file=vars/terraform.tfvars
+tofu init -var-file=vars/terraform.tfvars
 ```
 
 ### Preview Changes
 
 ```bash
-terraform plan -var-file=vars/terraform.tfvars
+tofu plan -var-file=vars/terraform.tfvars
 ```
 
 ### Apply Changes
 
 ```bash
-terraform apply -var-file=vars/terraform.tfvars
+tofu apply -var-file=vars/terraform.tfvars
 ```
 
 ### Format Code
 
 ```bash
-terraform fmt -recursive
+tofu fmt -recursive
 ```
 
 ### Validate Configuration
 
 ```bash
-terraform validate
+tofu validate
 ```
 
 ## Configuration
@@ -198,7 +236,7 @@ To enable these features, uncomment the relevant sections in:
 - S3 buckets block public access by default
 - Security groups restrict database access to VPC CIDR only
 - ECR images are encrypted at rest
-- Terraform state is encrypted with AES256 in S3
+- OpenTofu state is encrypted with AES256 in S3
 
 ## State Management
 
@@ -212,16 +250,21 @@ This enables team collaboration with state locking to prevent concurrent modific
 
 ### Common Issues
 
-1. **"Error: No valid credential sources found"**
-   - Ensure the `aws-eccc` profile is configured: `aws configure --profile aws-eccc`
+1. **"Error: failed to get shared config profile, aws-eccc"**
+   - The `aws-eccc` profile block is missing from `~/.aws/config`. See Prerequisites step 2.
+   - An active SSO session is not enough on its own — the profile must exist by that exact name.
 
-2. **"Error acquiring the state lock"**
-   - Another Terraform operation may be in progress
+2. **"Error: No valid credential sources found"** / expired SSO session
+   - The profile exists but the session has lapsed: `aws sso login --sso-session eccc`
+   - Verify with `aws sts get-caller-identity --profile aws-eccc`
+
+3. **"Error acquiring the state lock"**
+   - Another OpenTofu operation may be in progress
    - Check DynamoDB for stale locks if the previous operation crashed
 
-3. **"Error: Invalid availability zone"**
+4. **"Error: Invalid availability zone"**
    - Ensure the AWS region supports the availability zones (a, b) being used
 
-4. **Beanstalk environment creation timeout**
+5. **Beanstalk environment creation timeout**
    - Environment creation can take 15-20 minutes
    - Check the AWS Console for detailed status
