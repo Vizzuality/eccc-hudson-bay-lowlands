@@ -14,6 +14,7 @@ const mockPush = vi.fn();
 
 vi.mock("next/navigation", () => ({
   useRouter: vi.fn(() => ({ push: mockPush })),
+  useParams: vi.fn(() => ({})),
 }));
 
 vi.mock("@/app/[locale]/url-store", async (importOriginal) => {

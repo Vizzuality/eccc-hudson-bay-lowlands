@@ -209,7 +209,9 @@
       "download-image": "Download image",
       "more-info": "More info",
       "add-to-map": "Add to map",
-      "remove-from-map": "Remove from map"
+      "remove-from-map": "Remove from map",
+      "download": "Download",
+      "download-csv": "Download CSV"
     },
     "peat_carbon": {
       "title": "Carbon and Peatlands",
@@ -221,6 +223,12 @@
       "more-info": {
         "title": "Why are Carbon & Peatlands Important?",
         "description": "Peat soils shape the landscape and act as long-term carbon reservoirs, influencing water flow, vegetation, and habitat. Disturbance can release this stored carbon, reducing their capacity to support climate regulation."
+      },
+      "fields": {
+        "peat_depth_avg": "Average peat depth",
+        "peat_depth_max": "Maximum peat depth",
+        "carbon_total": "Total carbon",
+        "carbon_density": "Average carbon density"
       }
     },
     "water_dynamics": {
@@ -234,10 +242,14 @@
         "title": "Why are water dynamics important?",
         "description": "Surface water influences wetlands, rivers, and ponds, shaping habitats, vegetation, and ecosystem processes. Shifts in inundation can signal environmental change and affect carbon storage and biodiversity."
       },
-      "chart": {
+      "fields": {
         "water_perm_perc": "Permanent water",
         "water_ephemeral_perc": "Ephemeral water",
-        "land_perm_perc": "Permanently dry land"
+        "land_perm_perc": "Permanently dry land",
+        "freq_mean": "Mean inundation frequency",
+        "trend_wetter_perc": "Area trending wetter",
+        "trend_drier_perc": "Area trending drier",
+        "trend_stable_perc": "Area remaining stable"
       }
     },
     "flood_susceptibility": {
@@ -247,10 +259,11 @@
         "title": "Why is flood susceptibility important?",
         "description": "Wetlands and rivers in the area also help regulate floods and maintain habitat and landscape resilience. Understanding where flooding is more likely supports climate adaptation and informed land-use planning."
       },
-      "chart": {
+      "fields": {
         "fsi_low_perc": "Low risk",
         "fsi_moderate_perc": "Moderate risk",
-        "fsi_high_perc": "High risk"
+        "fsi_high_perc": "High risk",
+        "fsi_avg": "Average flood susceptibility index"
       }
     },
     "snow_dynamics": {
@@ -262,6 +275,20 @@
       "more-info": {
         "title": "Why are snow dynamics important?",
         "description": "The timing and duration of snow influence spring runoff, soil moisture, and the growing season, affecting vegetation and wetland dynamics."
+      },
+      "fields": {
+        "lengthT_mean_1819": "Mean snow duration 2018-2019",
+        "endL_mean_date_1819": "Mean snow end date 2018-2019",
+        "lengthT_mean_1920": "Mean snow duration 2019-2020",
+        "endL_mean_date_1920": "Mean snow end date 2019-2020",
+        "lengthT_mean_2021": "Mean snow duration 2020-2021",
+        "endL_mean_date_2021": "Mean snow end date 2020-2021",
+        "lengthT_mean_2122": "Mean snow duration 2021-2022",
+        "endL_mean_date_2122": "Mean snow end date 2021-2022",
+        "lengthT_mean_2223": "Mean snow duration 2022-2023",
+        "endL_mean_date_2223": "Mean snow end date 2022-2023",
+        "lengthT_mean_2324": "Mean snow duration 2023-2024",
+        "endL_mean_date_2324": "Mean snow end date 2023-2024"
       }
     },
     "treed_area": {
@@ -271,11 +298,17 @@
         "title": "Why is tree cover change important?",
         "description": "Trees provide important ecosystem services, including carbon storage, habitat, soil stabilization, and water regulation. Changes in tree cover can alter these functions and signal broader environmental shifts."
       },
-      "chart": {
+      "fields": {
         "non_treed_perc": "Non-treed",
         "always_treed_perc": "Always-treed",
         "newly_treed_perc": "Newly-treed",
-        "was_treed_perc": "Was-treed"
+        "was_treed_perc": "Was-treed",
+        "total_treed_area": "Total treed area",
+        "always_treed_area": "Always-treed area",
+        "newly_treed_area": "Newly-treed area",
+        "was_treed_area": "Was-treed area",
+        "changed_treed_area": "Net treed area change",
+        "non_treed_area": "Non-treed area"
       }
     },
     "ecosystem_classification": {
@@ -285,7 +318,7 @@
         "title": "Why are ecosystem types important?",
         "description": "Different ecosystem types support different communities and ecosystem services. Understanding their distribution helps identify areas important for carbon storage, biodiversity, and ecological resilience."
       },
-      "chart": {
+      "fields": {
         "dominant_ecosystem": "Dominant ecosystem",
         "dominant_ecosystem_perc": "Dominant ecosystem percentage",
         "eco_bog_perc": "Bog",
@@ -299,7 +332,9 @@
         "eco_shrub_perc": "Shrub Fen",
         "eco_temperate_perc": "Temperate/Boreal Forest",
         "eco_treed_perc": "Treed Wetland",
-        "eco_water_perc": "Water"
+        "eco_water_perc": "Water",
+        "ecosystem_count": "Ecosystem type count",
+        "dominant_ecosystem_label": "Dominant ecosystem name"
       }
     },
     "share": {
@@ -321,5 +356,13 @@
       "title": "Discover the Hudson & James bay region",
       "description": "Explore and combine geographical data overlays. Analyze your area of interest and get custom insights."
     }
+  },
+  "csv": {
+    "exported_at": "Exported at",
+    "aoi_size": "Area of interest",
+    "dataset_title": "Dataset",
+    "dataset_source": "Source",
+    "dataset_citation": "Citation",
+    "analysis_url": "Analysis URL"
   }
 }

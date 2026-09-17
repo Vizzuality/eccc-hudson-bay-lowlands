@@ -19,11 +19,18 @@ vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
 });
 
 vi.mock("@/hooks/use-widget-download", () => ({
-  useWidgetDownload: () => ({ download: vi.fn(), loading: false }),
+  useWidgetDownload: () => ({ download: imageDownloadMock, loading: false }),
+}));
+
+const csvDownloadMock = vi.hoisted(() => vi.fn());
+const imageDownloadMock = vi.hoisted(() => vi.fn());
+
+vi.mock("@/hooks/use-widget-csv-download", () => ({
+  useWidgetCsvDownload: () => ({ download: csvDownloadMock }),
 }));
 
 const defaultCardProps: ComponentProps<typeof WidgetCard> = {
-  id: "test_widget",
+  id: "peat_carbon",
   title: "Test widget",
   icon: <span />,
   onInfoButtonClick: vi.fn(),
@@ -75,9 +82,7 @@ describe("@containers/widgets/card", () => {
       screen.getByRole("heading", { name: /flood susceptibility/i }),
     ).toBeInTheDocument();
     expect(screen.queryByText(/more info/i)).not.toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /download image/i }),
-    ).toBeEnabled();
+    expect(screen.getByRole("button", { name: /^download$/i })).toBeEnabled();
     expect(screen.getByRole("button", { name: /add to map/i })).toBeEnabled();
   });
 
@@ -91,12 +96,23 @@ describe("@containers/widgets/card", () => {
       onAddToMapButtonClick,
     });
 
-    await user.click(screen.getByRole("button", { name: /download image/i }));
     await user.click(screen.getByRole("button", { name: /more info/i }));
     await user.click(screen.getByRole("button", { name: /add to map/i }));
 
     expect(onInfoButtonClick).toHaveBeenCalledTimes(1);
     expect(onAddToMapButtonClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("offers image and CSV downloads behind the download menu", async () => {
+    const user = userEvent.setup();
+
+    renderWidgetCard();
+
+    await user.click(screen.getByRole("button", { name: /^download$/i }));
+    await user.click(screen.getByRole("menuitem", { name: /download csv/i }));
+
+    expect(csvDownloadMock).toHaveBeenCalledTimes(1);
+    expect(imageDownloadMock).not.toHaveBeenCalled();
   });
 
   it("merges widget layer ids into the map layer stack when none of them are active", async () => {

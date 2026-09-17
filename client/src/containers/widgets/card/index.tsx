@@ -1,7 +1,9 @@
 "use client";
 
 import {
+  DatabaseIcon,
   DownloadIcon,
+  ImageIcon,
   InfoIcon,
   LoaderCircleIcon,
   PlusIcon,
@@ -19,11 +21,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { WidgetCardProps } from "@/containers/widgets/types";
+import { useWidgetCsvDownload } from "@/hooks/use-widget-csv-download";
 import { useWidgetDownload } from "@/hooks/use-widget-download";
 import { cn } from "@/lib/utils";
 
@@ -42,6 +51,7 @@ const WidgetCard: FC<WidgetCardProps> = ({
   const { layerIds, setLayerIds } = useLayerIds();
   const cardRef = useRef<HTMLDivElement>(null);
   const { download, loading: downloading } = useWidgetDownload(cardRef, id);
+  const { download: downloadCsv } = useWidgetCsvDownload(id);
 
   const handleAddToMap = useCallback(() => {
     if (layers?.length) {
@@ -73,14 +83,13 @@ const WidgetCard: FC<WidgetCardProps> = ({
             <h3 className="text-lg leading-8 font-normal">{title}</h3>
           </div>
           <div data-download-exclude className="flex items-center">
-            <Tooltip>
-              <TooltipTrigger asChild>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={download}
                   disabled={downloading}
-                  aria-label={t("download-image")}
+                  aria-label={t("download")}
                 >
                   {downloading ? (
                     <LoaderCircleIcon className="animate-spin" />
@@ -88,9 +97,18 @@ const WidgetCard: FC<WidgetCardProps> = ({
                     <DownloadIcon />
                   )}
                 </Button>
-              </TooltipTrigger>
-              <TooltipContent>{t("download-image")}</TooltipContent>
-            </Tooltip>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onSelect={download}>
+                  <ImageIcon />
+                  {t("download-image")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={downloadCsv}>
+                  <DatabaseIcon />
+                  {t("download-csv")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button

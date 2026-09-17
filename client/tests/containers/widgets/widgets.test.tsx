@@ -199,7 +199,6 @@ describe("@containers/widgets", () => {
       const user = userEvent.setup();
       renderWithProviders(element);
 
-      await user.click(screen.getByRole("button", { name: /download image/i }));
       await user.click(screen.getByRole("button", { name: /more info/i }));
       await user.click(screen.getByRole("button", { name: /add to map/i }));
     },

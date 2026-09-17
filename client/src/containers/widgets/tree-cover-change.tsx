@@ -31,7 +31,7 @@ const TreeCoverChange: FC<TreeCoverChangeProps> = ({
     .flat()
     .map((item) => ({
       key: item.key,
-      label: t(`chart.${item.key}`),
+      label: t(`fields.${item.key}`),
       value: item.value,
       fill: `var(--color-${item.key})`,
     }));
