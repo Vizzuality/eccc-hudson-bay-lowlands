@@ -1,8 +1,18 @@
+language {
+  compatible_with {
+    opentofu = ">= 1.12.0"
+  }
+}
+
 terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 6.28"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.8"
     }
   }
 
@@ -13,8 +23,6 @@ terraform {
     profile        = "aws-eccc"
     dynamodb_table = "eccc-hudson-bay-lowlands-terraform-state-lock"
   }
-
-  required_version = "1.14.3"
 }
 
 module "state" {
