@@ -141,6 +141,7 @@ vite.config.ts.timestamp-*
 .terraform/
 terraform.tfstate
 local.tfvars
+tfplan
 
 # Python
 __pycache__/
@@ -160,3 +161,5 @@ CLAUDE.md
 AGENTS.md
 .claude/
 .playwright-mcp/
+
+.gitignore.local
