@@ -119,7 +119,7 @@ const EcosystemTypes: FC<EcosystemTypesProps> = ({
     .flat()
     .map((item) => ({
       key: item.key,
-      label: t(`chart.${item.key}`),
+      label: t(`fields.${item.key}`),
       value: item.value,
       fill: chartConfig[item.key].color,
     }));

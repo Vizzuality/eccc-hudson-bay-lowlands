@@ -209,7 +209,9 @@
       "download-image": "Télécharger l'image",
       "more-info": "Plus d'infos",
       "add-to-map": "Ajouter à la carte",
-      "remove-from-map": "Retirer de la carte"
+      "remove-from-map": "Retirer de la carte",
+      "download": "Télécharger",
+      "download-csv": "Télécharger le CSV"
     },
     "peat_carbon": {
       "title": "Carbone et tourbières",
@@ -221,6 +223,12 @@
       "more-info": {
         "title": "Pourquoi le carbone et les tourbières sont-ils importants ?",
         "description": "Les sols tourbeux façonnent le paysage et agissent comme des réservoirs de carbone à long terme, influençant l'écoulement de l'eau, la végétation et l'habitat. Les perturbations peuvent libérer ce carbone stocké, réduisant leur capacité à soutenir la régulation du climat."
+      },
+      "fields": {
+        "peat_depth_avg": "Profondeur moyenne de tourbe",
+        "peat_depth_max": "Profondeur maximale de tourbe",
+        "carbon_total": "Carbone total",
+        "carbon_density": "Densité moyenne de carbone"
       }
     },
     "water_dynamics": {
@@ -234,10 +242,14 @@
         "title": "Pourquoi la dynamique de l'eau est-elle importante ?",
         "description": "Les eaux de surface influencent les milieux humides, les rivières et les étangs, façonnant les habitats, la végétation et les processus écosystémiques. Les changements dans l'inondation peuvent signaler des modifications environnementales et affecter le stockage de carbone et la biodiversité."
       },
-      "chart": {
+      "fields": {
         "water_perm_perc": "Eau permanente",
         "water_ephemeral_perc": "Eau éphémère",
-        "land_perm_perc": "Terres sèches permanentes"
+        "land_perm_perc": "Terres sèches permanentes",
+        "freq_mean": "Fréquence moyenne d'inondation",
+        "trend_wetter_perc": "Superficie devenant plus humide",
+        "trend_drier_perc": "Superficie devenant plus sèche",
+        "trend_stable_perc": "Superficie demeurant stable"
       }
     },
     "flood_susceptibility": {
@@ -247,10 +259,11 @@
         "title": "Pourquoi la susceptibilité aux inondations est-elle importante ?",
         "description": "Les milieux humides et les rivières de la zone contribuent également à réguler les inondations et à maintenir la résilience des habitats et du paysage. Comprendre où les inondations sont plus probables soutient l'adaptation aux changements climatiques et une planification éclairée de l'utilisation des terres."
       },
-      "chart": {
+      "fields": {
         "fsi_low_perc": "Faible risque",
         "fsi_moderate_perc": "Risque modéré",
-        "fsi_high_perc": "Risque élevé"
+        "fsi_high_perc": "Risque élevé",
+        "fsi_avg": "Indice moyen de susceptibilité aux inondations"
       }
     },
     "snow_dynamics": {
@@ -262,6 +275,20 @@
       "more-info": {
         "title": "Pourquoi la dynamique de la neige est-elle importante ?",
         "description": "Le moment et la durée de l'enneigement influencent la fonte printanière, l'humidité du sol et la saison de croissance, affectant la végétation et la dynamique des milieux humides."
+      },
+      "fields": {
+        "lengthT_mean_1819": "Durée moyenne de l'enneigement 2018-2019",
+        "endL_mean_date_1819": "Date moyenne de fin d'enneigement 2018-2019",
+        "lengthT_mean_1920": "Durée moyenne de l'enneigement 2019-2020",
+        "endL_mean_date_1920": "Date moyenne de fin d'enneigement 2019-2020",
+        "lengthT_mean_2021": "Durée moyenne de l'enneigement 2020-2021",
+        "endL_mean_date_2021": "Date moyenne de fin d'enneigement 2020-2021",
+        "lengthT_mean_2122": "Durée moyenne de l'enneigement 2021-2022",
+        "endL_mean_date_2122": "Date moyenne de fin d'enneigement 2021-2022",
+        "lengthT_mean_2223": "Durée moyenne de l'enneigement 2022-2023",
+        "endL_mean_date_2223": "Date moyenne de fin d'enneigement 2022-2023",
+        "lengthT_mean_2324": "Durée moyenne de l'enneigement 2023-2024",
+        "endL_mean_date_2324": "Date moyenne de fin d'enneigement 2023-2024"
       }
     },
     "treed_area": {
@@ -271,11 +298,17 @@
         "title": "Pourquoi le changement du couvert arboré est-il important ?",
         "description": "Les arbres fournissent d'importants services écosystémiques, notamment le stockage de carbone, l'habitat, la stabilisation des sols et la régulation de l'eau. Les changements du couvert arboré peuvent modifier ces fonctions et signaler des changements environnementaux plus larges."
       },
-      "chart": {
+      "fields": {
         "non_treed_perc": "Non arboré",
         "always_treed_perc": "Toujours arboré",
         "newly_treed_perc": "Nouvellement arboré (gain d'arbres)",
-        "was_treed_perc": "Anciennement arboré (perte d'arbres)"
+        "was_treed_perc": "Anciennement arboré (perte d'arbres)",
+        "total_treed_area": "Superficie boisée totale",
+        "always_treed_area": "Superficie toujours boisée",
+        "newly_treed_area": "Superficie nouvellement boisée",
+        "was_treed_area": "Superficie anciennement boisée",
+        "changed_treed_area": "Variation nette de la superficie boisée",
+        "non_treed_area": "Superficie non boisée"
       }
     },
     "ecosystem_classification": {
@@ -285,7 +318,7 @@
         "title": "Pourquoi les types d'écosystèmes sont-ils importants ?",
         "description": "Les différents types d'écosystèmes soutiennent différentes communautés et services écosystémiques. Comprendre leur répartition aide à identifier les zones importantes pour le stockage de carbone, la biodiversité et la résilience écologique."
       },
-      "chart": {
+      "fields": {
         "dominant_ecosystem": "Écosystème dominant",
         "dominant_ecosystem_perc": "Pourcentage de l'écosystème dominant",
         "eco_bog_perc": "Tourbière",
@@ -299,7 +332,9 @@
         "eco_shrub_perc": "Tourbière arbustive",
         "eco_temperate_perc": "Forêt tempérée/boréale",
         "eco_treed_perc": "Zone humide arborée",
-        "eco_water_perc": "Eau"
+        "eco_water_perc": "Eau",
+        "ecosystem_count": "Nombre de types d'écosystèmes",
+        "dominant_ecosystem_label": "Nom de l'écosystème dominant"
       }
     },
     "share": {
@@ -321,5 +356,13 @@
       "title": "Découvrez la région des basses-terres de la baie d'Hudson et de la baie James",
       "description": "Explorez et superposez vos couches de données géospatiales. Analysez votre zone d'intérêt et obtenez des analyses sur mesure."
     }
+  },
+  "csv": {
+    "exported_at": "Date d'exportation",
+    "aoi_size": "Zone d'intérêt",
+    "dataset_title": "Jeu de données",
+    "dataset_source": "Source",
+    "dataset_citation": "Citation",
+    "analysis_url": "URL de l'analyse"
   }
 }

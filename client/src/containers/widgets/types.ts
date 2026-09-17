@@ -1,7 +1,8 @@
+import type { WidgetId } from "@/containers/analysis/types";
 import type { Layer } from "@/types";
 
 export interface WidgetCardBaseProps {
-  id: string;
+  id: WidgetId;
 }
 
 export interface WidgetCardProps extends WidgetCardBaseProps {
