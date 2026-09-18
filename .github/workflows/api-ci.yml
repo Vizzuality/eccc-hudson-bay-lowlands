@@ -84,7 +84,7 @@ jobs:
         run: uv sync --frozen
 
       - name: Run tests
-        run: uv run --frozen pytest -v
+        run: uv run --frozen pytest -v --cov --cov-report=term-missing --cov-fail-under=90
 
   docker-build:
     runs-on: ubuntu-latest
