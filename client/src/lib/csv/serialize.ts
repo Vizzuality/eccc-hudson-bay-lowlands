@@ -4,19 +4,21 @@ export interface CsvRow {
   section: CsvSection;
   series: string;
   key: string;
+  keyUnit: string;
   label: string;
   value: string;
   unit: string;
 }
 
 const COLUMNS = [
-  "section",
-  "series",
-  "key",
-  "label",
-  "value",
-  "unit",
-] as const satisfies readonly (keyof CsvRow)[];
+  ["section", "section"],
+  ["series", "series"],
+  ["key", "key"],
+  ["key_unit", "keyUnit"],
+  ["label", "label"],
+  ["value", "value"],
+  ["unit", "unit"],
+] as const satisfies readonly (readonly [string, keyof CsvRow])[];
 
 const DELIMITER = ";";
 const LINE_BREAK = "\r\n";
@@ -32,7 +34,7 @@ const toLine = (fields: readonly string[]): string =>
 export const toCsv = (rows: readonly CsvRow[]): string =>
   BYTE_ORDER_MARK +
   [
-    toLine(COLUMNS),
-    ...rows.map((row) => toLine(COLUMNS.map((c) => row[c]))),
+    toLine(COLUMNS.map(([header]) => header)),
+    ...rows.map((row) => toLine(COLUMNS.map(([, field]) => row[field]))),
   ].join(LINE_BREAK) +
   LINE_BREAK;

@@ -44,6 +44,53 @@ describe("buildWidgetCsvRows", () => {
     expect(chartRows.map((r) => r.value)).toEqual(["340", "12.1"]);
   });
 
+  it("units the histogram bin and the count separately", () => {
+    const rows = buildWidgetCsvRows({
+      ...baseParams,
+      widgetId: "peat_carbon",
+      stats: {},
+      chart: {
+        peat_cog: [{ x: 12.5, y: 340.25 }],
+        carbon_cog: [{ x: 5.3, y: 120.5 }],
+      },
+    });
+
+    const chartRows = rows.filter((r) => r.section === "chart");
+
+    expect(chartRows).toEqual([
+      expect.objectContaining({
+        series: "peat_cog",
+        keyUnit: "cm",
+        unit: "count",
+      }),
+      expect.objectContaining({
+        series: "carbon_cog",
+        keyUnit: "kg/m²",
+        unit: "count",
+      }),
+    ]);
+  });
+
+  it("leaves key_unit empty on categorical slices and keeps their own unit", () => {
+    const rows = buildWidgetCsvRows({
+      ...baseParams,
+      unit: "%",
+      widgetId: "water_dynamics",
+      stats: {},
+      chart: {
+        inundation_frequency_cog: [{ key: "water_perm_perc", value: 31.2 }],
+      },
+    });
+
+    expect(rows.filter((r) => r.section === "chart")).toEqual([
+      expect.objectContaining({
+        key: "water_perm_perc",
+        keyUnit: "",
+        unit: "%",
+      }),
+    ]);
+  });
+
   it("emits the ecosystem class id and its resolved name as separate rows", () => {
     const rows = buildWidgetCsvRows({
       ...baseParams,

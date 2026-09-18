@@ -3,10 +3,11 @@ import type { WidgetId } from "@/containers/analysis/types";
 // Stat units mirror api/services/widgets.py; see docs/ADR/006-per-stat-units-duplicated-in-client.md
 export interface WidgetCsvSpec {
   stats: Record<string, string>;
-  chart: Record<string, { labelKey?: string; unit?: string }>;
+  chart: Record<string, { unit?: string; keyUnit?: string }>;
 }
 
 const PERCENT = "%";
+const COUNT = "count";
 const NONE = "";
 
 const WINTERS = ["1819", "1920", "2021", "2122", "2223", "2324"] as const;
@@ -28,8 +29,8 @@ export const WIDGET_CSV_SPEC: Record<WidgetId, WidgetCsvSpec> = {
       carbon_density: "kg/m²",
     },
     chart: {
-      peat_cog: { labelKey: "chart-peat-depth-label" },
-      carbon_cog: { labelKey: "chart-carbon-density-label" },
+      peat_cog: { unit: COUNT, keyUnit: "cm" },
+      carbon_cog: { unit: COUNT, keyUnit: "kg/m²" },
     },
   },
   water_dynamics: {
@@ -53,7 +54,7 @@ export const WIDGET_CSV_SPEC: Record<WidgetId, WidgetCsvSpec> = {
   },
   snow_dynamics: {
     stats: snowStats(),
-    chart: { lengthT_mean: { labelKey: "chart-title", unit: "days" } },
+    chart: { lengthT_mean: { unit: "days", keyUnit: "year" } },
   },
   treed_area: {
     stats: {

@@ -228,7 +228,9 @@
         "peat_depth_avg": "Average peat depth",
         "peat_depth_max": "Maximum peat depth",
         "carbon_total": "Total carbon",
-        "carbon_density": "Average carbon density"
+        "carbon_density": "Average carbon density",
+        "peat_cog": "Weighted pixel count",
+        "carbon_cog": "Weighted pixel count"
       }
     },
     "water_dynamics": {
@@ -288,7 +290,8 @@
         "lengthT_mean_2223": "Mean snow duration 2022-2023",
         "endL_mean_date_2223": "Mean snow end date 2022-2023",
         "lengthT_mean_2324": "Mean snow duration 2023-2024",
-        "endL_mean_date_2324": "Mean snow end date 2023-2024"
+        "endL_mean_date_2324": "Mean snow end date 2023-2024",
+        "lengthT_mean": "Mean snow duration"
       }
     },
     "treed_area": {

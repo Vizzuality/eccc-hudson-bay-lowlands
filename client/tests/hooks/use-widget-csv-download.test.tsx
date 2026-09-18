@@ -86,9 +86,13 @@ describe("useWidgetCsvDownload", () => {
 
     const csv = await capturedCsv();
 
-    expect(csv).toContain("stats;;peat_depth_avg;Average peat depth;42.3;cm");
-    expect(csv).toContain("stats;;carbon_total;Total carbon;8.4;Mt");
-    expect(csv).toContain("chart;peat_cog;12;Frequency;340;");
+    expect(csv).toContain(
+      "stats;;peat_depth_avg;;Average peat depth;42.3;cm\r\n",
+    );
+    expect(csv).toContain("stats;;carbon_total;;Total carbon;8.4;Mt\r\n");
+    expect(csv).toContain(
+      "chart;peat_cog;12;cm;Weighted pixel count;340;count\r\n",
+    );
   });
 
   it("resolves the dominant ecosystem class id to its name", async () => {
@@ -116,7 +120,7 @@ describe("useWidgetCsvDownload", () => {
 
     const csv = await capturedCsv();
 
-    expect(csv).toContain("metadata;;aoi_size;Area of interest;;km²");
+    expect(csv).toContain("metadata;;aoi_size;;Area of interest;;km²\r\n");
     expect(csv).not.toContain("null");
   });
 

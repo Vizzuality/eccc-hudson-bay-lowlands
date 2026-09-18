@@ -5,6 +5,7 @@ const row = (overrides: Partial<CsvRow> = {}): CsvRow => ({
   section: "stats",
   series: "",
   key: "peat_depth_avg",
+  keyUnit: "",
   label: "Average peat depth",
   value: "42.3",
   unit: "cm",
@@ -17,7 +18,7 @@ describe("toCsv", () => {
       row({ key: "dataset_citation", label: "Citation", value: "ECCC; 2026" }),
     ]);
 
-    expect(csv).toContain('dataset_citation;Citation;"ECCC; 2026";cm');
+    expect(csv).toContain('dataset_citation;;Citation;"ECCC; 2026";cm');
   });
 
   it("doubles embedded quotes so the field survives a round trip", () => {
@@ -29,6 +30,6 @@ describe("toCsv", () => {
   it("writes the header in the fixed column order", () => {
     const [header] = toCsv([]).split("\r\n");
 
-    expect(header).toBe("﻿section;series;key;label;value;unit");
+    expect(header).toBe("﻿section;series;key;key_unit;label;value;unit");
   });
 });

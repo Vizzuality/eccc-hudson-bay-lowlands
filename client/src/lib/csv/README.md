@@ -9,24 +9,27 @@ client already holds — there is no export endpoint.
 One table, six columns, `;`-delimited:
 
 ```
-section;series;key;label;value;unit
-metadata;;exported_at;Exported at;2026-09-17;
-metadata;;aoi_size;Area of interest;1240.5;km²
-metadata;;dataset_citation;Citation;ECCC 2026;
-stats;;peat_depth_avg;Average peat depth;42.3;cm
-stats;;carbon_total;Total carbon;8.4;Mt
-chart;peat_cog;12;Frequency;340;
-chart;carbon_cog;5;Carbon Density;12.1;
+section;series;key;key_unit;label;value;unit
+metadata;;exported_at;;Exported at;2026-09-17;
+metadata;;aoi_size;;Area of interest;1240.5;km²
+metadata;;dataset_citation;;Citation;ECCC 2026;
+stats;;peat_depth_avg;;Average peat depth;42.3;cm
+stats;;carbon_total;;Total carbon;8.4;Mt
+chart;peat_cog;12.5;cm;Weighted pixel count;340.25;count
+chart;carbon_cog;5.3;kg/m²;Weighted pixel count;120.5;count
 ```
 
 | Column | Meaning |
 | --- | --- |
 | `section` | `metadata`, `stats` or `chart`. Filter measurements with `section != "metadata"`. |
 | `series` | The key of the `WidgetData.chart` record — usually a layer id. Empty for `metadata` and `stats`. It is what keeps `peat_carbon`'s two histograms apart. |
-| `key` | The raw API identifier. Stable across locales and releases; this is the join column. |
-| `label` | The translated human name. Never use it to identify a row. |
+| `key` | The raw API identifier, or — on a histogram or time-series row — the position along the x axis. Stable across locales and releases; this is the join column. |
+| `key_unit` | The unit of `key`, filled only where `key` is a measurement rather than a name. Empty on every `metadata` and `stats` row and on categorical chart slices. |
+| `label` | The translated human name of what `value` measures. Never use it to identify a row. |
 | `value` | The API value, written verbatim. The API rounds server side, so the file matches the screen. |
 | `unit` | The unit of that row's value. |
+
+A histogram row carries two measurements, which is why `key_unit` exists: `chart;peat_cog;12.5;cm;Weighted pixel count;340.25;count` reads as "at a peat depth of about 12.5 cm there were 340.25 weighted pixels". `key` is the **bin midpoint**, not a range, and `value` is a **coverage-weighted** count, so it carries decimals rather than being a whole number of pixels.
 
 The `en` and `fr` exports of the same analysis differ only in `label`.
 
@@ -59,6 +62,18 @@ both locales. See `docs/ADR/005-widget-csv-export-format.md`.
    `src/i18n/messages/en.json` and `fr.json`.
 2. Add its unit to `WIDGET_CSV_SPEC[<widget_id>].stats` in `widget-spec.ts`,
    unless the widget-level `unit` from the API is already correct for it.
+
+## Adding a chart series
+
+A categorical series needs nothing: each point's `key` is a stat name, so it
+reuses that stat's label and unit. A histogram or time-series series needs an
+entry in `WIDGET_CSV_SPEC[<widget_id>].chart` giving `unit` (of the value) and
+`keyUnit` (of the x position), plus a label at
+`widgets.<widget_id>.fields.<series_key>` describing what `value` measures.
+
+These labels are separate from the on-screen axis labels
+(`chart-peat-depth-label` and friends) on purpose. An axis label names whichever
+axis it sits on; the CSV label must always name `value`.
 
 Skipping step 1 makes next-intl raise on export. Skipping step 2 silently falls
 back to the widget-level unit, which is wrong for any mixed-unit widget.
