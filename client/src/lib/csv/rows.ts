@@ -49,6 +49,7 @@ const metadataRows = ({
     section: "metadata",
     series: "",
     key,
+    keyUnit: "",
     label: translateMetadata(key),
     value,
     unit,
@@ -64,6 +65,7 @@ const statRows = (params: BuildWidgetCsvRowsParams): CsvRow[] => {
     section: "stats",
     series: "",
     key,
+    keyUnit: "",
     label: translateField(`fields.${key}`),
     value: String(value),
     unit: spec.stats[key] ?? unit,
@@ -78,14 +80,18 @@ const chartRows = (params: BuildWidgetCsvRowsParams): CsvRow[] => {
     const seriesSpec = spec.chart[series];
 
     return points.map((point) => {
-      const key = isCategorical(point) ? point.key : String(point.x);
-      const value = isCategorical(point) ? point.value : point.y;
+      const categorical = isCategorical(point);
+      const key = categorical ? point.key : String(point.x);
+      const value = categorical ? point.value : point.y;
 
       return {
         section: "chart" as const,
         series,
         key,
-        label: translateField(seriesSpec?.labelKey ?? `fields.${key}`),
+        keyUnit: seriesSpec?.keyUnit ?? "",
+        label: translateField(
+          categorical ? `fields.${key}` : `fields.${series}`,
+        ),
         value: String(value),
         unit: seriesSpec?.unit ?? spec.stats[key] ?? unit,
       };

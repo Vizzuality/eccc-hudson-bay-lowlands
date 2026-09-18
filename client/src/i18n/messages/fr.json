@@ -228,7 +228,9 @@
         "peat_depth_avg": "Profondeur moyenne de tourbe",
         "peat_depth_max": "Profondeur maximale de tourbe",
         "carbon_total": "Carbone total",
-        "carbon_density": "Densité moyenne de carbone"
+        "carbon_density": "Densité moyenne de carbone",
+        "peat_cog": "Nombre pondéré de pixels",
+        "carbon_cog": "Nombre pondéré de pixels"
       }
     },
     "water_dynamics": {
@@ -288,7 +290,8 @@
         "lengthT_mean_2223": "Durée moyenne de l'enneigement 2022-2023",
         "endL_mean_date_2223": "Date moyenne de fin d'enneigement 2022-2023",
         "lengthT_mean_2324": "Durée moyenne de l'enneigement 2023-2024",
-        "endL_mean_date_2324": "Date moyenne de fin d'enneigement 2023-2024"
+        "endL_mean_date_2324": "Date moyenne de fin d'enneigement 2023-2024",
+        "lengthT_mean": "Durée moyenne de l'enneigement"
       }
     },
     "treed_area": {

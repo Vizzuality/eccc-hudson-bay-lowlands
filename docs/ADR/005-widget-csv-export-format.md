@@ -19,18 +19,21 @@ Two further constraints shaped the format. This is a bilingual Government of Can
 
 ## Decision
 
-One CSV per widget, one table, six columns:
+One CSV per widget, one table, seven columns:
 
 ```
-section;series;key;label;value;unit
+section;series;key;key_unit;label;value;unit
 ```
 
 - `section` is `metadata`, `stats` or `chart`. Filtering to measurements is `section != "metadata"`.
 - `series` is the raw key of the `WidgetData.chart` record, and is empty for `metadata` and `stats` rows. This is what lets `peat_carbon`'s two histograms coexist without special-casing.
-- `key` is the raw API identifier, unchanged between locales and across releases. It is the join column.
-- `label` is the translated human name. It is never used to identify a row.
+- `key` is the raw API identifier, or the x position on a histogram or time-series row. Unchanged between locales and across releases. It is the join column.
+- `key_unit` is the unit of `key`, and is empty wherever `key` is a name rather than a measurement.
+- `label` is the translated human name of what `value` measures. It is never used to identify a row.
 - `value` is the API value written verbatim.
 - `unit` is the unit of that row's value. See ADR-006.
+
+Most rows carry one measurement, so `key` names it and `value` holds it. A histogram row carries two — a bin midpoint and a coverage-weighted count — and `key_unit` is what keeps them apart. Without it the bin's unit has nowhere to live: the widget-level unit is wrong for `carbon_cog`, whose bins are kg/m² while the widget reports `cm`, and folding the unit into the label text leaves it readable only by a human.
 
 The file is delimited with `;`, uses `.` as the decimal separator in every locale, writes dates as ISO 8601, and is encoded UTF-8 with a byte-order mark. Fields are escaped per RFC 4180.
 
@@ -43,6 +46,7 @@ The file is delimited with `;`, uses `.` as the decimal separator in every local
 - Everything the widget displays is in the file. A `water_dynamics` download contains the trend percentages, and a `snow_dynamics` download contains all six winters rather than the one the in-widget selector happens to be showing.
 - One serialiser covers all six widgets. Widgets with several chart series, with stats that duplicate chart slices, and with stats that have no chart at all all produce the same row shape.
 - The file is a legal single-table CSV. `pandas.read_csv(path, sep=";", encoding="utf-8-sig")` reads it, as does Excel by double-click in both an English and a French locale.
+- Every column means one thing on every row. `label` and `unit` always describe `value`, `key` and `key_unit` always describe the identifier, and nothing is inferred from wording.
 - Because `key` is the raw API name and `.` is always the decimal separator, an `en` file and an `fr` file of the same analysis can be concatenated or diffed, and a script written against one works against the other.
 - The citation travels with the data. A number taken out of the application carries the dataset title, source and citation that make it attributable.
 
@@ -57,4 +61,5 @@ The file is delimited with `;`, uses `.` as the decimal separator in every local
 
 - The BOM is required for Excel to render accented French labels correctly. Modern parsers strip it; `pandas` needs `encoding="utf-8-sig"`.
 - The `analysis_url` metadata row exists only once an analysis has been shared, so it is present on `/{locale}/analysis/{id}` and absent when the panel is opened from the map sidebar. The file is therefore not byte-identical between the two entry points.
-- Adding a seventh column, or a fourth `section` value such as a legend table, is additive and does not break a consumer that selects columns by name.
+- Adding a further column, or a fourth `section` value such as a legend table, is additive and does not break a consumer that selects columns by name.
+- `key_unit` is empty on most rows. That is the cost of one rectangular table rather than a separate shape per chart type.
