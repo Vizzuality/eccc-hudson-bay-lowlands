@@ -22,7 +22,7 @@ dev-dependencies = [
     "ruff",
     "moto[s3]",
     "boto3",
-    "pillow>=12.2.0",
+    "pillow>=12.3.0",
 ]
 
 [tool.ruff]
