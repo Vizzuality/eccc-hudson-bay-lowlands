@@ -16,7 +16,7 @@ dependencies = [
     "requests>=2.34.2",
     "rio-cogeo>=7.0.1",
     "shapely>=2.1.2",
-    "tornado>=6.5.7",
+    "tornado>=6.5.8",
     "tqdm>=4.67.1",
 ]
 
