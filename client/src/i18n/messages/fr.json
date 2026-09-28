@@ -218,7 +218,7 @@
       "chart-peat-depth": "Histogramme de la profondeur de tourbe",
       "chart-peat-depth-label": "Fréquence",
       "chart-carbon-density": "Densité de carbone",
-      "chart-carbon-density-label": "Densité de carbone",
+      "chart-carbon-density-label": "Fréquence",
       "description": "<p>Dans votre zone sélectionnée, la profondeur de tourbe est en moyenne de <b>{peat_depth_avg} cm</b>, atteignant jusqu'à <b>{peat_depth_max} cm</b>, stockant environ <b>{carbon_total} Mt</b> de carbone à une densité moyenne de <b>{carbon_density} kg/m²</b>.</p>",
       "more-info": {
         "title": "Pourquoi le carbone et les tourbières sont-ils importants ?",

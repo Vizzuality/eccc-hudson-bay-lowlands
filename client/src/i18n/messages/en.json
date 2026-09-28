@@ -218,7 +218,7 @@
       "chart-peat-depth": "Histogram of peat depth",
       "chart-peat-depth-label": "Frequency",
       "chart-carbon-density": "Carbon Density",
-      "chart-carbon-density-label": "Carbon Density",
+      "chart-carbon-density-label": "Frequency",
       "description": "<p>Within your selected area, peat depth averages <b>{peat_depth_avg} cm</b>, reaching up to <b>{peat_depth_max} cm</b>, storing about <b>{carbon_total} Mt</b> of carbon at an average density of <b>{carbon_density} kg/m²</b>.</p>",
       "more-info": {
         "title": "Why are Carbon & Peatlands Important?",
