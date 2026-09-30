@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
-import { DEFAULT_LAYER_IDS, useLayerIds } from "@/app/[locale]/url-store";
+import { useLayerIds } from "@/app/[locale]/url-store";
 import Main from "@/containers/map-sidebar/main";
 import messages from "@/i18n/messages/en.json";
 import {
@@ -113,25 +113,11 @@ describe("@containers/map-sidebar/main", () => {
     expect(Array.isArray(capturedListProps.datasets)).toBe(true);
   });
 
-  it("passes active layer count to DataLayersBottomBar without default layer", () => {
+  it("passes active layer count to DataLayersBottomBar", () => {
     setupHooks(["layer-a", "layer-b", "layer-c"]);
     renderMain();
 
     expect(capturedBottomBarProps.activeDataCount).toBe(3);
-  });
-
-  it("excludes default layer from active count when present", () => {
-    setupHooks([...DEFAULT_LAYER_IDS, "layer-a", "layer-b"]);
-    renderMain();
-
-    expect(capturedBottomBarProps.activeDataCount).toBe(2);
-  });
-
-  it("counts a single default layer as 1", () => {
-    setupHooks([...DEFAULT_LAYER_IDS]);
-    renderMain();
-
-    expect(capturedBottomBarProps.activeDataCount).toBe(1);
   });
 
   it("clears all layers when onRemoveAll is called", () => {

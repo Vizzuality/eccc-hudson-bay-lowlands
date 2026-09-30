@@ -1,9 +1,5 @@
 import { useTranslations } from "next-intl";
-import {
-  DEFAULT_LAYER_IDS,
-  useDataLayersSearch,
-  useLayerIds,
-} from "@/app/[locale]/url-store";
+import { useDataLayersSearch, useLayerIds } from "@/app/[locale]/url-store";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import DataLayersBottomBar from "@/containers/data-layers/bottom-bar";
 import CategorySelector from "@/containers/data-layers/category-selector";
@@ -25,13 +21,6 @@ const Main = () => {
     });
   const t = useTranslations("map");
   const { layerIds, setLayerIds } = useLayerIds();
-  const getActiveDataCount = () => {
-    if (layerIds.some((l) => l === DEFAULT_LAYER_IDS[0])) {
-      return layerIds.length === 1 ? 1 : layerIds.length - 1;
-    }
-
-    return layerIds.length;
-  };
 
   return (
     <ScrollArea className="min-h-0 flex-1">
@@ -51,7 +40,7 @@ const Main = () => {
           isLoading={isFilteredDatasetsLoading}
         />
         <DataLayersBottomBar
-          activeDataCount={getActiveDataCount()}
+          activeDataCount={layerIds.length}
           onRemoveAll={() => setLayerIds([])}
         />
       </div>
