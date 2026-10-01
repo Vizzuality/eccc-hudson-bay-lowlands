@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export const CategorySelectorSkeleton = () => {
   return (
     <div className="grid grid-cols-2 gap-2">
-      {[...Array(4).keys()].map((num) => (
+      {[...new Array(4).keys()].map((num) => (
         <div
           key={`category-selector-skeleton-${num}`}
           className="bg-white/80 rounded-4xl p-6 space-y-2"
@@ -22,7 +22,7 @@ export const DataLayersListSkeleton = () => {
     <section aria-label="Data layers list skeleton" className="space-y-5">
       <Skeleton className="h-3 w-16" />
       <div className="space-y-2">
-        {[...Array(6).keys()].map((num) => (
+        {[...new Array(6).keys()].map((num) => (
           <div
             key={`data-layers-list-skeleton-${num}`}
             className="space-y-5 h-24"
