@@ -41,7 +41,7 @@ const BetaBanner = () => {
               type="button"
               onClick={() => {
                 const expires = dayjs().add(COOLDOWN_DAYS, "day").valueOf();
-                cookieStore.set({
+                void cookieStore.set({
                   name: COOKIE_NAME,
                   value: String(Date.now()),
                   path: "/",
