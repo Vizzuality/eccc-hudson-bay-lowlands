@@ -30,7 +30,7 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 
 # Install dependencies with frozen lockfile
-RUN uv sync --frozen --no-dev
+RUN uv sync --frozen --no-build --no-dev
 
 # =============================================================================
 # Stage 3: Runtime - minimal production image

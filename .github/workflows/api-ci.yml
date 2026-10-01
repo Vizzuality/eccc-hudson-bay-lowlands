@@ -30,10 +30,10 @@ jobs:
         run: uv python install 3.12
 
       - name: Install dev dependencies
-        run: uv sync --frozen --only-dev
+        run: uv sync --frozen --no-build --only-dev
 
       - name: Run linter
-        run: uv run --frozen ruff check .
+        run: uv run --frozen --no-build ruff check .
 
   test:
     runs-on: ubuntu-latest
@@ -81,10 +81,10 @@ jobs:
         run: uv python install 3.12
 
       - name: Install dependencies
-        run: uv sync --frozen
+        run: uv sync --frozen --no-build
 
       - name: Run tests
-        run: uv run --frozen pytest -v
+        run: uv run --frozen --no-build pytest -v
 
   docker-build:
     runs-on: ubuntu-latest
