@@ -182,9 +182,9 @@ async function parseShapefileZip(file: File): Promise<ParsedGeoJSON> {
       {
         gis: { format: "geojson", reproject: true },
         shp: { _maxDimensions: 2 },
-        fetch: async (url: string | File): Promise<Response> => {
+        fetch: (url: string | File): Promise<Response> => {
           if (url instanceof File) {
-            return new Response(url);
+            return Promise.resolve(new Response(url));
           }
 
           const extension = url.split(".").pop()?.toLowerCase() ?? "";
@@ -193,10 +193,10 @@ async function parseShapefileZip(file: File): Promise<ParsedGeoJSON> {
           );
 
           if (match && fileMap[match]) {
-            return new Response(fileMap[match]);
+            return Promise.resolve(new Response(fileMap[match]));
           }
 
-          return new Response(null, { status: 404 });
+          return Promise.resolve(new Response(null, { status: 404 }));
         },
       },
     )) as Awaited<ReturnType<typeof ShapefileLoader.parse>>;
