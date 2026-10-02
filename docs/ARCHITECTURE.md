@@ -184,6 +184,19 @@ eccc-hudson-bay-lowlands/
 | SQLAlchemy 2.0+ with psycopg v3 | Modern async-ready ORM with type-annotated syntax and latest PostgreSQL driver | - |
 | Auto table creation via lifespan | Simple schema management for early-stage project; Alembic planned for future | - |
 
+## Mobile Layout
+
+Below 1024px (Tailwind `lg`) the client shows a mobile layout: a header with the logo and a menu button, the map at full width, and a floating bottom nav.
+
+- **CSS decides what is visible.** Layout changes use `lg:` / `max-lg:` classes, so the server-rendered HTML is correct on the first paint. The desktop sidebar is hidden with CSS and stays mounted.
+- **`useIsMobile()` is only for map behaviour** that CSS cannot change, such as the `fitBounds` padding. Do not use it to choose what to render: the server does not know the screen width, so the first render would be wrong on phones.
+- **The mobile view is the `view` URL param** (`useMobileView()` in `app/[locale]/url-store.ts`). A missing value means map. It uses the default `replace` history mode, like every other param. As a result, the browser back button does not close a view. With `push`, back would return to the entry from before the view opened and undo any layer change made inside it.
+- **Analysis mode is still `mapStatus`.** The bottom nav's Analysis button sets `mapStatus=upload`, like the desktop Analyze button. `view` only says which mobile view is on top of the map.
+- **One bottom bar component.** `MobileNav` (`containers/mobile-nav`) takes its items as props. Each map mode passes its own items instead of adding a new bar.
+- **The bottom nav takes 104px** at the bottom of the map. The value is in `MOBILE_FIT_PADDING` (`containers/map/constants.ts`) and in the Mapbox corner rules in `app/globals.css`. Change both together. The corner rules sit outside `@layer`, because Mapbox's CSS has no layer and overrides any layered rule.
+- **Feature scope on mobile.** Map download stays in the control stack. In analysis mode the data layers are reached from the menu ("Datasets"), not from the bottom nav.
+- **Tests.** Mobile e2e specs go in `e2e/tests/mobile/` and run in the Playwright `mobile` project (`Pixel 7`). The desktop `chromium` project ignores that folder.
+
 ## Related Documentation
 
 - [Getting Started](GETTING_STARTED.md) -- setup guide for new developers
