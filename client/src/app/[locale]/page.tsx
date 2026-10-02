@@ -5,9 +5,8 @@ import {
 } from "@tanstack/react-query";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
-import MapContainer from "@/containers/map";
+import MapLayout from "@/containers/map-layout";
 import MapSidebar from "@/containers/map-sidebar";
-import TopBar from "@/containers/top-bar";
 import { API } from "@/lib/api";
 import { getCategoriesConfig, getDatasetsConfig } from "@/lib/api/config";
 import { queryKeys } from "@/lib/query-keys";
@@ -68,27 +67,13 @@ export default async function Home({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <main
-        className="flex min-h-0 flex-1 flex-col"
-        style={{
-          background:
-            "radial-gradient(113.99% 208.31% at 0% 0%, var(--slate-200, #E2E8F0) 0%, var(--base-white, #FFF) 50.96%, var(--emerald-50, #ECFDF5) 100%), #FFF",
-        }}
-      >
-        <Suspense>
-          <TopBar />
-        </Suspense>
-
-        <section className="flex h-full overflow-hidden">
+      <MapLayout
+        sidebar={
           <Suspense>
             <MapSidebar />
           </Suspense>
-
-          <Suspense>
-            <MapContainer />
-          </Suspense>
-        </section>
-      </main>
+        }
+      />
     </HydrationBoundary>
   );
 }
