@@ -30,5 +30,8 @@ export const HUDSON_BAY_MAX_BOUNDS: [[number, number], [number, number]] = [
   [-48, 70],
 ];
 
+export const INDIGENOUS_TERRITORIES_LAYER_ID =
+  "nativeland.4pgB_next_nld_terr_prod_layer";
+
 export const DEFAULT_MIN_ZOOM = 3;
 export const DEFAULT_MAX_ZOOM = 15;
