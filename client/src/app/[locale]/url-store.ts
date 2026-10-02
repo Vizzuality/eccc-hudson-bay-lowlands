@@ -25,6 +25,19 @@ export function useMapStatus() {
   return { mapStatus, setMapStatus };
 }
 
+export enum MobileView {
+  data = "data",
+}
+
+export function useMobileView() {
+  const [mobileView, setMobileView] = useQueryState(
+    "view",
+    parseAsStringEnum(Object.values(MobileView)),
+  );
+
+  return { mobileView, setMobileView };
+}
+
 export function useCategory() {
   const [category, setCategory] = useQueryState("category", parseAsInteger);
 

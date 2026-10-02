@@ -9,7 +9,14 @@
       "map": "Carte",
       "analysis": "Analyse",
       "resources": "Ressources"
-    }
+    },
+    "open-menu": "Ouvrir le menu"
+  },
+  "mobile-nav": {
+    "label": "Vues de la carte",
+    "map": "Carte",
+    "data": "Données",
+    "analysis": "Analyse"
   },
   "beta-banner": {
     "message": "<p><b>Nous sommes en version bêta!</b> Nous améliorons activement cet outil. Bien que la plupart des fonctionnalités soient opérationnelles, vous pourriez occasionnellement rencontrer des bogues, des fonctionnalités incomplètes ou des problèmes de performance.</p>",

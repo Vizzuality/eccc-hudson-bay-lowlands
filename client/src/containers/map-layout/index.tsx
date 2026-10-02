@@ -1,5 +1,6 @@
 import { type ReactNode, Suspense } from "react";
 import MapContainer from "@/containers/map";
+import { MapMobileNav } from "@/containers/mobile-nav/map-mobile-nav";
 import TopBar from "@/containers/top-bar";
 
 const PAGE_BACKGROUND = {
@@ -24,11 +25,12 @@ export default function MapLayout({
       {sidebar === undefined ? (
         children
       ) : (
-        <section className="flex h-full overflow-hidden">
-          {sidebar}
+        <section className="relative flex h-full overflow-hidden">
+          <div className="contents max-lg:hidden">{sidebar}</div>
 
           <Suspense>
             <MapContainer />
+            <MapMobileNav />
           </Suspense>
         </section>
       )}
