@@ -4,16 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 import { CircleAlertIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { type ReactNode, Suspense, useLayoutEffect } from "react";
+import { type ReactNode, useLayoutEffect } from "react";
 import { MapStatus, useMapStatus } from "@/app/[locale]/url-store";
 import { AnalysisProvider } from "@/containers/analysis/analysis-context";
-import CloseAnalysisButton from "@/containers/analysis/close-analysis-button";
-import AnalysisPanelContent from "@/containers/analysis/panel-content";
-import DataLayersPanel from "@/containers/data-layers/panel";
-import MapContainer from "@/containers/map";
-import ShareButton from "@/containers/share-button";
+import MapLayout from "@/containers/map-layout";
+import SharedAnalysisSidebar from "@/containers/shared-analysis-sidebar";
 import { SharedAnalysisSkeleton } from "@/containers/skeletons";
-import TopBar from "@/containers/top-bar";
 import useAnalysisSettings, {
   useAnalysisResult,
   useSetAnalysisResult,
@@ -23,11 +19,6 @@ import { getSharedAnalysisConfig } from "@/lib/api/config";
 import { queryKeys } from "@/lib/query-keys";
 import type { ParsedGeoJSON } from "@/lib/utils/geometry-upload";
 import type { SharedAnalysisResponse } from "@/types";
-
-const PAGE_BACKGROUND = {
-  background:
-    "radial-gradient(113.99% 208.31% at 0% 0%, var(--slate-200, #E2E8F0) 0%, var(--base-white, #FFF) 50.96%, var(--emerald-50, #ECFDF5) 100%), #FFF",
-} as const;
 
 function SharedAnalysisHydrator({
   data,
@@ -90,23 +81,17 @@ export default function SharedAnalysisPage() {
 
   if (isLoading) {
     return (
-      <main className="flex min-h-0 flex-1 flex-col" style={PAGE_BACKGROUND}>
-        <Suspense>
-          <TopBar />
-        </Suspense>
+      <MapLayout>
         <SharedAnalysisSkeleton />
-      </main>
+      </MapLayout>
     );
   }
 
   if (isError || !data) {
     return (
-      <main className="flex min-h-0 flex-1 flex-col" style={PAGE_BACKGROUND}>
-        <Suspense>
-          <TopBar />
-        </Suspense>
+      <MapLayout>
         <SharedAnalysisError />
-      </main>
+      </MapLayout>
     );
   }
 
@@ -116,37 +101,7 @@ export default function SharedAnalysisPage() {
       initialCreatedAt={data.created_at}
     >
       <SharedAnalysisHydrator data={data}>
-        <main
-          className="flex min-h-0 flex-1 flex-col"
-          style={{
-            background:
-              "radial-gradient(113.99% 208.31% at 0% 0%, var(--slate-200, #E2E8F0) 0%, var(--base-white, #FFF) 50.96%, var(--emerald-50, #ECFDF5) 100%), #FFF",
-          }}
-        >
-          <Suspense>
-            <TopBar />
-          </Suspense>
-
-          <section className="flex h-full overflow-hidden">
-            <aside className="flex h-full shrink-0">
-              <div className="flex h-full w-[480px] min-[1440px]:w-[600px] shrink-0 flex-col">
-                <AnalysisPanelContent
-                  headerActions={
-                    <>
-                      <ShareButton size="xl" className="font-bold" />
-                      <CloseAnalysisButton />
-                    </>
-                  }
-                />
-              </div>
-              <DataLayersPanel />
-            </aside>
-
-            <Suspense>
-              <MapContainer />
-            </Suspense>
-          </section>
-        </main>
+        <MapLayout sidebar={<SharedAnalysisSidebar />} />
       </SharedAnalysisHydrator>
     </AnalysisProvider>
   );
