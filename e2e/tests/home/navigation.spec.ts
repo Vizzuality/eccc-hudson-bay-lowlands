@@ -7,6 +7,14 @@ test.describe("Navigation", () => {
     await expect(page).toHaveTitle(/Discover the Hudson & James bay region/);
   });
 
+  test("mobile bottom nav is hidden on desktop", async ({ page }) => {
+    await page.goto("http://localhost:3000/en");
+
+    await expect(
+      page.getByRole("navigation", { name: "Map views" }),
+    ).toBeHidden();
+  });
+
   test("switching to French updates the URL locale", async ({ page }) => {
     await page.goto("http://localhost:3000/en");
 

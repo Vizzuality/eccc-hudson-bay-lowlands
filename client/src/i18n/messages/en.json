@@ -9,7 +9,14 @@
       "map": "Map",
       "analysis": "Analysis",
       "resources": "Resources"
-    }
+    },
+    "open-menu": "Open menu"
+  },
+  "mobile-nav": {
+    "label": "Map views",
+    "map": "Map",
+    "data": "Data",
+    "analysis": "Analysis"
   },
   "beta-banner": {
     "message": "<p><b>We're in Beta!</b> We're actively improving this tool. While most features are functional, you may occasionally encounter bugs, incomplete functionality, or performance issues.</p>",

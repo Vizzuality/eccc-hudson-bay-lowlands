@@ -9,7 +9,7 @@ const AnalyzeButton = () => {
   const popoverOpen = mapStatus === MapStatus.upload;
 
   return (
-    <div data-download-exclude className="absolute top-6 left-6">
+    <div data-download-exclude className="absolute top-6 left-6 max-lg:hidden">
       <Popover
         open={popoverOpen}
         onOpenChange={(open) => {

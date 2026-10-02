@@ -139,6 +139,17 @@
   }
 }
 
+@variant max-lg {
+  .mapboxgl-ctrl-bottom-left {
+    transform: none;
+  }
+
+  .mapboxgl-ctrl-bottom-left,
+  .mapboxgl-ctrl-bottom-right {
+    bottom: 104px;
+  }
+}
+
 .mapboxgl-popup-content {
   border-radius: var(--radius-2xl);
   padding: 0;

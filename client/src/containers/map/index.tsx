@@ -18,7 +18,9 @@ import {
   BASEMAPS,
   type BasemapId,
   DEFAULT_MIN_ZOOM,
+  DESKTOP_FIT_PADDING,
   HUDSON_BAY_MAX_BOUNDS,
+  MOBILE_FIT_PADDING,
 } from "@/containers/map/constants";
 import { Controls } from "@/containers/map/controls";
 import MapDownload from "@/containers/map/controls/download";
@@ -35,6 +37,7 @@ import { env } from "@/env";
 import useAnalysisSettings, {
   useIsAnalyzing,
 } from "@/hooks/use-analysis-settings";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { cn } from "@/lib/utils";
 import { getGeometryBounds } from "@/lib/utils/get-geometry-bounds";
 
@@ -60,6 +63,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
   const prevMapStatusRef = useRef(mapStatus);
   const hasZoomedRef = useRef(false);
   const [showHblMask, setShowHblMask] = useState(false);
+  const isMobile = useIsMobile();
 
   const zoomToAnalysisArea = useCallback(() => {
     if (!analysisGeometry || !mapRef.current) return;
@@ -67,10 +71,10 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
     if (!bounds) return;
     hasZoomedRef.current = true;
     mapRef.current.fitBounds(bounds, {
-      padding: { top: 100, bottom: 100, left: 700, right: 100 },
+      padding: isMobile ? MOBILE_FIT_PADDING : DESKTOP_FIT_PADDING,
       animate: true,
     });
-  }, [analysisGeometry]);
+  }, [analysisGeometry, isMobile]);
 
   useEffect(() => {
     const justEnteredAnalysis =
@@ -170,11 +174,11 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
     <div
       ref={containerRef}
       className={cn(
-        "relative h-full w-full flex-1 overflow-hidden rounded-tl-3xl border border-white bg-white",
+        "relative h-full w-full flex-1 overflow-hidden rounded-tl-3xl border border-white bg-white max-lg:rounded-none max-lg:border-0",
         className,
       )}
     >
-      <div className="absolute inset-px overflow-hidden rounded-tl-3xl">
+      <div className="absolute inset-px overflow-hidden rounded-tl-3xl max-lg:inset-0 max-lg:rounded-none">
         <DownloadWatermark />
         {isAnalyzing && (
           <div className="absolute inset-0 z-10 cursor-not-allowed" />

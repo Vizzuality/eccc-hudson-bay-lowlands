@@ -20,6 +20,20 @@ export const BASEMAPS = {
   },
 } as const;
 
+export const DESKTOP_FIT_PADDING = {
+  top: 100,
+  bottom: 100,
+  left: 700,
+  right: 100,
+} as const;
+
+export const MOBILE_FIT_PADDING = {
+  top: 16,
+  bottom: 104,
+  left: 16,
+  right: 16,
+} as const;
+
 export const DESKTOP_MAX_BOUNDS: [[number, number], [number, number]] = [
   [-152.88, 31.48],
   [-40.94, 77.43],
