@@ -1,12 +1,9 @@
 import { type ReactNode, Suspense } from "react";
 import MapContainer from "@/containers/map";
+import { PAGE_BACKGROUND } from "@/containers/map-layout/constants";
+import MobileDataView from "@/containers/mobile-data-view";
 import { MapMobileNav } from "@/containers/mobile-nav/map-mobile-nav";
 import TopBar from "@/containers/top-bar";
-
-const PAGE_BACKGROUND = {
-  background:
-    "radial-gradient(113.99% 208.31% at 0% 0%, var(--slate-200, #E2E8F0) 0%, var(--base-white, #FFF) 50.96%, var(--emerald-50, #ECFDF5) 100%), #FFF",
-} as const;
 
 type MapLayoutProps =
   | { sidebar: ReactNode; children?: never }
@@ -30,6 +27,7 @@ export default function MapLayout({
 
           <Suspense>
             <MapContainer />
+            <MobileDataView />
             <MapMobileNav />
           </Suspense>
         </section>

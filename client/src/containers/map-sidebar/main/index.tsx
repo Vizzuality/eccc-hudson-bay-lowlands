@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import type { ReactNode } from "react";
 import { useDataLayersSearch, useLayerIds } from "@/app/[locale]/url-store";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import DataLayersBottomBar from "@/containers/data-layers/bottom-bar";
@@ -8,7 +9,11 @@ import DataLayersSearch from "@/containers/data-layers/search";
 import { useCategories } from "@/hooks/use-categories";
 import { useTranslatedDatasets } from "@/hooks/use-datasets";
 
-const Main = () => {
+interface MainProps {
+  header?: ReactNode;
+}
+
+const Main = ({ header }: MainProps) => {
   const { dataLayersSearch } = useDataLayersSearch();
   const { categoryItems, totalLayerCount, isCategoriesLoading, category } =
     useCategories();
@@ -24,11 +29,13 @@ const Main = () => {
 
   return (
     <ScrollArea className="min-h-0 flex-1">
-      <div className="space-y-4 pb-12">
-        <header className="min-w-0 px-6">
-          <h1 className="text-4xl mb-5">{t("title")}</h1>
-          <p className="text-muted-foreground">{t("description")}</p>
-        </header>
+      <div className="space-y-4 pb-12 max-lg:pb-32">
+        {header ?? (
+          <header className="min-w-0 px-6">
+            <h1 className="text-4xl mb-5">{t("title")}</h1>
+            <p className="text-muted-foreground">{t("description")}</p>
+          </header>
+        )}
         <DataLayersSearch />
         <CategorySelector
           items={categoryItems}

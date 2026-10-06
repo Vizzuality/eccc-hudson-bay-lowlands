@@ -38,6 +38,13 @@ export function useMobileView() {
   return { mobileView, setMobileView };
 }
 
+export function useIsMobileDataViewOpen() {
+  const { mobileView } = useMobileView();
+  const { mapStatus } = useMapStatus();
+
+  return mobileView === MobileView.data && mapStatus === MapStatus.default;
+}
+
 export function useCategory() {
   const [category, setCategory] = useQueryState("category", parseAsInteger);
 

@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import type { FC } from "react";
+import { type FC, useId } from "react";
 import { useCategory } from "@/app/[locale]/url-store";
 import { getCategoryIcon } from "@/containers/data-layers/category-selector/utils";
 import { CategorySelectorSkeleton } from "@/containers/skeletons";
@@ -19,6 +19,7 @@ const CategorySelector: FC<CategorySelectorProps> = ({
 }) => {
   const t = useTranslations("data-layers.category-selector");
   const { category, setCategory } = useCategory();
+  const groupId = useId();
 
   if (isLoading) {
     return <CategorySelectorSkeleton />;
@@ -35,12 +36,13 @@ const CategorySelector: FC<CategorySelectorProps> = ({
           const isActive =
             category === c.id || (category === null && c.id === 0);
           const key = `category-selector-${c.id}`;
+          const inputId = `${groupId}-${c.id}`;
           const Icon = getCategoryIcon(c.id);
 
           return (
             <label
               key={key}
-              htmlFor={key}
+              htmlFor={inputId}
               className={cn({
                 "bg-white/80 rounded-4xl p-6 cursor-pointer flex flex-col gap-2 shadow-lg transition-all": true,
                 "border border-transparent select-none": true,
@@ -54,9 +56,9 @@ const CategorySelector: FC<CategorySelectorProps> = ({
               {!!Icon && <Icon className={cn({ "text-accent": isActive })} />}
               <input
                 type="radio"
-                name="category"
+                name={groupId}
                 value={c.id}
-                id={key}
+                id={inputId}
                 checked={isActive}
                 onChange={() => setCategory(c.id || null)}
                 className="sr-only"

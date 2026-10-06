@@ -25,6 +25,7 @@
   "map": {
     "title": "Découvrez la région des basses-terres de la baie d'Hudson et de la baie James",
     "description": "Explorez et superposez vos couches de données géospatiales. Analysez votre zone d'intérêt et obtenez des analyses sur mesure.",
+    "mobile-title": "Couches de données ({count})",
     "controls": {
       "basemap": {
         "title": "Style de carte"
