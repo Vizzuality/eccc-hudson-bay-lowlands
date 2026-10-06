@@ -1,5 +1,5 @@
 import { CalendarIcon } from "lucide-react";
-import { type FC, useState } from "react";
+import { type FC, useId, useState } from "react";
 import { useLayerIds } from "@/app/[locale]/url-store";
 import {
   Field,
@@ -23,6 +23,7 @@ const START_YEAR = 2018;
 const DateItem: FC<DateItemProps> = ({ layers }) => {
   const { getTranslation } = useApiTranslation();
   const { layerIds, setLayerIds } = useLayerIds();
+  const radioIdPrefix = useId();
   const indexFromLayers = layers.findIndex((layer) =>
     layerIds.includes(layer.id),
   );
@@ -68,7 +69,7 @@ const DateItem: FC<DateItemProps> = ({ layers }) => {
             .map(({ id, year: [startYear, endYear] }, index) => (
               <FieldLabel
                 key={`date-item-layer-${startYear}-${endYear}`}
-                htmlFor={`date-item-layer-${id}-${startYear}-${endYear}`}
+                htmlFor={`${radioIdPrefix}-${id}-${startYear}-${endYear}`}
                 className="w-auto! cursor-pointer rounded-full bg-secondary has-data-[state=checked]:bg-primary has-data-[state=checked]:text-primary-foreground"
               >
                 <Field orientation="horizontal" className="px-2.5! py-0!">
@@ -79,7 +80,7 @@ const DateItem: FC<DateItemProps> = ({ layers }) => {
                   </FieldContent>
                   <RadioGroupItem
                     value={index.toString()}
-                    id={`date-item-layer-${id}-${startYear}-${endYear}`}
+                    id={`${radioIdPrefix}-${id}-${startYear}-${endYear}`}
                     className="hidden"
                   />
                 </Field>

@@ -105,6 +105,23 @@ describe("@containers/map-sidebar/main", () => {
     expect(screen.getByText(/explore and combine/i)).toBeInTheDocument();
   });
 
+  it("renders a passed header instead of the title and description", () => {
+    setupHooks();
+    render(
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <Main header={<h1>Custom header</h1>} />
+      </NextIntlClientProvider>,
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "Custom header" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: /discover the hudson/i }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/explore and combine/i)).not.toBeInTheDocument();
+  });
+
   it("passes datasets to DataLayersList", () => {
     setupHooks(["layer-a", "layer-b"]);
     renderMain();

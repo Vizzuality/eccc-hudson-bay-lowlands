@@ -50,7 +50,7 @@ const DatasetDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="gap-6">
+      <DialogContent className="max-h-[calc(100dvh-2rem)] gap-6 overflow-y-auto">
         <DialogHeader className="gap-6">
           {icon ?? <HandHeartIcon />}
           <DialogTitle>{title}</DialogTitle>

@@ -1,5 +1,5 @@
 import { PlusIcon, XIcon } from "lucide-react";
-import { type FC, useCallback } from "react";
+import { type FC, useCallback, useId } from "react";
 import { useLayerIds } from "@/app/[locale]/url-store";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +11,7 @@ interface ItemHeaderProps {
 const ItemHeader: FC<ItemHeaderProps> = ({ id, title, description }) => {
   const { layerIds, setLayerIds } = useLayerIds();
   const isSelected = layerIds.includes(id);
+  const inputId = useId();
   const handleItemChange = useCallback(
     (isSelected: boolean) => {
       setLayerIds(
@@ -25,7 +26,7 @@ const ItemHeader: FC<ItemHeaderProps> = ({ id, title, description }) => {
   return (
     <header>
       <label
-        htmlFor={id.toString()}
+        htmlFor={inputId}
         className={cn({
           "absolute right-5 top-0 translate-y-1/2 z-10": true,
           "size-8 rounded-full flex items-center justify-center hover:bg-secondary group-hover:text-accent cursor-pointer": true,
@@ -35,7 +36,7 @@ const ItemHeader: FC<ItemHeaderProps> = ({ id, title, description }) => {
       >
         <input
           type="checkbox"
-          id={id.toString()}
+          id={inputId}
           className="sr-only"
           aria-label={title}
           checked={isSelected}

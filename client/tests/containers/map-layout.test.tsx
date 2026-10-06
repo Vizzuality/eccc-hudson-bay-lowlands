@@ -6,6 +6,10 @@ vi.mock("@/containers/map", () => ({
   default: () => <div data-testid="map" />,
 }));
 
+vi.mock("@/containers/mobile-data-view", () => ({
+  default: () => null,
+}));
+
 vi.mock("@/containers/mobile-nav/map-mobile-nav", () => ({
   MapMobileNav: () => null,
 }));
