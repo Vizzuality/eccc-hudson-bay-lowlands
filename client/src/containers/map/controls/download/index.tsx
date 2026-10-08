@@ -14,10 +14,12 @@ import { CONTROL_BUTTON_STYLES } from "../constants";
 
 interface MapDownloadProps {
   containerRef: RefObject<HTMLDivElement | null>;
+  className?: string;
 }
 
 export default function MapDownload({
   containerRef,
+  className,
 }: Readonly<MapDownloadProps>) {
   const { download, loading } = useMapDownload(containerRef);
   const t = useTranslations("map.controls.download");
@@ -26,7 +28,7 @@ export default function MapDownload({
     <Tooltip>
       <TooltipTrigger asChild>
         <button
-          className={cn({
+          className={cn(className, {
             [CONTROL_BUTTON_STYLES.default]: true,
             [CONTROL_BUTTON_STYLES.hover]: !loading,
             [CONTROL_BUTTON_STYLES.active]: !loading,

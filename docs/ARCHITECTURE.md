@@ -195,7 +195,8 @@ Below 1024px (Tailwind `lg`) the client shows a mobile layout: a header with the
 - **Analysis mode is still `mapStatus`.** The bottom nav's Analysis button sets `mapStatus=upload`, like the desktop Analyze button. `view` only says which mobile view is on top of the map.
 - **One bottom bar component.** `MobileNav` (`containers/mobile-nav`) takes its items as props. Each map mode passes its own items instead of adding a new bar.
 - **The bottom nav takes 104px** at the bottom of the map. The value is in `MOBILE_FIT_PADDING` (`containers/map/constants.ts`) and in the Mapbox corner rules in `app/globals.css`. Change both together. The corner rules sit outside `@layer`, because Mapbox's CSS has no layer and overrides any layered rule.
-- **Feature scope on mobile.** Map download stays in the control stack. In analysis mode the data layers are reached from the menu ("Datasets"), not from the bottom nav.
+- **Legend on mobile is a bottom sheet.** The ⓘ button in the control stack (`containers/map/controls/legend`) opens the shadcn `Drawer` with the active layers' legends, read-only, with no reorder or toolbar. Its open state is local, not in the URL. The desktop collapsible legend is hidden below `lg`.
+- **Feature scope on mobile.** Map download is hidden below `lg`: the design has no mobile download button, and the PNG would have no legend because the sheet is outside the map container. In analysis mode the data layers are reached from the menu ("Datasets"), not from the bottom nav.
 - **Tests.** Mobile e2e specs go in `e2e/tests/mobile/` and run in the Playwright `mobile` project (`Pixel 7`). The desktop `chromium` project ignores that folder.
 
 ## Related Documentation

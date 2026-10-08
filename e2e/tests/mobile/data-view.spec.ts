@@ -29,6 +29,11 @@ test.describe("Mobile data view", () => {
 
     await expect(page).not.toHaveURL(/[?&]view=/);
     await expect(page).toHaveURL(new RegExp(`[?&]${ACTIVE_LAYER}`));
-    await expect(page.getByRole("button", { name: "Legend" })).toBeVisible();
+    await page.getByRole("button", { name: "Map legend" }).click();
+    await expect(
+      page
+        .getByRole("dialog", { name: "Map Legend" })
+        .getByRole("heading", { level: 2 }),
+    ).toHaveCount(2);
   });
 });
