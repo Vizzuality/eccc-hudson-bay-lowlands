@@ -41,6 +41,9 @@
       "settings": {
         "aria-label": "Map settings",
         "tooltip": "Map settings"
+      },
+      "legend": {
+        "aria-label": "Map legend"
       }
     },
     "popup-properties": {
@@ -357,7 +360,9 @@
     "hide-layer": "Hide layer",
     "show-layer": "Show layer",
     "remove-layer": "Remove layer",
-    "drag": "drag"
+    "drag": "drag",
+    "sheet-title": "Map Legend",
+    "empty": "No active layers"
   },
   "share": {
     "title": "Share"

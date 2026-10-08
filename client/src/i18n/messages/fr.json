@@ -41,6 +41,9 @@
       "settings": {
         "aria-label": "Paramètres de la carte",
         "tooltip": "Paramètres de la carte"
+      },
+      "legend": {
+        "aria-label": "Légende de la carte"
       }
     },
     "popup-properties": {
@@ -357,7 +360,9 @@
     "hide-layer": "Masquer la couche",
     "show-layer": "Afficher la couche",
     "remove-layer": "Supprimer la couche",
-    "drag": "déplacer"
+    "drag": "déplacer",
+    "sheet-title": "Légende de la carte",
+    "empty": "Aucune couche active"
   },
   "share": {
     "title": "Partager"

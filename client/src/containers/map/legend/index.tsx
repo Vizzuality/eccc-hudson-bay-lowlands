@@ -42,7 +42,7 @@ function MapLegend({
       open={open}
       onOpenChange={setOpen}
       data-map-legend
-      className={cn("absolute left-0 bottom-0", {
+      className={cn("absolute left-0 bottom-0 max-lg:hidden", {
         hidden: !isChildren,
       })}
     >
