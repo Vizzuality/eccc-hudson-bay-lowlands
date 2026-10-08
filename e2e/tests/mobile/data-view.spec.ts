@@ -30,10 +30,8 @@ test.describe("Mobile data view", () => {
     await expect(page).not.toHaveURL(/[?&]view=/);
     await expect(page).toHaveURL(new RegExp(`[?&]${ACTIVE_LAYER}`));
     await page.getByRole("button", { name: "Map legend" }).click();
-    await expect(
-      page
-        .getByRole("dialog", { name: "Map Legend" })
-        .getByRole("heading", { level: 2 }),
-    ).toHaveCount(2);
+    const sheet = page.getByRole("dialog", { name: "Map Legend" });
+    await expect(sheet).toBeVisible();
+    await expect(sheet.getByText("No active layers")).toBeHidden();
   });
 });

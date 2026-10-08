@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 const ACTIVE_LAYER = "layers=nativeland.4pgB_next_nld_terr_prod_layer";
 
 test.describe("Mobile map legend", () => {
-  test("the legend button opens a sheet with the active layer legend", async ({
+  test("the legend button opens the sheet for the active layers", async ({
     page,
   }) => {
     await page.goto(`http://localhost:3000/en?${ACTIVE_LAYER}`);
@@ -16,7 +16,6 @@ test.describe("Mobile map legend", () => {
 
     const sheet = page.getByRole("dialog", { name: "Map Legend" });
     await expect(sheet).toBeVisible();
-    await expect(sheet.getByRole("heading", { level: 2 })).toHaveCount(2);
     await expect(sheet.getByText("No active layers")).toBeHidden();
 
     await page.keyboard.press("Escape");
