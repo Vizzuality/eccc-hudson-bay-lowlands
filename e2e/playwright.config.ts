@@ -27,7 +27,24 @@ export default defineConfig({
     {
       name: "mobile",
       testMatch: "**/mobile/**",
-      use: { ...devices["Pixel 7"] },
+      use: {
+        ...devices["Pixel 7"],
+        storageState: {
+          cookies: [
+            {
+              name: "intro-dismissed",
+              value: "1",
+              domain: "localhost",
+              path: "/",
+              expires: -1,
+              httpOnly: false,
+              secure: false,
+              sameSite: "Lax",
+            },
+          ],
+          origins: [],
+        },
+      },
     },
   ],
 
