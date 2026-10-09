@@ -22,6 +22,10 @@
     "message": "<p><b>Nous sommes en version bêta!</b> Nous améliorons activement cet outil. Bien que la plupart des fonctionnalités soient opérationnelles, vous pourriez occasionnellement rencontrer des bogues, des fonctionnalités incomplètes ou des problèmes de performance.</p>",
     "dismiss": "Compris"
   },
+  "intro-modal": {
+    "heads-up": "<p><b>À noter :</b> certaines fonctionnalités peuvent être limitées sur mobile. Pour profiter de toutes les fonctionnalités, utilisez la version pour ordinateur.</p>",
+    "dismiss": "Compris"
+  },
   "map": {
     "title": "Découvrez la région des basses-terres de la baie d'Hudson et de la baie James",
     "description": "Explorez et superposez vos couches de données géospatiales. Analysez votre zone d'intérêt et obtenez des analyses sur mesure.",

@@ -1,20 +1,29 @@
 "use client";
 
 import dayjs from "dayjs";
+import { useAtomValue } from "jotai";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMap } from "react-map-gl/mapbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import RichText from "@/components/ui/rich-text";
+import { introDismissedAtom } from "@/containers/intro-modal/store";
+import { cn } from "@/lib/utils";
 import { COOKIE_NAME, COOLDOWN_DAYS } from "./constants";
 
-const BetaBanner = () => {
+const BetaBanner = ({ hideOnMobile = false }: { hideOnMobile?: boolean }) => {
   const t = useTranslations("beta-banner");
   const [open, setOpen] = useState(true);
   const [mounted, setMounted] = useState(true);
   const { default: mapRef } = useMap();
+  const introDismissed = useAtomValue(introDismissedAtom);
+  const hidden = hideOnMobile && !introDismissed;
+
+  useEffect(() => {
+    if (hideOnMobile && introDismissed) mapRef?.resize();
+  }, [hideOnMobile, introDismissed, mapRef]);
 
   const handleAnimationEnd = (event: React.AnimationEvent<HTMLDivElement>) => {
     if (event.animationName === "collapsible-up") {
@@ -28,7 +37,7 @@ const BetaBanner = () => {
   }
 
   return (
-    <Collapsible open={open}>
+    <Collapsible open={open} className={cn(hidden && "max-lg:hidden")}>
       <CollapsibleContent
         className="animation-duration-[300ms]"
         onAnimationEnd={handleAnimationEnd}

@@ -4,7 +4,7 @@ test.describe("Navigation", () => {
   test("page loads with the correct title", async ({ page }) => {
     await page.goto("http://localhost:3000");
 
-    await expect(page).toHaveTitle(/Discover the Hudson & James bay region/);
+    await expect(page).toHaveTitle(/Discover the Hudson & James Bay region/);
   });
 
   test("mobile bottom nav is hidden on desktop", async ({ page }) => {

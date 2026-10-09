@@ -4,7 +4,7 @@ test.describe("Analyze", () => {
   test("User can analyze data by uploading a file", async ({ page }) => {
     await page.goto("http://localhost:3000");
 
-    await expect(page).toHaveTitle(/Discover the Hudson & James bay region/);
+    await expect(page).toHaveTitle(/Discover the Hudson & James Bay region/);
 
     await page.getByRole("button", { name: "Analyze area" }).click();
     // TODO: Add test for drawing a shape

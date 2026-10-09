@@ -22,8 +22,12 @@
     "message": "<p><b>We're in Beta!</b> We're actively improving this tool. While most features are functional, you may occasionally encounter bugs, incomplete functionality, or performance issues.</p>",
     "dismiss": "Got it"
   },
+  "intro-modal": {
+    "heads-up": "<p><b>Heads up:</b> Some features might be limited on mobile. For the full experience, try the desktop version.</p>",
+    "dismiss": "Got it"
+  },
   "map": {
-    "title": "Discover the Hudson & James bay region",
+    "title": "Discover the Hudson & James Bay region",
     "description": "Explore and combine geographical data overlays. Analyze your area of interest and get custom insights.",
     "mobile-title": "Data Layers ({count})",
     "controls": {
@@ -376,7 +380,7 @@
   },
   "metadata": {
     "home": {
-      "title": "Discover the Hudson & James bay region",
+      "title": "Discover the Hudson & James Bay region",
       "description": "Explore and combine geographical data overlays. Analyze your area of interest and get custom insights."
     }
   },
