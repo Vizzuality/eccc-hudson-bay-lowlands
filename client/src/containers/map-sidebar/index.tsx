@@ -5,6 +5,7 @@ import { MapStatus, useMapStatus } from "@/app/[locale]/url-store";
 import DataLayersPanel from "@/containers/data-layers/panel";
 import Analysis from "@/containers/map-sidebar/analysis";
 import Main from "@/containers/map-sidebar/main";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { cn } from "@/lib/utils";
 
 const MapSidebar = () => {
@@ -12,6 +13,7 @@ const MapSidebar = () => {
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   const { default: mapRef } = useMap();
+  const isMobile = useIsMobile();
 
   const isHidden = mapStatus === MapStatus.upload;
   const [isCollapsed, setIsCollapsed] = useState(isHidden);
@@ -20,6 +22,11 @@ const MapSidebar = () => {
     if (!isHidden) {
       setIsCollapsed(false);
       requestAnimationFrame(() => mapRef?.resize());
+      return;
+    }
+
+    if (isMobile) {
+      setIsCollapsed(true);
       return;
     }
 
@@ -45,7 +52,7 @@ const MapSidebar = () => {
       clearTimeout(fallback);
       sidebar.removeEventListener("transitionend", handleTransitionEnd);
     };
-  }, [isHidden, mapRef]);
+  }, [isHidden, isMobile, mapRef]);
 
   return (
     <aside

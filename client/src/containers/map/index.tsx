@@ -34,6 +34,7 @@ import { LayerManager } from "@/containers/map/layer-manager";
 import { useLayerZoomConstraints } from "@/containers/map/layer-manager/use-layer-zoom-constraints";
 import MapLegend from "@/containers/map/legend";
 import MapLegendItem from "@/containers/map/legend/item";
+import MobileAnalysis from "@/containers/map/mobile-analysis";
 import MapTooltip from "@/containers/map/tooltip";
 import { env } from "@/env";
 import useAnalysisSettings, {
@@ -115,7 +116,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
     }
 
     const sidebar = document.querySelector("aside");
-    if (!sidebar) {
+    if (!sidebar || isMobile) {
       setShowHblMask(true);
       return;
     }
@@ -137,7 +138,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
       clearTimeout(fallback);
       sidebar.removeEventListener("transitionend", onTransitionEnd);
     };
-  }, [mapStatus]);
+  }, [mapStatus, isMobile]);
 
   // Enforce zoom constraints imperatively to avoid triggering _createProxyTransform
   // in @vis.gl/react-mapbox. Passing minZoom/maxZoom as props causes it to re-wrap
@@ -212,7 +213,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
           }
           {...props}
         >
-          <AnalyzeButton />
+          {isMobile ? <MobileAnalysis /> : <AnalyzeButton />}
           {loaded && (
             <>
               <LayerManager />
