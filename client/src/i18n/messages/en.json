@@ -213,7 +213,14 @@
       "cancel": "Cancel",
       "confirm": "Clear & go back"
     },
-    "leave-aria-label": "Leave analysis"
+    "leave-aria-label": "Leave analysis",
+    "mobile": {
+      "instructions": "<p><b>Tap on the map</b> to start drawing your custom area and get insights about it.</p>",
+      "verify-shape": "<p>To complete your shape, tap the first point again or double-tap anywhere to finish. When you're satisfied, tap <b>Confirm</b>. To start over, tap <b>Clear</b> to erase your shape.</p>",
+      "cancel-analysis": "Cancel analysis",
+      "show-instructions": "Show instructions",
+      "hide-instructions": "Hide instructions"
+    }
   },
   "widgets": {
     "card": {

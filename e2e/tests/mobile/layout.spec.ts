@@ -37,12 +37,20 @@ test.describe("Mobile layout", () => {
     await expect(mapItem).toHaveAttribute("aria-current", "true");
   });
 
-  test("Analysis starts upload mode and hides the nav", async ({ page }) => {
+  test("Analysis starts upload mode and Cancel analysis leaves it", async ({
+    page,
+  }) => {
     const nav = page.getByRole("navigation", { name: "Map views" });
 
     await nav.getByRole("button", { name: "Analysis" }).click();
 
     await expect(page).toHaveURL(/[?&]mapStatus=upload/);
     await expect(nav).toBeHidden();
+    await expect(page.getByText(/tap on the map/i)).toBeVisible();
+
+    await page.getByRole("button", { name: "Cancel analysis" }).click();
+
+    await expect(page).not.toHaveURL(/[?&]mapStatus=upload/);
+    await expect(nav).toBeVisible();
   });
 });

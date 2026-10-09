@@ -213,7 +213,14 @@
       "cancel": "Annuler",
       "confirm": "Effacer et revenir"
     },
-    "leave-aria-label": "Quitter l'analyse"
+    "leave-aria-label": "Quitter l'analyse",
+    "mobile": {
+      "instructions": "<p><b>Touchez la carte</b> pour commencer à dessiner votre zone personnalisée et obtenir des informations à son sujet.</p>",
+      "verify-shape": "<p>Pour terminer votre forme, touchez à nouveau le premier point ou touchez deux fois n'importe où pour finir. Lorsque vous êtes satisfait, touchez <b>Confirmer</b>. Pour recommencer, touchez <b>Effacer</b> pour supprimer votre forme.</p>",
+      "cancel-analysis": "Annuler l'analyse",
+      "show-instructions": "Afficher les instructions",
+      "hide-instructions": "Masquer les instructions"
+    }
   },
   "widgets": {
     "card": {
