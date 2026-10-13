@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import {
   AnalysisProvider,
   useAnalysisScrollRoot,
+  useAnalysisShare,
   useAnalysisViewportRef,
   useAnalysisWidgetSpy,
 } from "@/containers/analysis/analysis-context";
@@ -30,6 +31,18 @@ describe("@containers/analysis/analysis-context", () => {
     expect(() => {
       renderHook(() => useAnalysisWidgetSpy());
     }).toThrow("Analysis context is only available inside AnalysisProvider");
+  });
+
+  it("keeps the outer provider's share URL when providers are nested", () => {
+    const { result } = renderHook(() => useAnalysisShare(), {
+      wrapper: ({ children }: { children: ReactNode }) => (
+        <AnalysisProvider initialShareUrl="https://example.com/analysis/1">
+          <AnalysisProvider>{children}</AnalysisProvider>
+        </AnalysisProvider>
+      ),
+    });
+
+    expect(result.current.shareUrl).toBe("https://example.com/analysis/1");
   });
 
   it("updates scrollRoot when the viewport ref callback receives an element", () => {

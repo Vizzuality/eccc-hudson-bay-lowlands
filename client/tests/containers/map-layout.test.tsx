@@ -10,8 +10,16 @@ vi.mock("@/containers/mobile-data-view", () => ({
   default: () => null,
 }));
 
+vi.mock("@/containers/mobile-results-view", () => ({
+  default: () => null,
+}));
+
 vi.mock("@/containers/mobile-nav/map-mobile-nav", () => ({
   MapMobileNav: () => null,
+}));
+
+vi.mock("@/containers/mobile-nav/analysis-mobile-nav", () => ({
+  AnalysisMobileNav: () => null,
 }));
 
 vi.mock("@/containers/top-bar", () => ({

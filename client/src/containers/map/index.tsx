@@ -7,6 +7,7 @@ import {
   type LayersSettings,
   MapStatus,
   useIsMobileDataViewOpen,
+  useIsMobileResultsViewOpen,
   useLayerIds,
   useMapBasemap,
   useMapStatus,
@@ -68,6 +69,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
   const [showHblMask, setShowHblMask] = useState(false);
   const isMobile = useIsMobile();
   const isMobileDataViewOpen = useIsMobileDataViewOpen();
+  const isMobileResultsViewOpen = useIsMobileResultsViewOpen();
 
   const zoomToAnalysisArea = useCallback(() => {
     if (!analysisGeometry || !mapRef.current) return;
@@ -177,7 +179,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
   return (
     <div
       ref={containerRef}
-      inert={isMobile && isMobileDataViewOpen}
+      inert={isMobile && (isMobileDataViewOpen || isMobileResultsViewOpen)}
       className={cn(
         "relative isolate h-full w-full flex-1 overflow-hidden rounded-tl-3xl border border-white bg-white max-lg:rounded-none max-lg:border-0",
         className,

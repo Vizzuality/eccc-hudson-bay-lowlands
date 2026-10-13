@@ -2,7 +2,9 @@ import { type ReactNode, Suspense } from "react";
 import MapContainer from "@/containers/map";
 import { PAGE_BACKGROUND } from "@/containers/map-layout/constants";
 import MobileDataView from "@/containers/mobile-data-view";
+import { AnalysisMobileNav } from "@/containers/mobile-nav/analysis-mobile-nav";
 import { MapMobileNav } from "@/containers/mobile-nav/map-mobile-nav";
+import MobileResultsView from "@/containers/mobile-results-view";
 import TopBar from "@/containers/top-bar";
 
 type MapLayoutProps =
@@ -28,7 +30,9 @@ export default function MapLayout({
           <Suspense>
             <MapContainer />
             <MobileDataView />
+            <MobileResultsView />
             <MapMobileNav />
+            <AnalysisMobileNav />
           </Suspense>
         </section>
       )}

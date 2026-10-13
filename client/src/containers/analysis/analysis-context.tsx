@@ -29,15 +29,25 @@ type AnalysisContextValue = {
 
 const AnalysisContext = createContext<AnalysisContextValue | null>(null);
 
-export function AnalysisProvider({
-  children,
-  initialShareUrl = null,
-  initialCreatedAt = null,
-}: Readonly<{
+type AnalysisProviderProps = Readonly<{
   children: ReactNode;
   initialShareUrl?: string | null;
   initialCreatedAt?: string | null;
-}>) {
+}>;
+
+export function AnalysisProvider(props: AnalysisProviderProps) {
+  const parent = useContext(AnalysisContext);
+
+  if (parent) return props.children;
+
+  return <AnalysisStateProvider {...props} />;
+}
+
+function AnalysisStateProvider({
+  children,
+  initialShareUrl = null,
+  initialCreatedAt = null,
+}: AnalysisProviderProps) {
   const [scrollRoot, setScrollRoot] = useState<HTMLElement | null>(null);
   const scrollViewportRef = useCallback((el: HTMLDivElement | null) => {
     setScrollRoot(el);

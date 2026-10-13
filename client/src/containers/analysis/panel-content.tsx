@@ -13,13 +13,16 @@ import Widget from "@/containers/widgets";
 import ShareWidget from "@/containers/widgets/share";
 import { useAnalysisResult } from "@/hooks/use-analysis-settings";
 import { useShareAnalysis } from "@/hooks/use-share-analysis";
+import { cn } from "@/lib/utils";
 
 interface AnalysisPanelContentProps {
   headerActions?: ReactNode;
+  widgetsClassName?: string;
 }
 
 export default function AnalysisPanelContent({
   headerActions,
+  widgetsClassName,
 }: Readonly<AnalysisPanelContentProps>) {
   const t = useTranslations("analysis");
   const viewportRef = useAnalysisViewportRef();
@@ -50,8 +53,11 @@ export default function AnalysisPanelContent({
         <AnalysisNavigation />
       </div>
 
-      <ScrollArea className="min-h-0 flex-1" viewportRef={viewportRef}>
-        <section className="space-y-4 px-6 pb-10">
+      <ScrollArea
+        className="min-h-0 flex-1 [&>[data-slot=scroll-area-viewport]>div]:block!"
+        viewportRef={viewportRef}
+      >
+        <section className={cn("space-y-4 px-6 pb-10", widgetsClassName)}>
           {(Object.keys(analysisResult) as (keyof AnalysisResult)[])
             .filter((id): id is WidgetId => id !== "aoi_size")
             .map((id) => (

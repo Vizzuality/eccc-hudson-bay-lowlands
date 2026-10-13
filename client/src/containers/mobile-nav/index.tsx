@@ -9,6 +9,7 @@ export type MobileNavItem = {
   icon?: LucideIcon;
   current?: boolean;
   cta?: boolean;
+  iconOnly?: boolean;
   variant?: "default" | "secondary";
   disabled?: boolean;
 };
@@ -46,21 +47,28 @@ export function MobileNav({
             icon: Icon,
             current,
             cta,
+            iconOnly,
             variant = "default",
             disabled,
           }) => (
             <li
               key={`mobile-nav-${id}`}
-              className={cn(cta && hasTabs ? "basis-[138px]" : "flex-1")}
+              className={cn(
+                "flex-1",
+                cta && hasTabs && "flex-initial basis-[138px]",
+                iconOnly && "flex-none basis-auto",
+              )}
             >
               <Button
                 variant={cta ? variant : "ghost"}
                 aria-current={current ? "true" : undefined}
                 disabled={disabled}
                 onClick={onClick}
+                aria-label={iconOnly ? label : undefined}
                 className={cn(
                   "h-14 w-full font-bold text-xs leading-5",
                   cta ? "px-4" : "flex-col gap-1 px-2 hover:bg-transparent",
+                  iconOnly && "size-14 rounded-full px-0",
                 )}
               >
                 {Icon && (
@@ -70,7 +78,7 @@ export function MobileNav({
                     <Icon aria-hidden />
                   </span>
                 )}
-                {label}
+                {!iconOnly && label}
               </Button>
             </li>
           ),
