@@ -27,6 +27,7 @@ export function useMapStatus() {
 
 export enum MobileView {
   data = "data",
+  results = "results",
 }
 
 export function useMobileView() {
@@ -43,6 +44,13 @@ export function useIsMobileDataViewOpen() {
   const { mapStatus } = useMapStatus();
 
   return mobileView === MobileView.data && mapStatus === MapStatus.default;
+}
+
+export function useIsMobileResultsViewOpen() {
+  const { mobileView } = useMobileView();
+  const { mapStatus } = useMapStatus();
+
+  return mobileView === MobileView.results && mapStatus === MapStatus.analysis;
 }
 
 export function useCategory() {

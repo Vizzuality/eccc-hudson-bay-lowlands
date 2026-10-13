@@ -26,6 +26,12 @@ vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
   };
 });
 
+const mockIsMobile = vi.fn(() => false);
+
+vi.mock("@/hooks/use-is-mobile", () => ({
+  useIsMobile: () => mockIsMobile(),
+}));
+
 vi.mock("@/hooks/use-analysis-settings", () => ({
   default: () => [
     { locationType: "draw", geometry: null, fileName: null },
@@ -86,6 +92,15 @@ describe("@containers/map-sidebar/analysis", () => {
         screen.getByRole("heading", { name: messages.widgets[key].title }),
       ).toBeInTheDocument();
     }
+  });
+
+  it("renders no panel on mobile, where the results view shows it", () => {
+    mockIsMobile.mockReturnValueOnce(true);
+    renderAnalysis();
+
+    expect(
+      screen.queryByRole("heading", { name: /my area of interest/i }),
+    ).not.toBeInTheDocument();
   });
 
   it("renders the share widget", () => {

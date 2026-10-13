@@ -20,6 +20,8 @@ const { mockUseMapDraw, mockSetAnalysisSettings, mockAnalysisState } =
 
 vi.mock("@/app/[locale]/url-store", () => ({
   MapStatus: { default: "default", upload: "upload", analysis: "analysis" },
+  MobileView: { data: "data", results: "results" },
+  useMobileView: () => ({ mobileView: null, setMobileView: vi.fn() }),
   useMapStatus: vi.fn(),
 }));
 

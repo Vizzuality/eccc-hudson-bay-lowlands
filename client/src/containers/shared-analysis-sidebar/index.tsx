@@ -4,8 +4,13 @@ import CloseAnalysisButton from "@/containers/analysis/close-analysis-button";
 import AnalysisPanelContent from "@/containers/analysis/panel-content";
 import DataLayersPanel from "@/containers/data-layers/panel";
 import ShareButton from "@/containers/share-button";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 
 export default function SharedAnalysisSidebar() {
+  const isMobile = useIsMobile();
+
+  if (isMobile) return null;
+
   return (
     <aside className="flex h-full shrink-0">
       <div className="flex h-full w-[480px] min-[1440px]:w-[600px] shrink-0 flex-col">

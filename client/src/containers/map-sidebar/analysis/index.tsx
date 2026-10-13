@@ -7,16 +7,20 @@ import CloseAnalysisButton from "@/containers/analysis/close-analysis-button";
 import AnalysisPanelContent from "@/containers/analysis/panel-content";
 import ShareButton from "@/containers/share-button";
 import { useAnalysisResult } from "@/hooks/use-analysis-settings";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 
 function AnalysisPanel() {
   const analysisResult = useAnalysisResult();
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (!analysisResult) {
       router.push("/");
     }
   }, [analysisResult, router]);
+
+  if (isMobile) return null;
 
   return (
     <AnalysisPanelContent

@@ -5,7 +5,12 @@ import { CircleAlertIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useLayoutEffect } from "react";
-import { MapStatus, useMapStatus } from "@/app/[locale]/url-store";
+import {
+  MapStatus,
+  MobileView,
+  useMapStatus,
+  useMobileView,
+} from "@/app/[locale]/url-store";
 import { AnalysisProvider } from "@/containers/analysis/analysis-context";
 import MapLayout from "@/containers/map-layout";
 import SharedAnalysisSidebar from "@/containers/shared-analysis-sidebar";
@@ -30,6 +35,7 @@ function SharedAnalysisHydrator({
   const setAnalysisResult = useSetAnalysisResult();
   const [, setSettings] = useAnalysisSettings();
   const { setMapStatus } = useMapStatus();
+  const { setMobileView } = useMobileView();
   const analysisResult = useAnalysisResult();
 
   useLayoutEffect(() => {
@@ -40,11 +46,12 @@ function SharedAnalysisHydrator({
       fileName: null,
     });
     setMapStatus(MapStatus.analysis);
+    setMobileView(MobileView.results);
 
     return () => {
       setAnalysisResult(null);
     };
-  }, [data, setAnalysisResult, setSettings, setMapStatus]);
+  }, [data, setAnalysisResult, setSettings, setMapStatus, setMobileView]);
 
   if (!analysisResult) return <SharedAnalysisSkeleton />;
 

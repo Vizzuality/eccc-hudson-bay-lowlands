@@ -2,7 +2,12 @@ import { useMutation } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import type { Feature } from "geojson";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MapStatus, useMapStatus } from "@/app/[locale]/url-store";
+import {
+  MapStatus,
+  MobileView,
+  useMapStatus,
+  useMobileView,
+} from "@/app/[locale]/url-store";
 import useAnalysisSettings, {
   useIsAnalyzing,
   useSetAnalysisResult,
@@ -19,6 +24,7 @@ import { mapUploadError, type UploadBarError } from "./types";
 
 export function useUploadAnalysis() {
   const { mapStatus, setMapStatus } = useMapStatus();
+  const { setMobileView } = useMobileView();
   const [isDrawing, setIsDrawing] = useState(false);
   const [error, setError] = useState<UploadBarError | null>(null);
   const [{ geometry, locationType, fileName }, setAnalysisSettings] =
@@ -37,6 +43,7 @@ export function useUploadAnalysis() {
       setIsDrawing(false);
       setAnalysisResult(data);
       setMapStatus(MapStatus.analysis);
+      setMobileView(MobileView.results);
     },
     onError: (err) => {
       setIsAnalyzing(false);
