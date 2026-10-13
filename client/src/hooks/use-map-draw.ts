@@ -276,17 +276,22 @@ export default function useMapDraw(props?: UseMapboxDrawProps) {
       return;
     }
 
-    const onMapClick = () => {
+    const onMapTap = () => {
       if (!enabledRef.current) return;
-      if (draw.getMode() === "draw_polygon") {
+      if (draw.getMode() !== "draw_polygon") return;
+      const shape = draw.getAll().features[0]?.geometry;
+      if (shape?.type === "Polygon" && shape.coordinates[0]?.length) {
         onDrawingStartRef.current?.();
       }
     };
 
-    map.on("click", onMapClick);
+    map.on("click", onMapTap);
+    // mapbox-gl-draw calls preventDefault on touchend, so taps never emit click.
+    map.on("touchend", onMapTap);
 
     return () => {
-      map.off("click", onMapClick);
+      map.off("click", onMapTap);
+      map.off("touchend", onMapTap);
     };
   }, [map, draw]);
 
