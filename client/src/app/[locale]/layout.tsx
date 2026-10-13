@@ -58,7 +58,7 @@ export default async function LocaleLayout({
           <NuqsAdapter>
             <TooltipProvider>
               <ClientProviders>
-                <div className="flex h-screen flex-col overflow-hidden">
+                <div className="flex h-dvh flex-col overflow-hidden">
                   {showBanner && <BetaBanner hideOnMobile={showIntro} />}
                   {showIntro && <IntroModal />}
                   {children}
