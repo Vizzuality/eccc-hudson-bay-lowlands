@@ -4,7 +4,7 @@ Guide for deploying the ECCC Hudson Bay Lowlands application to AWS.
 
 ## Deployment Architecture
 
-The project uses trunk-based deployment: every push to `main` that touches application or infrastructure code triggers an automated deployment to the `dev` environment on AWS Elastic Beanstalk.
+The project uses trunk-based deployment: every push to `main` that touches application or infrastructure code triggers an automated deployment to the `dev` environment on AWS Elastic Beanstalk. Tagged releases deploy to `staging` (see [Releasing to Staging](#releasing-to-staging)).
 
 ```mermaid
 graph LR
@@ -81,6 +81,23 @@ The workflow supports `workflow_dispatch` for manual triggers:
 4. Click "Run workflow"
 
 Manual dispatch always rebuilds both client and API images regardless of file changes.
+
+## Releasing to Staging
+
+Pushing a tag matching `rc-v*.*.*` runs **Deploy Staging** (`.github/workflows/deploy-staging.yml`), which builds both images, tags them with the git tag and `staging`, and deploys to `staging.eccc.dev-vizzuality.com`.
+
+Versions follow [semver](https://semver.org). To cut a release:
+
+1. Bump `version` in `client/package.json` and `api/pyproject.toml`, then run `uv lock` in `api/`
+2. Move the changes into a new version heading in [`CHANGELOG.md`](../CHANGELOG.md)
+3. Merge to `main`, then tag the merge commit and push the tag:
+
+```bash
+git tag rc-v0.4.0
+git push origin rc-v0.4.0
+```
+
+The tag must be `rc-v` followed directly by the version. `rc-v3.0.1` and `rc-v3.1.0` were mistyped and correspond to 0.3.1 and 0.3.2.
 
 ## Path Filters
 
