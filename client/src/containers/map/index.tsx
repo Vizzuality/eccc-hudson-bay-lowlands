@@ -22,6 +22,7 @@ import {
   DEFAULT_MIN_ZOOM,
   DESKTOP_FIT_PADDING,
   HUDSON_BAY_MAX_BOUNDS,
+  INDIGENOUS_TERRITORIES_LAYER_ID,
   MOBILE_FIT_PADDING,
 } from "@/containers/map/constants";
 import { Controls } from "@/containers/map/controls";
@@ -36,6 +37,7 @@ import { useLayerZoomConstraints } from "@/containers/map/layer-manager/use-laye
 import MapLegend from "@/containers/map/legend";
 import MapLegendItem from "@/containers/map/legend/item";
 import MobileAnalysis from "@/containers/map/mobile-analysis";
+import { MushkegowukMask } from "@/containers/map/mushkegowuk-mask";
 import MapTooltip from "@/containers/map/tooltip";
 import { env } from "@/env";
 import useAnalysisSettings, {
@@ -60,6 +62,9 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
   const mapStyle = BASEMAPS[basemap as BasemapId].mapStyle;
   const { layerIds, setLayerIds } = useLayerIds();
   const { layersSettings, setLayersSettings } = useSyncLayersSettings();
+  const showMushkegowukMask =
+    layerIds.includes(INDIGENOUS_TERRITORIES_LAYER_ID) &&
+    layersSettings?.[INDIGENOUS_TERRITORIES_LAYER_ID]?.visibility !== false;
   const { maxZoom } = useLayerZoomConstraints();
   const [isAnalyzing] = useIsAnalyzing();
   const { mapStatus } = useMapStatus();
@@ -219,6 +224,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
           {loaded && (
             <>
               <LayerManager />
+              {showMushkegowukMask && <MushkegowukMask />}
               {showHblMask && <HblAreaMask />}
               {mapStatus === MapStatus.analysis && <AnalysisAreaMask />}
               <MapTooltip />
