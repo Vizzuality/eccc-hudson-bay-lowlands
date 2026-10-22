@@ -72,7 +72,8 @@ jobs:
       - name: Open a PR when a newer Trivy is released
         run: |
           pinned=$(cat .github/trivy-version)
-          latest=$(gh api repos/aquasecurity/trivy/releases/latest --jq .tag_name)
+          url=$(curl -fsS -o /dev/null -w '%{redirect_url}' https://github.com/aquasecurity/trivy/releases/latest)
+          latest=${url##*/}
           echo "Pinned $pinned, latest $latest"
           [ "$latest" = "$pinned" ] && exit 0
 
