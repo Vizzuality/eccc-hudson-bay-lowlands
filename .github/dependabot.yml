@@ -1,0 +1,15 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: daily
+    versioning-strategy: lockfile-only
+
+  - package-ecosystem: uv
+    directories:
+      - /api
+      - /data-processing
+    schedule:
+      interval: daily
+    versioning-strategy: lockfile-only
