@@ -229,7 +229,7 @@ See `.github/workflows/` for full workflow definitions.
 ## Dependency Scanning
 
 - **Dependabot alerts** (enabled in repo settings) flag vulnerable dependencies on `main`. No update PRs are opened; security updates are applied manually.
-- **Scan Latest Release Tag** (`.github/workflows/scan-latest-tag.yml`) runs Trivy daily at 06:00 UTC against the most recently created `rc-v*` tag, i.e. what is on staging. It fails on fixable HIGH or CRITICAL vulnerabilities and uploads them as code scanning alerts (Security > Code scanning, tool "Trivy", filter by the tag's ref). Run it by hand from Actions > Scan Latest Release Tag.
+- **Scan Latest Release Tag** (`.github/workflows/scan-latest-tag.yml`) runs Trivy daily at 06:00 UTC against the most recently created `rc-v*` tag, i.e. what is on staging. It fails on fixable HIGH or CRITICAL vulnerabilities and uploads them as code scanning alerts (Security > Code scanning, tool "Trivy", filter by the tag's ref). Run it by hand from Actions > Scan Latest Release Tag. The Trivy version is pinned in `.github/trivy-version`; a second job opens (or updates) a PR from `chore/bump-trivy-version` when a newer Trivy is released. It never blocks the scan. CI does not run on that bot PR; close and reopen it to trigger checks.
 
 ## Related Documentation
 
