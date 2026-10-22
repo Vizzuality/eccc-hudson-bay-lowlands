@@ -226,6 +226,11 @@ Separate CI workflows run on pull requests for validation only (no deployment):
 
 See `.github/workflows/` for full workflow definitions.
 
+## Dependency Scanning
+
+- **Dependabot** (`.github/dependabot.yml`) opens daily lockfile-only update PRs for `pnpm-lock.yaml`, `api/uv.lock` and `data-processing/uv.lock`. Security updates for Dependabot alerts are applied manually. It never edits `package.json` or `pyproject.toml` ranges for version updates.
+- **Scan Latest Release Tag** (`.github/workflows/scan-latest-tag.yml`) runs Trivy daily at 06:00 UTC against the most recently created `rc-v*` tag, i.e. what is on staging. It fails on fixable HIGH or CRITICAL vulnerabilities and uploads them as code scanning alerts (Security > Code scanning, tool "Trivy", filter by the tag's ref). Run it by hand from Actions > Scan Latest Release Tag.
+
 ## Related Documentation
 
 - [Architecture](ARCHITECTURE.md) -- system topology and request flow
