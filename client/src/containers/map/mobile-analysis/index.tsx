@@ -19,9 +19,14 @@ import {
 import RichText from "@/components/ui/rich-text";
 import { UploadErrorAlert } from "@/containers/map/analyze-button/upload-bar/error-alert";
 import { useUploadAnalysis } from "@/containers/map/analyze-button/upload-bar/use-upload-analysis";
-import { MobileNav, type MobileNavItem } from "@/containers/mobile-nav";
+import {
+  ANALYSIS_CTA_TRANSITION_NAME,
+  MobileNav,
+  type MobileNavItem,
+} from "@/containers/mobile-nav";
 import useMapDraw from "@/hooks/use-map-draw";
 import type { ValidGeometryType } from "@/lib/utils/geometry-upload";
+import { withViewTransition } from "@/lib/view-transition";
 
 const MobileAnalysis = () => {
   const t = useTranslations("analysis");
@@ -90,15 +95,7 @@ const MobileAnalysis = () => {
           onClick: handleConfirm,
         },
       ]
-    : [
-        {
-          id: "cancel",
-          label: t("mobile.cancel-analysis"),
-          icon: XIcon,
-          cta: true,
-          onClick: () => setMapStatus(MapStatus.default),
-        },
-      ];
+    : [];
 
   return (
     <>
@@ -152,7 +149,23 @@ const MobileAnalysis = () => {
           </CollapsibleTrigger>
         )}
       </Collapsible>
-      <MobileNav as="div" items={items} />
+      <MobileNav
+        as="div"
+        items={items}
+        trailingAction={
+          isDrawing
+            ? undefined
+            : {
+                label: t("mobile.cancel-analysis"),
+                icon: XIcon,
+                transitionName: ANALYSIS_CTA_TRANSITION_NAME,
+                onClick: () =>
+                  withViewTransition(() => {
+                    setMapStatus(MapStatus.default);
+                  }),
+              }
+        }
+      />
     </>
   );
 };
