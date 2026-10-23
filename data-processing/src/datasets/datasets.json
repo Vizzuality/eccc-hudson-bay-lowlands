@@ -94,5 +94,27 @@
         "extract": true
       }
     ]
+  },
+  "indigenous_lands": {
+    "type": "vector",
+    "format": "Shapefile",
+    "layers": [
+      {
+        "url": "https://data.sac-isc.gc.ca/geomatics/rest/directories/arcgisoutput/DonneesOuvertes_OpenData/Premiere_Nation_First_Nation/Premiere_Nation_First_Nation_SHP.zip",
+        "filename": "first_nations.zip"
+      },
+      {
+        "url": "https://ftp.maps.canada.ca/pub/nrcan_rncan/vector/geobase_al_ta/shp_eng/AL_TA_CA_SHP_eng.zip",
+        "filename": "aboriginal_lands.zip"
+      },
+      {
+        "url": "https://data.sac-isc.gc.ca/geomatics/rest/directories/arcgisoutput/DonneesOuvertes_OpenData/Traite_moderne_Modern_Treaty/Traite_moderne_Modern_Treaty_SHP.zip",
+        "filename": "modern_treaties.zip"
+      },
+      {
+        "url": "https://data.sac-isc.gc.ca/geomatics/rest/directories/arcgisoutput/DonneesOuvertes_OpenData/Traite_historique_Historic_Treaty/Traite_historique_Historic_Treaty_SHP.zip",
+        "filename": "historic_treaties.zip"
+      }
+    ]
   }
 }
