@@ -145,7 +145,9 @@ def upload_to_mapbox(
         resp.raise_for_status()
         creds = resp.json()
 
-        # 2. Upload file to Mapbox's staging S3 bucket
+        # 2. Upload file to Mapbox's staging S3 bucket.
+        #    The bucket is owned by Mapbox and provided via their Uploads API
+        #    credentials endpoint, so ExpectedBucketOwner cannot be set.
         s3 = boto3.client(
             "s3",
             aws_access_key_id=creds["accessKeyId"],
@@ -153,7 +155,7 @@ def upload_to_mapbox(
             aws_session_token=creds["sessionToken"],
             region_name="us-east-1",
         )
-        s3.upload_file(str(mbtiles_path), creds["bucket"], creds["key"])
+        s3.upload_file(str(mbtiles_path), creds["bucket"], creds["key"])  # NOSONAR
 
         # 3. Create the upload
         resp = requests.post(
