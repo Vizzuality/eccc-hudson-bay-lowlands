@@ -43,7 +43,10 @@ export function useIsMobileDataViewOpen() {
   const { mobileView } = useMobileView();
   const { mapStatus } = useMapStatus();
 
-  return mobileView === MobileView.data && mapStatus === MapStatus.default;
+  return (
+    mobileView === MobileView.data &&
+    (mapStatus === MapStatus.default || mapStatus === MapStatus.analysis)
+  );
 }
 
 export function useIsMobileResultsViewOpen() {

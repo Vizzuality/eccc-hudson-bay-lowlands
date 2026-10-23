@@ -33,6 +33,18 @@ describe("@containers/mobile-nav/analysis-mobile-nav", () => {
     expect(onUrlUpdate.mock.lastCall?.[0].searchParams.has("view")).toBe(false);
   });
 
+  it("sets view=data when Data is tapped from the results", async () => {
+    const user = userEvent.setup();
+    const onUrlUpdate = vi.fn<OnUrlUpdateFunction>();
+    renderAt("?mapStatus=analysis&view=results", onUrlUpdate);
+
+    await user.click(screen.getByRole("button", { name: "Data" }));
+
+    expect(onUrlUpdate.mock.lastCall?.[0].searchParams.get("view")).toBe(
+      "data",
+    );
+  });
+
   it("opens the leave dialog when the close button is tapped", async () => {
     const user = userEvent.setup();
     renderAt("?mapStatus=analysis&view=results");
