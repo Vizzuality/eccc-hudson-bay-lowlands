@@ -36,8 +36,14 @@ describe("@containers/mobile-data-view", () => {
     ).toContainElement(screen.getByTestId("main"));
   });
 
-  it("renders nothing when view=data is left over in analysis mode", () => {
+  it("renders in analysis mode when view=data", () => {
     renderAt("?view=data&mapStatus=analysis");
+
+    expect(screen.getByTestId("main")).toBeInTheDocument();
+  });
+
+  it("renders nothing when view=data is left over in upload mode", () => {
+    renderAt("?view=data&mapStatus=upload");
 
     expect(screen.queryByTestId("main")).not.toBeInTheDocument();
   });
