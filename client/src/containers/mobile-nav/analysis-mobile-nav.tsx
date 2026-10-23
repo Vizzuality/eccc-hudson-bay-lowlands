@@ -1,5 +1,5 @@
 "use client";
-import { FileChartLineIcon, MapIcon, XIcon } from "lucide-react";
+import { FileChartLineIcon, LayersIcon, MapIcon, XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import {
@@ -40,14 +40,18 @@ export function AnalysisMobileNav() {
             onClick: () => setMobileView(null),
           },
           {
-            id: "close",
-            label: tAnalysis("leave-aria-label"),
-            icon: XIcon,
-            cta: true,
-            iconOnly: true,
-            onClick: () => setShowCloseDialog(true),
+            id: "data",
+            label: t("data"),
+            icon: LayersIcon,
+            current: mobileView === MobileView.data,
+            onClick: () => setMobileView(MobileView.data),
           },
         ]}
+        trailingAction={{
+          label: tAnalysis("leave-aria-label"),
+          icon: XIcon,
+          onClick: () => setShowCloseDialog(true),
+        }}
       />
       <CloseDialog open={showCloseDialog} onOpenChange={setShowCloseDialog} />
     </>

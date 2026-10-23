@@ -9,7 +9,6 @@ export type MobileNavItem = {
   icon?: LucideIcon;
   current?: boolean;
   cta?: boolean;
-  iconOnly?: boolean;
   variant?: "default" | "secondary";
   disabled?: boolean;
 };
@@ -17,25 +16,28 @@ export type MobileNavItem = {
 type MobileNavProps = {
   label?: string;
   items: MobileNavItem[];
+  trailingAction?: Pick<MobileNavItem, "label" | "onClick" | "icon">;
   as?: "nav" | "div";
 };
 
 export function MobileNav({
   label,
   items,
+  trailingAction,
   as: Container = "nav",
 }: Readonly<MobileNavProps>) {
   const hasTabs = items.some(({ cta }) => !cta);
+  const TrailingIcon = trailingAction?.icon;
 
   return (
     <Container
       aria-label={Container === "nav" ? label : undefined}
       data-download-exclude
-      className="absolute inset-x-0 bottom-0 z-10 p-4 lg:hidden"
+      className="absolute inset-x-0 bottom-0 z-10 flex items-center gap-2 p-4 lg:hidden"
     >
       <ul
         className={cn(
-          "flex rounded-full bg-background p-2 shadow-md",
+          "flex flex-1 rounded-full bg-background p-2 shadow-md",
           !hasTabs && "gap-2",
         )}
       >
@@ -47,7 +49,6 @@ export function MobileNav({
             icon: Icon,
             current,
             cta,
-            iconOnly,
             variant = "default",
             disabled,
           }) => (
@@ -56,7 +57,6 @@ export function MobileNav({
               className={cn(
                 "flex-1",
                 cta && hasTabs && "flex-initial basis-[138px]",
-                iconOnly && "flex-none basis-auto",
               )}
             >
               <Button
@@ -64,11 +64,9 @@ export function MobileNav({
                 aria-current={current ? "true" : undefined}
                 disabled={disabled}
                 onClick={onClick}
-                aria-label={iconOnly ? label : undefined}
                 className={cn(
                   "h-14 w-full font-bold text-xs leading-5",
                   cta ? "px-4" : "flex-col gap-1 px-2 hover:bg-transparent",
-                  iconOnly && "size-14 rounded-full px-0",
                 )}
               >
                 {Icon && (
@@ -78,12 +76,21 @@ export function MobileNav({
                     <Icon aria-hidden />
                   </span>
                 )}
-                {!iconOnly && label}
+                {label}
               </Button>
             </li>
           ),
         )}
       </ul>
+      {trailingAction && (
+        <Button
+          onClick={trailingAction.onClick}
+          aria-label={trailingAction.label}
+          className="size-[72px] shrink-0 rounded-full shadow-md"
+        >
+          {TrailingIcon && <TrailingIcon aria-hidden />}
+        </Button>
+      )}
     </Container>
   );
 }
