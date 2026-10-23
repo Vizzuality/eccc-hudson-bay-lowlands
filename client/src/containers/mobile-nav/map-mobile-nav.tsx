@@ -1,5 +1,5 @@
 "use client";
-import { LayersIcon, MapIcon } from "lucide-react";
+import { LayersIcon, MapIcon, PlusIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
   MapStatus,
@@ -7,7 +7,11 @@ import {
   useMapStatus,
   useMobileView,
 } from "@/app/[locale]/url-store";
-import { MobileNav } from "@/containers/mobile-nav";
+import {
+  ANALYSIS_CTA_TRANSITION_NAME,
+  MobileNav,
+} from "@/containers/mobile-nav";
+import { withViewTransition } from "@/lib/view-transition";
 
 export function MapMobileNav() {
   const t = useTranslations("mobile-nav");
@@ -34,16 +38,17 @@ export function MapMobileNav() {
           current: mobileView === MobileView.data,
           onClick: () => setMobileView(MobileView.data),
         },
-        {
-          id: "analysis",
-          label: t("analysis"),
-          cta: true,
-          onClick: () => {
+      ]}
+      trailingAction={{
+        label: t("analysis"),
+        icon: PlusIcon,
+        transitionName: ANALYSIS_CTA_TRANSITION_NAME,
+        onClick: () =>
+          withViewTransition(() => {
             setMobileView(null);
             setMapStatus(MapStatus.upload);
-          },
-        },
-      ]}
+          }),
+      }}
     />
   );
 }
