@@ -2156,8 +2156,8 @@
       "id": 2,
       "metadata": {
         "title": {
-          "en": "Indigenous Value",
-          "fr": "Valeur autochtone"
+          "en": "Indigenous Lands",
+          "fr": "Terres autochtones"
         }
       },
       "datasets": [
@@ -2165,8 +2165,8 @@
           "id": 8,
           "metadata": {
             "title": {
-              "en": "Indigenous Territories",
-              "fr": "Territoires autochtones"
+              "en": "Indigenous Territories (Native Land Digital)",
+              "fr": "Territoires autochtones (Native Land Digital)"
             },
             "description": {
               "en": "Native Land maps Indigenous territories, treaties, and languages. The map is a living document informed by contributions of Indigenous communities.",
@@ -2367,6 +2367,440 @@
                   "event": "click",
                   "multi": true,
                   "dedup_key": "Name"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "metadata": {
+            "title": {
+              "en": "First Nation Locations (ISC)",
+              "fr": "Emplacements des Premières Nations (SAC)"
+            },
+            "description": {
+              "en": "The First Nations geographic location dataset contains the geographic location of First Nations (groups and subgroups) in Canada as points as well as basic attributes data. The location identifies where the First Nations live. Each First Nation point represents its administrative office address as it is registered in Indigenous Services Canada (ISC) Band Governance Management System (BGMS).",
+              "fr": "Le jeu de données des Premières Nations contient à la fois l’emplacement géographique des Premières Nations (groupes et sous-groupes) du Canada sous forme de points ainsi que quelques attributs de base. La localisation vise à identifier l’endroit où vivent les Premières Nations. Chaque point de Première Nation représente l’adresse de son bureau administratif tel qu’il est inscrit dans le Système d'information sur l'administration des bandes des Services aux Autochtones Canada (SAC)."
+            },
+            "source": {
+              "en": "https://data.sac-isc.gc.ca/geomatics/rest/directories/arcgisoutput/DonneesOuvertes_OpenData/Premiere_Nation_First_Nation/Premiere_Nation_First_Nation_SHP.zip",
+              "fr": "https://data.sac-isc.gc.ca/geomatics/rest/directories/arcgisoutput/DonneesOuvertes_OpenData/Premiere_Nation_First_Nation/Premiere_Nation_First_Nation_SHP.zip"
+            },
+            "citation": {
+              "en": "Government of Canada; Indigenous Services Canada; Information Management Branch, Geomatics Services",
+              "fr": "Gouvernement du Canada; Services aux Autochtones Canada; Direction générale de la gestion de l'information, Services géomatiques"
+            }
+          },
+          "layers": [
+            {
+              "id": "ecc-design.428hq1",
+              "format": "vector",
+              "path": "ecc-design.428hq1",
+              "type": "",
+              "unit": "",
+              "metadata": {
+                "title": {
+                  "en": "First Nation Locations",
+                  "fr": "Emplacements des Premières Nations"
+                },
+                "description": {
+                  "en": "Geographic locations of First Nations in Canada.",
+                  "fr": "Emplacements géographiques des Premières Nations au Canada."
+                }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "id": "first-nations-mbtiles-cuenzf",
+                    "type": "circle",
+                    "paint": {
+                      "circle-color": "#a3ffbc",
+                      "circle-stroke-width": [
+                        "interpolate",
+                        ["linear"],
+                        ["zoom"],
+                        0,
+                        1,
+                        5,
+                        10,
+                        7,
+                        20
+                      ],
+                      "circle-stroke-opacity": 0.28,
+                      "circle-radius": [
+                        "interpolate",
+                        ["linear"],
+                        ["zoom"],
+                        0,
+                        4,
+                        5,
+                        3,
+                        7,
+                        10
+                      ]
+                    },
+                    "source-layer": "first_nations.mbtiles-cuenzf"
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "color": "#a3ffbc",
+                      "label": {
+                        "en": "First Nation Location",
+                        "fr": "Emplacement de Première Nation"
+                      }
+                    }
+                  ]
+                },
+                "interaction_config": {
+                  "keys": ["BAND_NAME"],
+                  "type": "feature-value",
+                  "event": "click"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "metadata": {
+            "title": {
+              "en": "Aboriginal Lands (NRCan)",
+              "fr": "Terres autochtones (RNCan)"
+            },
+            "description": {
+              "en": "The Aboriginal Lands of Canada Legislative Boundaries web service includes legislative boundaries of Indian Reserves, Land Claim Settlement Lands (lands created under Comprehensive Land Claims Process that do not or will not have Indian Reserve status under the Indian Act) and Indian Lands.",
+              "fr": "Le service web des limites législatives des terres autochtones du Canada inclut les limites législatives des réserves indiennes, des terres octroyées par une entente (terres créées en vertu du processus des revendications territoriales globales qui n’ont ou n’auront pas le statut de réserve indienne tel que défini dans la Loi sur les Indiens) et des terres indiennes."
+            },
+            "source": {
+              "en": "https://ftp.maps.canada.ca/pub/nrcan_rncan/vector/geobase_al_ta/shp_eng/AL_TA_CA_SHP_eng.zip",
+              "fr": "https://ftp.maps.canada.ca/pub/nrcan_rncan/vector/geobase_al_ta/shp_eng/AL_TA_CA_SHP_eng.zip"
+            },
+            "citation": {
+              "en": "Government of Canada; Natural Resources Canada; Surveyor General Branch, nrcan.clss-satc.rncan@canada.ca",
+              "fr": "Gouvernement du Canada; Ressources naturelles Canada; Direction de l'arpenteur général, nrcan.clss-satc.rncan@canada.ca"
+            }
+          },
+          "layers": [
+            {
+              "id": "ecc-design.kfob4d",
+              "format": "vector",
+              "path": "ecc-design.kfob4d",
+              "type": "",
+              "unit": "",
+              "metadata": {
+                "title": {
+                  "en": "Aboriginal Lands",
+                  "fr": "Terres autochtones"
+                },
+                "description": {
+                  "en": "Legislative boundaries of Indian Reserves, Land Claim Settlement Lands, and Indian Lands.",
+                  "fr": "Limites législatives des réserves indiennes, des terres issues de règlements de revendications territoriales et des terres indiennes."
+                }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "id": "aboriginal-lands-mbtiles-h3xxv4",
+                    "type": "fill",
+                    "paint": {
+                      "fill-color": "#00a8b8",
+                      "fill-opacity": 0.8,
+                      "fill-outline-color": "#00a8b8"
+                    },
+                    "source-layer": "aboriginal_lands.mbtiles-h3xxv4"
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "color": "#00a8b8",
+                      "label": {
+                        "en": "Aboriginal Lands",
+                        "fr": "Terres autochtones"
+                      }
+                    }
+                  ]
+                },
+                "interaction_config": {
+                  "keys": ["NAME_EN", "NAME_FR", "ALTYPE_EN", "ALTYPE_FR"],
+                  "type": "feature-value",
+                  "event": "click"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": 12,
+          "metadata": {
+            "title": {
+              "en": "Modern Treaties (ISC)",
+              "fr": "Traités modernes (SAC)"
+            },
+            "description": {
+              "en": "The Modern treaties (formerly known as the Post-1975 treaties) dataset contains geographic boundaries as well as basic attribute data representing signed agreements that were negotiated between Indigenous groups, the Government of Canada, and provincial and territorial governments after 1975. These boundaries represent the areas of Canada where Indigenous land rights and title have not been addressed by treaty or through other legal means. These boundaries represent the final result of a negotiated First Nation’s claimed area. These boundaries are usually not surveyed but help to delineate the geographic extent of the rights of Indigenous beneficiaries defined within the agreement.",
+              "fr": "Le jeu de données des traités modernes (anciennement connus sous le nom de traités post-1975) contient à la fois les limites géographiques ainsi que quelques attributs de base des traités signés qui ont été négociés entre les peuples autochtones, le gouvernement du Canada, et les gouvernements provinciaux et territoriaux après 1975. Ces limites représentent les régions du Canada pour lesquelles les droits ancestraux revendiqués n’ont pas été reconnus au moyen d’un traité ni d’autres dispositions légales. Ces limites représentent le résultat final d’une négociation d’une région revendiquée par une Première Nation. Ces limites ne sont généralement pas arpentées, mais aident à délimiter l'étendue géographique des droits des bénéficiaires autochtones définis dans l'accord."
+            },
+            "source": {
+              "en": "https://data.sac-isc.gc.ca/geomatics/rest/directories/arcgisoutput/DonneesOuvertes_OpenData/Traite_moderne_Modern_Treaty/Traite_moderne_Modern_Treaty_SHP.zip",
+              "fr": "https://data.sac-isc.gc.ca/geomatics/rest/directories/arcgisoutput/DonneesOuvertes_OpenData/Traite_moderne_Modern_Treaty/Traite_moderne_Modern_Treaty_SHP.zip"
+            },
+            "citation": {
+              "en": "Government of Canada; Indigenous Services Canada; Information Management Branch, Geomatics Services, 1-800-567-9604, servicesgeomatiques-geomaticsservices@sac-isc.gc.ca",
+              "fr": "Gouvernement du Canada; Services aux Autochtones Canada; Direction générale de la gestion de l'information, Services géomatiques, servicesgeomatiques-geomaticsservices@sac-isc.gc.ca"
+            }
+          },
+          "layers": [
+            {
+              "id": "ecc-design.mf1363",
+              "format": "vector",
+              "path": "ecc-design.mf1363",
+              "type": "",
+              "unit": "",
+              "metadata": {
+                "title": {
+                  "en": "Modern Treaties",
+                  "fr": "Traités modernes"
+                },
+                "description": {
+                  "en": "Boundaries of modern treaties negotiated after 1975.",
+                  "fr": "Limites des traités modernes négociés après 1975."
+                }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "id": "modern-treaties-mbtiles-pqk6s2",
+                    "type": "fill",
+                    "paint": {
+                      "fill-color": "#dec835",
+                      "fill-opacity": 0.8,
+                      "fill-outline-color": "#c9ba54"
+                    },
+                    "source-layer": "modern_treaties.mbtiles-pqk6s2"
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "color": "#dec835",
+                      "label": {
+                        "en": "Modern Treaties",
+                        "fr": "Traités modernes"
+                      }
+                    }
+                  ]
+                },
+                "interaction_config": {
+                  "keys": ["NAME_EN", "NAME_FR", "SBTP_EN", "SBTP_FR"],
+                  "type": "feature-value",
+                  "event": "click"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "metadata": {
+            "title": {
+              "en": "Historic Treaties (ISC)",
+              "fr": "Traités historiques (SAC)"
+            },
+            "description": {
+              "en": "The Historic treaties (formerly known as the Pre-1975 treaties) dataset contains geographic boundaries as well as basic attribute data representing signed treaties that were negotiated between Indigenous peoples and the Crown between 1725 and 1929. However, the Treaties of Peace and Neutrality, signed between 1701 and 1760, are not represented in this dataset because they do not have geographic boundaries that can be represented on a map. ",
+              "fr": "Le jeu de données des traités historiques (anciennement connus sous le nom de traités pré-1975) contient les limites géographiques ainsi que des données d’attribut de base représentant les traités signés qui ont été négociés entre les peuples autochtones et la Couronne entre 1725 et 1929. Cependant, les traités de paix et de neutralité, signés entre 1701 et 1760, ne sont pas représentés dans cet ensemble de données parce qu’ils n’ont pas de limites géographiques pouvant être représentées sur une carte."
+            },
+            "source": {
+              "en": "https://data.sac-isc.gc.ca/geomatics/rest/directories/arcgisoutput/DonneesOuvertes_OpenData/Traite_historique_Historic_Treaty/Traite_historique_Historic_Treaty_SHP.zip",
+              "fr": "https://data.sac-isc.gc.ca/geomatics/rest/directories/arcgisoutput/DonneesOuvertes_OpenData/Traite_historique_Historic_Treaty/Traite_historique_Historic_Treaty_SHP.zip"
+            },
+            "citation": {
+              "en": "Government of Canada; Indigenous Services Canada; Information Management Branch, Geomatics Services, 1-800-567-9604, servicesgeomatiques-geomaticsservices@sac-isc.gc.ca",
+              "fr": "Gouvernement du Canada; Services aux Autochtones Canada; Direction générale de la gestion de l'information, Services géomatiques, servicesgeomatiques-geomaticsservices@sac-isc.gc.ca"
+            }
+          },
+          "layers": [
+            {
+              "id": "ecc-design.vjiebv",
+              "format": "vector",
+              "path": "ecc-design.vjiebv",
+              "type": "",
+              "unit": "",
+              "metadata": {
+                "title": {
+                  "en": "Historic Treaties",
+                  "fr": "Traités historiques"
+                },
+                "description": {
+                  "en": "Boundaries of historic treaties negotiated between 1725 and 1929.",
+                  "fr": "Limites des traités historiques négociés entre 1725 et 1929."
+                }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "id": "historic-treaties",
+                    "type": "fill",
+                    "paint": {
+                      "fill-color": [
+                        "match",
+                        ["get", "NAME_EN"],
+                        ["Treaty 9 (1905-1906)"],
+                        "#78a366",
+                        "#417390"
+                      ],
+                      "fill-opacity": 0.8,
+                      "fill-outline-color": "#bccfb4"
+                    },
+                    "source-layer": "historic_treaties.mbtiles-ds1c6e"
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "color": "#78a366",
+                      "label": {
+                        "en": "Treaty 9 (1905-1906)",
+                        "fr": "Traité 9 (1905-1906)"
+                      }
+                    },
+                    {
+                      "color": "#417390",
+                      "label": {
+                        "en": "Other Historic Treaties",
+                        "fr": "Autres traités historiques"
+                      }
+                    }
+                  ]
+                },
+                "interaction_config": {
+                  "keys": ["NAME_EN", "NAME_FR", "SBTP_EN", "SBTP_FR"],
+                  "type": "feature-value",
+                  "event": "click"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": 14,
+          "metadata": {
+            "title": {
+              "en": "Mushkegowuk Territory (Mushkegowuk Council)",
+              "fr": "Territoire de Mushkegowuk (Conseil de Mushkegowuk)"
+            },
+            "description": {
+              "en": "Boundaries of the Mushkegowuk Council territory.",
+              "fr": "Limites du territoire du Conseil de Mushkegowuk."
+            },
+            "source": {
+              "en": "Mushkegowuk Council",
+              "fr": "Conseil de Mushkegowuk"
+            },
+            "citation": {
+              "en": "Mushkegowuk Council",
+              "fr": "Conseil de Mushkegowuk"
+            }
+          },
+          "layers": [
+            {
+              "id": "ecc-design.seup5z",
+              "format": "vector",
+              "path": "ecc-design.seup5z",
+              "type": "",
+              "unit": "",
+              "metadata": {
+                "title": {
+                  "en": "Mushkegowuk Territory",
+                  "fr": "Territoire de Mushkegowuk"
+                },
+                "description": {
+                  "en": "Boundaries of the Mushkegowuk Council territory.",
+                  "fr": "Limites du territoire du Conseil de Mushkegowuk."
+                }
+              },
+              "config": {
+                "styles": [
+                  {
+                    "id": "mushkegowuk-territory-fill",
+                    "type": "fill",
+                    "paint": {
+                      "fill-color": "rgba(3, 58, 42, 0.29)",
+                      "fill-opacity": 0.8,
+                      "fill-outline-color": "#f0f0f0"
+                    },
+                    "source-layer": "Mushkegowuk_Territory.zip-7y7ur2"
+                  }
+                ],
+                "params_config": [
+                  {
+                    "key": "opacity",
+                    "default": 1
+                  },
+                  {
+                    "key": "visibility",
+                    "default": true
+                  }
+                ],
+                "legend_config": {
+                  "type": "basic",
+                  "items": [
+                    {
+                      "color": "rgba(3, 58, 42, 0.29)",
+                      "label": {
+                        "en": "Mushkegowuk Territory",
+                        "fr": "Territoire de Mushkegowuk"
+                      }
+                    }
+                  ]
                 }
               }
             }
