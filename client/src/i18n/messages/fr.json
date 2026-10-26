@@ -50,6 +50,10 @@
         "aria-label": "Légende de la carte"
       }
     },
+    "popup-raster": {
+      "loading": "Chargement…",
+      "no-data": "Aucune donnée"
+    },
     "popup-properties": {
       "TITLE_TY_1": "Type",
       "TITLE_TYPE": "Type",
