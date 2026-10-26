@@ -133,7 +133,7 @@ eccc-hudson-bay-lowlands/
 │   ├── tests/              # pytest test suite
 │   ├── Dockerfile          # Multi-stage Python build
 │   └── pyproject.toml      # Python dependencies
-├── client/                 # Next.js frontend (Node 24.13, pnpm)
+├── client/                 # Next.js frontend (Node 24.22, pnpm)
 │   ├── src/                # App Router pages, containers, hooks
 │   ├── tests/              # Vitest unit and component tests
 │   ├── Dockerfile          # Multi-stage Node.js build

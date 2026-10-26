@@ -4,7 +4,7 @@ Next.js frontend application for the Hudson Bay Lowlands geospatial project.
 
 ## Prerequisites
 
-- **Node.js**: 24.13.0 (specified in `.nvmrc` at the project root)
+- **Node.js**: 24.22.1 (specified in `.nvmrc` at the project root)
 - **pnpm**: 10.33.0 (specified in `package.json` `packageManager` field)
 
 ```bash

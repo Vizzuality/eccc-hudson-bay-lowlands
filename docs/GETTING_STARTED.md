@@ -8,7 +8,7 @@ A zero-to-running guide for new developers joining the ECCC Hudson Bay Lowlands 
 |------|---------|---------|
 | Docker | 20.10+ | [docker.com](https://docs.docker.com/get-docker/) |
 | Docker Compose | v2+ | Included with Docker Desktop |
-| Node.js | 24.13.0 (see `.nvmrc`) | [nvm](https://github.com/nvm-sh/nvm) or [nodejs.org](https://nodejs.org) |
+| Node.js | 24.22.1 (see `.nvmrc`) | [nvm](https://github.com/nvm-sh/nvm) or [nodejs.org](https://nodejs.org) |
 | pnpm | 10.33.0 | `corepack enable && corepack prepare pnpm@10.33.0 --activate` |
 | Python | 3.12 | [python.org](https://www.python.org/downloads/) |
 | uv | latest | [docs.astral.sh/uv](https://docs.astral.sh/uv/) |
