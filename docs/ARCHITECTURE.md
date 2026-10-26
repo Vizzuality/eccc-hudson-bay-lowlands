@@ -103,7 +103,7 @@ The database runs on a separate RDS instance (not in Docker).
 | Component | Technology | Version | Purpose |
 |-----------|-----------|---------|---------|
 | Client | Next.js | 16.2.6 | React framework with SSR |
-| Client runtime | Node.js | 24.13.0 | JavaScript runtime |
+| Client runtime | Node.js | 24.22.1 | JavaScript runtime |
 | Client package manager | pnpm | 10.33.0 | Dependency management |
 | Client i18n | next-intl | 4.7.0 | Internationalization (separate from API i18n) |
 | UI styling | Tailwind CSS | 4.x | Utility-first CSS |

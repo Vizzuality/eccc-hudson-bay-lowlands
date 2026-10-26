@@ -6,7 +6,7 @@
 # =============================================================================
 # Stage 1: Base image with Node.js and pnpm
 # =============================================================================
-FROM node:22-alpine AS base
+FROM node:24.22.1-alpine AS base
 
 # Install pnpm (pinned to match client/package.json packageManager)
 RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
