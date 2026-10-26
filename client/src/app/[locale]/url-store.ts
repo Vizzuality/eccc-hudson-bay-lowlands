@@ -56,6 +56,15 @@ export function useIsMobileResultsViewOpen() {
   return mobileView === MobileView.results && mapStatus === MapStatus.analysis;
 }
 
+export function useMobileMenuParam() {
+  const [isMenuOpen, setIsMenuOpen] = useQueryState(
+    "menu",
+    parseAsBoolean.withOptions({ history: "push" }),
+  );
+
+  return { isMenuOpen: isMenuOpen === true, setIsMenuOpen };
+}
+
 export function useCategory() {
   const [category, setCategory] = useQueryState("category", parseAsInteger);
 
