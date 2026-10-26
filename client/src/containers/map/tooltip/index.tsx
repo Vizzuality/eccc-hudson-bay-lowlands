@@ -23,6 +23,7 @@ import {
   type InteractiveLayerEntry,
   interactiveLayerAtom,
 } from "@/containers/map/store";
+import RasterPointTooltip from "@/containers/map/tooltip/components/raster-point";
 import MapPopup from "@/containers/map/tooltip/popup";
 import MapPopupItem from "@/containers/map/tooltip/popup/item";
 import { useHblAreaRaw } from "@/hooks/use-hbl-area";
@@ -107,9 +108,24 @@ const MapTooltip = () => {
     return { mapboxLayerIds: ids, mapboxIdToMeta: metaMap };
   }, [layers, layerIds]);
 
+  const rasterLayers = useMemo(
+    () =>
+      layers?.filter(
+        (layer) =>
+          layerIds.includes(layer.id) &&
+          layer.format === "raster" &&
+          !!layer.path,
+      ) ?? [],
+    [layers, layerIds],
+  );
+
   const handleClick = useCallback(
     (e: mapboxgl.MapMouseEvent) => {
-      if (!map || mapboxLayerIds.length === 0 || mapStatus === MapStatus.upload)
+      if (
+        !map ||
+        (mapboxLayerIds.length === 0 && rasterLayers.length === 0) ||
+        mapStatus === MapStatus.upload
+      )
         return;
 
       const bbox: [mapboxgl.PointLike, mapboxgl.PointLike] = [
@@ -117,14 +133,10 @@ const MapTooltip = () => {
         [e.point.x + 5, e.point.y + 5],
       ];
 
-      const features = map.queryRenderedFeatures(bbox, {
-        layers: mapboxLayerIds,
-      });
-
-      if (!features || features.length === 0) {
-        setInteractiveLayer(null);
-        return;
-      }
+      const features =
+        mapboxLayerIds.length > 0
+          ? map.queryRenderedFeatures(bbox, { layers: mapboxLayerIds })
+          : [];
 
       const clickPoint = point([e.lngLat.lng, e.lngLat.lat]);
 
@@ -184,6 +196,26 @@ const MapTooltip = () => {
         });
       }
 
+      for (const layer of rasterLayers) {
+        const visible =
+          (layersSettings?.[layer.id]?.visibility as boolean) ?? true;
+        if (!visible) continue;
+
+        layerEntries.push({
+          layerId: layer.id,
+          dataLayerId: layer.id,
+          layerTitle: layer.metadata.title,
+          legendItems:
+            layer.config?.legend_config.type === "basic"
+              ? layer.config.legend_config.items
+              : null,
+          type: "raster-point",
+          path: layer.path,
+          unit: layer.unit,
+          categories: layer.categories,
+        });
+      }
+
       if (layerEntries.length === 0) {
         setInteractiveLayer(null);
         return;
@@ -199,6 +231,8 @@ const MapTooltip = () => {
       map,
       mapboxLayerIds,
       mapboxIdToMeta,
+      rasterLayers,
+      layersSettings,
       setInteractiveLayer,
       mapStatus,
       hblArea,
@@ -231,7 +265,8 @@ const MapTooltip = () => {
   );
 
   useEffect(() => {
-    if (!map || mapboxLayerIds.length === 0) return;
+    if (!map || (mapboxLayerIds.length === 0 && rasterLayers.length === 0))
+      return;
 
     map.on("click", handleClick);
     for (const id of mapboxLayerIds) {
@@ -256,6 +291,7 @@ const MapTooltip = () => {
   }, [
     map,
     mapboxLayerIds,
+    rasterLayers,
     handleClick,
     handleMouseEnter,
     handleMouseLeave,
@@ -271,7 +307,11 @@ const MapTooltip = () => {
   useEffect(() => {
     if (!interactiveLayer) return;
     const remaining = interactiveLayer.layers.filter((l) => {
-      if (!mapboxLayerIds.includes(l.layerId)) return false;
+      const active =
+        l.type === "raster-point"
+          ? rasterLayers.some((r) => r.id === l.layerId)
+          : mapboxLayerIds.includes(l.layerId);
+      if (!active) return false;
       const visibility =
         (layersSettings?.[l.dataLayerId]?.visibility as boolean) ?? true;
       return visibility;
@@ -284,7 +324,13 @@ const MapTooltip = () => {
         layers: remaining,
       });
     }
-  }, [interactiveLayer, mapboxLayerIds, layersSettings, setInteractiveLayer]);
+  }, [
+    interactiveLayer,
+    mapboxLayerIds,
+    rasterLayers,
+    layersSettings,
+    setInteractiveLayer,
+  ]);
 
   if (!interactiveLayer) return null;
 
@@ -300,10 +346,10 @@ const MapTooltip = () => {
         onClose={() => setInteractiveLayer(null)}
         title={getTranslation(layer.layerTitle)}
       >
-        <MapPopupItem
-          type={layer.type}
-          features={layer.features}
-          legendItems={layer.legendItems}
+        <LayerEntryContent
+          layer={layer}
+          longitude={interactiveLayer.longitude}
+          latitude={interactiveLayer.latitude}
         />
       </MapPopup>
     );
@@ -316,14 +362,47 @@ const MapTooltip = () => {
       latitude={interactiveLayer.latitude}
       onClose={() => setInteractiveLayer(null)}
     >
-      <MultiLayerCarousel layers={interactiveLayers} />
+      <MultiLayerCarousel
+        layers={interactiveLayers}
+        longitude={interactiveLayer.longitude}
+        latitude={interactiveLayer.latitude}
+      />
     </MapPopup>
   );
 };
 
-const MultiLayerCarousel: FC<{ layers: InteractiveLayerEntry[] }> = ({
-  layers,
-}) => {
+const LayerEntryContent: FC<{
+  layer: InteractiveLayerEntry;
+  longitude: number;
+  latitude: number;
+}> = ({ layer, longitude, latitude }) => {
+  if (layer.type === "raster-point") {
+    return (
+      <RasterPointTooltip
+        path={layer.path}
+        unit={layer.unit}
+        categories={layer.categories}
+        legendItems={layer.legendItems}
+        longitude={longitude}
+        latitude={latitude}
+      />
+    );
+  }
+
+  return (
+    <MapPopupItem
+      type={layer.type}
+      features={layer.features}
+      legendItems={layer.legendItems}
+    />
+  );
+};
+
+const MultiLayerCarousel: FC<{
+  layers: InteractiveLayerEntry[];
+  longitude: number;
+  latitude: number;
+}> = ({ layers, longitude, latitude }) => {
   const { getTranslation } = useApiTranslation();
   const [api, setApi] = useState<CarouselApi>();
   const [contentHeight, setContentHeight] = useState<number | null>(null);
@@ -359,10 +438,10 @@ const MultiLayerCarousel: FC<{ layers: InteractiveLayerEntry[] }> = ({
                 <h3 className="text-sm font-bold leading-6">
                   {getTranslation(layer.layerTitle)}
                 </h3>
-                <MapPopupItem
-                  type={layer.type}
-                  features={layer.features}
-                  legendItems={layer.legendItems}
+                <LayerEntryContent
+                  layer={layer}
+                  longitude={longitude}
+                  latitude={latitude}
                 />
               </div>
             </CarouselItem>

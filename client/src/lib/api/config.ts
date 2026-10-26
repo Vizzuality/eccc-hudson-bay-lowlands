@@ -33,6 +33,15 @@ export const getTileJsonConfig = (
   url: `/cog/${tileMatrixSetId}/tilejson.json?url=${path}`,
 });
 
+export const getCogPointConfig = (
+  path: string,
+  longitude: number,
+  latitude: number,
+): AxiosRequestConfig => ({
+  url: `/cog/point/${longitude},${latitude}`,
+  params: { url: path },
+});
+
 export const getHblAreaConfig: AxiosRequestConfig = {
   url: "/hbl-area",
 };
