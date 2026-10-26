@@ -10,7 +10,8 @@
       "analysis": "Analysis",
       "resources": "Resources"
     },
-    "open-menu": "Open menu"
+    "open-menu": "Open menu",
+    "close-menu": "Close menu"
   },
   "mobile-nav": {
     "label": "Map views",
@@ -391,5 +392,9 @@
     "dataset_source": "Source",
     "dataset_citation": "Citation",
     "analysis_url": "Analysis URL"
+  },
+  "mobile-menu": {
+    "title": "Menu",
+    "language": "Language"
   }
 }

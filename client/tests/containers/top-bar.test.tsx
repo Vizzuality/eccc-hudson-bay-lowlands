@@ -29,6 +29,10 @@ vi.mock("next/link", () => ({
   default: LinkStub,
 }));
 
+vi.mock("@/containers/mobile-menu", () => ({
+  MobileMenuTrigger: () => null,
+}));
+
 vi.mock("@/containers/language-select", () => ({
   default: () => <div data-testid="language-select" />,
 }));

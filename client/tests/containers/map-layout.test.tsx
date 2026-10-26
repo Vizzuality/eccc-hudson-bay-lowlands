@@ -22,6 +22,11 @@ vi.mock("@/containers/mobile-nav/analysis-mobile-nav", () => ({
   AnalysisMobileNav: () => null,
 }));
 
+vi.mock("@/containers/mobile-menu", () => ({
+  MobileMenu: ({ children }: { children: React.ReactNode }) => children,
+  MobileMenuArea: ({ children }: { children: React.ReactNode }) => children,
+}));
+
 vi.mock("@/containers/top-bar", () => ({
   default: () => <div data-testid="top-bar" />,
 }));
