@@ -4,10 +4,11 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, or_, select
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.orm import Session, selectinload, with_loader_criteria
 
 from db.database import get_db
 from models.dataset import Dataset
+from models.layer import Layer
 from schemas.dataset import (
     DatasetSchema,
     DatasetWithLayersSchema,
@@ -42,11 +43,24 @@ def list_datasets(
     stmt = select(Dataset)
     count_stmt = select(func.count()).select_from(Dataset)
 
+    layer_filter = None
     if search:
-        escaped = _escape_like(search)
+        pattern = f"%{_escape_like(search)}%"
+        dataset_title_filter = or_(
+            Dataset.metadata_["title"]["en"].as_string().ilike(pattern),
+            Dataset.metadata_["title"]["fr"].as_string().ilike(pattern),
+        )
+        layer_title_filter = or_(
+            Layer.metadata_["title"]["en"].as_string().ilike(pattern),
+            Layer.metadata_["title"]["fr"].as_string().ilike(pattern),
+        )
         search_filter = or_(
-            Dataset.metadata_["title"]["en"].as_string().ilike(f"%{escaped}%"),
-            Dataset.metadata_["title"]["fr"].as_string().ilike(f"%{escaped}%"),
+            dataset_title_filter,
+            select(Layer.id).where(Layer.dataset_id == Dataset.id, layer_title_filter).exists(),
+        )
+        layer_filter = or_(
+            layer_title_filter,
+            Layer.dataset_id.in_(select(Dataset.id).where(dataset_title_filter)),
         )
         stmt = stmt.where(search_filter)
         count_stmt = count_stmt.where(search_filter)
@@ -57,6 +71,8 @@ def list_datasets(
 
     if include_layers:
         stmt = stmt.options(selectinload(Dataset.layers))
+        if layer_filter is not None:
+            stmt = stmt.options(with_loader_criteria(Layer, layer_filter))
 
     total = db.scalar(count_stmt)
     datasets = db.scalars(stmt.offset(offset).limit(limit)).all()

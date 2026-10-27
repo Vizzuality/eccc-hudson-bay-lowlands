@@ -342,6 +342,52 @@ def searchable_datasets(db_session, sample_category_metadata):
     yield datasets
 
 
+@pytest.fixture
+def searchable_datasets_with_layers(db_session, sample_category_metadata):
+    """Create datasets whose layer titles do not appear in any dataset title."""
+    db_category = Category(metadata_=sample_category_metadata)
+    db_session.add(db_category)
+    db_session.flush()
+
+    datasets_data = [
+        (
+            {"title": {"en": "Climate Observations", "fr": "Observations climatiques"}},
+            [
+                ("surface_temperature", {"en": "Surface Temperature", "fr": "Température de surface"}),
+                ("precipitation", {"en": "Rainfall", "fr": "Précipitations"}),
+            ],
+        ),
+        (
+            {"title": {"en": "Wildlife Tracking", "fr": "Suivi de la faune"}},
+            [
+                ("caribou_range", {"en": "Caribou Range", "fr": "Aire de répartition du caribou"}),
+                ("caribou_calving", {"en": "Caribou Calving Grounds", "fr": "Aires de mise bas du caribou"}),
+            ],
+        ),
+    ]
+    datasets = []
+    for dataset_md, layers_data in datasets_data:
+        db_dataset = Dataset(metadata_=dataset_md, category_id=db_category.id)
+        db_session.add(db_dataset)
+        db_session.flush()
+        for layer_id, title in layers_data:
+            db_session.add(
+                Layer(
+                    id=layer_id,
+                    format_="raster",
+                    type_="continuous",
+                    path=f"/data/{layer_id}.tif",
+                    metadata_={"title": title},
+                    dataset_id=db_dataset.id,
+                )
+            )
+        datasets.append(db_dataset)
+    db_session.flush()
+    for d in datasets:
+        db_session.refresh(d)
+    return datasets
+
+
 # =============================================================================
 # COG (Cloud Optimized GeoTIFF) Fixtures
 # =============================================================================
