@@ -168,7 +168,8 @@
       "title": "All data ({count})"
     },
     "item": {
-      "data-sources": "Data sources"
+      "about-dataset": "About this dataset",
+      "layer-count": "{count, plural, one {# layer} other {# layers}}"
     },
     "bottom-bar": {
       "active-data": "Active data ({count})",

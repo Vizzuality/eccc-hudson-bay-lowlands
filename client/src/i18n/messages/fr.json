@@ -168,7 +168,8 @@
       "title": "Toutes les données ({count})"
     },
     "item": {
-      "data-sources": "Sources de données"
+      "about-dataset": "À propos de ce jeu de données",
+      "layer-count": "{count, plural, one {# couche} other {# couches}}"
     },
     "bottom-bar": {
       "active-data": "Données actives ({count})",
