@@ -1,6 +1,6 @@
 [project]
 name = "eccc-hudson-bay-lowlands-api"
-version = "0.4.0"
+version = "0.6.0"
 description = "ECCC Hudson Bay Lowlands backend API"
 requires-python = ">=3.11"
 dependencies = [
