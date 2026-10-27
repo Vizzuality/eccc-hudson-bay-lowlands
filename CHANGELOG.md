@@ -6,6 +6,44 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Releases are tagged `rc-vX.Y.Z` and deploy to staging (see [Deployment](docs/DEPLOYMENT.md#releasing-to-staging)).
 
+## [0.6.0] - 2026-10-27
+
+### Added
+
+- Mobile menu with Map, Resources and Analysis links and an EN/FR toggle; system back closes it
+
+### Changed
+
+- Analysis is listed last in the navigation on desktop too
+- Node upgraded to 24.22.1
+
+### Security
+
+- Data processing: upgraded filelock to 4.2.4 to fix published advisories
+
+## [0.5.0] - 2026-10-26
+
+Tagged without a version bump or changelog entry; recorded here afterwards.
+
+### Added
+
+- Indigenous Lands category (renamed from Indigenous Value) with First Nations, Aboriginal Lands, Modern Treaties and Historic Treaties layers
+- Data tab in the mobile analysis bottom bar
+- Round + button that starts a mobile analysis and grows into Cancel
+
+### Security
+
+- Client: upgraded Next.js to 16.4.3, undici to 7.30.1 and pinned zod to 4.6.7 to fix published advisories
+
+## [0.4.1] - 2026-10-22
+
+Tagged without a version bump or changelog entry; recorded here afterwards.
+
+### Security
+
+- Client: upgraded vite, vitest and follow-redirects, and removed tsc-alias from e2e, to fix published advisories
+- API and data processing: upgraded pillow to 13.0.0 and certifi to 2026.10.19 to fix published advisories
+
 ## [0.4.0] - 2026-10-14
 
 ### Added
