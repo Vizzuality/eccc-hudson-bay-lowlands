@@ -83,6 +83,46 @@ def test_list_datasets_search_case_insensitive(client, searchable_datasets):
     assert data["total"] == 1
 
 
+def test_list_datasets_search_by_english_layer_title(client, searchable_datasets_with_layers):
+    response = client.get("/datasets/?search=temperature&include_layers=true")
+    data = response.json()
+    assert data["total"] == 1
+    assert data["data"][0]["metadata"]["title"]["en"] == "Climate Observations"
+
+
+def test_list_datasets_search_by_french_layer_title(client, searchable_datasets_with_layers):
+    response = client.get("/datasets/?search=précipitations&include_layers=true")
+    data = response.json()
+    assert data["total"] == 1
+    assert data["data"][0]["metadata"]["title"]["en"] == "Climate Observations"
+
+
+def test_list_datasets_search_by_layer_title_returns_only_matching_layers(client, searchable_datasets_with_layers):
+    response = client.get("/datasets/?search=temperature&include_layers=true")
+    layers = response.json()["data"][0]["layers"]
+    assert [layer["id"] for layer in layers] == ["surface_temperature"]
+
+
+def test_list_datasets_search_by_dataset_title_returns_all_layers(client, searchable_datasets_with_layers):
+    response = client.get("/datasets/?search=climate&include_layers=true")
+    layers = response.json()["data"][0]["layers"]
+    assert {layer["id"] for layer in layers} == {"surface_temperature", "precipitation"}
+
+
+def test_list_datasets_search_matching_several_layers_counts_dataset_once(client, searchable_datasets_with_layers):
+    response = client.get("/datasets/?search=caribou&include_layers=true")
+    data = response.json()
+    assert data["total"] == 1
+    assert {layer["id"] for layer in data["data"][0]["layers"]} == {"caribou_range", "caribou_calving"}
+
+
+def test_list_datasets_search_without_match_returns_empty(client, searchable_datasets_with_layers):
+    response = client.get("/datasets/?search=moose&include_layers=true")
+    data = response.json()
+    assert data["total"] == 0
+    assert data["data"] == []
+
+
 # =============================================================================
 # List Datasets - Filter by Category
 # =============================================================================
