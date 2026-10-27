@@ -1,4 +1,4 @@
-import { ChevronRightIcon } from "lucide-react";
+import { InfoIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import { useLayerIds } from "@/app/[locale]/url-store";
@@ -8,6 +8,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import DateItem from "@/containers/data-layers/list/item/date-item";
 import LayerItem from "@/containers/data-layers/list/item/layer-item";
 import { useApiTranslation } from "@/i18n/api-translation";
@@ -21,9 +26,6 @@ export interface DataLayersListItemProps {
   onLearnMore: () => void;
 }
 
-const getLayerCountText = (layers: Layer[]) => {
-  return `${layers.length} layer${layers.length > 1 ? "s" : ""}`;
-};
 const getGroupedDateLayers = (layers: Layer[]) => {
   const dateLayers = layers.filter((layer) => layer.unit === "date");
   const daysLayers = layers.filter((layer) => layer.unit === "days");
@@ -53,19 +55,37 @@ const DataLayersListItem: FC<DataLayersListItemProps> = ({
 
   return (
     <AccordionItem value={id.toString()} className="border-none group/item">
-      <AccordionTrigger className="">
+      <AccordionTrigger
+        actions={
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={onLearnMore}
+                aria-label={t("about-dataset")}
+                className="text-muted-foreground hover:text-accent"
+              >
+                <InfoIcon />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top">{t("about-dataset")}</TooltipContent>
+          </Tooltip>
+        }
+      >
         <div className="flex items-center justify-between flex-1">
           <div className="text-sm font-semibold">{title}</div>
-          <div className="flex items-center gap-2 shrink-0">
+          <span className="shrink-0 text-xs text-muted-foreground">
             {currentSelectedFromLayers.length > 0 ? (
-              <span className="bg-accent text-white rounded-full text-xs font-bold py-0.5 px-2.5">
-                {currentSelectedFromLayers.length}
-              </span>
+              <>
+                <span className="text-accent font-bold">
+                  {currentSelectedFromLayers.length}
+                </span>{" "}
+                /{" "}
+              </>
             ) : null}
-            <span className="text-xs text-muted-foreground">
-              {getLayerCountText(layers)}
-            </span>
-          </div>
+            {t("layer-count", { count: layers.length })}
+          </span>
         </div>
       </AccordionTrigger>
       <div className="ml-6 pl-2 border-l border-transparent group-data-[state=open]/item:border-accent transition-colors">
@@ -90,16 +110,6 @@ const DataLayersListItem: FC<DataLayersListItemProps> = ({
                   description={getTranslation(layer.metadata.description)}
                 />
               ))}
-          <div className="pl-5 pt-2">
-            <Button
-              variant="link"
-              onClick={onLearnMore}
-              className="gap-0.5 hover:gap-1.5 transition-[gap]"
-            >
-              {t("data-sources")}
-              <ChevronRightIcon />
-            </Button>
-          </div>
         </AccordionContent>
       </div>
     </AccordionItem>

@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { useLayerIds } from "@/app/[locale]/url-store";
 import { Accordion } from "@/components/ui/accordion";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import DataLayersListItem, {
   type DataLayersListItemProps,
 } from "@/containers/data-layers/list/item";
@@ -42,9 +43,11 @@ describe("@containers/data-layers/list/item", () => {
   const renderItem = (props: Partial<DataLayersListItemProps> = {}) =>
     render(
       <NextIntlClientProvider locale="en" messages={messages}>
-        <Accordion type="multiple">
-          <DataLayersListItem {...defaultProps} {...props} />
-        </Accordion>
+        <TooltipProvider>
+          <Accordion type="multiple">
+            <DataLayersListItem {...defaultProps} {...props} />
+          </Accordion>
+        </TooltipProvider>
       </NextIntlClientProvider>,
     );
 
@@ -74,16 +77,18 @@ describe("@containers/data-layers/list/item", () => {
     expect(screen.getByText("1 layer")).toBeInTheDocument();
   });
 
-  it("shows a badge with selected layer count when layers are active", () => {
+  it("shows the selected count before the total when layers are active", () => {
     setupHooks(["10"]);
     renderItem();
-    expect(screen.getByText("1")).toBeInTheDocument();
+    expect(screen.getByText("2 layers", { exact: false })).toHaveTextContent(
+      "1 / 2 layers",
+    );
   });
 
-  it("does not show a badge when no layers are selected", () => {
+  it("shows only the total when no layers are selected", () => {
     setupHooks();
     renderItem();
-    expect(screen.queryByText("0")).not.toBeInTheDocument();
+    expect(screen.getByText("2 layers")).toHaveTextContent(/^2 layers$/);
   });
 
   it("renders layer items when the accordion is expanded", async () => {
@@ -104,14 +109,19 @@ describe("@containers/data-layers/list/item", () => {
     expect(screen.getByRole("checkbox", { name: "Layer B" })).not.toBeChecked();
   });
 
-  it("calls onLearnMore when the 'Data sources' button is clicked", async () => {
+  it("calls onLearnMore from the info button without toggling the accordion", async () => {
     setupHooks();
     const onLearnMore = vi.fn();
     renderItem({ onLearnMore });
-    const user = await expandAccordion();
+    const user = userEvent.setup();
 
-    await user.click(screen.getByRole("button", { name: /data sources/i }));
+    await user.click(
+      screen.getByRole("button", { name: "About this dataset" }),
+    );
 
     expect(onLearnMore).toHaveBeenCalledOnce();
+    expect(
+      screen.getByRole("button", { name: /First Nation Locations/ }),
+    ).toHaveAttribute("aria-expanded", "false");
   });
 });

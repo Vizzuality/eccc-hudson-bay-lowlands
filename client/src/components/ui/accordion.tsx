@@ -28,28 +28,38 @@ function AccordionItem({
 function AccordionTrigger({
   className,
   children,
+  actions,
   ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Trigger>) {
+}: React.ComponentProps<typeof AccordionPrimitive.Trigger> & {
+  actions?: React.ReactNode;
+}) {
   return (
-    <AccordionPrimitive.Header className="flex">
+    <AccordionPrimitive.Header
+      className={cn(
+        "flex items-center rounded-[20px] transition-all group/header hover:bg-white/80 has-focus-visible:bg-white/80",
+        { "pr-4": !!actions },
+      )}
+    >
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
           {
-            "flex flex-1 items-start justify-between gap-4 cursor-pointer group": true,
-            "rounded-[20px] py-4 pl-3.5 pr-6 text-left text-sm font-semibold": true,
+            "flex flex-1 items-start justify-between gap-4 cursor-pointer": true,
+            "rounded-[20px] py-4 pl-3.5 text-left text-sm font-semibold": true,
+            "pr-6": !actions,
+            "pr-2": !!actions,
             "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]": true,
             "transition-all outline-none disabled:pointer-events-none disabled:opacity-50 [&[data-state=open]>svg]:rotate-180": true,
-            "hover:bg-white/80": true,
           },
 
           className,
         )}
         {...props}
       >
-        <ChevronDownIcon className="text-muted-foreground group-hover:text-accent pointer-events-none size-6 shrink-0 translate-y-0.5 transition-transform duration-200" />
+        <ChevronDownIcon className="text-muted-foreground group-hover/header:text-accent pointer-events-none size-6 shrink-0 translate-y-0.5 transition-transform duration-200" />
         {children}
       </AccordionPrimitive.Trigger>
+      {actions}
     </AccordionPrimitive.Header>
   );
 }
