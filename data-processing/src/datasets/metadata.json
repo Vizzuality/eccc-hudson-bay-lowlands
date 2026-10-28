@@ -416,20 +416,20 @@
           "id": 3,
           "metadata": {
             "title": {
-              "en": "Flood Susceptibility Index",
-              "fr": "Indice de susceptibilité aux inondations"
+              "en": "Flood Susceptibility",
+              "fr": "Susceptibilité aux inondations"
             },
             "description": {
-              "en": "This flood susceptibility index is based on historical flood patterns and machine learning models. Values range from 0 (low susceptibility) to 100 (high susceptibility).",
-              "fr": "Cet indice de susceptibilité aux inondations est basé sur les modèles historiques et l'apprentissage automatique. Les valeurs vont de 0 (faible) à 100 (élevée)."
+              "en": "National flood susceptibility map based on calibrated probabilities estimated using the XGBoost machine learning algorithm. The model integrates terrain elevation, soil composition, vegetation cover, and seasonal precipitation and temperature patterns. Values represent calibrated flood susceptibility probability (0–100%).",
+              "fr": "Cette collection de produits de susceptibilité aux inondations met en évidence les tendances temporelles des événements historiques d'inondation de 2000 à 2023, dérivées des cartes de susceptibilité aux inondations. Les valeurs représentent la probabilité calibrée de susceptibilité aux inondations (0–100 %)."
             },
             "source": {
-              "en": "https://app.geo.ca/en-ca/map-browser/record/df106e11-4cee-425d-bd38-7e51ac674128",
-              "fr": "https://app.geo.ca/fr-ca/map-browser/record/df106e11-4cee-425d-bd38-7e51ac674128"
+              "en": "https://open.canada.ca/data/en/dataset/3202e0a0-0afb-4120-b102-b0c41f0fb9eb",
+              "fr": "https://open.canada.ca/data/fr/dataset/3202e0a0-0afb-4120-b102-b0c41f0fb9eb"
             },
             "citation": {
-              "en": "Natural Resources Canada, Canada Centre for Mapping and Earth Observation. (2022). Flood Susceptibility Index (FSI) [GIS dataset]. GEO.ca.",
-              "fr": "Centre canadien de cartographie et d'observation de la terre, Ressources naturelles Canada. (2022). Indice de susceptibilité aux inondations (FSI) [jeu de données SIG]. GEO.ca."
+              "en": "Natural Resources Canada, Canada Centre for Mapping and Earth Observation. (2026). Trends and Extremes - Flood Susceptibility Mapping [GIS dataset]. Open Government Portal. https://open.canada.ca/data/en/dataset/3202e0a0-0afb-4120-b102-b0c41f0fb9eb",
+              "fr": "Ressources naturelles Canada, Centre canadien de cartographie et d'observation de la Terre. (2026). Tendances et extrêmes - Cartographie de la susceptibilité aux inondations [jeu de données SIG]. Portail du gouvernement ouvert. https://ouvert.canada.ca/data/fr/dataset/3202e0a0-0afb-4120-b102-b0c41f0fb9eb"
             }
           },
           "layers": [
@@ -441,12 +441,12 @@
               "unit": "%",
               "metadata": {
                 "title": {
-                  "en": "Flood Susceptibility Index",
-                  "fr": "Indice de susceptibilité aux inondations"
+                  "en": "Flood Susceptibility",
+                  "fr": "Susceptibilité aux inondations"
                 },
                 "description": {
-                  "en": "Flood susceptibility score from low to high risk.",
-                  "fr": "Score de susceptibilité aux inondations allant de faible à élevé."
+                  "en": "Calibrated probability of flood susceptibility for the 2000–2023 period, from low (0%) to high (100%) risk.",
+                  "fr": "Conditions actuelles de susceptibilité aux inondations (estimation 2000–2023), de faible (0 %) à élevée (100 %)."
                 }
               },
               "config": {

@@ -24,17 +24,13 @@
       }
     ]
   },
-  "flood_index": {
+  "flood_susceptibility": {
     "type": "raster",
     "format": "GeoTIFF",
     "layers": [
       {
-        "url": "https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/water/flood-susceptibility/FS-national-2015-index.tif",
+        "url": "https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/water/flood-susceptibility/fs-trends/fs-2000-2023-current.tif",
         "filename": "flood_susceptibility.tif"
-      },
-      {
-        "url": "https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/water/flood-susceptibility/FS-national-2015-class.tif",
-        "filename": "flood_susceptibility_class.tif"
       }
     ]
   },
