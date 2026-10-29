@@ -92,6 +92,12 @@ export interface Layer {
   config: LayerConfig | null;
 }
 
+export interface CogPointResponse {
+  coordinates: number[];
+  values: (number | null)[];
+  band_names: string[];
+}
+
 export type LayersResponse = ApiResponse<Layer>;
 export type LayerResponse = Layer;
 

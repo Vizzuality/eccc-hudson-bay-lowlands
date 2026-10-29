@@ -21,6 +21,9 @@ export const queryKeys = createQueryKeyStore({
   },
   cog: {
     tileInfo: (path: string) => [{ path }],
+    point: (path: string, longitude: number, latitude: number) => [
+      { path, longitude, latitude },
+    ],
   },
   sharedAnalysis: {
     byId: (id: string) => ({

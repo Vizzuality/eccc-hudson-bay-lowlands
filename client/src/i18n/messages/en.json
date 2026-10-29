@@ -51,6 +51,10 @@
         "aria-label": "Map legend"
       }
     },
+    "popup-raster": {
+      "loading": "Loading…",
+      "no-data": "No data"
+    },
     "popup-properties": {
       "TITLE_TY_1": "Type",
       "TITLE_TYPE": "Type",
