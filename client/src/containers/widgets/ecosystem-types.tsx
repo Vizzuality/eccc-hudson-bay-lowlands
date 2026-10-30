@@ -103,7 +103,7 @@ const EcosystemTypes: FC<EcosystemTypesProps> = ({
   const ecosystemLayer = layers.find(
     (layer) => layer.id === ECOSYSTEM_LAYER_ID,
   );
-  const colormap = ecosystemLayer?.config?.colormap;
+  const colormap = ecosystemLayer?.config.colormap;
 
   const chartConfig = Object.fromEntries(
     Object.entries(FALLBACK_CHART_CONFIG).map(([key, fallback]) => [

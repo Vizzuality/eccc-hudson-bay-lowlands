@@ -16,7 +16,7 @@ import SnowDynamics from "@/containers/widgets/snow-dynamics";
 import TreeCoverChange from "@/containers/widgets/tree-cover-change";
 import WaterDynamics from "@/containers/widgets/water-dynamics";
 import messages from "@/i18n/messages/en.json";
-import type { Layer } from "@/types";
+import type { Layer, LayerConfig } from "@/types";
 
 vi.mock("@/app/[locale]/url-store", async (importOriginal) => {
   const actual =
@@ -42,6 +42,13 @@ vi.mock("@/hooks/use-analysis-settings", () => ({
   useIsAnalyzing: () => [false, vi.fn()],
 }));
 
+const testLayerConfig: LayerConfig = {
+  colormap: [],
+  styles: [],
+  params_config: [],
+  legend_config: { type: "basic", items: [] },
+};
+
 const testWidgetLayers: Layer[] = [
   {
     id: "analysis.test.layer",
@@ -55,7 +62,7 @@ const testWidgetLayers: Layer[] = [
       description: { en: "", fr: "" },
     },
     dataset_id: 1,
-    config: null,
+    config: testLayerConfig,
   },
 ];
 
@@ -81,7 +88,7 @@ const ecosystemTestLayers: Layer[] = [
       description: { en: "", fr: "" },
     },
     dataset_id: 6,
-    config: null,
+    config: testLayerConfig,
   },
 ];
 
