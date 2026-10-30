@@ -362,10 +362,3 @@ def test_get_categorical_layer_with_config_and_categories(client, db_session, da
     assert data["config"] is not None
     assert data["config"]["colormap"] == {"1": "#2d7d3f", "2": "#7fcdbb"}
     assert data["config"]["legend_config"]["type"] == "basic"
-
-
-def test_layer_config_null_by_default(client, layer):
-    """Layers without config return config as null."""
-    response = client.get(f"/layers/{layer.id}")
-    data = response.json()
-    assert data["config"] is None

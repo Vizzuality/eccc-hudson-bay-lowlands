@@ -1,9 +1,9 @@
 """Pydantic schemas for Dataset responses."""
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_serializer
 
 from schemas.i18n import DatasetMetadata
-from schemas.layer import LayerSchema
+from schemas.layer import LayerSchema, LayerSeedInput
 
 _DATASET_ID_DESC = "Unique dataset identifier"
 _DATASET_METADATA_DESC = "Bilingual metadata (title, description, source, citation)"
@@ -81,13 +81,14 @@ class PaginatedDatasetWithLayersResponse(BaseModel):
 
 
 class DatasetSeedInput(BaseModel):
-    """Seed payload schema for a single dataset. Requires an explicit integer id.
-
-    Layers (and other fields) are passed through as-is via ``extra="allow"`` and
-    consumed downstream by the seed service as raw dicts.
-    """
+    """Seed payload schema for a single dataset. Requires an explicit integer id."""
 
     model_config = ConfigDict(extra="allow")
 
     id: int = Field(description="Explicit integer id for the dataset (required, deterministic across re-seeds)")
     metadata: DatasetMetadata = Field(description=_DATASET_METADATA_DESC)
+    layers: list[LayerSeedInput] = Field(default_factory=list, description="Layers belonging to this dataset")
+
+    @field_serializer("layers")
+    def _dump_layers_as_given(self, layers: list[LayerSeedInput]) -> list[dict]:
+        return [layer.model_dump(mode="python", by_alias=True, exclude_unset=True) for layer in layers]

@@ -36,6 +36,12 @@ TestingSessionLocal = sessionmaker(bind=test_engine, autocommit=False, autoflush
 
 RASTER_CRS = "EPSG:4326"
 
+SAMPLE_LAYER_CONFIG = {
+    "styles": [{"type": "raster", "paint": {"raster-opacity": "@@#params.opacity"}}],
+    "params_config": [{"key": "opacity", "default": 1}, {"key": "visibility", "default": True}],
+    "legend_config": {"type": "basic", "items": [{"color": "#0E2780", "label": {"en": "Test", "fr": "Test"}}]},
+}
+
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_test_database():
@@ -162,6 +168,7 @@ def category_with_datasets(db_session, sample_category_metadata, sample_dataset_
 
     db_layer = Layer(
         id="category_test_layer",
+        config=SAMPLE_LAYER_CONFIG,
         format_="raster",
         type_="continuous",
         path="/data/test.tif",
@@ -185,6 +192,7 @@ def layer(db_session, dataset, sample_layer_metadata):
     """Create a single layer belonging to a dataset."""
     db_layer = Layer(
         id="test_layer",
+        config=SAMPLE_LAYER_CONFIG,
         format_="raster",
         type_="continuous",
         path="/data/test.tif",
@@ -212,6 +220,7 @@ def multiple_layers(db_session, sample_category_metadata, sample_dataset_metadat
     for i in range(1, 16):
         db_layer = Layer(
             id=f"layer_{i:02d}",
+            config=SAMPLE_LAYER_CONFIG,
             format_="raster" if i % 2 == 0 else "vector",
             type_="continuous" if i % 2 == 0 else None,
             path=f"/data/layer_{i:02d}.tif",
@@ -248,6 +257,7 @@ def searchable_layers(db_session, sample_category_metadata, sample_dataset_metad
     for i, md in enumerate(layers_data):
         db_layer = Layer(
             id=f"search_{i}",
+            config=SAMPLE_LAYER_CONFIG,
             format_="raster",
             type_="continuous",
             path=f"/data/search_{i}.tif",
@@ -282,6 +292,7 @@ def layer_with_dataset(db_session, dataset, sample_layer_metadata):
     """Create a layer that belongs to a dataset."""
     db_layer = Layer(
         id="test_layer_with_dataset",
+        config=SAMPLE_LAYER_CONFIG,
         format_="raster",
         type_="continuous",
         path="/data/test.tif",
@@ -374,6 +385,7 @@ def searchable_datasets_with_layers(db_session, sample_category_metadata):
             db_session.add(
                 Layer(
                     id=layer_id,
+                    config=SAMPLE_LAYER_CONFIG,
                     format_="raster",
                     type_="continuous",
                     path=f"/data/{layer_id}.tif",
@@ -666,6 +678,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
     for suffix in SNOW_LENGTHT_VALUES:
         snow_layers.append(Layer(
             id=f"endL_winter_{suffix}_cog",
+            config=SAMPLE_LAYER_CONFIG,
             format_="raster",
             path=snow_endl_paths[suffix],
             unit="date",
@@ -679,6 +692,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
         ))
         snow_layers.append(Layer(
             id=f"lengthT_winter_{suffix}_cog",
+            config=SAMPLE_LAYER_CONFIG,
             format_="raster",
             path=snow_lengtht_paths[suffix],
             unit="days",
@@ -694,6 +708,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
     db_session.add_all([
         Layer(
             id="peat_cog",
+            config=SAMPLE_LAYER_CONFIG,
             format_="raster",
             path=peat_path,
             unit="cm",
@@ -702,6 +717,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
         ),
         Layer(
             id="carbon_cog",
+            config=SAMPLE_LAYER_CONFIG,
             format_="raster",
             path=carbon_path,
             unit="kg/m²",
@@ -710,6 +726,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
         ),
         Layer(
             id="inundation_frequency_cog",
+            config=SAMPLE_LAYER_CONFIG,
             format_="raster",
             path=inundation_freq_path,
             unit="%",
@@ -718,6 +735,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
         ),
         Layer(
             id="inundation_trends_cog",
+            config=SAMPLE_LAYER_CONFIG,
             format_="raster",
             path=inundation_trends_path,
             unit="category",
@@ -726,6 +744,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
         ),
         Layer(
             id="flood_susceptibility_cog",
+            config=SAMPLE_LAYER_CONFIG,
             format_="raster",
             path=flood_susc_path,
             unit="%",
@@ -734,6 +753,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
         ),
         Layer(
             id="treed_area_1984-2022_cog",
+            config=SAMPLE_LAYER_CONFIG,
             format_="raster",
             path=treed_area_path,
             unit="category",
@@ -742,6 +762,7 @@ def analysis_client(db_session, tmp_path, monkeypatch):
         ),
         Layer(
             id="ecosystem_classification_cog",
+            config=SAMPLE_LAYER_CONFIG,
             format_="raster",
             path=ecosystem_path,
             unit="category",

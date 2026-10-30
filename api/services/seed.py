@@ -8,6 +8,7 @@ from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from models import Category, Dataset, Layer
+from schemas.category import SeedPayload
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +69,7 @@ def upsert_layer(session: Session, layer_data: dict, dataset_id: int) -> tuple[L
     type_value = normalize_empty_string(layer_data.get("type"))
     unit_value = normalize_empty_string(layer_data.get("unit"))
     categories_value = layer_data.get("categories") or None
-    config_value = layer_data.get("config") or None
+    config_value = layer_data["config"]
 
     if existing:
         existing.format_ = layer_data["format"]
@@ -103,14 +104,14 @@ def _load_seed_data(metadata_path: Path | str | None, payload: dict | None) -> d
     """Load seed data from a payload dict or metadata file."""
     if payload is not None:
         logger.info("Seeding from provided payload")
-        return payload
+        return SeedPayload.model_validate(payload).to_dict()
 
     if metadata_path is None:
         metadata_path = DEFAULT_METADATA_PATH
     metadata_path = Path(metadata_path)
     logger.info("Loading metadata from: %s", metadata_path)
     with open(metadata_path) as f:
-        return json.load(f)
+        return SeedPayload.model_validate(json.load(f)).to_dict()
 
 
 def _record_upsert(counts: dict, entity: str, is_new: bool) -> None:
