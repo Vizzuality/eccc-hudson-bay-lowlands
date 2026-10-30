@@ -17,6 +17,7 @@ from db.database import get_db
 from main import app
 from models import Category, Dataset, Layer
 from routers.cog import s3_url_dependency
+from tests.conftest import SAMPLE_LAYER_CONFIG
 
 
 @pytest.fixture
@@ -207,6 +208,7 @@ def test_cog_full_flow_with_layer_path(cog_client, db_session, sample_category_m
 
     db_layer = Layer(
         id="cog_test_layer",
+        config=SAMPLE_LAYER_CONFIG,
         format_="raster",
         type_="continuous",
         path="temperature/2024.tif",

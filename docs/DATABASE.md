@@ -67,7 +67,7 @@ Stores metadata about Cloud Optimized GeoTIFF (COG) and other geospatial layers 
 | `path` | `VARCHAR` | No | Data path — relative S3 key for rasters (e.g., `temperature/2024_cog.tif`), or tileset ID for vectors (e.g., `ecc-design.5qnlusni`) |
 | `unit` | `VARCHAR` | Yes | Data measurement unit (e.g., `"celsius"`, `"percent"`, `"category"`) |
 | `categories` | `JSON` | Yes | Category definitions for categorical layers (list of `{value, label}`) |
-| `config` | `JSON` | Yes | Visualization configuration (styles, legend, params). See [Layer Config](#layer-config) section below |
+| `config` | `JSON` | No | Visualization configuration (styles, legend, params), required on every layer. See [Layer Config](#layer-config) section below |
 | `metadata` | `JSON` | No | Field-first i18n metadata (see i18n section below) |
 | `dataset_id` | `INTEGER` (FK, indexed) | No | Foreign key to `datasets.id` |
 
@@ -142,7 +142,7 @@ This field-first approach (as opposed to language-first) makes it easier to add 
 
 ## Layer Config
 
-The `config` JSON column stores visualization configuration for rendering layers on the map. Its structure varies by layer `format`.
+The `config` JSON column stores visualization configuration for rendering layers on the map. Its structure varies by layer `format`. Every layer must have one: the `/seed` endpoint and the seed from `metadata.json` both reject a layer without `config` (validated by `LayerSeedInput` in `api/schemas/layer.py`).
 
 ### Common Fields (all formats)
 
@@ -358,7 +358,7 @@ class Layer(Base):
     path: Mapped[str] = mapped_column(String, nullable=False)
     unit: Mapped[str | None] = mapped_column(String, nullable=True)
     categories: Mapped[list | None] = mapped_column(JSON, nullable=True)
-    config: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    config: Mapped[dict] = mapped_column(JSON, nullable=False)
     metadata_: Mapped[dict] = mapped_column("metadata", JSON, nullable=False)
     dataset_id: Mapped[int] = mapped_column(Integer, ForeignKey("datasets.id"), nullable=False, index=True)
     dataset: Mapped["Dataset"] = relationship(back_populates="layers")
