@@ -25,7 +25,7 @@ test.describe("Mobile map legend", () => {
   test("the sheet shows an empty state with no active layers", async ({
     page,
   }) => {
-    await page.goto("http://localhost:3000/en");
+    await page.goto("http://localhost:3000/en?layers=");
 
     await page.getByRole("button", { name: "Map legend" }).click();
 
