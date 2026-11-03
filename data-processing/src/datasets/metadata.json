@@ -2738,8 +2738,8 @@
               "fr": "Territoire de Mushkegowuk"
             },
             "description": {
-              "en": "Boundaries of the Mushkegowuk Council territory.",
-              "fr": "Limites du territoire du Conseil de Mushkegowuk."
+              "en": "Boundaries of the Mushkegowuk territory, provided directly by the Mushkegowuk Council.",
+              "fr": "Limites du territoire de Mushkegowuk, fournies directement par le Conseil de Mushkegowuk."
             },
             "source": {
               "en": "Mushkegowuk Council",
@@ -2763,8 +2763,8 @@
                   "fr": "Territoire de Mushkegowuk"
                 },
                 "description": {
-                  "en": "Boundaries of the Mushkegowuk Council territory.",
-                  "fr": "Limites du territoire du Conseil de Mushkegowuk."
+                  "en": "Boundaries of the Mushkegowuk territory.",
+                  "fr": "Limites du territoire de Mushkegowuk."
                 }
               },
               "config": {
