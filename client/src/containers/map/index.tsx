@@ -32,7 +32,9 @@ import { BasemapControl } from "@/containers/map/controls/settings/basemap";
 import ZoomControl from "@/containers/map/controls/zoom";
 import { HblAreaMask } from "@/containers/map/hbl-area-mask";
 import { LayerManager } from "@/containers/map/layer-manager";
+import { useAboveMaskLayerIds } from "@/containers/map/layer-manager/hooks";
 import { useLayerZoomConstraints } from "@/containers/map/layer-manager/use-layer-zoom-constraints";
+import { pinAboveMaskLayers } from "@/containers/map/layer-manager/utils";
 import MapLegend from "@/containers/map/legend";
 import MapLegendItem from "@/containers/map/legend/item";
 import MobileAnalysis from "@/containers/map/mobile-analysis";
@@ -59,6 +61,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
   const { basemap } = useMapBasemap();
   const mapStyle = BASEMAPS[basemap as BasemapId].mapStyle;
   const { layerIds, setLayerIds } = useLayerIds();
+  const aboveMaskIds = useAboveMaskLayerIds();
   const { layersSettings, setLayersSettings } = useSyncLayersSettings();
   const { maxZoom } = useLayerZoomConstraints();
   const [isAnalyzing] = useIsAnalyzing();
@@ -239,33 +242,35 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
           <MapLegend
             sortable={{ enabled: true, handle: true }}
             onChangeOrder={(v) => {
-              setLayerIds(v.toReversed());
+              setLayerIds(pinAboveMaskLayers(v, aboveMaskIds).toReversed());
             }}
           >
-            {layerIds.toReversed().map((id, index) => (
-              <MapLegendItem
-                key={`map-legend-item-${id}`}
-                id={id.toString()}
-                className={
-                  index === 0 ? "border-t-0 pt-4 pb-6" : "border-t py-6"
-                }
-                sortable={{ enabled: true, handle: true }}
-                settingsManager={{
-                  visibility: true,
-                  remove: true,
-                }}
-                settings={layersSettings?.[id.toString()] || {}}
-                onChangeVisibility={(v) => {
-                  setLayersSettings({
-                    ...layersSettings,
-                    [id]: { visibility: v },
-                  });
-                }}
-                onRemove={(id) => {
-                  setLayerIds(layerIds.filter((layerId) => layerId !== id));
-                }}
-              />
-            ))}
+            {pinAboveMaskLayers(layerIds.toReversed(), aboveMaskIds).map(
+              (id, index) => (
+                <MapLegendItem
+                  key={`map-legend-item-${id}`}
+                  id={id.toString()}
+                  className={
+                    index === 0 ? "border-t-0 pt-4 pb-6" : "border-t py-6"
+                  }
+                  sortable={{ enabled: true, handle: true }}
+                  settingsManager={{
+                    visibility: true,
+                    remove: true,
+                  }}
+                  settings={layersSettings?.[id.toString()] || {}}
+                  onChangeVisibility={(v) => {
+                    setLayersSettings({
+                      ...layersSettings,
+                      [id]: { visibility: v },
+                    });
+                  }}
+                  onRemove={(id) => {
+                    setLayerIds(layerIds.filter((layerId) => layerId !== id));
+                  }}
+                />
+              ),
+            )}
           </MapLegend>
         </MapBoxMap>
       </div>

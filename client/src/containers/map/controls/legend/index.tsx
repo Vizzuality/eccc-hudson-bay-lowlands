@@ -11,6 +11,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { useAboveMaskLayerIds } from "@/containers/map/layer-manager/hooks";
+import { pinAboveMaskLayers } from "@/containers/map/layer-manager/utils";
 import MapLegendItem from "@/containers/map/legend/item";
 import { cn } from "@/lib/utils";
 import { CONTROL_BUTTON_STYLES } from "../constants";
@@ -18,6 +20,7 @@ import { CONTROL_BUTTON_STYLES } from "../constants";
 export default function LegendControl() {
   const [open, setOpen] = useState(false);
   const { layerIds } = useLayerIds();
+  const aboveMaskIds = useAboveMaskLayerIds();
   const t = useTranslations("legend");
   const tControl = useTranslations("map.controls.legend");
 
@@ -48,17 +51,19 @@ export default function LegendControl() {
           {layerIds.length === 0 && (
             <p className="px-4 text-sm text-muted-foreground">{t("empty")}</p>
           )}
-          {layerIds.toReversed().map((id, index) => (
-            <MapLegendItem
-              key={`map-legend-sheet-item-${id}`}
-              id={id}
-              sortable={{ enabled: false }}
-              className={cn("static rounded-none", {
-                "border-t-0 pt-0 pb-4": index === 0,
-                "py-4": index > 0,
-              })}
-            />
-          ))}
+          {pinAboveMaskLayers(layerIds.toReversed(), aboveMaskIds).map(
+            (id, index) => (
+              <MapLegendItem
+                key={`map-legend-sheet-item-${id}`}
+                id={id}
+                sortable={{ enabled: false }}
+                className={cn("static rounded-none", {
+                  "border-t-0 pt-0 pb-4": index === 0,
+                  "py-4": index > 0,
+                })}
+              />
+            ),
+          )}
         </div>
       </DrawerContent>
     </Drawer>
