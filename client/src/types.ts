@@ -78,6 +78,7 @@ export interface LayerConfig {
     items: LegendItem[];
   };
   interaction_config?: InteractionConfig;
+  above_mask?: boolean;
 }
 
 export interface Layer {
