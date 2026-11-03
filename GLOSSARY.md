@@ -23,3 +23,6 @@ _Avoid_: unclipped layer
 
 **Mushkegowuk Territory**:
 The territory of the Mushkegowuk Council, the Indigenous community the project works with; the only above-mask layer.
+
+**Default layer**:
+The data layer shown when the map opens with no layers chosen; currently Carbon Storage.
