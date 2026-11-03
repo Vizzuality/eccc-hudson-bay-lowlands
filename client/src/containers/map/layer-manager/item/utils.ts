@@ -16,19 +16,19 @@ export const hexToRgba = (hex: string): Rgba => {
   ];
 };
 
-/** Convert an array colormap to TiTiler interval format. */
+const GRADIENT_STEPS = 24;
+const CLAMP_LOWER_BOUND = -32766;
+const CLAMP_UPPER_BOUND = 32767;
+
+/** TiTiler matches intervals as `lower <= value < upper`. */
 const toIntervalColormap = (
   colormap: [number, string][],
 ): [[number, number], Rgba][] =>
   colormap.map(([value, color], i) => {
     const next = colormap[i + 1];
-    const upperBound = next ? next[0] - 1 : value;
+    const upperBound = next ? next[0] : CLAMP_UPPER_BOUND;
     return [[value, upperBound], hexToRgba(color)];
   });
-
-const GRADIENT_STEPS = 24;
-const CLAMP_LOWER_BOUND = -32766;
-const CLAMP_UPPER_BOUND = 32767;
 
 /** Linearly interpolate between colormap stops to produce interval entries.
  *  Returns 24 intervals covering the full data range with smoothly graded colors.
