@@ -2768,6 +2768,7 @@
                 }
               },
               "config": {
+                "above_mask": true,
                 "styles": [
                   {
                     "id": "mushkegowuk-territory-fill",
