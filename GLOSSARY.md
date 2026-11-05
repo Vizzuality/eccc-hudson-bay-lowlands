@@ -26,3 +26,23 @@ The territory of the Mushkegowuk Council, the Indigenous community the project w
 
 **Default layer**:
 The data layer shown when the map opens with no layers chosen; currently Carbon Storage.
+
+## Onboarding
+
+**Map tour**:
+The guided sequence of steps that points out how to find data, add and control layers, and start an analysis on the map.
+_Avoid_: onboarding (alone), tutorial
+
+**Analysis tour**:
+The guided sequence of steps that explains the results of an analysis; separate from the map tour.
+
+**Welcome card**:
+The card shown once, on a visitor's first visit to the main map view, that introduces the map and offers to start the map tour.
+_Avoid_: intro modal
+
+**Tour step**:
+One stop in a tour: a highlighted part of the screen with a card that explains it.
+
+**Spotlight**:
+The cut-out in the dimmed screen that marks what the current tour step is about.
+_Avoid_: highlight, mask
