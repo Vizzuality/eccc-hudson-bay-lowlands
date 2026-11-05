@@ -103,7 +103,7 @@ const MobileAnalysis = () => {
         open={open}
         onOpenChange={setOpen}
         data-download-exclude
-        className="absolute inset-x-4 bottom-24 z-10 rounded-3xl bg-background text-sm font-medium leading-5 shadow-md lg:hidden"
+        className="absolute inset-x-4 bottom-24 z-10 rounded-3xl bg-background font-sans text-sm font-medium leading-5 shadow-md lg:hidden"
       >
         {open ? (
           <div className="relative flex flex-col gap-4 p-6">
