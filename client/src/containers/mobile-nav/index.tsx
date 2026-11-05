@@ -57,8 +57,8 @@ export function MobileNav({
       {!isTrailingActionOnly && (
         <ul
           className={cn(
-            "flex flex-1 rounded-full bg-background p-2 shadow-md",
-            !hasTabs && "gap-2",
+            "flex flex-1",
+            hasTabs ? "rounded-full bg-background p-2 shadow-md" : "gap-2",
           )}
         >
           {items.map(
@@ -79,13 +79,14 @@ export function MobileNav({
                   disabled={disabled}
                   onClick={onClick}
                   className={cn(
-                    "h-14 w-full font-bold text-xs leading-5",
+                    "w-full font-bold text-xs leading-5",
+                    hasTabs ? "h-14" : "h-[72px] shadow-md",
                     cta ? "px-4" : "flex-col gap-1 px-2 hover:bg-transparent",
                   )}
                 >
                   {Icon && (
                     <span
-                      className={cn("rounded-full", current && "bg-accent p-2")}
+                      className={cn("rounded-full p-2", current && "bg-accent")}
                     >
                       <Icon aria-hidden />
                     </span>
