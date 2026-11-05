@@ -1,6 +1,6 @@
 """Pydantic schemas for Layer responses."""
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from schemas.i18n import LayerCategory, LayerConfig, LayerMetadata
 
@@ -54,8 +54,7 @@ class LayerSchema(BaseModel):
     categories: list[LayerCategory] | None = Field(
         default=None, description="Category definitions for categorical/classified layers"
     )
-    config: LayerConfig | None = Field(
-        default=None,
+    config: LayerConfig = Field(
         description="Visualization configuration (source, styles, params, legend). Varies by format.",
     )
     metadata: LayerMetadata = Field(description="Bilingual metadata (title, description)")
@@ -82,3 +81,15 @@ class PaginatedLayerResponse(BaseModel):
 
     data: list[LayerSchema] = Field(description="List of layers for the current page")
     total: int = Field(description="Total number of layers matching the query")
+
+
+class LayerSeedInput(BaseModel):
+    """Seed payload schema for a single layer. Requires a config."""
+
+    model_config = ConfigDict(extra="allow")
+
+    id: str = Field(description="Unique layer identifier")
+    format: str = Field(description="Data format (e.g., 'raster', 'vector')")
+    path: str = Field(description="Path or URL to the geospatial data file")
+    config: LayerConfig = Field(description="Visualization configuration (styles, params, legend)")
+    metadata: LayerMetadata = Field(description="Bilingual metadata (title, description)")

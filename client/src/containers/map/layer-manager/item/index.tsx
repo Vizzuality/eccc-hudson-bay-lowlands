@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { useSyncLayersSettings } from "@/app/[locale]/url-store";
 import RasterLayerManagerItem from "@/containers/map/layer-manager/item/raster-item";
 import VectorLayerManagerItem from "@/containers/map/layer-manager/item/vector-item";
@@ -24,16 +23,6 @@ const LayerManagerItem = ({ id, beforeId }: LayerManagerItemProps) => {
   });
   const format = layer?.format;
 
-  // TODO: decide whether config should be mandatory for all layers — if so, enforce it at the
-  // API/seed level and remove this guard. Tracked here for visibility during development.
-  useEffect(() => {
-    if (isSuccess && format === "vector" && !layer?.config) {
-      alert(
-        `Layer "${layer?.metadata.title.en ?? id}" has no configuration, could not render.`,
-      );
-    }
-  }, [isSuccess, format, layer?.config, layer?.metadata.title.en, id]);
-
   if (!isSuccess) return null;
 
   if (format === "raster") {
@@ -43,7 +32,6 @@ const LayerManagerItem = ({ id, beforeId }: LayerManagerItemProps) => {
   }
 
   if (format === "vector") {
-    if (!layer.config) return null;
     return (
       <VectorLayerManagerItem
         id={id}

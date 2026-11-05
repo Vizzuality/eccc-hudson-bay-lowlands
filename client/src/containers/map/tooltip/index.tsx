@@ -79,7 +79,7 @@ const MapTooltip = () => {
     if (!layers) return { mapboxLayerIds: ids, mapboxIdToMeta: metaMap };
 
     for (const layer of layers) {
-      if (!layerIds.includes(layer.id) || !layer.config?.interaction_config) {
+      if (!layerIds.includes(layer.id) || !layer.config.interaction_config) {
         continue;
       }
 

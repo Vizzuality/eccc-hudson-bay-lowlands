@@ -34,7 +34,7 @@ const RasterLayerManagerItem = ({
     enabled: isLayerSuccess && !!path,
   });
 
-  if (!isLayerSuccess || !isTileInfoSuccess || !layer.config) return null;
+  if (!isLayerSuccess || !isTileInfoSuccess) return null;
 
   const withColormap = !!layer.config.colormap;
 
