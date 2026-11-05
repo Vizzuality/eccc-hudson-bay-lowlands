@@ -49,6 +49,10 @@
       },
       "legend": {
         "aria-label": "Légende de la carte"
+      },
+      "help": {
+        "aria-label": "Aide",
+        "tooltip": "Faire la visite"
       }
     },
     "popup-properties": {
@@ -397,5 +401,38 @@
   "mobile-menu": {
     "title": "Menu",
     "language": "Langue"
+  },
+  "tour": {
+    "step-label": "Étape {current} sur {total}",
+    "next": "Suivant",
+    "back": "Retour",
+    "close": "Fermer la visite",
+    "start-exploring": "Commencer à explorer",
+    "steps": {
+      "find-data": {
+        "title": "Trouvez les données dont vous avez besoin",
+        "description": "Parcourez les couches de données par catégorie ou recherchez-les par nom."
+      },
+      "add-layers": {
+        "title": "Ajoutez des couches à la carte",
+        "description": "Ouvrez un jeu de données pour voir ses couches, puis appuyez sur le signe plus (+) pour l’ajouter à la carte. Vous pouvez en combiner autant que vous le souhaitez."
+      },
+      "control-layers": {
+        "title": "Contrôlez ce que vous voyez",
+        "description": "Gérez les couches de votre carte :",
+        "visibility": "Afficher ou masquer la couche",
+        "remove": "Retirer la couche de la carte",
+        "order": "Faites glisser pour changer l’ordre : les couches du dessus recouvrent celles du dessous",
+        "collapse": "Réduire le panneau pour voir davantage la carte"
+      },
+      "analyze": {
+        "title": "Analysez votre zone",
+        "description": "Obtenez des informations sur un lieu qui vous tient à cœur. Vous pouvez dessiner sur la carte ou téléverser votre propre zone."
+      },
+      "all-set": {
+        "title": "Vous êtes prêt",
+        "description": "Utilisez ces outils pour zoomer, changer le fond de carte ou télécharger une image de la carte. Vous pouvez relancer cette visite à tout moment avec le bouton Aide."
+      }
+    }
   }
 }

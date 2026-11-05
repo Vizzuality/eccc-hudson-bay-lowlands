@@ -11,12 +11,16 @@ interface DataLayersListProps {
   datasets: NormalizedDataset[];
   isLoading: boolean;
   className?: string;
+  openItems?: string[];
+  onOpenItemsChange?: (ids: string[]) => void;
 }
 
 const DataLayersList: FC<DataLayersListProps> = ({
   datasets,
   isLoading,
   className,
+  openItems,
+  onOpenItemsChange,
 }) => {
   const [dialogProps, setDialogProps] = useState<NormalizedDataset | null>(
     null,
@@ -35,7 +39,11 @@ const DataLayersList: FC<DataLayersListProps> = ({
         </span>
         <span className="h-px flex-1 bg-[linear-gradient(90deg,rgba(26,37,61,0.10)_0%,rgba(69,99,163,0.10)_100%)]" />
       </p>
-      <Accordion type="multiple">
+      <Accordion
+        type="multiple"
+        value={openItems}
+        onValueChange={onOpenItemsChange}
+      >
         {datasets.map((item) => (
           <DataLayersListItem
             key={`dataset-item-${item.id}`}

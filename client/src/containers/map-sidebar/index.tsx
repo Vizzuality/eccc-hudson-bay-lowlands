@@ -5,6 +5,7 @@ import { MapStatus, useMapStatus } from "@/app/[locale]/url-store";
 import DataLayersPanel from "@/containers/data-layers/panel";
 import Analysis from "@/containers/map-sidebar/analysis";
 import Main from "@/containers/map-sidebar/main";
+import MapTour from "@/containers/tour";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { cn } from "@/lib/utils";
 
@@ -68,11 +69,12 @@ const MapSidebar = () => {
           isCollapsed ? "w-0" : "w-[480px] min-[1440px]:w-[600px]",
         )}
       >
-        <div className="flex h-full min-h-0 flex-col">
+        <div data-tour="main-sidebar" className="flex h-full min-h-0 flex-col">
           {mapStatus === MapStatus.analysis ? <Analysis /> : <Main />}
         </div>
       </div>
       <DataLayersPanel />
+      <MapTour />
     </aside>
   );
 };

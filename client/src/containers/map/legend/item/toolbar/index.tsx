@@ -32,6 +32,7 @@ export const LegendItemToolbar: React.FC<LegendItemToolbarProps> = ({
               <TooltipTrigger
                 type="button"
                 className="cursor-pointer"
+                data-tour-hotspot="visibility"
                 aria-label={visibility ? t("hide-layer") : t("show-layer")}
                 onClick={() => {
                   if (onChangeVisibility) onChangeVisibility(!visibility);
@@ -57,6 +58,7 @@ export const LegendItemToolbar: React.FC<LegendItemToolbarProps> = ({
               <TooltipTrigger
                 type="button"
                 className="cursor-pointer"
+                data-tour-hotspot="remove"
                 aria-label={t("remove-layer")}
                 onClick={() => {
                   if (onRemove) onRemove(id);

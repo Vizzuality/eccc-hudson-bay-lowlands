@@ -49,6 +49,10 @@
       },
       "legend": {
         "aria-label": "Map legend"
+      },
+      "help": {
+        "aria-label": "Help",
+        "tooltip": "Take the tour"
       }
     },
     "popup-properties": {
@@ -397,5 +401,38 @@
   "mobile-menu": {
     "title": "Menu",
     "language": "Language"
+  },
+  "tour": {
+    "step-label": "Step {current} of {total}",
+    "next": "Next",
+    "back": "Back",
+    "close": "Close tour",
+    "start-exploring": "Start exploring",
+    "steps": {
+      "find-data": {
+        "title": "Find the data you need",
+        "description": "Browse data layers by category or search by name."
+      },
+      "add-layers": {
+        "title": "Add layers to the map",
+        "description": "Open a dataset to see its layers, then press the plus sign (+) to add it to the map. You can combine as many as you like."
+      },
+      "control-layers": {
+        "title": "Control what you see",
+        "description": "Manage the layers on your map:",
+        "visibility": "Show or hide layer",
+        "remove": "Remove layer from the map",
+        "order": "Drag to change the order: layers on top cover the ones below",
+        "collapse": "Collapse panel to see more of the map"
+      },
+      "analyze": {
+        "title": "Analyze your area",
+        "description": "Get insights for a place you care about. You can draw on the map or upload your own area."
+      },
+      "all-set": {
+        "title": "You’re all set",
+        "description": "Use these tools to zoom, switch the basemap or download a map image. You can replay this tour anytime from the Help button."
+      }
+    }
   }
 }

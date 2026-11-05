@@ -2,6 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { AccordionItem } from "@/components/ui/accordion";
 import DataLayersList from "@/containers/data-layers/list";
 import messages from "@/i18n/messages/en.json";
 import { DATA_LAYERS } from "@/tests/helpers/mocks";
@@ -13,11 +14,14 @@ vi.mock("@/containers/data-layers/list/item", () => ({
   default: (props: Record<string, unknown>) => {
     capturedItemProps.push(props);
     return (
-      <div data-testid={`dataset-item-${props.id}`}>
+      <AccordionItem
+        value={String(props.id)}
+        data-testid={`dataset-item-${props.id}`}
+      >
         <button type="button" onClick={props.onLearnMore as () => void}>
           Learn more mock
         </button>
-      </div>
+      </AccordionItem>
     );
   },
 }));
@@ -33,6 +37,7 @@ describe("@containers/data-layers/list", () => {
       datasets: NormalizedDataset[];
       isLoading: boolean;
       onItemChange: (id: number, isSelected: boolean) => void;
+      openItems: string[];
     }> = {},
   ) => {
     const merged = {
@@ -128,5 +133,16 @@ describe("@containers/data-layers/list", () => {
     await user.click(within(dialog).getByRole("button", { name: /ok/i }));
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("opens the items passed in openItems", () => {
+    renderList({ openItems: [String(DATA_LAYERS[0].id)] });
+
+    expect(
+      screen.getByTestId(`dataset-item-${DATA_LAYERS[0].id}`),
+    ).toHaveAttribute("data-state", "open");
+    expect(
+      screen.getByTestId(`dataset-item-${DATA_LAYERS[1].id}`),
+    ).toHaveAttribute("data-state", "closed");
   });
 });

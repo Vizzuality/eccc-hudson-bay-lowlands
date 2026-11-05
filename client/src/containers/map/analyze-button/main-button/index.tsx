@@ -66,7 +66,12 @@ const MainButton: FC = () => {
     <>
       <PopoverTrigger asChild>
         <TooltipTrigger asChild autoFocus={false}>
-          <Button type="button" size="xl" onClick={handleButtonClick}>
+          <Button
+            type="button"
+            size="xl"
+            data-tour="analyze"
+            onClick={handleButtonClick}
+          >
             <MainButtonIcon mapStatus={mapStatus} datasets={datasets} />
             {getMainButtonText(mapStatus, t)}
           </Button>
