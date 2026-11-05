@@ -1,13 +1,7 @@
+import { useAtom } from "jotai";
 import { ArrowDownIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
-import {
-  Children,
-  isValidElement,
-  type Ref,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { Children, isValidElement, type Ref, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -16,6 +10,7 @@ import {
 } from "@/components/ui/collapsible";
 import SortableList from "@/containers/map/legend/sortable/list";
 import type { MapLegendProps } from "@/containers/map/legend/types";
+import { legendOpenAtom } from "@/containers/tour/store";
 import { cn } from "@/lib/utils";
 
 function MapLegend({
@@ -25,7 +20,7 @@ function MapLegend({
   ref,
 }: MapLegendProps & { ref?: Ref<HTMLDivElement> }) {
   const t = useTranslations("legend");
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useAtom(legendOpenAtom);
   const isChildren = useMemo(() => {
     return !!Children.count(
       Children.toArray(children).filter((c) => isValidElement(c)),
@@ -34,7 +29,7 @@ function MapLegend({
 
   useEffect(() => {
     setOpen(isChildren);
-  }, [isChildren]);
+  }, [isChildren, setOpen]);
 
   return (
     <Collapsible
@@ -46,7 +41,11 @@ function MapLegend({
         hidden: !isChildren,
       })}
     >
-      <CollapsibleTrigger asChild data-download-exclude>
+      <CollapsibleTrigger
+        asChild
+        data-download-exclude
+        data-tour-hotspot="collapse"
+      >
         <Button
           type="button"
           variant="secondary"

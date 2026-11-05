@@ -26,6 +26,7 @@ import {
 } from "@/containers/map/constants";
 import { Controls } from "@/containers/map/controls";
 import MapDownload from "@/containers/map/controls/download";
+import HelpControl from "@/containers/map/controls/help";
 import LegendControl from "@/containers/map/controls/legend";
 import SettingsControl from "@/containers/map/controls/settings";
 import { BasemapControl } from "@/containers/map/controls/settings/basemap";
@@ -228,7 +229,10 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
               {children}
             </>
           )}
-          <Controls className="absolute top-6 right-6 max-lg:right-4">
+          <Controls
+            className="absolute top-6 right-6 max-lg:right-4"
+            data-tour="map-controls"
+          >
             <ZoomControl />
             <SettingsControl>
               <BasemapControl />
@@ -238,6 +242,7 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
               containerRef={containerRef}
               className="max-lg:hidden"
             />
+            <HelpControl />
           </Controls>
           <MapLegend
             sortable={{ enabled: true, handle: true }}
