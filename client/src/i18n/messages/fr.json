@@ -432,6 +432,18 @@
       "all-set": {
         "title": "Vous êtes prêt",
         "description": "Utilisez ces outils pour zoomer, changer le fond de carte ou télécharger une image de la carte. Vous pouvez relancer cette visite à tout moment avec le bouton Aide."
+      },
+      "mobile-find-data": {
+        "title": "Trouvez et ajoutez des données",
+        "description": "Touchez Données pour parcourir les couches par catégorie, puis touchez + pour en afficher une sur la carte."
+      },
+      "mobile-analyze": {
+        "title": "Analysez votre zone",
+        "description": "Touchez + pour obtenir des informations sur un lieu qui vous tient à cœur."
+      },
+      "mobile-all-set": {
+        "title": "Vous êtes prêt",
+        "description": "Zoomez ou changez le style de la carte avec ces commandes. Relancez cette visite à tout moment avec le bouton Aide."
       }
     }
   }

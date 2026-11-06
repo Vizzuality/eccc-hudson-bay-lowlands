@@ -12,7 +12,7 @@ import {
 import { useMainDatasets } from "@/containers/map-sidebar/main/use-main-datasets";
 import { Hotspots } from "@/containers/tour/hotspots";
 import { Spotlight } from "@/containers/tour/spotlight";
-import { MAP_TOUR_STEPS, type TourStepId } from "@/containers/tour/steps";
+import type { TourStepId } from "@/containers/tour/steps";
 import {
   legendOpenAtom,
   openDatasetIdsAtom,
@@ -22,8 +22,6 @@ import { TourCard } from "@/containers/tour/tour-card";
 import { useMapTour } from "@/containers/tour/use-map-tour";
 import { useTargetRect } from "@/containers/tour/use-target-rect";
 import { useIsMobile } from "@/hooks/use-is-mobile";
-
-const TOTAL_COUNTED = MAP_TOUR_STEPS.filter((step) => step.counted).length;
 
 function useStepEffects(stepId: TourStepId | undefined) {
   const { data: datasets } = useMainDatasets();
@@ -50,10 +48,11 @@ export default function MapTour() {
   const isMobile = useIsMobile();
   const { mapStatus } = useMapStatus();
   const setAvailable = useSetAtom(tourAvailableAtom);
-  const { index, step, next, back, close } = useMapTour();
+  const { steps, index, step, next, back, close } = useMapTour();
   const anchorRef = useRef<HTMLDivElement>(null);
   const rect = useTargetRect(step?.selector ?? null);
-  const available = !isMobile && mapStatus === MapStatus.default;
+  const available = mapStatus === MapStatus.default;
+  const wasMobile = useRef(isMobile);
 
   useEffect(() => {
     setAvailable(available);
@@ -62,13 +61,18 @@ export default function MapTour() {
 
   useEffect(() => () => setAvailable(false), [setAvailable]);
 
+  useEffect(() => {
+    if (wasMobile.current === isMobile) return;
+    wasMobile.current = isMobile;
+    close();
+  }, [isMobile, close]);
+
   useStepEffects(step?.id);
 
   if (index === null || !step || !available) return null;
 
-  const current = MAP_TOUR_STEPS.slice(0, index + 1).filter(
-    (s) => s.counted,
-  ).length;
+  const total = steps.filter((s) => s.counted).length;
+  const current = steps.slice(0, index + 1).filter((s) => s.counted).length;
 
   return (
     <>
@@ -82,11 +86,11 @@ export default function MapTour() {
       <TourCard
         step={step}
         current={current}
-        total={TOTAL_COUNTED}
+        total={total}
         anchorRef={anchorRef}
         hasTarget={!!rect}
         isFirst={index === 0}
-        isLast={index === MAP_TOUR_STEPS.length - 1}
+        isLast={index === steps.length - 1}
         onNext={next}
         onBack={back}
         onClose={close}

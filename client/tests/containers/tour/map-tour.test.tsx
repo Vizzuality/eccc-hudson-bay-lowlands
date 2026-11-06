@@ -218,6 +218,29 @@ describe("@containers/tour", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
+  it("walks through the mobile steps on a mobile viewport", async () => {
+    vi.mocked(useIsMobile).mockReturnValue(true);
+    const user = userEvent.setup();
+    renderTour();
+
+    await startTour(user);
+    expect(screen.getByText("Step 1 of 2")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Find and add data" }),
+    ).toBeInTheDocument();
+
+    await clickNext(user);
+    expect(screen.getByText("Step 2 of 2")).toBeInTheDocument();
+
+    await clickNext(user);
+    expect(
+      screen.getByRole("heading", { name: "You’re all set" }),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Start exploring" }));
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
   it("hides the help button outside the default map status", () => {
     renderTour({ searchParams: "?mapStatus=analysis" });
 
