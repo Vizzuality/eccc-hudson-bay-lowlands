@@ -3,10 +3,13 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
+import { cookies } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import MapLayout from "@/containers/map-layout";
 import MapSidebar from "@/containers/map-sidebar";
+import Welcome from "@/containers/tour/welcome";
+import { COOKIE_NAME as WELCOME_COOKIE_NAME } from "@/containers/tour/welcome/constants";
 import { API } from "@/lib/api";
 import { getCategoriesConfig, getDatasetsConfig } from "@/lib/api/config";
 import { queryKeys } from "@/lib/query-keys";
@@ -49,6 +52,7 @@ export default async function Home({
       ? { search: dataLayersSearchParam }
       : {}),
   };
+  const showWelcome = !(await cookies()).has(WELCOME_COOKIE_NAME);
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: queryKeys.categories.all.queryKey,
@@ -74,6 +78,7 @@ export default async function Home({
           </Suspense>
         }
       />
+      {showWelcome && <Welcome />}
     </HydrationBoundary>
   );
 }
