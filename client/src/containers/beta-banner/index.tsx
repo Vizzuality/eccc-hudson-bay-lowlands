@@ -9,7 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import RichText from "@/components/ui/rich-text";
-import { introDismissedAtom } from "@/containers/intro-modal/store";
+import { welcomeDismissedAtom } from "@/containers/tour/welcome/store";
 import { cn } from "@/lib/utils";
 import { COOKIE_NAME, COOLDOWN_DAYS } from "./constants";
 
@@ -18,12 +18,12 @@ const BetaBanner = ({ hideOnMobile = false }: { hideOnMobile?: boolean }) => {
   const [open, setOpen] = useState(true);
   const [mounted, setMounted] = useState(true);
   const { default: mapRef } = useMap();
-  const introDismissed = useAtomValue(introDismissedAtom);
-  const hidden = hideOnMobile && !introDismissed;
+  const welcomeDismissed = useAtomValue(welcomeDismissedAtom);
+  const hidden = hideOnMobile && !welcomeDismissed;
 
   useEffect(() => {
-    if (hideOnMobile && introDismissed) mapRef?.resize();
-  }, [hideOnMobile, introDismissed, mapRef]);
+    if (hideOnMobile && welcomeDismissed) mapRef?.resize();
+  }, [hideOnMobile, welcomeDismissed, mapRef]);
 
   const handleAnimationEnd = (event: React.AnimationEvent<HTMLDivElement>) => {
     if (event.animationName === "collapsible-up") {
