@@ -36,6 +36,10 @@ _Avoid_: onboarding (alone), tutorial
 **Analysis tour**:
 The guided sequence of steps that explains the results of an analysis; separate from the map tour.
 
+**Help nudge**:
+The pill beside the Help button during an analysis ("Need help with the analysis?") that starts the analysis tour; it stays hidden once the visitor dismisses it or starts the tour.
+_Avoid_: help tooltip
+
 **Welcome card**:
 The card shown once, on a visitor's first visit to the main map view, that introduces the map and offers to start the map tour.
 _Avoid_: intro modal

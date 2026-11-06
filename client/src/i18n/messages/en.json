@@ -228,6 +228,31 @@
       "hide-instructions": "Hide instructions"
     }
   },
+  "analysis-tour": {
+    "got-it": "Got it",
+    "nudge": {
+      "start": "Need help with the analysis?",
+      "dismiss": "Dismiss"
+    },
+    "steps": {
+      "topic-card": {
+        "title": "Your analysis, one topic at a time",
+        "description": "Each card summarises one topic for your area: key numbers first, then charts. Scroll down to see all the analyses for this topic."
+      },
+      "topic-tabs": {
+        "title": "Switch between topics",
+        "description": "Carbon, water, flood risk, snow, tree cover, ecosystems and biodiversity. Scroll sideways to see them all."
+      },
+      "topic-actions": {
+        "title": "Download, learn more or map it",
+        "description": "Use these buttons to download the data, see where it comes from and how it’s calculated, or show it as a layer on the map."
+      },
+      "all-set": {
+        "title": "That’s it",
+        "description": "Need a reminder later? Open Help anytime to replay this tour."
+      }
+    }
+  },
   "widgets": {
     "card": {
       "download-image": "Download image",

@@ -241,8 +241,8 @@ describe("@containers/tour", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("hides the help button outside the default map status", () => {
-    renderTour({ searchParams: "?mapStatus=analysis" });
+  it("hides the help button while the user draws or uploads an area", () => {
+    renderTour({ searchParams: "?mapStatus=upload" });
 
     expect(
       screen.queryByRole("button", { name: "Help" }),

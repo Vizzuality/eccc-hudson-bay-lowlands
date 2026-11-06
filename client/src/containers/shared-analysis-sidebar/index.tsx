@@ -4,6 +4,7 @@ import CloseAnalysisButton from "@/containers/analysis/close-analysis-button";
 import AnalysisPanelContent from "@/containers/analysis/panel-content";
 import DataLayersPanel from "@/containers/data-layers/panel";
 import ShareButton from "@/containers/share-button";
+import AnalysisTour from "@/containers/tour/analysis-tour";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 
 export default function SharedAnalysisSidebar() {
@@ -24,6 +25,7 @@ export default function SharedAnalysisSidebar() {
         />
       </div>
       <DataLayersPanel />
+      <AnalysisTour />
     </aside>
   );
 }

@@ -228,6 +228,31 @@
       "hide-instructions": "Masquer les instructions"
     }
   },
+  "analysis-tour": {
+    "got-it": "Compris",
+    "nudge": {
+      "start": "Besoin d’aide avec l’analyse ?",
+      "dismiss": "Ignorer"
+    },
+    "steps": {
+      "topic-card": {
+        "title": "Votre analyse, un thème à la fois",
+        "description": "Chaque carte résume un thème pour votre zone : d’abord les chiffres clés, puis les graphiques. Faites défiler vers le bas pour voir toutes les analyses de ce thème."
+      },
+      "topic-tabs": {
+        "title": "Passez d’un thème à l’autre",
+        "description": "Carbone, eau, risque d’inondation, neige, couvert forestier, écosystèmes et biodiversité. Faites défiler latéralement pour les voir tous."
+      },
+      "topic-actions": {
+        "title": "Téléchargez, informez-vous ou cartographiez",
+        "description": "Utilisez ces boutons pour télécharger les données, voir d’où elles proviennent et comment elles sont calculées, ou les afficher comme couche sur la carte."
+      },
+      "all-set": {
+        "title": "C’est tout",
+        "description": "Besoin d’un rappel plus tard ? Ouvrez l’Aide à tout moment pour relancer cette visite."
+      }
+    }
+  },
   "widgets": {
     "card": {
       "download-image": "Télécharger l'image",
