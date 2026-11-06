@@ -23,10 +23,6 @@
     "message": "<p><b>We're in Beta!</b> We're actively improving this tool. While most features are functional, you may occasionally encounter bugs, incomplete functionality, or performance issues.</p>",
     "dismiss": "Got it"
   },
-  "intro-modal": {
-    "heads-up": "<p><b>Heads up:</b> Some features might be limited on mobile. For the full experience, try the desktop version.</p>",
-    "dismiss": "Got it"
-  },
   "map": {
     "title": "Discover the Hudson & James Bay region",
     "description": "Explore and combine geographical data overlays. Analyze your area of interest and get custom insights.",
@@ -408,6 +404,31 @@
     "back": "Back",
     "close": "Close tour",
     "start-exploring": "Start exploring",
+    "welcome": {
+      "eyebrow": "Welcome",
+      "title": "Explore and analyze the Hudson & James Bay region",
+      "description": "Find out about peat, water, ecosystems and land use, for the whole region or just your area of interest.",
+      "features": {
+        "explore-data": {
+          "title": "Explore the data",
+          "description": "Turn on map layers like peat depth, flood risk or Indigenous territories.",
+          "mobile-description": "Turn on layers like peat depth or flood risk."
+        },
+        "choose-area": {
+          "title": "Choose your area",
+          "description": "Draw a shape on the map or upload your own area file.",
+          "mobile-description": "Draw a shape on the map"
+        },
+        "get-analysis": {
+          "title": "Get an analysis",
+          "description": "Get detailed analytics for your area of interest.",
+          "mobile-description": "Get detailed analytics for your area of interest."
+        }
+      },
+      "duration": "The tour takes about 1 minute.",
+      "skip": "Skip for now",
+      "start": "Start tour"
+    },
     "steps": {
       "find-data": {
         "title": "Find the data you need",

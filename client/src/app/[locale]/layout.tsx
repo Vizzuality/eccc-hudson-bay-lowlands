@@ -11,8 +11,7 @@ import ClientProviders from "@/app/[locale]/providers";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import BetaBanner from "@/containers/beta-banner";
 import { COOKIE_NAME, COOLDOWN_DAYS } from "@/containers/beta-banner/constants";
-import IntroModal from "@/containers/intro-modal";
-import { COOKIE_NAME as INTRO_COOKIE_NAME } from "@/containers/intro-modal/constants";
+import { COOKIE_NAME as WELCOME_COOKIE_NAME } from "@/containers/tour/welcome/constants";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -49,7 +48,7 @@ export default async function LocaleLayout({
   const showBanner =
     !dismissed ||
     dayjs().diff(dayjs(Number(dismissed)), "day") >= COOLDOWN_DAYS;
-  const showIntro = !cookieStore.has(INTRO_COOKIE_NAME);
+  const showWelcome = !cookieStore.has(WELCOME_COOKIE_NAME);
 
   return (
     <html lang={locale}>
@@ -59,8 +58,7 @@ export default async function LocaleLayout({
             <TooltipProvider>
               <ClientProviders>
                 <div className="flex h-dvh flex-col overflow-hidden">
-                  {showBanner && <BetaBanner hideOnMobile={showIntro} />}
-                  {showIntro && <IntroModal />}
+                  {showBanner && <BetaBanner hideOnMobile={showWelcome} />}
                   {children}
                 </div>
               </ClientProviders>

@@ -201,8 +201,8 @@ Below 1024px (Tailwind `lg`) the client shows a mobile layout: the map at full w
 - **Use `dvh` for full height.** On phones `100vh` is the height with the browser toolbars hidden, so a visible toolbar covers the bottom nav.
 - **The sidebar `transitionend` waits are skipped on mobile.** The sidebar is `display: none` there, so the event never fires.
 - **No map download on mobile.** The legend sheet is outside the map container, so the PNG would have no legend.
-- **The intro modal uses a cookie, not localStorage.** The server must know whether the modal opens, so it can hide `BetaBanner` on the first paint. The cookie lasts 400 days, the longest Chrome allows.
-- **Tests.** Mobile e2e specs go in `e2e/tests/mobile/` and run in the Playwright `mobile` project (`Pixel 7`). That project starts with the `intro-dismissed` cookie set. `intro-modal.spec.ts` clears it.
+- **The welcome card uses a cookie, not localStorage.** The server must know whether the card opens, so it can hide `BetaBanner` on phones on the first paint. The cookie is `welcome-dismissed` and lasts 400 days, the longest Chrome allows. The card is a dialog on desktop and a bottom sheet on mobile, and it only mounts on the main map page.
+- **Tests.** Mobile e2e specs go in `e2e/tests/mobile/` and run in the Playwright `mobile` project (`Pixel 7`). Both Playwright projects start with the `welcome-dismissed` cookie set. `mobile/welcome.spec.ts` clears it.
 
 ## Related Documentation
 

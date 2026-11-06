@@ -3,6 +3,22 @@ import { defineConfig, devices } from "@playwright/test";
 
 const projectRoot = path.resolve(process.cwd(), "..");
 
+const WELCOME_DISMISSED = {
+  cookies: [
+    {
+      name: "welcome-dismissed",
+      value: "1",
+      domain: "localhost",
+      path: "/",
+      expires: -1,
+      httpOnly: false,
+      secure: false,
+      sameSite: "Lax" as const,
+    },
+  ],
+  origins: [],
+};
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -22,28 +38,14 @@ export default defineConfig({
     {
       name: "chromium",
       testIgnore: "**/mobile/**",
-      use: { ...devices["Desktop Chrome"] },
+      use: { ...devices["Desktop Chrome"], storageState: WELCOME_DISMISSED },
     },
     {
       name: "mobile",
       testMatch: "**/mobile/**",
       use: {
         ...devices["Pixel 7"],
-        storageState: {
-          cookies: [
-            {
-              name: "intro-dismissed",
-              value: "1",
-              domain: "localhost",
-              path: "/",
-              expires: -1,
-              httpOnly: false,
-              secure: false,
-              sameSite: "Lax",
-            },
-          ],
-          origins: [],
-        },
+        storageState: WELCOME_DISMISSED,
       },
     },
   ],

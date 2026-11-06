@@ -23,10 +23,6 @@
     "message": "<p><b>Nous sommes en version bêta!</b> Nous améliorons activement cet outil. Bien que la plupart des fonctionnalités soient opérationnelles, vous pourriez occasionnellement rencontrer des bogues, des fonctionnalités incomplètes ou des problèmes de performance.</p>",
     "dismiss": "Compris"
   },
-  "intro-modal": {
-    "heads-up": "<p><b>À noter :</b> certaines fonctionnalités peuvent être limitées sur mobile. Pour profiter de toutes les fonctionnalités, utilisez la version pour ordinateur.</p>",
-    "dismiss": "Compris"
-  },
   "map": {
     "title": "Découvrez la région des basses-terres de la baie d'Hudson et de la baie James",
     "description": "Explorez et superposez vos couches de données géospatiales. Analysez votre zone d'intérêt et obtenez des analyses sur mesure.",
@@ -408,6 +404,31 @@
     "back": "Retour",
     "close": "Fermer la visite",
     "start-exploring": "Commencer à explorer",
+    "welcome": {
+      "eyebrow": "Bienvenue",
+      "title": "Explorez et analysez la région de la baie d’Hudson et de la baie James",
+      "description": "Découvrez la tourbe, l’eau, les écosystèmes et l’utilisation des terres, pour toute la région ou seulement pour votre zone d’intérêt.",
+      "features": {
+        "explore-data": {
+          "title": "Explorez les données",
+          "description": "Affichez des couches comme la profondeur de tourbe, le risque d’inondation ou les territoires autochtones.",
+          "mobile-description": "Affichez des couches comme la profondeur de tourbe ou le risque d’inondation."
+        },
+        "choose-area": {
+          "title": "Choisissez votre zone",
+          "description": "Dessinez une forme sur la carte ou téléversez votre propre fichier de zone.",
+          "mobile-description": "Dessinez une forme sur la carte"
+        },
+        "get-analysis": {
+          "title": "Obtenez une analyse",
+          "description": "Obtenez des analyses détaillées pour votre zone d’intérêt.",
+          "mobile-description": "Obtenez des analyses détaillées pour votre zone d’intérêt."
+        }
+      },
+      "duration": "La visite dure environ 1 minute.",
+      "skip": "Plus tard",
+      "start": "Commencer la visite"
+    },
     "steps": {
       "find-data": {
         "title": "Trouvez les données dont vous avez besoin",
