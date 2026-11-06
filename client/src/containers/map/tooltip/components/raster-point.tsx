@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { LoaderCircleIcon } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import type { FC } from "react";
 import { useApiTranslation } from "@/i18n/api-translation";
@@ -45,10 +46,16 @@ const RasterPointTooltip: FC<RasterPointTooltipProps> = ({
   return (
     <p
       aria-live="polite"
-      className="flex items-center gap-1.5 text-sm font-semibold leading-5"
+      className="flex min-h-5 items-center gap-1.5 text-sm font-semibold leading-5"
     >
       {isPending && (
-        <span className="text-muted-foreground">{t("loading")}</span>
+        <>
+          <LoaderCircleIcon
+            aria-hidden="true"
+            className="size-4 animate-spin text-muted-foreground"
+          />
+          <span className="sr-only">{t("loading")}</span>
+        </>
       )}
       {!isPending && (isError || value === null) && (
         <span className="text-muted-foreground">{t("no-data")}</span>
