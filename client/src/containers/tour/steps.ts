@@ -8,8 +8,8 @@ export type TourStepId =
   | "mobile-analyze"
   | "mobile-all-set";
 
-export interface TourStep {
-  id: TourStepId;
+export interface TourStep<Id extends string = TourStepId> {
+  id: Id;
   selector: string;
   side: "top" | "right" | "bottom" | "left";
   align: "start" | "center" | "end";

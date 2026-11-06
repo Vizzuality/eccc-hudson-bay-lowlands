@@ -50,10 +50,13 @@ export default function AnalysisPanelContent({
       </header>
 
       <div className="shrink-0 px-6">
-        <AnalysisNavigation />
+        <div data-tour="topic-tabs">
+          <AnalysisNavigation />
+        </div>
       </div>
 
       <ScrollArea
+        data-tour="topic-cards"
         className="min-h-0 flex-1 [&>[data-slot=scroll-area-viewport]>div]:block!"
         viewportRef={viewportRef}
       >

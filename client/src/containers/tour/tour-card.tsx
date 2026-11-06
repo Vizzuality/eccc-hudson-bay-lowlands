@@ -26,7 +26,9 @@ const CONTROL_LAYERS_OPTIONS: Array<{
 ];
 
 interface TourCardProps {
-  step: TourStep;
+  step: TourStep<string>;
+  stepsNamespace?: "tour" | "analysis-tour";
+  finishLabel?: string;
   current: number;
   total: number;
   anchorRef: RefObject<HTMLDivElement | null>;
@@ -60,8 +62,11 @@ export function TourCard({
   onNext,
   onBack,
   onClose,
+  stepsNamespace = "tour",
+  finishLabel,
 }: TourCardProps) {
   const t = useTranslations("tour");
+  const tSteps = useTranslations(stepsNamespace);
   const titleId = useId();
   const focusOnMount = useCallback((node: HTMLHeadingElement | null) => {
     node?.focus({ preventScroll: true });
@@ -119,10 +124,10 @@ export function TourCard({
             tabIndex={-1}
             className="text-xl leading-7 font-semibold text-foreground outline-hidden"
           >
-            {t(`steps.${step.id}.title`)}
+            {tSteps(`steps.${step.id}.title`)}
           </h2>
           <p className="text-sm leading-5 font-medium text-muted-foreground">
-            {t(`steps.${step.id}.description`)}
+            {tSteps(`steps.${step.id}.description`)}
           </p>
           {step.id === "control-layers" && (
             <ul className="flex flex-col gap-0.5 text-sm leading-5 font-medium text-muted-foreground">
@@ -150,7 +155,7 @@ export function TourCard({
                 className="text-xs font-bold"
                 onClick={isLast ? onClose : onNext}
               >
-                {isLast ? t("start-exploring") : t("next")}
+                {isLast ? (finishLabel ?? t("start-exploring")) : t("next")}
               </Button>
             </div>
           </div>
