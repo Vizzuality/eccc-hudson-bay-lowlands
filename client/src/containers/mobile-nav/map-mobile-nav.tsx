@@ -37,12 +37,14 @@ export function MapMobileNav() {
           icon: LayersIcon,
           current: mobileView === MobileView.data,
           onClick: () => setMobileView(MobileView.data),
+          tour: "mobile-data",
         },
       ]}
       trailingAction={{
         label: t("analysis"),
         icon: PlusIcon,
         transitionName: ANALYSIS_CTA_TRANSITION_NAME,
+        tour: "mobile-analyze",
         onClick: () =>
           withViewTransition(() => {
             setMobileView(null);

@@ -13,12 +13,16 @@ export type MobileNavItem = {
   cta?: boolean;
   variant?: "default" | "secondary";
   disabled?: boolean;
+  tour?: string;
 };
 
 type MobileNavProps = {
   label?: string;
   items: MobileNavItem[];
-  trailingAction?: Pick<MobileNavItem, "label" | "onClick" | "icon"> & {
+  trailingAction?: Pick<
+    MobileNavItem,
+    "label" | "onClick" | "icon" | "tour"
+  > & {
     transitionName?: string;
   };
   as?: "nav" | "div";
@@ -36,6 +40,7 @@ export function MobileNav({
   const trailingButton = trailingAction && (
     <Button
       onClick={trailingAction.onClick}
+      data-tour={trailingAction.tour}
       aria-label={isTrailingActionOnly ? undefined : trailingAction.label}
       className={cn(
         "h-[72px] rounded-full shadow-md",
@@ -71,6 +76,7 @@ export function MobileNav({
               cta,
               variant = "default",
               disabled,
+              tour,
             }) => (
               <li key={`mobile-nav-${id}`} className="flex-1">
                 <Button
@@ -78,6 +84,7 @@ export function MobileNav({
                   aria-current={current ? "true" : undefined}
                   disabled={disabled}
                   onClick={onClick}
+                  data-tour={tour}
                   className={cn(
                     "w-full font-bold text-xs leading-5",
                     hasTabs ? "h-14" : "h-[72px] shadow-md",

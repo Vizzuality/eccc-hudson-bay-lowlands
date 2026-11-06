@@ -88,7 +88,7 @@ export function TourCard({
           updatePositionStrategy="always"
           onOpenAutoFocus={(event) => event.preventDefault()}
           onInteractOutside={(event) => event.preventDefault()}
-          className="z-60 flex max-h-(--radix-popover-content-available-height) w-[360px] flex-col overflow-y-auto gap-2 rounded-2xl bg-card p-6 text-card-foreground shadow-[0_10px_16px_rgb(41_77_164/0.1)] outline-hidden"
+          className="z-60 flex max-h-(--radix-popover-content-available-height) w-[360px] max-w-(--radix-popover-content-available-width) flex-col overflow-y-auto gap-2 rounded-2xl bg-card p-6 text-card-foreground shadow-[0_10px_16px_rgb(41_77_164/0.1)] outline-hidden"
         >
           <div className="flex items-start justify-between gap-2">
             {step.counted ? (

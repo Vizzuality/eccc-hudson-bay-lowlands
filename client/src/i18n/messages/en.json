@@ -453,6 +453,18 @@
       "all-set": {
         "title": "You’re all set",
         "description": "Use these tools to zoom, switch the basemap or download a map image. You can replay this tour anytime from the Help button."
+      },
+      "mobile-find-data": {
+        "title": "Find and add data",
+        "description": "Tap Data to browse layers by category, then tap + to show one on the map."
+      },
+      "mobile-analyze": {
+        "title": "Analyze your area",
+        "description": "Tap + to get insights for a place you care about."
+      },
+      "mobile-all-set": {
+        "title": "You’re all set",
+        "description": "Zoom or change the map style with these controls. Replay this tour anytime from the help button."
       }
     }
   }
