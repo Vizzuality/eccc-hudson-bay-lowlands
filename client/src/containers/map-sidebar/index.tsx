@@ -6,6 +6,7 @@ import DataLayersPanel from "@/containers/data-layers/panel";
 import Analysis from "@/containers/map-sidebar/analysis";
 import Main from "@/containers/map-sidebar/main";
 import MapTour from "@/containers/tour";
+import AnalysisTour from "@/containers/tour/analysis-tour";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { cn } from "@/lib/utils";
 
@@ -75,6 +76,7 @@ const MapSidebar = () => {
       </div>
       <DataLayersPanel />
       <MapTour />
+      <AnalysisTour />
     </aside>
   );
 };

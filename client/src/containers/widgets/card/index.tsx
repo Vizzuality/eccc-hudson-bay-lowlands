@@ -82,7 +82,11 @@ const WidgetCard: FC<WidgetCardProps> = ({
             {icon}
             <h3 className="text-lg leading-8 font-normal">{title}</h3>
           </div>
-          <div data-download-exclude className="flex items-center">
+          <div
+            data-download-exclude
+            data-tour="topic-actions"
+            className="flex items-center"
+          >
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
