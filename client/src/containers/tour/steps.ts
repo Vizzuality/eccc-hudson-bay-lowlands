@@ -3,7 +3,10 @@ export type TourStepId =
   | "add-layers"
   | "control-layers"
   | "analyze"
-  | "all-set";
+  | "all-set"
+  | "mobile-find-data"
+  | "mobile-analyze"
+  | "mobile-all-set";
 
 export interface TourStep {
   id: TourStepId;
@@ -51,6 +54,33 @@ export const MAP_TOUR_STEPS: TourStep[] = [
   },
   {
     id: "all-set",
+    selector: '[data-tour="map-controls"]',
+    side: "left",
+    align: "start",
+    shape: "pill",
+    counted: false,
+  },
+];
+
+export const MOBILE_MAP_TOUR_STEPS: TourStep[] = [
+  {
+    id: "mobile-find-data",
+    selector: '[data-tour="mobile-data"]',
+    side: "top",
+    align: "center",
+    shape: "pill",
+    counted: true,
+  },
+  {
+    id: "mobile-analyze",
+    selector: '[data-tour="mobile-analyze"]',
+    side: "top",
+    align: "end",
+    shape: "pill",
+    counted: true,
+  },
+  {
+    id: "mobile-all-set",
     selector: '[data-tour="map-controls"]',
     side: "left",
     align: "start",
