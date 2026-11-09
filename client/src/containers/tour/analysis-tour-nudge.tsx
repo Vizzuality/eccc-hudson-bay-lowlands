@@ -65,8 +65,8 @@ export function AnalysisTourNudge({
             </button>
             <PopoverPrimitive.Arrow
               width={16}
-              height={8}
-              className="fill-popover"
+              height={11}
+              className="-translate-y-[3px] fill-popover"
             />
           </PopoverPrimitive.Content>
         </PopoverPrimitive.Portal>
