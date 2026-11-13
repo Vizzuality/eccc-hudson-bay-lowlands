@@ -349,6 +349,8 @@ export default function useMapDraw(props?: UseMapboxDrawProps) {
     if (hadGeometryRef.current) {
       hadGeometryRef.current = false;
       draw.deleteAll();
+      // mapbox-gl-draw's deleteAll also removes the polygon draw_polygon mode is drawing into.
+      if (enabledRef.current) draw.changeMode("draw_polygon");
     }
   }, [draw, props?.geometry, styleVariant]);
 

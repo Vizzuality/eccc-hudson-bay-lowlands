@@ -1,9 +1,11 @@
 import { renderHook } from "@testing-library/react";
+import type { Feature, Polygon } from "geojson";
 import { describe, expect, it, vi } from "vitest";
 import useMapDraw from "@/hooks/use-map-draw";
 
 const listeners: Record<string, Array<() => void>> = {};
 let ring: number[][] = [];
+const drawCalls: string[] = [];
 
 const fakeMap = {
   on: (type: string, fn: () => void) => {
@@ -26,8 +28,8 @@ vi.mock("@mapbox/mapbox-gl-draw", () => ({
   default: class {
     static modes = {};
     getMode = () => "draw_polygon";
-    changeMode = () => {};
-    deleteAll = () => {};
+    changeMode = (mode: string) => drawCalls.push(`changeMode:${mode}`);
+    deleteAll = () => drawCalls.push("deleteAll");
     add = () => {};
     getAll = () => ({
       features: [{ geometry: { type: "Polygon", coordinates: [ring] } }],
@@ -51,5 +53,37 @@ describe("@hooks/use-map-draw", () => {
     ring = [[-82, 53]];
     emit("touchend");
     expect(onDrawingStart).toHaveBeenCalledTimes(1);
+  });
+
+  it("restarts polygon drawing after a drawn geometry is cleared", () => {
+    const geometry: Feature<Polygon> = {
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [-82, 53],
+            [-81, 53],
+            [-81, 54],
+            [-82, 53],
+          ],
+        ],
+      },
+    };
+    const { rerender } = renderHook(
+      ({ geometry }: { geometry?: Feature<Polygon> }) =>
+        useMapDraw({ enabled: true, geometry }),
+      { initialProps: { geometry } as { geometry?: Feature<Polygon> } },
+    );
+
+    drawCalls.length = 0;
+    rerender({ geometry: undefined });
+
+    const lastDeleteAll = drawCalls.lastIndexOf("deleteAll");
+    expect(lastDeleteAll).toBeGreaterThanOrEqual(0);
+    expect(drawCalls.slice(lastDeleteAll + 1)).toContain(
+      "changeMode:draw_polygon",
+    );
   });
 });
