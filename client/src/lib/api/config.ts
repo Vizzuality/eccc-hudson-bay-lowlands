@@ -6,6 +6,11 @@ export const getCategoriesConfig: AxiosRequestConfig = {
   url: "/categories",
 };
 
+export const ALL_DATASETS_FILTERS = {
+  include_layers: true,
+  limit: 99,
+} as const satisfies DatasetFilters;
+
 export const getDatasetsConfig = (
   params?: DatasetFilters,
 ): AxiosRequestConfig => ({

@@ -4,7 +4,11 @@ import { useMemo } from "react";
 import { useCategory } from "@/app/[locale]/url-store";
 import { useApiTranslation } from "@/i18n/api-translation";
 import { API } from "@/lib/api";
-import { getCategoriesConfig, getDatasetsConfig } from "@/lib/api/config";
+import {
+  ALL_DATASETS_FILTERS,
+  getCategoriesConfig,
+  getDatasetsConfig,
+} from "@/lib/api/config";
 import { queryKeys } from "@/lib/query-keys";
 import type {
   CategoryResponse,
@@ -58,12 +62,9 @@ export function useCategories() {
   });
 
   const { data: allDatasets } = useQuery({
-    queryKey: queryKeys.datasets.all({ include_layers: true, limit: 99 })
-      .queryKey,
+    queryKey: queryKeys.datasets.all(ALL_DATASETS_FILTERS).queryKey,
     queryFn: () =>
-      API<DatasetResponse>(
-        getDatasetsConfig({ include_layers: true, limit: 99 }),
-      ),
+      API<DatasetResponse>(getDatasetsConfig(ALL_DATASETS_FILTERS)),
     select: (data) => data.data,
   });
 
