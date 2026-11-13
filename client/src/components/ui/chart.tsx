@@ -29,6 +29,8 @@ type ChartContextProps = {
 
 const ChartContext = React.createContext<ChartContextProps | null>(null);
 
+const ChartsPausedContext = React.createContext(false);
+
 function useChart() {
   const context = React.useContext(ChartContext);
 
@@ -57,6 +59,7 @@ function ChartContainer({
   };
 }) {
   const uniqueId = React.useId();
+  const paused = React.useContext(ChartsPausedContext);
   const chartId = `chart-${id ?? uniqueId.replace(/:/g, "")}`;
 
   return (
@@ -71,11 +74,13 @@ function ChartContainer({
         {...props}
       >
         <ChartStyle id={chartId} config={config} />
-        <RechartsPrimitive.ResponsiveContainer
-          initialDimension={initialDimension}
-        >
-          {children}
-        </RechartsPrimitive.ResponsiveContainer>
+        {!paused && (
+          <RechartsPrimitive.ResponsiveContainer
+            initialDimension={initialDimension}
+          >
+            {children}
+          </RechartsPrimitive.ResponsiveContainer>
+        )}
       </div>
     </ChartContext.Provider>
   );
@@ -365,6 +370,7 @@ function getPayloadConfigFromPayload(
 }
 
 export {
+  ChartsPausedContext,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,

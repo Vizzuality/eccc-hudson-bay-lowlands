@@ -25,7 +25,7 @@ export default function MapLayout({
             {sidebar === undefined ? (
               children
             ) : (
-              <section className="relative flex h-full overflow-hidden">
+              <section className="relative flex h-full overflow-hidden [--datasets-panel-width:350px] [--sidebar-width:480px] min-[1440px]:[--sidebar-width:600px]">
                 <div className="contents max-lg:hidden">{sidebar}</div>
 
                 <Suspense>

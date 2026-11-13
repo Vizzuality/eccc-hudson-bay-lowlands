@@ -57,7 +57,7 @@ describe("HblAreaMask", () => {
   it("renders source and layer when data is available", () => {
     mockUseHblArea.mockReturnValue({ data: invertedFeature });
 
-    const { getByTestId } = render(<HblAreaMask />, { wrapper });
+    const { getByTestId } = render(<HblAreaMask visible />, { wrapper });
 
     expect(getByTestId("source-hbl-area-mask")).toBeDefined();
     expect(getByTestId("layer-hbl-area-mask-fill")).toBeDefined();
@@ -66,15 +66,25 @@ describe("HblAreaMask", () => {
   it("renders a loading spinner while data is loading", () => {
     mockUseHblArea.mockReturnValue({ data: undefined, isLoading: true });
 
-    const { getByLabelText } = render(<HblAreaMask />, { wrapper });
+    const { getByLabelText } = render(<HblAreaMask visible />, { wrapper });
 
     expect(getByLabelText("Loading study area")).toBeDefined();
+  });
+
+  it("does not show the loading spinner outside upload mode", () => {
+    mockUseHblArea.mockReturnValue({ data: undefined, isLoading: true });
+
+    const { queryByLabelText } = render(<HblAreaMask visible={false} />, {
+      wrapper,
+    });
+
+    expect(queryByLabelText("Loading study area")).toBeNull();
   });
 
   it("renders nothing when data is not available and not loading", () => {
     mockUseHblArea.mockReturnValue({ data: undefined, isLoading: false });
 
-    const { container } = render(<HblAreaMask />, { wrapper });
+    const { container } = render(<HblAreaMask visible />, { wrapper });
 
     expect(container.innerHTML).toBe("");
   });

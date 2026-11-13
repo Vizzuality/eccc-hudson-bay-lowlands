@@ -1,27 +1,57 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
+import {
+  NuqsTestingAdapter,
+  type OnUrlUpdateFunction,
+} from "nuqs/adapters/testing";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import CloseDialog from "@/containers/analysis/close-dialog";
 import messages from "@/i18n/messages/en.json";
 
 const mockPush = vi.fn();
+const mockParams = vi.fn<() => Record<string, string>>(() => ({}));
 
 vi.mock("next/navigation", () => ({
   useRouter: vi.fn(() => ({ push: mockPush })),
+  useParams: () => mockParams(),
 }));
+
+const renderDialog = ({
+  open = true,
+  onOpenChange = vi.fn(),
+  searchParams = "",
+  onUrlUpdate,
+}: {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  searchParams?: string;
+  onUrlUpdate?: OnUrlUpdateFunction;
+} = {}) =>
+  render(
+    <NuqsTestingAdapter searchParams={searchParams} onUrlUpdate={onUrlUpdate}>
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <CloseDialog open={open} onOpenChange={onOpenChange} />
+      </NextIntlClientProvider>
+    </NuqsTestingAdapter>,
+  );
+
+const confirm = async () => {
+  const user = userEvent.setup();
+  const dialog = screen.getByRole("dialog");
+  await user.click(
+    within(dialog).getByRole("button", { name: /clear & go back/i }),
+  );
+};
 
 describe("@containers/analysis/close-dialog", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockParams.mockReturnValue({});
   });
 
   it("renders dialog content when open", () => {
-    render(
-      <NextIntlClientProvider locale="en" messages={messages}>
-        <CloseDialog open={true} onOpenChange={vi.fn()} />
-      </NextIntlClientProvider>,
-    );
+    renderDialog();
 
     expect(
       screen.getByRole("dialog", { name: /leave current analysis/i }),
@@ -32,11 +62,7 @@ describe("@containers/analysis/close-dialog", () => {
   });
 
   it("does not render dialog content when closed", () => {
-    render(
-      <NextIntlClientProvider locale="en" messages={messages}>
-        <CloseDialog open={false} onOpenChange={vi.fn()} />
-      </NextIntlClientProvider>,
-    );
+    renderDialog({ open: false });
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
@@ -44,11 +70,7 @@ describe("@containers/analysis/close-dialog", () => {
   it("calls onOpenChange(false) when Cancel is clicked", async () => {
     const user = userEvent.setup();
     const onOpenChange = vi.fn();
-    render(
-      <NextIntlClientProvider locale="en" messages={messages}>
-        <CloseDialog open={true} onOpenChange={onOpenChange} />
-      </NextIntlClientProvider>,
-    );
+    renderDialog({ onOpenChange });
 
     const dialog = screen.getByRole("dialog");
     await user.click(within(dialog).getByRole("button", { name: /cancel/i }));
@@ -56,21 +78,36 @@ describe("@containers/analysis/close-dialog", () => {
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 
-  it("navigates to root and closes dialog when 'Clear & go back' is clicked", async () => {
-    const user = userEvent.setup();
+  it("clears only the analysis from the URL and keeps the visitor's layers", async () => {
     const onOpenChange = vi.fn();
-    render(
-      <NextIntlClientProvider locale="en" messages={messages}>
-        <CloseDialog open={true} onOpenChange={onOpenChange} />
-      </NextIntlClientProvider>,
-    );
+    const onUrlUpdate = vi.fn<OnUrlUpdateFunction>();
+    renderDialog({
+      onOpenChange,
+      onUrlUpdate,
+      searchParams:
+        "?mapStatus=analysis&view=results&datasets=true&layers=carbon_cog,water&basemap=satellite",
+    });
 
-    const dialog = screen.getByRole("dialog");
-    await user.click(
-      within(dialog).getByRole("button", { name: /clear & go back/i }),
-    );
+    await confirm();
+
+    await waitFor(() => {
+      const params = onUrlUpdate.mock.lastCall?.[0].searchParams;
+      expect(params?.toString()).toBe(
+        new URLSearchParams(
+          "layers=carbon_cog,water&basemap=satellite",
+        ).toString(),
+      );
+    });
+    expect(mockPush).not.toHaveBeenCalled();
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it("navigates home when leaving a shared analysis", async () => {
+    mockParams.mockReturnValue({ locale: "en", id: "abc" });
+    renderDialog();
+
+    await confirm();
 
     expect(mockPush).toHaveBeenCalledWith("/");
-    expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 });

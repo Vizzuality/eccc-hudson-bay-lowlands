@@ -1,4 +1,3 @@
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { FC } from "react";
 import { Button } from "@/components/ui/button";
@@ -10,16 +9,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useLeaveAnalysis } from "./use-leave-analysis";
 
 const CloseDialog: FC<{
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }> = ({ open, onOpenChange }) => {
   const t = useTranslations("analysis.leave-dialog");
-  const router = useRouter();
+  const { leaveAnalysis } = useLeaveAnalysis();
   const handleClearAndGoBack = () => {
-    router.push("/");
     onOpenChange(false);
+    void leaveAnalysis();
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

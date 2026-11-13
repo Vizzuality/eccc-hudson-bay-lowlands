@@ -1,21 +1,23 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
+import { NuqsTestingAdapter } from "nuqs/adapters/testing";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import CloseAnalysisButton from "@/containers/analysis/close-analysis-button";
 import messages from "@/i18n/messages/en.json";
 
-const mockPush = vi.fn();
-
 vi.mock("next/navigation", () => ({
-  useRouter: vi.fn(() => ({ push: mockPush })),
+  useRouter: vi.fn(() => ({ push: vi.fn() })),
+  useParams: vi.fn(() => ({})),
 }));
 
 const renderButton = () =>
   render(
-    <NextIntlClientProvider locale="en" messages={messages}>
-      <CloseAnalysisButton />
-    </NextIntlClientProvider>,
+    <NuqsTestingAdapter>
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <CloseAnalysisButton />
+      </NextIntlClientProvider>
+    </NuqsTestingAdapter>,
   );
 
 describe("@containers/analysis/close-analysis-button", () => {
@@ -41,18 +43,5 @@ describe("@containers/analysis/close-analysis-button", () => {
     expect(
       screen.getByRole("dialog", { name: /leave current analysis/i }),
     ).toBeInTheDocument();
-  });
-
-  it("navigates home when the close is confirmed", async () => {
-    const user = userEvent.setup();
-    renderButton();
-
-    await user.click(screen.getByRole("button", { name: /leave analysis/i }));
-    const dialog = screen.getByRole("dialog");
-    await user.click(
-      within(dialog).getByRole("button", { name: /clear & go back/i }),
-    );
-
-    expect(mockPush).toHaveBeenCalledWith("/");
   });
 });
