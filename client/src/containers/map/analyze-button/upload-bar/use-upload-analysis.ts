@@ -164,28 +164,28 @@ export function useSidebarCollapsed() {
       return;
     }
 
-    const sidebar = document.querySelector("aside");
-    if (!sidebar) {
+    const overlay = document.querySelector<HTMLElement>("[data-map-overlay]");
+    if (!overlay || overlay.offsetLeft === 0) {
       setSidebarCollapsed(true);
       return;
     }
 
     const onTransitionEnd = (e: TransitionEvent) => {
-      if (e.target === sidebar && e.propertyName === "opacity") {
-        sidebar.removeEventListener("transitionend", onTransitionEnd);
+      if (e.target === overlay && e.propertyName === "left") {
+        overlay.removeEventListener("transitionend", onTransitionEnd);
         setSidebarCollapsed(true);
       }
     };
-    sidebar.addEventListener("transitionend", onTransitionEnd);
+    overlay.addEventListener("transitionend", onTransitionEnd);
 
     const fallback = setTimeout(() => {
-      sidebar.removeEventListener("transitionend", onTransitionEnd);
+      overlay.removeEventListener("transitionend", onTransitionEnd);
       setSidebarCollapsed(true);
     }, 500);
 
     return () => {
       clearTimeout(fallback);
-      sidebar.removeEventListener("transitionend", onTransitionEnd);
+      overlay.removeEventListener("transitionend", onTransitionEnd);
     };
   }, [mapStatus]);
 

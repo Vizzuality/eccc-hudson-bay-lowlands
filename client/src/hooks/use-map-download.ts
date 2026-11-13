@@ -1,4 +1,4 @@
-import { toPng } from "html-to-image";
+import { toCanvas } from "html-to-image";
 import { type RefObject, useCallback, useState } from "react";
 
 import { formatDate } from "@/lib/utils/date";
@@ -38,7 +38,16 @@ export function useMapDownload(containerRef: RefObject<HTMLDivElement | null>) {
     }
 
     try {
-      const dataUrl = await toPng(el, { pixelRatio: window.devicePixelRatio });
+      const pixelRatio = window.devicePixelRatio;
+      const inset =
+        (el.querySelector<HTMLElement>("[data-map-overlay]")?.offsetLeft ?? 0) *
+        pixelRatio;
+      const full = await toCanvas(el, { pixelRatio });
+      const visible = document.createElement("canvas");
+      visible.width = full.width - inset;
+      visible.height = full.height;
+      visible.getContext("2d")?.drawImage(full, -inset, 0);
+      const dataUrl = visible.toDataURL("image/png");
 
       const a = document.createElement("a");
       a.href = dataUrl;

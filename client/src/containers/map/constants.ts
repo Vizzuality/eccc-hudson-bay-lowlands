@@ -23,7 +23,7 @@ export const BASEMAPS = {
 export const DESKTOP_FIT_PADDING = {
   top: 100,
   bottom: 100,
-  left: 700,
+  left: 100,
   right: 100,
 } as const;
 

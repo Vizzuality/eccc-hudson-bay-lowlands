@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Layer, Source } from "react-map-gl/mapbox";
 
 import useAnalysisSettings from "@/hooks/use-analysis-settings";
@@ -14,8 +15,12 @@ function getFirstFeature(geojson: ParsedGeoJSON) {
   return geojson;
 }
 
-export function AnalysisAreaMask() {
-  const [{ geometry }] = useAnalysisSettings();
+export function AnalysisAreaMask({ visible }: Readonly<{ visible: boolean }>) {
+  const [{ geometry: currentGeometry }] = useAnalysisSettings();
+  const [geometry, setGeometry] = useState(currentGeometry);
+  if (currentGeometry && currentGeometry !== geometry) {
+    setGeometry(currentGeometry);
+  }
 
   if (!geometry) return null;
 
@@ -31,7 +36,7 @@ export function AnalysisAreaMask() {
         type="fill"
         paint={{
           "fill-color": "#000",
-          "fill-opacity": 0.2,
+          "fill-opacity": visible ? 0.2 : 0,
         }}
       />
     </Source>

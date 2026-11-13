@@ -1,77 +1,28 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { useMap } from "react-map-gl/mapbox";
 import { MapStatus, useMapStatus } from "@/app/[locale]/url-store";
 import DataLayersPanel from "@/containers/data-layers/panel";
 import Analysis from "@/containers/map-sidebar/analysis";
 import Main from "@/containers/map-sidebar/main";
 import MapTour from "@/containers/tour";
 import AnalysisTour from "@/containers/tour/analysis-tour";
-import { useIsMobile } from "@/hooks/use-is-mobile";
-import { cn } from "@/lib/utils";
 
 const MapSidebar = () => {
   const { mapStatus } = useMapStatus();
-  const sidebarRef = useRef<HTMLDivElement>(null);
-
-  const { default: mapRef } = useMap();
-  const isMobile = useIsMobile();
-
-  const isHidden = mapStatus === MapStatus.upload;
-  const [isCollapsed, setIsCollapsed] = useState(isHidden);
-
-  useEffect(() => {
-    if (!isHidden) {
-      setIsCollapsed(false);
-      requestAnimationFrame(() => mapRef?.resize());
-      return;
-    }
-
-    if (isMobile) {
-      setIsCollapsed(true);
-      return;
-    }
-
-    const sidebar = sidebarRef.current;
-    if (!sidebar) return;
-
-    const handleTransitionEnd = (e: TransitionEvent) => {
-      if (e.target === sidebar && e.propertyName === "opacity") {
-        setIsCollapsed(true);
-        requestAnimationFrame(() => mapRef?.resize());
-      }
-    };
-
-    sidebar.addEventListener("transitionend", handleTransitionEnd);
-
-    const fallback = setTimeout(() => {
-      sidebar.removeEventListener("transitionend", handleTransitionEnd);
-      setIsCollapsed(true);
-      requestAnimationFrame(() => mapRef?.resize());
-    }, 500);
-
-    return () => {
-      clearTimeout(fallback);
-      sidebar.removeEventListener("transitionend", handleTransitionEnd);
-    };
-  }, [isHidden, isMobile, mapRef]);
+  const isAnalysis = mapStatus === MapStatus.analysis;
 
   return (
     <aside
-      className={cn(
-        "flex h-full shrink-0 overflow-hidden transition-opacity duration-300 ease-in-out",
-        isHidden && "opacity-0",
-      )}
-      ref={sidebarRef}
+      className="isolate flex h-full shrink-0 overflow-hidden"
+      inert={mapStatus === MapStatus.upload}
     >
-      <div
-        className={cn(
-          "h-full shrink-0 overflow-hidden",
-          isCollapsed ? "w-0" : "w-[480px] min-[1440px]:w-[600px]",
-        )}
-      >
-        <div data-tour="main-sidebar" className="flex h-full min-h-0 flex-col">
-          {mapStatus === MapStatus.analysis ? <Analysis /> : <Main />}
+      <div className="h-full w-(--sidebar-width) shrink-0 overflow-hidden">
+        <div
+          key={isAnalysis ? "analysis" : "main"}
+          data-tour="main-sidebar"
+          data-sidebar-content
+          className="flex h-full min-h-0 flex-col animate-in fade-in duration-200 motion-reduce:animate-none"
+        >
+          {isAnalysis ? <Analysis /> : <Main />}
         </div>
       </div>
       <DataLayersPanel />
