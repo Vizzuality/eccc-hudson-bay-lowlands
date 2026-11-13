@@ -1,13 +1,18 @@
 """Tests for the database seeding logic."""
 
+import copy
 import json
+import os
 import tempfile
 from pathlib import Path
 
+import pytest
+from pydantic import ValidationError
 from sqlalchemy import func, select
 
 from models import Category, Dataset, Layer
 from services.seed import seed_database
+from tests.conftest import SAMPLE_LAYER_CONFIG
 
 MINIMAL_METADATA = {
     "categories": [
@@ -95,6 +100,7 @@ MINIMAL_METADATA = {
                             "path": "/data/test/layer_c.tif",
                             "type": "categorical",
                             "unit": "category",
+                            "config": SAMPLE_LAYER_CONFIG,
                             "categories": [
                                 {"value": 1, "label": {"en": "Class 1", "fr": "Classe 1"}},
                                 {"value": 2, "label": {"en": "Class 2", "fr": "Classe 2"}},
@@ -375,14 +381,29 @@ def test_seed_stores_vector_config(db_session):
     }
 
 
-def test_seed_layer_without_config(db_session):
-    """Layers without config in the seed data have null config."""
-    metadata_path = _write_metadata(MINIMAL_METADATA)
-    seed_database(db_session, metadata_path)
-    db_session.flush()
+def _metadata_with_layer_c_without_config() -> dict:
+    data = copy.deepcopy(MINIMAL_METADATA)
+    del data["categories"][0]["datasets"][0]["layers"][2]["config"]
+    return data
 
-    cat_layer = db_session.execute(select(Layer).where(Layer.path == "data/test/layer_c.tif")).scalar_one()
-    assert cat_layer.config is None
+
+def test_seed_file_with_layer_without_config_is_rejected(db_session):
+    """Seeding from a metadata file fails validation when a layer has no config."""
+    metadata_path = _write_metadata(_metadata_with_layer_c_without_config())
+
+    with pytest.raises(ValidationError, match="config"):
+        seed_database(db_session, metadata_path)
+
+    assert db_session.scalar(select(func.count()).select_from(Layer)) == 0
+
+
+def test_seed_endpoint_layer_without_config_returns_422(client, db_session):
+    """The /seed endpoint rejects a layer without config before writing anything."""
+    seed_secret = os.environ["SEED_SECRET"]
+    response = client.post("/seed", json=_metadata_with_layer_c_without_config(), headers={"X-Seed-Secret": seed_secret})
+
+    assert response.status_code == 422
+    assert db_session.scalar(select(func.count()).select_from(Layer)) == 0
 
 
 # =============================================================================
@@ -511,6 +532,7 @@ def _seed_stray_rows(db_session) -> None:
 
     stray_layer = Layer(
         id="stray_layer",
+        config=SAMPLE_LAYER_CONFIG,
         format_="raster",
         path="/data/stray.tif",
         metadata_={"title": {"en": "Stray Layer", "fr": "Couche Vagabonde"}},
