@@ -11,6 +11,7 @@ import messages from "@/i18n/messages/en.json";
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
+  useParams: () => ({}),
 }));
 
 const renderAt = (searchParams: string, onUrlUpdate?: OnUrlUpdateFunction) =>

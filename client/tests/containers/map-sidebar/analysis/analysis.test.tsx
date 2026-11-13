@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
+import { NuqsTestingAdapter } from "nuqs/adapters/testing";
 import type { Mock } from "vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useLayerIds } from "@/app/[locale]/url-store";
@@ -49,13 +50,15 @@ const queryClient = new QueryClient({
 
 const renderAnalysis = () => {
   return render(
-    <QueryClientProvider client={queryClient}>
-      <NextIntlClientProvider locale="en" messages={messages}>
-        <TooltipProvider>
-          <Analysis />
-        </TooltipProvider>
-      </NextIntlClientProvider>
-    </QueryClientProvider>,
+    <NuqsTestingAdapter>
+      <QueryClientProvider client={queryClient}>
+        <NextIntlClientProvider locale="en" messages={messages}>
+          <TooltipProvider>
+            <Analysis />
+          </TooltipProvider>
+        </NextIntlClientProvider>
+      </QueryClientProvider>
+    </NuqsTestingAdapter>,
   );
 };
 
