@@ -13,8 +13,8 @@ export default function SharedAnalysisSidebar() {
   if (isMobile) return null;
 
   return (
-    <aside className="flex h-full shrink-0">
-      <div className="flex h-full w-[480px] min-[1440px]:w-[600px] shrink-0 flex-col">
+    <aside className="isolate flex h-full shrink-0">
+      <div className="flex h-full w-(--sidebar-width) shrink-0 flex-col">
         <AnalysisPanelContent
           headerActions={
             <>

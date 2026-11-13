@@ -1,14 +1,23 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import type { PaddingOptions } from "mapbox-gl";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import type { MapProps, MapRef } from "react-map-gl/mapbox";
 import MapBoxMap from "react-map-gl/mapbox";
+import { useMediaQuery } from "usehooks-ts";
 import {
   type LayersSettings,
   MapStatus,
   useIsMobileDataViewOpen,
   useIsMobileResultsViewOpen,
   useLayerIds,
+  useMapAnalysis,
   useMapBasemap,
   useMapStatus,
   useSyncLayersSettings,
@@ -40,6 +49,11 @@ import MapLegend from "@/containers/map/legend";
 import MapLegendItem from "@/containers/map/legend/item";
 import MobileAnalysis from "@/containers/map/mobile-analysis";
 import MapTooltip from "@/containers/map/tooltip";
+import {
+  easeOutCubic,
+  MAP_INSET_DURATION_MS,
+  MAP_INSET_TRANSITION,
+} from "@/containers/map-layout/constants";
 import { env } from "@/env";
 import useAnalysisSettings, {
   useIsAnalyzing,
@@ -50,6 +64,19 @@ import { getGeometryBounds } from "@/lib/utils/get-geometry-bounds";
 
 const DEFAULT_CENTER = { longitude: -85.74, latitude: 54.53 };
 const DEFAULT_ZOOM = 5;
+
+type Padding = Required<PaddingOptions>;
+
+function insetPadding(left: number): Padding {
+  return { left, top: 0, right: 0, bottom: 0 };
+}
+
+function setPaddingInPlace(map: MapRef, padding: Padding) {
+  const { width, height } = map.getContainer().getBoundingClientRect();
+  const x = padding.left + (width - padding.left - padding.right) / 2;
+  const y = padding.top + (height - padding.top - padding.bottom) / 2;
+  map.jumpTo({ center: map.unproject([x, y]), padding });
+}
 
 type MapContainerProps = {
   className?: HTMLDivElement["className"];
@@ -68,83 +95,86 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
   const [isAnalyzing] = useIsAnalyzing();
   const { mapStatus } = useMapStatus();
   const [{ geometry: analysisGeometry }] = useAnalysisSettings();
-  const prevMapStatusRef = useRef(mapStatus);
-  const hasZoomedRef = useRef(false);
-  const [showHblMask, setShowHblMask] = useState(false);
+  const { datasets } = useMapAnalysis();
+  const prevMapStatusRef = useRef<MapStatus | null>(null);
+  const [initialInset, setInitialInset] = useState<number | null>(null);
   const isMobile = useIsMobile();
+  const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+  const isSidebarOpen = mapStatus !== MapStatus.upload;
   const isMobileDataViewOpen = useIsMobileDataViewOpen();
   const isMobileResultsViewOpen = useIsMobileResultsViewOpen();
 
-  const zoomToAnalysisArea = useCallback(() => {
-    if (!analysisGeometry || !mapRef.current) return;
-    const bounds = getGeometryBounds(analysisGeometry);
-    if (!bounds) return;
-    hasZoomedRef.current = true;
-    mapRef.current.fitBounds(bounds, {
-      padding: isMobile ? MOBILE_FIT_PADDING : DESKTOP_FIT_PADDING,
-      animate: true,
-    });
-  }, [analysisGeometry, isMobile]);
+  const getInset = useCallback(() => {
+    const el = containerRef.current;
+    if (!el || isMobile || !isSidebarOpen) return 0;
+    const style = getComputedStyle(el);
+    const sidebar = Number.parseFloat(
+      style.getPropertyValue("--sidebar-width"),
+    );
+    const panel = datasets
+      ? Number.parseFloat(style.getPropertyValue("--datasets-panel-width"))
+      : 0;
+    return (sidebar || 0) + (panel || 0);
+  }, [isMobile, isSidebarOpen, datasets]);
+
+  useLayoutEffect(() => {
+    setInitialInset((current) => current ?? getInset());
+  }, [getInset]);
 
   useEffect(() => {
-    const justEnteredAnalysis =
-      prevMapStatusRef.current !== MapStatus.analysis &&
-      mapStatus === MapStatus.analysis;
+    const map = mapRef.current;
+    if (!loaded || !map) return;
+
+    const prevStatus = prevMapStatusRef.current;
     prevMapStatusRef.current = mapStatus;
+    const inset = getInset();
+    const duration = reducedMotion ? 0 : MAP_INSET_DURATION_MS;
 
-    if (mapStatus !== MapStatus.analysis) {
-      hasZoomedRef.current = false;
-      return;
-    }
-
-    if (hasZoomedRef.current) return;
-
-    // Map loaded while already in analysis mode (shared analysis page)
-    if (!justEnteredAnalysis && loaded) {
-      zoomToAnalysisArea();
-      return;
-    }
-
-    if (!justEnteredAnalysis) return;
-
-    // Entered analysis from upload — sidebar expands instantly, wait for resize
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        zoomToAnalysisArea();
+    if (mapStatus === MapStatus.analysis && prevStatus !== MapStatus.analysis) {
+      const bounds = analysisGeometry && getGeometryBounds(analysisGeometry);
+      if (!bounds) return;
+      map.fitBounds(bounds, {
+        padding: isMobile
+          ? MOBILE_FIT_PADDING
+          : { ...DESKTOP_FIT_PADDING, left: DESKTOP_FIT_PADDING.left + inset },
+        linear: true,
+        duration,
+        easing: easeOutCubic,
       });
-    });
-  }, [mapStatus, loaded, zoomToAnalysisArea]);
+      return;
+    }
+
+    if (prevStatus === MapStatus.analysis && mapStatus !== MapStatus.analysis) {
+      map.easeTo({
+        center: [DEFAULT_CENTER.longitude, DEFAULT_CENTER.latitude],
+        zoom: DEFAULT_ZOOM,
+        padding: insetPadding(inset),
+        duration,
+        easing: easeOutCubic,
+      });
+      return;
+    }
+
+    if (prevStatus === null) {
+      map.jumpTo({ padding: insetPadding(inset) });
+      return;
+    }
+
+    setPaddingInPlace(map, insetPadding(inset));
+  }, [loaded, mapStatus, getInset, reducedMotion, analysisGeometry, isMobile]);
 
   useEffect(() => {
-    if (mapStatus !== MapStatus.upload) {
-      setShowHblMask(false);
-      return;
-    }
-
-    const sidebar = document.querySelector("aside");
-    if (!sidebar || isMobile) {
-      setShowHblMask(true);
-      return;
-    }
-
-    const onTransitionEnd = (e: TransitionEvent) => {
-      if (e.target === sidebar && e.propertyName === "opacity") {
-        sidebar.removeEventListener("transitionend", onTransitionEnd);
-        setShowHblMask(true);
-      }
+    const map = mapRef.current;
+    if (!loaded || !map) return;
+    const onResize = () => {
+      if (map.isMoving()) return;
+      setPaddingInPlace(map, insetPadding(getInset()));
     };
-    sidebar.addEventListener("transitionend", onTransitionEnd);
-
-    const fallback = setTimeout(() => {
-      sidebar.removeEventListener("transitionend", onTransitionEnd);
-      setShowHblMask(true);
-    }, 500);
-
+    map.on("resize", onResize);
     return () => {
-      clearTimeout(fallback);
-      sidebar.removeEventListener("transitionend", onTransitionEnd);
+      map.off("resize", onResize);
     };
-  }, [mapStatus, isMobile]);
+  }, [loaded, getInset]);
 
   // Enforce zoom constraints imperatively to avoid triggering _createProxyTransform
   // in @vis.gl/react-mapbox. Passing minZoom/maxZoom as props causes it to re-wrap
@@ -184,100 +214,123 @@ const MapContainer = ({ className, children, ...props }: MapContainerProps) => {
     <div
       ref={containerRef}
       inert={isMobile && (isMobileDataViewOpen || isMobileResultsViewOpen)}
+      data-sidebar={isSidebarOpen ? "open" : "closed"}
+      data-datasets={datasets ? "open" : "closed"}
       className={cn(
-        "relative isolate h-full w-full flex-1 overflow-hidden rounded-tl-3xl border border-white bg-white max-lg:rounded-none max-lg:border-0",
+        "relative isolate h-full w-full flex-1 overflow-hidden bg-white lg:absolute lg:inset-0",
+        "[--map-inset:0px] lg:data-[sidebar=open]:[--map-inset:var(--sidebar-width)] lg:data-[sidebar=open]:data-[datasets=open]:[--map-inset:calc(var(--sidebar-width)+var(--datasets-panel-width))]",
+        "lg:[clip-path:inset(0_0_0_var(--map-inset)_round_24px_0_0_0)] lg:transition-[clip-path]",
+        MAP_INSET_TRANSITION,
         className,
       )}
     >
-      <div className="absolute inset-px overflow-hidden rounded-tl-3xl max-lg:inset-0 max-lg:rounded-none">
-        <DownloadWatermark />
+      <div
+        className={cn(
+          "absolute inset-0 overflow-hidden lg:inset-px lg:[clip-path:inset(0_0_0_var(--map-inset)_round_23px_0_0_0)] lg:transition-[clip-path]",
+          MAP_INSET_TRANSITION,
+        )}
+      >
         {isAnalyzing && (
           <div className="absolute inset-0 z-10 cursor-not-allowed" />
         )}
-        <MapBoxMap
-          ref={mapRef}
-          mapboxAccessToken={env.NEXT_PUBLIC_MAPBOX_API_TOKEN}
-          style={{ width: "100%", height: "100%" }}
-          mapStyle={mapStyle}
-          projection="mercator"
-          initialViewState={{
-            ...DEFAULT_CENTER,
-            zoom: DEFAULT_ZOOM,
-          }}
-          onLoad={() => {
-            const map = mapRef.current?.getMap();
-            // All constraints set imperatively — never as props — to prevent
-            // @vis.gl/react-mapbox from calling _createProxyTransform on each change,
-            // which stacks proxy layers causing exponential _calcMatrices recursion.
-            map?.setMaxBounds(HUDSON_BAY_MAX_BOUNDS);
-            map?.setMinZoom(DEFAULT_MIN_ZOOM);
-            setLoaded(true);
-          }}
-          preserveDrawingBuffer
-          testMode={
-            !!process.env.NEXT_PUBLIC_E2E || process.env.NODE_ENV === "test"
-          }
-          {...props}
-        >
-          {isMobile ? <MobileAnalysis /> : <AnalyzeButton />}
-          {loaded && (
-            <>
-              <LayerManager />
-              {showHblMask && <HblAreaMask />}
-              {mapStatus === MapStatus.analysis && <AnalysisAreaMask />}
-              <MapTooltip />
-              {children}
-            </>
-          )}
-          <Controls
-            className="absolute top-6 right-6 max-lg:right-4"
-            data-tour="map-controls"
-          >
-            <ZoomControl />
-            <SettingsControl>
-              <BasemapControl />
-            </SettingsControl>
-            <LegendControl />
-            <MapDownload
-              containerRef={containerRef}
-              className="max-lg:hidden"
-            />
-            <HelpControl />
-          </Controls>
-          <MapLegend
-            sortable={{ enabled: true, handle: true }}
-            onChangeOrder={(v) => {
-              setLayerIds(pinAboveMaskLayers(v, aboveMaskIds).toReversed());
+        {initialInset !== null && (
+          <MapBoxMap
+            ref={mapRef}
+            mapboxAccessToken={env.NEXT_PUBLIC_MAPBOX_API_TOKEN}
+            style={{ width: "100%", height: "100%" }}
+            mapStyle={mapStyle}
+            projection="mercator"
+            initialViewState={{
+              ...DEFAULT_CENTER,
+              zoom: DEFAULT_ZOOM,
+              padding: insetPadding(initialInset),
             }}
+            onLoad={() => {
+              const map = mapRef.current?.getMap();
+              // All constraints set imperatively — never as props — to prevent
+              // @vis.gl/react-mapbox from calling _createProxyTransform on each change,
+              // which stacks proxy layers causing exponential _calcMatrices recursion.
+              map?.setMaxBounds(HUDSON_BAY_MAX_BOUNDS);
+              map?.setMinZoom(DEFAULT_MIN_ZOOM);
+              setLoaded(true);
+            }}
+            preserveDrawingBuffer
+            testMode={
+              !!process.env.NEXT_PUBLIC_E2E || process.env.NODE_ENV === "test"
+            }
+            {...props}
           >
-            {pinAboveMaskLayers(layerIds.toReversed(), aboveMaskIds).map(
-              (id, index) => (
-                <MapLegendItem
-                  key={`map-legend-item-${id}`}
-                  id={id.toString()}
-                  className={
-                    index === 0 ? "border-t-0 pt-4 pb-6" : "border-t py-6"
-                  }
-                  sortable={{ enabled: true, handle: true }}
-                  settingsManager={{
-                    visibility: true,
-                    remove: true,
-                  }}
-                  settings={layersSettings?.[id.toString()] || {}}
-                  onChangeVisibility={(v) => {
-                    setLayersSettings({
-                      ...layersSettings,
-                      [id]: { visibility: v },
-                    });
-                  }}
-                  onRemove={(id) => {
-                    setLayerIds(layerIds.filter((layerId) => layerId !== id));
-                  }}
-                />
-              ),
+            {loaded && (
+              <>
+                <LayerManager />
+                <HblAreaMask visible={mapStatus === MapStatus.upload} />
+                <AnalysisAreaMask visible={mapStatus === MapStatus.analysis} />
+                <MapTooltip />
+                {children}
+              </>
             )}
-          </MapLegend>
-        </MapBoxMap>
+            <div
+              data-map-overlay
+              className={cn(
+                "pointer-events-none absolute inset-y-0 right-0 left-(--map-inset) transition-[left] *:pointer-events-auto",
+                MAP_INSET_TRANSITION,
+              )}
+            >
+              <DownloadWatermark />
+              {isMobile ? <MobileAnalysis /> : <AnalyzeButton />}
+              <Controls
+                className="absolute top-6 right-6 max-lg:right-4"
+                data-tour="map-controls"
+              >
+                <ZoomControl />
+                <SettingsControl>
+                  <BasemapControl />
+                </SettingsControl>
+                <LegendControl />
+                <MapDownload
+                  containerRef={containerRef}
+                  className="max-lg:hidden"
+                />
+                <HelpControl />
+              </Controls>
+              <MapLegend
+                sortable={{ enabled: true, handle: true }}
+                onChangeOrder={(v) => {
+                  setLayerIds(pinAboveMaskLayers(v, aboveMaskIds).toReversed());
+                }}
+              >
+                {pinAboveMaskLayers(layerIds.toReversed(), aboveMaskIds).map(
+                  (id, index) => (
+                    <MapLegendItem
+                      key={`map-legend-item-${id}`}
+                      id={id.toString()}
+                      className={
+                        index === 0 ? "border-t-0 pt-4 pb-6" : "border-t py-6"
+                      }
+                      sortable={{ enabled: true, handle: true }}
+                      settingsManager={{
+                        visibility: true,
+                        remove: true,
+                      }}
+                      settings={layersSettings?.[id.toString()] || {}}
+                      onChangeVisibility={(v) => {
+                        setLayersSettings({
+                          ...layersSettings,
+                          [id]: { visibility: v },
+                        });
+                      }}
+                      onRemove={(id) => {
+                        setLayerIds(
+                          layerIds.filter((layerId) => layerId !== id),
+                        );
+                      }}
+                    />
+                  ),
+                )}
+              </MapLegend>
+            </div>
+          </MapBoxMap>
+        )}
       </div>
     </div>
   );
