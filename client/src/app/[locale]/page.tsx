@@ -11,7 +11,11 @@ import MapSidebar from "@/containers/map-sidebar";
 import Welcome from "@/containers/tour/welcome";
 import { COOKIE_NAME as WELCOME_COOKIE_NAME } from "@/containers/tour/welcome/constants";
 import { API } from "@/lib/api";
-import { getCategoriesConfig, getDatasetsConfig } from "@/lib/api/config";
+import {
+  ALL_DATASETS_FILTERS,
+  getCategoriesConfig,
+  getDatasetsConfig,
+} from "@/lib/api/config";
 import { queryKeys } from "@/lib/query-keys";
 import type { CategoryResponse, DatasetResponse } from "@/types";
 
@@ -43,8 +47,7 @@ export default async function Home({
       ? Number.parseInt(categoryParam, 10)
       : undefined;
   const queryParams = {
-    include_layers: true,
-    limit: 99,
+    ...ALL_DATASETS_FILTERS,
     ...(typeof categoryId === "number" && Number.isFinite(categoryId)
       ? { category_id: categoryId }
       : {}),
@@ -63,10 +66,9 @@ export default async function Home({
     queryFn: () => API<DatasetResponse>(getDatasetsConfig(queryParams)),
   });
   await queryClient.prefetchQuery({
-    queryKey: queryKeys.datasets.all({ include_layers: true, limit: 99 })
-      .queryKey,
+    queryKey: queryKeys.datasets.all(ALL_DATASETS_FILTERS).queryKey,
     queryFn: () =>
-      API<DatasetResponse>(getDatasetsConfig({ include_layers: true })),
+      API<DatasetResponse>(getDatasetsConfig(ALL_DATASETS_FILTERS)),
   });
 
   return (
