@@ -184,6 +184,17 @@ eccc-hudson-bay-lowlands/
 | SQLAlchemy 2.0+ with psycopg v3 | Modern async-ready ORM with type-annotated syntax and latest PostgreSQL driver | - |
 | Auto table creation via lifespan | Simple schema management for early-stage project; Alembic planned for future | - |
 
+## Desktop Map Layout
+
+The map canvas always fills the whole row, under the sidebar. It never resizes when the sidebar opens or closes (see [ADR-008](ADR/008-full-width-map-canvas-clipped-by-sidebar.md)).
+
+- **`--map-inset` is the width the sidebar covers.** `MapContainer` sets it from `mapStatus` and the `datasets` param: `--sidebar-width` (480px, 600px from 1440px), plus `--datasets-panel-width` (350px) when that panel is open, and 0 in upload mode. Both widths are defined on the `MapLayout` section. The map container's `clip-path`, the map UI overlay (`[data-map-overlay]`), and the Mapbox logo all read `--map-inset`, and they transition together.
+- **The camera padding follows the inset.** Entering an analysis fits the area with the inset added to the left padding. Leaving it eases back to the default view. Every other inset change (upload mode, the datasets panel, a window resize) moves the padded centre so that the map content stays where it is on screen.
+- **Map UI goes in the overlay.** Anything positioned inside `<Map>` (buttons, legend, watermark) must be a child of `[data-map-overlay]`. Otherwise it sits under the sidebar.
+- **Max bounds apply to the full canvas.** Mapbox clamps `maxBounds` against the whole canvas, including the part under the sidebar, so with the sidebar open the visitor cannot pan as far west as in upload mode.
+- **Leaving an analysis is a state reset, not a navigation.** `useLeaveAnalysis` clears `mapStatus`, `view`, `datasets` and the analysis atoms, and keeps layers, layer settings and basemap. Only the shared analysis page (`/analysis/[id]`) navigates to `/`.
+- **Charts mount after the reveal.** The analysis sidebar holds `ChartsPausedContext` for `MAP_INSET_DURATION_MS`, so the Recharts render does not drop frames from the sidebar reveal and the camera move.
+
 ## Mobile Layout
 
 Below 1024px (Tailwind `lg`) the client shows a mobile layout: the map at full width with a floating bottom nav.
@@ -199,7 +210,7 @@ Below 1024px (Tailwind `lg`) the client shows a mobile layout: the map at full w
 - **One `MobileNav`.** Each map mode passes its own items. Do not add another bar.
 - **The bottom nav is 104px.** The value is in `MOBILE_FIT_PADDING` (`containers/map/constants.ts`) and in the Mapbox corner rules in `app/globals.css`. Change both together. The corner rules are outside `@layer`, because Mapbox's unlayered CSS overrides any layered rule.
 - **Use `dvh` for full height.** On phones `100vh` is the height with the browser toolbars hidden, so a visible toolbar covers the bottom nav.
-- **The sidebar `transitionend` waits are skipped on mobile.** The sidebar is `display: none` there, so the event never fires.
+- **The upload popover does not wait on mobile.** On desktop it opens after the map overlay finishes its `left` transition. On mobile the overlay has no inset, so it opens at once.
 - **No map download on mobile.** The legend sheet is outside the map container, so the PNG would have no legend.
 - **The welcome card uses a cookie, not localStorage.** The server must know whether the card opens, so it can hide `BetaBanner` on phones on the first paint. The cookie is `welcome-dismissed` and lasts 400 days, the longest Chrome allows. The card is a dialog on desktop and a bottom sheet on mobile, and it only mounts on the main map page.
 - **Tests.** Mobile e2e specs go in `e2e/tests/mobile/` and run in the Playwright `mobile` project (`Pixel 7`). Both Playwright projects start with the `welcome-dismissed` cookie set. `mobile/welcome.spec.ts` clears it.
