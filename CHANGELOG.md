@@ -6,6 +6,41 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Releases are tagged `rc-vX.Y.Z` and deploy to staging (see [Deployment](docs/DEPLOYMENT.md#releasing-to-staging)).
 
+## [0.7.0] - 2026-11-16
+
+### Added
+
+- Welcome card for first-time visitors, replacing the mobile intro modal
+- Map tour on desktop and mobile, started from the welcome card or a new Help button
+- Analysis tour of the insights panel on desktop, with a nudge beside the Help button
+- Raster pixel value in the map popup on click
+- Sidebar search also matches layer titles
+- Info button on dataset rows that opens the dataset dialog, replacing the data sources link
+
+### Changed
+
+- The map opens with Carbon Storage when no layers are selected
+- Dataset rows show active layers as a count, such as "1 / 2 layers"
+- Mushkegowuk Territory is drawn above the basemap mask and pinned to the top of the legend
+- Flood susceptibility uses the 2000–2023 dataset
+- Mushkegowuk territory descriptions updated; source names removed from Indigenous Lands dataset titles
+- Layer `config` is required by the API and the seed; deployed databases need a manual `ALTER` to make `layers.config` `NOT NULL`
+
+### Fixed
+
+- Opening an analysis no longer makes the map jump or leaves the area off-centre
+- Closing an analysis keeps the layers, layer settings and basemap
+- Indigenous Lands showed 2 of its 6 layers on first load
+- Polygon drawing restarts after the drawn shape is cleared
+- Transparent pixels in choropleth raster layers such as Carbon Storage and Peat Depth
+- Mobile: switcher labels stay in place, and the drawing instructions use the app font
+
+### Security
+
+- Client: upgraded follow-redirects to 1.16.2 and decode-uri-component to 0.5.1 to fix published advisories
+- API: upgraded dnspython to 2.9.2 to fix published advisories
+- Data processing: upgraded tornado to 6.6.1 to fix published advisories
+
 ## [0.6.0] - 2026-10-27
 
 ### Added
