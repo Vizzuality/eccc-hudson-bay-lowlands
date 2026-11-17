@@ -642,15 +642,22 @@ def load_cube(path: Path, required_columns: Sequence[str] = REQUIRED_COLUMNS) ->
                 f"{cube['isea3hcellcode'].nunique():,}", f"{cube['specieskey'].nunique():,}")
     return cube
 
+def _pairs_to_json(pairs) -> str:
+    """Converts a list of (specieskey, species) pairs to a JSON array."""
+    ordered = sorted(set(pairs), key=lambda p: p[1])
+    return json.dumps([{"specieskey": k, "species": s} for k, s in ordered],
+                      ensure_ascii=False)
 
-def aggregate_cells(cube: pd.DataFrame, include_years: bool = False,
-                    species_separator: str = "; ") -> pd.DataFrame:
+def aggregate_cells(cube: pd.DataFrame, include_years: bool = False) -> pd.DataFrame:
     """Aggregate the cube to one row per hexagon.
 
     Columns: ``n_records``, ``richness`` (distinct species), ``species_list`` and,
     when the source columns exist, ``n_genera``, ``n_families``,
     ``richness_<kingdom>``, ``species_<kingdom>`` and, if ``include_years``,
     ``first_year`` and ``last_year``.
+
+    ``species_list`` and ``species_<kingdom>`` are JSON arrays (as text) of
+    ``{"specieskey": ..., "species": ...}``. They are ``"None"`` when empty.
     """
     key = "isea3hcellcode"
     rename = {key: "isea3h_cell_code"}
@@ -659,8 +666,16 @@ def aggregate_cells(cube: pd.DataFrame, include_years: bool = False,
     cells = grouped.agg(
         n_records=("occurrences", "sum"),
         richness=("specieskey", "nunique"),
-        species_list=("species", lambda s: species_separator.join(sorted(s.dropna().unique()))),
     ).reset_index().rename(columns=rename)
+
+    # (specieskey, species) pair of every cube row, the base of all the species arrays
+    pairs = (cube.dropna(subset=["species", "specieskey"])
+             .assign(_pair=lambda d: list(zip(d["specieskey"], d["species"]))))
+
+    species_list = (pairs.groupby(key)["_pair"].agg(_pairs_to_json)
+                    .rename("species_list").reset_index().rename(columns=rename))
+    cells = cells.merge(species_list, on="isea3h_cell_code", how="left")
+    cells["species_list"] = cells["species_list"].fillna("None")
 
     for column, name in (("genuskey", "n_genera"), ("familykey", "n_families")):
         if column in cube.columns:
@@ -674,18 +689,17 @@ def aggregate_cells(cube: pd.DataFrame, include_years: bool = False,
         by_kingdom.columns = [c.lower() for c in by_kingdom.columns]
         cells = cells.merge(by_kingdom, on="isea3h_cell_code")
 
-        # Species list by kingdom in each hexagon (columnas species_<reino>)
+        # Species array (specieskey + name) per kingdom and hexagon
         species_by_kingdom = (
-            cube.dropna(subset=["species", "kingdom"])
-            .groupby([key, "kingdom"])["species"]
-            .agg(lambda s: species_separator.join(sorted(s.unique())))
+            pairs.groupby([key, "kingdom"])["_pair"]
+            .agg(_pairs_to_json)
             .unstack("kingdom")
             .reset_index()
             .rename(columns=rename)
         )
         species_by_kingdom.columns = [c.lower() for c in species_by_kingdom.columns]
 
-        # Only keep the kingdoms that are in the reference list, and add missing ones with None
+        # Keep only the kingdoms in KINGDOMS and add the missing ones as empty columns
         for kingdom in KINGDOMS:
             if kingdom not in species_by_kingdom.columns:
                 species_by_kingdom[kingdom] = None
@@ -694,7 +708,7 @@ def aggregate_cells(cube: pd.DataFrame, include_years: bool = False,
 
         cells = cells.merge(species_by_kingdom, on="isea3h_cell_code", how="left")
 
-        # If there is no speies from a kingdom, fill the column with "None" instead of NaN
+        # No species in that kingdom: "None" (a real null is lost when converting to mbtiles)
         species_cols = [f"species_{k}" for k in KINGDOMS]
         cells[species_cols] = cells[species_cols].fillna("None")
 
@@ -752,5 +766,6 @@ def filter_by_footprint(layer: gpd.GeoDataFrame, footprint_path: Path) -> gpd.Ge
 def save_geojson(layer: gpd.GeoDataFrame, path: Path) -> None:
     """Write the hexagon layer as a GeoJSON file (the only output of this notebook)."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    layer.to_file(path, driver="GeoJSON")
+    # AUTODETECT_JSON_STRINGS="NO": species fields are stored as JSON text, not as arrays (mbtiles cannot handle arrays)
+    layer.to_file(path, driver="GeoJSON", engine="pyogrio", AUTODETECT_JSON_STRINGS="NO")
     LOGGER.info("Saved %s (%s hexagons)", path, f"{len(layer):,}")
